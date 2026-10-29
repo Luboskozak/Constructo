@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-g7ZC8x1p2ABd26k00pe2fj0VJceVH4IJR2u4K7lt1i0=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-gz9X7q+Mgw4grLgxaV9O8lFvBHDa2DBmwejBWYb4mE0=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -800,7 +800,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.14';
+  const APP_VERSION = '4.15';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -935,6 +935,9 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
   const isSimple = t => !!t && t.kind === 'simple';
   const TR = () => D.tasks.filter(t => !isSimple(t));
   const SIMPLE = () => D.tasks.filter(isSimple);
+  // záložka Úkoly: drobné úkoly + úkoly z porad, i ty načtené z tabulky porady (Excel, mají src a nejsou v HMG) – Luboš 29. 10. 2026
+  const isUkol = t => isSimple(t) || (!!t && !!t.src && !(t.hmg || []).length);
+  const UKOLY = () => D.tasks.filter(isUkol);
   // úkol z porady: zadaný v zápisu (kind simple) nebo načtený z tabulky porady (má src) – nepatří do hlavního plánu prací
   const fromMeeting = t => isSimple(t) || !!(t && t.src);
   // Sledované úkoly ukazují i úkoly ze zápisů z porad (jsou to tytéž záznamy jako v Úkolech a v zápisu, změna se projeví všude)
@@ -1095,7 +1098,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     if (!D.tasks.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">Zatím tu nikdo není. Lidé se objeví, jakmile jim přiřadíte první úkol.</div>`; return; }
     const diary = D.diary.filter(e => e.kind !== 'porada' && e.kind !== 'plan').sort((a,b) => (b.date + (b.at||'')).localeCompare(a.date + (a.at||'')));
     box.innerHTML = owners().map(n => {
-      const ts = TRK().filter(t => hasPerson(t, n)), ss = SIMPLE().filter(t => hasPerson(t, n) && eff(t) !== 'done');
+      const ts = TRK().filter(t => hasPerson(t, n)), ss = UKOLY().filter(t => hasPerson(t, n) && eff(t) !== 'done');
       const late = ts.filter(t => eff(t) === 'late').length, open = ts.filter(t => eff(t) !== 'done').length, a = avg(ts);
       const lastE = diary.find(e => e.owner === n);
       const lastTxt = lastE ? `Poslední zápis ${lastE.date === today ? 'dnes' : fmtD(lastE.date)}` : 'Bez denního zápisu';
@@ -1595,7 +1598,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     });
     const unl = TR().filter(t => !fromMeeting(t) && !(t.hmg || []).length);
     if (unl.length) html += `<div class="hconv no-print"><span><b>${unl.length} ${unl.length === 1 ? 'úkol není' : unl.length < 5 ? 'úkoly nejsou' : 'úkolů není'} v harmonogramu.</b> Převedou se jako nové činnosti HMG a dál se budou sledovat v procentech.</span><button type="button" class="btn" id="h-conv">Převést do harmonogramu…</button></div>`;
-    const so = SIMPLE().filter(t => eff(t) !== 'done' && (!S.owner || hasPerson(t, S.owner)));
+    const so = UKOLY().filter(t => eff(t) !== 'done' && (!S.owner || hasPerson(t, S.owner)));
     html += `<div class="hsimple no-print"><b>Úkoly</b><span>${so.length ? `${so.length} k vyřízení${so.filter(t => eff(t) === 'late').length ? ` · <b style="color:var(--bad)">${so.filter(t => eff(t) === 'late').length} po termínu</b>` : ''}` : 'nic k vyřízení'}</span><button type="button" class="btn" id="h-simple" style="padding:4px 10px;font-size:12.5px">Otevřít záložku Úkoly</button></div>`;
     v.innerHTML = html + `</div><p class="hcap" style="margin-top:8px">Plán dnes = kolik by mělo být hotovo, když práce běží rovnoměrně od zahájení do dokončení v HMG. Hotovo = průměr propojených úkolů, jinak stav z HMG. Odchylka záporná = pozadu. Pozor: dlaždice „Ve skluzu“ nahoře počítá sledované úkoly (po termínu dokončení nebo nezahájené po termínu zahájení), kdežto tady jde o činnosti hlavního harmonogramu.</p>`;
     if ($('#h-conv')) $('#h-conv').onclick = convertToHmg;
@@ -1669,7 +1672,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','simple','diary','hmg'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     $('#view-title').textContent = {list:'Sledované úkoly', simple:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram'}[S.view];
-    const sOpen = SIMPLE().filter(t => eff(t) !== 'done').length;
+    const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-simple').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     $('#f-stav').hidden = $('#f-objekt').hidden = S.view === 'simple';
     $('#hide-done-w').hidden = !['list', 'gantt'].includes(S.view);
@@ -1707,7 +1710,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     v.querySelectorAll('[data-sa]').forEach(b => b.onclick = () => {
       const t = D.tasks.find(x => x.id === b.closest('[data-s]').dataset.s); if (!t) return;
       const a = b.dataset.sa;
-      if (a === 'done') simpleSet(t, 'done'); else if (a === 'undo') simpleSet(t, 'undo'); else if (a === 'miss') simpleMiss(t); else simpleDialog(t);
+      if (a === 'done') simpleSet(t, 'done'); else if (a === 'undo') simpleSet(t, 'undo'); else if (a === 'miss') simpleMiss(t); else openEditor(t.id);
     });
     v.querySelectorAll('.srow[data-s]').forEach(r => r.onclick = e => { if (e.target.closest('button,a')) return; simpleDetail(r.dataset.s); });
   }
@@ -1720,7 +1723,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     const ex = [];
     if (d && mgr) ex.push(['Vrátit mezi nesplněné', () => simpleSet(t, 'undo')]);
     if (!d && mgr) ex.push(['Důvod nesplnění…', () => simpleMiss(t)]);
-    ex.push(['Upravit / smazat…', () => simpleDialog(t)]);
+    ex.push(['Upravit / smazat…', () => openEditor(t.id)]);
     confirmModal(t.title, `${attHtml(t, true)}
       <div class="sdet">
         <div><span class="k">Pověřená osoba</span><b style="font-size:16px">${esc(ownerTxt(t) || 'Bez přiřazení')}</b></div>
@@ -1740,7 +1743,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
     const v = $('#view');
     if (!S.owner || S.view === 'simple' || S.view === 'diary') return;
     // ve Sledovaných úkolech už úkoly ze zápisů z porad jsou – v rámečku jen ostatní úkoly, aby nebyly dvakrát
-    const zo = S.view === 'list' ? zOrigin() : {}, mineS = SIMPLE().filter(t => hasPerson(t, S.owner) && !zo[t.id]);
+    const zo = S.view === 'list' ? zOrigin() : {}, mineS = UKOLY().filter(t => hasPerson(t, S.owner) && !zo[t.id] && !(S.view === 'list' && !isSimple(t)));
     const ts = mineS.filter(t => eff(t) !== 'done').sort((a, b) => (a.end || '9999').localeCompare(b.end || '9999'));
     const nDone = mineS.filter(t => eff(t) === 'done').length, late = ts.filter(t => eff(t) === 'late').length;
     const box = document.createElement('div');
@@ -1756,14 +1759,14 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
   }
   function renderSimple() {
     const v = $('#view'), q = S.q.toLowerCase();
-    const all = SIMPLE().filter(t => (!S.owner || hasPerson(t, S.owner)) && (!q || `${t.title} ${ownerTxt(t)} ${t.missed || ''}`.toLowerCase().includes(q)));
+    const all = UKOLY().filter(t => (!S.owner || hasPerson(t, S.owner)) && (!q || `${t.title} ${ownerTxt(t)} ${t.missed || ''}`.toLowerCase().includes(q)));
     const infos = all.filter(t => t.info && (t.start || '') >= addD(today, -14)).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
     const open = all.filter(t => !t.info && eff(t) !== 'done').sort((a, b) => (a.end || '9999').localeCompare(b.end || '9999') || (a.createdAt || '').localeCompare(b.createdAt || ''));
     const done = all.filter(t => !t.info && eff(t) === 'done').sort((a, b) => (b.doneAt || b.updatedAt || '').localeCompare(a.doneAt || a.updatedAt || ''));
     const late = open.filter(t => eff(t) === 'late').length;
     const row = simpleRow;
     let html = `<div class="sl"><div class="sl-top"><b>Úkoly${S.owner ? ' · ' + esc(S.owner) : ''}</b><span>${open.length} k vyřízení${late ? ` · <b style="color:var(--bad);font-size:inherit">${late} po termínu</b>` : ''} · ${done.length} splněno</span><span class="sp"></span><button type="button" class="btn primary no-print" id="s-add">Zadat úkol</button></div>`;
-    if (!all.length) html += `<div class="empty"><strong>${SIMPLE().length ? 'Filtru neodpovídá žádný úkol.' : 'Zatím žádné úkoly.'}</strong>Sem patří drobné úkoly nad rámec sledovaných, třeba „zajistit osazení plynoměru“. Zadáte je tlačítkem „Zadat úkol“.</div>`;
+    if (!all.length) html += `<div class="empty"><strong>${UKOLY().length ? 'Filtru neodpovídá žádný úkol.' : 'Zatím žádné úkoly.'}</strong>Sem patří drobné úkoly nad rámec sledovaných, třeba „zajistit osazení plynoměru“. Zadáte je tlačítkem „Zadat úkol“.</div>`;
     if (all.length) html += `<div class="sl-hd"><span>Pověřená osoba</span><span>Úkol</span><span>Stav</span><span></span></div>`;
     html += open.map(row).join('');
     if (infos.length) html += `<div class="sl-h">Na vědomí · posledních 14 dní (${infos.length})</div>` + infos.map(row).join('');
@@ -1779,6 +1782,8 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
   const isCreator = t => !!t.createdBy && isMe(t.createdBy);
   function simpleSet(t, a) {
     if (a === 'done' && !isAssignee(t) && !isAdmin()) { toast(`Splnění potvrzuje ${ownerTxt(t)}.`); return; }
+    // úkol z tabulky porady má procenta: Splněno = 100 %, Vrátit = původní procenta (stejně jako zaškrtnutí ve Sledovaných)
+    if (!isSimple(t)) { if ((a === 'done') !== (eff(t) === 'done')) trackDone(t.id); return; }
     if (a === 'done') { t.status = 'done'; t.done = 100; const now = simpleLog(t, 'Splněno'); t.doneAt = now; t.doneBy = me(); toast('Splněno: ' + t.title); }
     else { t.status = 'todo'; t.done = 0; t.doneAt = ''; t.doneBy = ''; simpleLog(t, 'Vráceno mezi nesplněné'); toast('Úkol vrácen mezi nesplněné'); }
     commit();
