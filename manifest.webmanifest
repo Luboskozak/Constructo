@@ -1,0 +1,16 @@
+{
+  "name": "Constructo – management staveb",
+  "short_name": "Constructo",
+  "description": "Hlášení ze stavby s fotkou, úkoly a přehled stavby.",
+  "lang": "cs",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#131518",
+  "theme_color": "#131518",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
