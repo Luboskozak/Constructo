@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-sMgwNKqq5eC9+YyBvB5xSEnQge8ucpxa9pf4HElLdK8=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-LP2qiAXfYrz/ER8UBxt/jXssNay16wWog9nxoHk/6O4=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -556,7 +556,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'zredo') { if (!Z.busy) { Z.formal = ''; zPriprav(); } }
     else if (a === 'zmojefirma') { ls.set('cx-moje-firma', ''); render(); }
     else if (a === 'znahled') zNahled();
-    else if (a === 'zemail') { const f = firma(); if (f) { firmyDlg(f.id); toast('Doplňte firmě e-mail.'); } }
+    else if (a === 'zemail') { const f = firma(); if (f && f.spol) toast('E-mail firmy doplňte v programu na počítači: Data → Firmy.'); else if (f) { firmyDlg(f.id); toast('Doplňte firmě e-mail.'); } }
     else if (a === 'zfirma') { const e = document.querySelector('[data-zf], [data-act="firmy"]'); if (e) e.scrollIntoView({block: 'center', behavior: 'smooth'}); }
     else if (a === 'zgal') { closeSheet(); $('#in-gal').click(); }
   }
@@ -638,7 +638,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   let Z = zNew();
   function zReset() { if (Z.crop) URL.revokeObjectURL(Z.crop.url); Z = zNew(); }
   const zTyp = () => ZTYPY.find(x => x.k === Z.typ) || ZTYPY[0];
-  const firmy = () => { try { const a = JSON.parse(ls.get('cx-firmy') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  // firmy: hlavní seznam se spravuje v programu na počítači (Data → Firmy) a přijde s daty stavby; v telefonu jde přidat jen vlastní doplněk
+  const mistniFirmy = () => { try { const a = JSON.parse(ls.get('cx-firmy') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const spolecneFirmy = () => ((D && D.project && Array.isArray(D.project.firmy)) ? D.project.firmy : []).filter(x => x && x.id && x.firma).map(x => Object.assign({spol: true}, x));
+  const firmy = () => { const sp = spolecneFirmy(), jm = new Set(sp.map(x => fold(x.firma))); return sp.concat(mistniFirmy().filter(x => !jm.has(fold(x.firma)))).sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs')); };
   const firma = () => firmy().find(f => f.id === Z.firma) || null;
   const zHist = () => { try { const a = JSON.parse(ls.get('cx-zavady') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
 
@@ -1142,7 +1145,7 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     const f = firma();
     if (via === 'mail') {
       if (!f) { toast('Nejdřív v kroku 4 vyberte firmu, které se to posílá.'); act('zfirma'); return; }
-      if (!f.email) { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); return; }
+      if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho v programu na počítači: Data → Firmy.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return; }
     }
     const pripraveno = zFm && zFm.key === zFmKey() && zFm.hotovo;
     zSending = true;
@@ -1317,11 +1320,13 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     Z.kor = k; kreslitKor();
   }
   function firmyDlg(editId) {
-    const a = firmy(), ed = a.find(x => x.id === editId) || null;
+    const a = mistniFirmy(), sp = spolecneFirmy(), ed = a.find(x => x.id === editId) || null;
     const s = sheet(`<h3>Firmy (subdodavatelé)</h3>
-      <p class="hint">Firmy jsou jen adresy pro závady, do týmu ani do Lidí se nepřidávají.${ZK || !conn ? ' Ve zkušební verzi se ukládají jen v tomto telefonu.' : ''}</p>
+      <p class="hint">Seznam firem se pohodlně spravuje v programu na počítači: <b>Data → Firmy – adresy pro závady</b>. Telefon si ho převezme sám.${conn ? '' : ' (Ve zkoušce bez připojení se firmy z počítače nenačtou.)'}</p>
+      ${sp.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')} · z počítače</span></div>`).join('')}
+      ${a.length ? '<p class="hint" style="margin:6px 0 0">Jen v tomto telefonu:</p>' : ''}
       ${a.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')}</span><div class="acts"><button type="button" class="big" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="big" data-fd="${esc(x.id)}" style="color:var(--red)">Smazat</button></div></div>`).join('')}
-      <div class="card fform"><b>${ed ? 'Upravit firmu' : 'Nová firma'}</b>
+      <div class="card fform"><b>${ed ? 'Upravit firmu' : 'Rychle přidat firmu jen v tomto telefonu'}</b>
         <input class="date" id="ff-n" placeholder="Název firmy, např. ALPOD" value="${esc(ed ? ed.firma : '')}">
         <input class="date" id="ff-e" type="email" inputmode="email" autocapitalize="off" autocomplete="off" placeholder="E-mail" value="${esc(ed ? ed.email : '')}">
         <input class="date" id="ff-t" type="tel" inputmode="tel" placeholder="Telefon pro WhatsApp, např. 777 123 456" value="${esc(ed ? ed.tel : '')}">

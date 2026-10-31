@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-SO+NufMY/26kxwpum5P/nNz1WYUCni5l5A3YH2CC0b0=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-Xc7b9maJCeqI1aHvLi5lS9NQ740UfGIZoKYISLqMmvg=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -630,6 +630,9 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
           <button type="button" data-act="rename">Přejmenovat nebo sloučit osobu…</button>
           <button type="button" data-act="tydenni">Týdenní přehled úkolů e-mailem…</button>
           <button type="button" data-act="lidezaloha">Načíst lidi a e-maily ze zálohy…</button>
+          <hr>
+          <span class="mh">Závady pro firmy</span>
+          <button type="button" data-act="firmy">Firmy – adresy pro závady…</button>
           <hr>
           <span class="mh">Sdílení s kolegy</span>
           <button type="button" data-act="invite">Pozvat kolegu (zvací kód)…</button>
@@ -2208,6 +2211,41 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
       });
   };
 
+  // Firmy (subdodavatelé) pro závady z mobilu: adresy, kam telefon pošle e-mail nebo WhatsApp. Nejsou to osoby, do Lidí ani do týmu se nepřidávají.
+  // Ukládají se do dat stavby (D.project.firmy), takže je všechny telefony převezmou při synchronizaci.
+  function firmyDialog(editId) {
+    const list = () => (Array.isArray(D.project.firmy) ? D.project.firmy : []).slice().sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs'));
+    const a = list(), ed = a.find(x => x.id === editId) || null, ro = RO();
+    const row = x => `<tr><td><b>${esc(x.firma)}</b>${x.kontakt ? `<br><span class="hcap" style="margin:0">${esc(x.kontakt)}</span>` : ''}</td><td>${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<span class="hcap" style="margin:0">bez e-mailu</span>'}</td><td>${esc(x.tel || '')}</td>
+      <td style="white-space:nowrap">${ro ? '' : `<button type="button" class="btn" data-fe="${esc(x.id)}">Upravit</button> <button type="button" class="btn" data-fd="${esc(x.id)}">Smazat</button>`}</td></tr>`;
+    confirmModal('Firmy – adresy pro závady', `
+      <p class="hcap" style="margin:0">Sem patří subdodavatelé, kterým se z mobilu posílají závady. Telefony si seznam převezmou samy. Firmy se nepřidávají do Lidí ani do týmu.</p>
+      ${a.length ? `<table class="fm-tab" style="width:100%;border-collapse:collapse;font-size:13.5px">${a.map(row).join('')}</table>` : '<p style="margin:0"><b>Zatím žádná firma.</b></p>'}
+      ${ro ? '' : `<div style="border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+        <b>${ed ? 'Upravit firmu' : 'Nová firma'}</b>
+        <div class="fld"><label for="fm-n">Název firmy</label><input id="fm-n" value="${esc(ed ? ed.firma : '')}" placeholder="např. ALPOD s.r.o."></div>
+        <div class="fld"><label for="fm-e">E-mail (sem půjdou závady)</label><input id="fm-e" type="email" value="${esc(ed ? ed.email || '' : '')}" placeholder="stavba@firma.cz"></div>
+        <div class="fld"><label for="fm-t">Telefon pro WhatsApp</label><input id="fm-t" type="tel" value="${esc(ed ? ed.tel || '' : '')}" placeholder="777 123 456"></div>
+        <div class="fld"><label for="fm-k">Kontaktní osoba (nepovinné)</label><input id="fm-k" value="${esc(ed ? ed.kontakt || '' : '')}" placeholder="např. Ing. Novák, stavbyvedoucí"></div>
+        <div><button type="button" class="btn primary" id="fm-ok">${ed ? 'Uložit změny' : 'Přidat firmu'}</button>${ed ? ' <button type="button" class="btn" id="fm-new">Zrušit úpravu</button>' : ''}</div></div>`}`, '');
+    const cancel = $('#m-cancel'); if (cancel) cancel.textContent = 'Zavřít';
+    document.querySelectorAll('.fm-tab td').forEach(td => { td.style.padding = '7px 6px'; td.style.borderBottom = '1px solid var(--line)'; td.style.verticalAlign = 'top'; });
+    document.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => firmyDialog(b.dataset.fe));
+    document.querySelectorAll('[data-fd]').forEach(b => b.onclick = () => {
+      if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; return; }
+      D.project.firmy = list().filter(x => x.id !== b.dataset.fd); commit(); firmyDialog();
+    });
+    const nw = $('#fm-new'); if (nw) nw.onclick = () => firmyDialog();
+    const ok = $('#fm-ok'); if (ok) ok.onclick = () => {
+      const n = $('#fm-n').value.trim(), em = $('#fm-e').value.trim(), tel = $('#fm-t').value.trim(), kontakt = $('#fm-k').value.trim();
+      if (!n) { toast('Napište název firmy.'); $('#fm-n').focus(); return; }
+      if (em && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(em)) { toast('E-mail nevypadá správně.'); $('#fm-e').focus(); return; }
+      if (!ed && list().some(x => foldName(x.firma) === foldName(n))) { toast('Firma ' + n + ' už v seznamu je, klikněte u ní Upravit.'); return; }
+      const x = {id: ed ? ed.id : 'f' + Date.now().toString(36), firma: n, email: em, tel, kontakt};
+      D.project.firmy = ed ? list().map(y => y.id === ed.id ? x : y) : list().concat(x);
+      commit(); toast(ed ? 'Uloženo' : 'Firma přidána: ' + n); firmyDialog();
+    };
+  }
   function confirmModal(title, body, okLabel, onOk, extra) {
     const ov = $('#overlay');
     ov.innerHTML = `<div class="scrim" id="scrim"></div><div class="modal" role="dialog" aria-modal="true"><h3>${esc(title)}</h3><div>${body}</div><div class="acts">${(extra||[]).map((x,i) => `<button class="btn" type="button" data-x="${i}">${esc(x[0])}</button>`).join('')}<button class="btn" type="button" id="m-cancel">${okLabel ? 'Zrušit' : 'Zavřít'}</button>${okLabel ? `<button class="btn primary" type="button" id="m-ok">${esc(okLabel)}</button>` : ''}</div></div>`;
@@ -3983,6 +4021,7 @@ ${tydenniHtml.toString()}
     if (a === 'mobile') mobileDialog();
     if (a === 'invite') inviteDialog();
     if (a === 'inviteall') teamInviteDialog();
+    if (a === 'firmy') firmyDialog();
     else if (a === 'export') exportJson();
     else if (a === 'import') importJson();
     else if (a === 'file') linkFile();
