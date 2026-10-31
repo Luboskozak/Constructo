@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-7dV/4C9XfuNtUndUj1OzyzN1/svq8mKQ4nmo+p3sNqs=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-LP2qiAXfYrz/ER8UBxt/jXssNay16wWog9nxoHk/6O4=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -156,6 +156,53 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translateX(-50%);background:var(--k);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;font-weight:600;max-width:calc(100% - 32px);text-align:center}
 .fileinp{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
+/* závada pro firmu: půdorys se špendlíkem, výřez, odborný text */
+.zpin{min-height:64px;font-size:17px}
+.zcrop img{width:100%;display:block;border-radius:14px;border:1px solid var(--line);background:#fff}
+.zroom{font-size:17px}
+.formal{width:100%;min-height:300px;border:2px solid var(--line);border-radius:16px;padding:12px;font-size:15px;line-height:1.45;background:var(--card);resize:vertical}
+.zsend{display:flex;flex-direction:column;gap:10px}
+.send.wa{background:#1d8f4e}
+.send.wa i{background:#fff;color:#1d8f4e}
+.send.oba{background:var(--y);color:var(--ink)}.send.oba i{background:var(--ink);color:var(--y)}
+.big.zwa{background:#1d8f4e;border-color:#1d8f4e;color:#fff}
+.zkomu{font-size:15px;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);margin:4px 0 10px}
+.zpodpis{font-size:14px;line-height:1.45;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.zkor{margin-top:8px;padding:12px;border-radius:12px;background:var(--y2);border:1px solid var(--y);display:flex;flex-direction:column;gap:6px}
+.zkor small{font-weight:400;color:var(--mut)}
+.zkor-t{font-size:16px;line-height:1.5;background:#fff;border-radius:8px;padding:10px}
+.zkor-t mark{background:var(--y);border-radius:3px;padding:0 2px}
+.zkor-go{margin-top:6px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:8px 14px;font-weight:600;font-size:14px;font-family:inherit;color:var(--ink)}
+.zkor-ok{color:var(--grn)}
+.zthumbs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.zthumbs span{width:58px;height:58px;border-radius:8px;background:center/cover #ddd}
+.zdalsi{display:flex;gap:8px}.zdalsi .big{flex:1;display:flex;align-items:center;justify-content:center;gap:6px}.zdalsi svg{width:20px;height:20px}
+.znahled{display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow:auto;background:var(--bg);padding:8px;border-radius:10px}.znahled img{width:100%;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+.fform{display:flex;flex-direction:column;gap:8px}
+.fform input{width:100%}
+.pv{position:fixed;inset:0;z-index:40;background:#fff;display:flex;flex-direction:column}
+.pv-top{background:var(--k);color:#fff;padding:calc(10px + var(--st)) 12px 10px;display:flex;flex-direction:column;gap:8px}
+.pv-r{display:flex;align-items:center;gap:10px;font-size:17px}
+.pv-r button{margin-left:auto;border:0;border-radius:10px;min-height:40px;padding:0 14px;background:var(--k3);color:#fff;font-weight:700}
+.pv-floors{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.pv-floors button{border:0;border-radius:10px;min-height:42px;padding:0 12px;background:var(--k3);color:#fff;font-weight:800;white-space:nowrap;flex:none}
+.pv-floors button[aria-pressed="true"]{background:var(--y);color:var(--k)}
+.pv-stage{flex:1;position:relative;overflow:hidden;touch-action:none;background:#f1f1ec;-webkit-user-select:none;user-select:none}
+.pv-in{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff}
+.pv-in img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
+.pv-pin{position:absolute;width:0;height:0;pointer-events:none}
+.pv-pin svg{position:absolute;left:-19px;top:-48px;width:38px;height:48px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.pv-zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:8px}
+.pv-zoom button{width:50px;height:50px;border-radius:14px;border:0;background:var(--k);color:#fff;font-size:26px;font-weight:800}
+.pv-load{position:absolute;left:50%;top:40%;transform:translateX(-50%);background:var(--k);color:#fff;border-radius:12px;padding:10px 16px;font-weight:700}
+.pv-bot{background:var(--card);padding:12px 14px calc(12px + var(--sb));display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)}
+.pv-room{font-size:16px;min-height:2.6em}
+/* na počítači (iMac, Dell) aplikace jako telefon uprostřed obrazovky */
+@media (min-width:760px){
+  html{background:#e6e6e1}
+  body{max-width:560px;margin:0 auto;box-shadow:0 0 0 1px var(--line),0 10px 40px rgba(0,0,0,.08)}
+  .nav{left:50%;right:auto;width:560px;transform:translateX(-50%)}
+  .sheet{left:50%;right:auto;width:560px;transform:translateX(-50%)}
+}
 </style>
 </head>
 <body>
@@ -182,7 +229,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script>
 (() => {
-  const VERSION = '1.6';
+  const VERSION = '1.7';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -205,7 +252,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   // pozvaný „jen nahlíží“: vidí stavbu, nic neposílá ani nemění (server mu změny stejně nepřijme)
   let ro = ls.get('cx-ro') === '1';
   const setRo = v => { ro = !!v; ls.set('cx-ro', ro ? '1' : ''); document.body.classList.toggle('ro', ro); if (ro) { view = 'prehled'; ufilter = 'vse'; } };
-  const F = {photos: [], to: new Set(), info: false, end: addD(todayS(), 7), obj: new Set(), text: '', result: null};
+  const F = {photos: [], to: new Set(), info: false, end: addD(todayS(), 7), obj: new Set(), text: '', result: null, mode: ls.get('cx-mode') || 'tym'};
 
   function toast(t) { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 3200); }
 
@@ -264,7 +311,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         <p>${WEB_SCRIPT ? 'Zadejte zvací kód, který vám poslal administrátor stavby (6 znaků). Stačí jednou.' : 'Vložte kód připojení, který vám poslal kolega (začíná HYB1-). Stačí jednou.'}</p>
         <textarea id="su-code" placeholder="${WEB_SCRIPT ? 'např. K7M2QX' : 'HYB1-…'}" autocomplete="off" autocapitalize="characters" spellcheck="false"></textarea>
         ${err ? `<div class="banner">${esc(err)}</div>` : ''}
-        <button type="button" class="big pri" id="su-go">Připojit</button></div>`;
+        <button type="button" class="big pri" id="su-go">Připojit</button>
+        ${ZK ? '<button type="button" class="big" id="su-demo">Jen vyzkoušet závady (bez připojení)</button>' : ''}</div>`;
+    if (ZK) $('#su-demo').onclick = () => { F.mode = 'zavada'; view = 'hlaseni'; start(); };
     $('#su-go').onclick = async () => {
       const raw = $('#su-code').value;
       let c = parseCode(raw), jmeno = '';
@@ -346,7 +395,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   function go(v, camera) {
     if (v === 'hlaseni' && F.result) F.result = null;
     view = v; ls.set('cx-view', v); render(); scrollTo(0, 0);
-    if (camera && !F.photos.length) $('#in-cam').click();
+    if (camera && !F.photos.length) { zCam = true; $('#in-cam').click(); }
   }
   function render() {
     if ($('#app').hidden) return;
@@ -429,10 +478,14 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         const miss = mail.missing && mail.missing.length ? `<div class="m">E-mail nedostal: ${esc(mail.missing.join(', '))} (v programu chybí e-mail)</div>` : mail.error ? `<div class="m">E-mail se neodeslal: ${esc(mail.error)}</div>` : '';
         return `<div class="card task"><div class="t1">${ph && ph.thumb ? `<img src="${ph.thumb}" alt="" style="width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none">` : ''}<div class="tx"><h4>${esc(it.text || 'Foto bez popisu')}</h4>
           <div class="m"><span>${it.info ? 'Na vědomí' : 'Úkol'} · ${esc(it.to.join(', ') || 'bez osoby')}</span><span>${fmtT(it.at)}</span>${(it.photos || []).length ? `<span>${it.photos.length} foto</span>` : ''}</div>${miss}${it.err ? `<div class="m" style="color:var(--red)">${esc(it.err)}</div>` : ''}</div>${st}</div></div>`;
-      }).join('') : '<div class="card empty"><b>Zatím nic</b>Hlášení, která pošlete, uvidíte tady i se stavem odeslání.</div>'}
+      }).join('') : conn ? '<div class="card empty"><b>Zatím nic</b>Hlášení, která pošlete, uvidíte tady i se stavem odeslání.</div>' : ''}
+      ${zHist().length ? `<div class="sec"><h3>Závady pro firmy</h3></div>${zHist().map(e => `<div class="card task" data-z="${esc(e.id)}"><div class="t1">${e.thumb ? `<img src="${e.thumb}" alt="" style="width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none">` : ''}<div class="tx"><h4>${esc(e.typ)}${e.room ? ' · ' + esc(e.room) : ''}</h4>
+        <div class="m"><span>${esc(e.firma || 'bez firmy')}</span><span>${fmtT(e.at)}</span><span>${e.via.map(v => v === 'wa' ? 'WhatsApp' : 'e-mail').join(', ')}</span></div></div><span class="pill p-ok">Posláno</span></div></div>`).join('')}` : ''}
     </main>`;
   }
   function vHlaseni() {
+    if (!conn) F.mode = 'zavada';
+    if (F.mode === 'zavada') return vZavada();
     if (F.result) {
       const sent = F.result.sent;
       return `${headSmall('Hlášení')}<main><div class="result">
@@ -446,6 +499,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const sum = !n ? 'Vyberte, komu hlášení patří' : F.info ? `${all ? 'Všichni' : names.join(', ')} ${n === 1 ? 'dostane' : 'dostanou'} informaci a e-mail` : n === 1 ? `${names[0]} dostane úkol a e-mail` : `${all ? 'Všichni' : names.join(', ')}: každý dostane svůj úkol a e-mail`;
     const rec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
     return `${headSmall('Nové hlášení')}<main>
+      ${modeSeg()}
       <div class="photos">${F.photos.map((p, i) => `<div class="photo" style="background-image:url(${p.thumb})"><button type="button" data-rm="${i}" aria-label="Odebrat fotku">✕</button></div>`).join('')}
         <button type="button" class="addph" data-act="cam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Vyfotit</button>
         <button type="button" class="addph" data-act="gal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>Z galerie</button></div>
@@ -470,7 +524,11 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     v.querySelectorAll('[data-done]').forEach(b => b.onclick = e => { e.stopPropagation(); markDone(b.dataset.done); });
     v.querySelectorAll('.task[data-t]').forEach(c => c.onclick = () => detail(c.dataset.t));
     v.querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
-    if (view !== 'hlaseni' || F.result) return;
+    v.querySelectorAll('[data-z]').forEach(c => c.onclick = () => zDetail(c.dataset.z));
+    if (view !== 'hlaseni') return;
+    v.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { F.mode = b.dataset.mode; ls.set('cx-mode', F.mode); render(); });
+    if (F.mode === 'zavada') return bindZ(v);
+    if (F.result) return;
     v.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { F.photos.splice(+b.dataset.rm, 1); render(); });
     v.querySelectorAll('[data-to]').forEach(b => b.onclick = () => { const n = b.dataset.to; F.to.has(n) ? F.to.delete(n) : F.to.add(n); render(); });
     const all = v.querySelector('[data-all]'); if (all) all.onclick = () => { const on = all.getAttribute('aria-pressed') !== 'true'; F.to = new Set(on ? team() : []); render(); };
@@ -479,7 +537,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     v.querySelectorAll('[data-obj]').forEach(b => b.onclick = () => { const c = b.dataset.obj; F.obj.has(c) ? F.obj.delete(c) : F.obj.add(c); b.setAttribute('aria-pressed', F.obj.has(c)); });
     const end = $('#f-end'); if (end) end.onchange = () => { F.end = end.value; };
     const tx = $('#f-text'); tx.oninput = () => { F.text = tx.value; $('#f-send').disabled = !(F.to.size && (F.photos.length || F.text.trim())); };
-    $('#f-mic').onclick = dictate;
+    $('#f-mic').onclick = () => dictate(tx, $('#f-mic'), s => { F.text = s; $('#f-send').disabled = !(F.to.size && (F.photos.length || F.text.trim())); });
     $('#f-send').onclick = send;
   }
   async function act(a) {
@@ -489,6 +547,18 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'pump') { kick(); toast(online ? 'Odesílám…' : 'Bez signálu, odešle se později.'); }
     else if (a === 'install' && installEvt) { installEvt.prompt(); installEvt = null; render(); }
     else if (a === 'settings') settings();
+    else if (a === 'plan') planViewer();
+    else if (a === 'firmy') firmyDlg();
+    else if (a === 'znew') { zReset(); F.photos = []; render(); scrollTo(0, 0); }
+    else if (a === 'zcam') { zCam = true; $('#in-cam').click(); }
+    else if (a === 'zans') { if (!Z.answer.trim()) { toast('Napište nebo nadiktujte odpověď.'); return; } Z.qa.push({otazka: Z.question, odpoved: Z.answer.trim()}); Z.question = ''; Z.answer = ''; zPriprav(); }
+    else if (a === 'zskip') { Z.question = ''; zPriprav(true); }
+    else if (a === 'zredo') { if (!Z.busy) { Z.formal = ''; zPriprav(); } }
+    else if (a === 'zmojefirma') { ls.set('cx-moje-firma', ''); render(); }
+    else if (a === 'znahled') zNahled();
+    else if (a === 'zemail') { const f = firma(); if (f && f.spol) toast('E-mail firmy doplňte v programu na počítači: Data → Firmy.'); else if (f) { firmyDlg(f.id); toast('Doplňte firmě e-mail.'); } }
+    else if (a === 'zfirma') { const e = document.querySelector('[data-zf], [data-act="firmy"]'); if (e) e.scrollIntoView({block: 'center', behavior: 'smooth'}); }
+    else if (a === 'zgal') { closeSheet(); $('#in-gal').click(); }
   }
   async function onFiles(files) {
     const arr = [...files].filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|heic|heif|webp)$/i.test(f.name));
@@ -497,6 +567,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     for (const f of arr) { try { F.photos.push(await shrink(f)); } catch (e) { toast('Fotku se nepodařilo načíst. Zkuste ji vyfotit znovu.'); } }
     if (view !== 'hlaseni') view = 'hlaseni';
     render();
+    // v závadě se po každé fotce (z fotoaparátu i z galerie) aplikace zeptá na další
+    if (F.mode === 'zavada' && view === 'hlaseni' && arr.length) zDalsi();
+    zCam = false;
   }
   $('#in-cam').onchange = e => { onFiles(e.target.files); e.target.value = ''; };
   $('#in-gal').onchange = e => { onFiles(e.target.files); e.target.value = ''; };
@@ -509,15 +582,15 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     return {b64: big.split(',')[1], thumb};
   }
   let recog = null;
-  function dictate() {
-    const R = window.SpeechRecognition || window.webkitSpeechRecognition, mic = $('#f-mic'), tx = $('#f-text');
+  function dictate(tx, mic, onText, onEnd) {
+    const R = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!R) { tx.focus(); toast('Klepněte na mikrofon na klávesnici a mluvte.'); return; }
     if (recog) { recog.stop(); return; }
     recog = new R(); recog.lang = 'cs-CZ'; recog.interimResults = true; recog.continuous = true;
     const base = tx.value ? tx.value.replace(/\s*$/, ' ') : '';
-    recog.onresult = e => { let s = ''; for (let i = 0; i < e.results.length; i++) s += e.results[i][0].transcript; tx.value = base + s; F.text = tx.value; $('#f-send').disabled = !(F.to.size && (F.photos.length || F.text.trim())); };
+    recog.onresult = e => { let s = ''; for (let i = 0; i < e.results.length; i++) s += e.results[i][0].transcript; tx.value = base + s; onText(tx.value); };
     recog.onerror = e => { toast(e.error === 'not-allowed' ? 'Telefon nepovolil mikrofon. Použijte mikrofon na klávesnici.' : e.error === 'network' ? 'Diktování teď potřebuje signál. Použijte mikrofon na klávesnici.' : 'Diktování se přerušilo.'); };
-    recog.onend = () => { recog = null; mic.classList.remove('on'); };
+    recog.onend = () => { recog = null; mic.classList.remove('on'); if (onEnd) onEnd(); };
     try { recog.start(); mic.classList.add('on'); } catch (e) { recog = null; }
   }
   async function send() {
@@ -540,6 +613,775 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     dataAt = Date.now(); await CXQ.kvSet('data', {rev: 0, data: D, at: dataAt}).catch(() => {});
     await CXQ.put({cid: 'u' + ts.toString(36), kind: 'upd', at: now, data: {tasks: [nt], log: [lg]}, state: 'wait'});
     toast('Splněno: ' + t.title); closeSheet(); await loadQ(); render(); kick();
+  }
+
+  /* ---------- závada pro firmu (subdodavatele) ---------- */
+  // Půdorysy pater jsou obrázky v pudorysy/, čísla místností i s polohou jsou předem vyčtená z výkresů (pudorysy/plany.json).
+  // Zkušební verze (náhled na Netlify) jde vyzkoušet i bez připojení ke stavbě.
+  const ZK = /^deploy-preview-\d+--/.test(location.hostname) || /[?&]zkouska\b/.test(location.search);
+  const ZTYPY = [
+    {k: 'kvalita', l: 'Nekvalitní práce', s: 'Vytknutí vady provedení', z: 'vadně provedené práce', p: 'Žádáme o odstranění vady a opravu prací v odpovídající kvalitě'},
+    {k: 'reklamace', l: 'Reklamace', s: 'Reklamace vady díla', z: 'vadu díla, kterou tímto v souladu se smlouvou o dílo reklamujeme', p: 'Žádáme o bezplatné odstranění reklamované vady'},
+    {k: 'neuklizeno', l: 'Neuklizeno', s: 'Neuklizené pracoviště', z: 'neuklizené pracoviště', p: 'Žádáme o úklid pracoviště a odvoz odpadu'},
+    {k: 'poskozeni', l: 'Poškození', s: 'Poškození konstrukce', z: 'poškození konstrukce', p: 'Žádáme o vyjádření a opravu poškozeného místa'},
+    {k: 'nedodelek', l: 'Nedodělek', s: 'Nedokončené práce', z: 'nedokončené práce', p: 'Žádáme o dokončení prací'},
+    {k: 'bozp', l: 'BOZP', s: 'Porušení zásad BOZP', z: 'nedodržení zásad bezpečnosti práce (BOZP)', p: 'Žádáme o okamžitou nápravu'},
+    {k: 'jine', l: 'Jiné', s: 'Upozornění na nedostatek', z: 'nedostatek', p: 'Žádáme o nápravu'}
+  ];
+  // hovorová slova → odborné výrazy (popis se jinak nechává tak, jak ho člověk napsal nebo nadiktoval)
+  const SLANG = [['sádráky', 'sádrokartonové konstrukce'], ['sádrák(?:u|em)?', 'sádrokarton'], ['bordel|binec|svinčík|svinec|nepořádek', 'nepořádek'],
+    ['fleky', 'skvrny'], ['flek', 'skvrna'], ['křivý', 'nerovný'], ['křivá', 'nerovná'], ['křivé', 'nerovné'], ['křivě|nakřivo|šejdrem', 'nerovně'],
+    ['fušeřina|fušařina|prasárna|šlendrián', 'nekvalitní provedení'], ['špína', 'znečištění'], ['díra|díru', 'otvor'], ['díry', 'otvory'],
+    ['kachličky|kachlíky|kachle', 'obklad'], ['dlaždičky', 'dlažba'], ['hajzl|záchod|hajzlík', 'WC'], ['nedodělaný', 'nedokončený'],
+    ['nedodělaná', 'nedokončená'], ['nedodělané', 'nedokončené'], ['zatejká', 'zatéká'], ['vokno', 'okno'], ['vokna', 'okna'], ['štuk', 'štuková omítka'], ['malovka', 'malba']];
+  const zNew = () => ({id: 'z' + Date.now().toString(36), typ: 'kvalita', floor: ls.get('cx-patro') || '1NP', pin: null, room: '', alts: [], firma: ls.get('cx-firma') || '', end: addD(todayS(), 7), text: '', formal: '', crop: null, thumb: '', qa: [], question: '', answer: '', busy: false, kor: null, korFor: '', korBusy: false, sdileno: false, oba: false});
+  let Z = zNew();
+  function zReset() { if (Z.crop) URL.revokeObjectURL(Z.crop.url); Z = zNew(); }
+  const zTyp = () => ZTYPY.find(x => x.k === Z.typ) || ZTYPY[0];
+  // firmy: hlavní seznam se spravuje v programu na počítači (Data → Firmy) a přijde s daty stavby; v telefonu jde přidat jen vlastní doplněk
+  const mistniFirmy = () => { try { const a = JSON.parse(ls.get('cx-firmy') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const spolecneFirmy = () => ((D && D.project && Array.isArray(D.project.firmy)) ? D.project.firmy : []).filter(x => x && x.id && x.firma).map(x => Object.assign({spol: true}, x));
+  const firmy = () => { const sp = spolecneFirmy(), jm = new Set(sp.map(x => fold(x.firma))); return sp.concat(mistniFirmy().filter(x => !jm.has(fold(x.firma)))).sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs')); };
+  const firma = () => firmy().find(f => f.id === Z.firma) || null;
+  const zHist = () => { try { const a = JSON.parse(ls.get('cx-zavady') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+
+  let PL = null; const IMG = {};
+  async function plany() { if (!PL) { const r = await fetch('pudorysy/plany.json'); if (!r.ok) throw new Error('plány'); PL = await r.json(); } return PL; }
+  const planOf = id => (PL || []).find(p => p.id === id) || null;
+  function planImg(p) {
+    if (!IMG[p.id]) IMG[p.id] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => { delete IMG[p.id]; rej(new Error('obrázek')); }; i.src = p.img; });
+    return IMG[p.id];
+  }
+  // nejbližší čísla místností k místu (v pixelech obrázku); první je místnost, ostatní nabídka „je to jinde?“
+  function nearRooms(p, x, y) {
+    const seen = new Set(), out = [];
+    p.rooms.map(r => ({n: r.n, d: Math.hypot(r.x * p.w - x, r.y * p.h - y)})).sort((a, b) => a.d - b.d)
+      .forEach(r => { if (!seen.has(r.n) && out.length < 4 && r.d < 650) { seen.add(r.n); out.push(r.n); } });
+    return out;
+  }
+  // přesnější: vyplní místnost od špendlíku až ke stěnám (jako kyblík v malování) a vezme čísla, která jsou uvnitř.
+  // Když výplň „vyteče“ (dvůr, chodba bez dveří) nebo uvnitř žádné číslo není, zůstane nejbližší číslo.
+  function roomsByFill(p, im, x, y) {
+    try {
+      const R = 900, sc = .5, x0 = Math.max(0, x - R), y0 = Math.max(0, y - R), x1 = Math.min(p.w, x + R), y1 = Math.min(p.h, y + R);
+      const cw = Math.round((x1 - x0) * sc), ch = Math.round((y1 - y0) * sc);
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const g = c.getContext('2d', {willReadFrequently: true}); g.fillStyle = '#fff'; g.fillRect(0, 0, cw, ch);
+      g.drawImage(im, x0, y0, x1 - x0, y1 - y0, 0, 0, cw, ch);
+      const px = g.getImageData(0, 0, cw, ch).data, wall = new Uint8Array(cw * ch);
+      for (let i = 0; i < cw * ch; i++) wall[i] = (px[i * 4] + px[i * 4 + 1] + px[i * 4 + 2]) < 600 ? 1 : 0;
+      // stěny zesílit, aby se zavřely dveřní otvory a čárkované čáry (jinak výplň proteče do vedlejší místnosti)
+      const DIL = 6, tmp = new Uint8Array(cw * ch);
+      for (let y = 0; y < ch; y++) { let n = 0; for (let x = -DIL; x < cw; x++) { if (x + DIL < cw) n += wall[y * cw + x + DIL]; if (x - DIL - 1 >= 0) n -= wall[y * cw + x - DIL - 1]; if (x >= 0) tmp[y * cw + x] = n > 0 ? 1 : 0; } }
+      for (let x = 0; x < cw; x++) { let n = 0; for (let y = -DIL; y < ch; y++) { if (y + DIL < ch) n += tmp[(y + DIL) * cw + x]; if (y - DIL - 1 >= 0) n -= tmp[(y - DIL - 1) * cw + x]; if (y >= 0) wall[y * cw + x] = n > 0 ? 1 : 0; } }
+      let sx = Math.round((x - x0) * sc), sy = Math.round((y - y0) * sc), st = -1;
+      for (let r = 0; r < 12 && st < 0; r++) for (let dy = -r; dy <= r && st < 0; dy++) for (let dx = -r; dx <= r; dx++) { const qx = sx + dx, qy = sy + dy; if (qx >= 0 && qy >= 0 && qx < cw && qy < ch && !wall[qy * cw + qx]) { st = qy * cw + qx; break; } }
+      if (st < 0) return null;
+      const fill = new Uint8Array(cw * ch), q = new Int32Array(cw * ch); let h = 0, t = 0; q[t++] = st; fill[st] = 1;
+      while (h < t) {
+        const i = q[h++], qx = i % cw, qy = (i - qx) / cw;
+        if (qx === 0 || qy === 0 || qx === cw - 1 || qy === ch - 1) return null;
+        for (const j of [i - 1, i + 1, i - cw, i + cw]) if (!fill[j] && !wall[j]) { fill[j] = 1; q[t++] = j; }
+      }
+      const inside = [];
+      p.rooms.forEach(r => {
+        const lx = Math.round((r.x * p.w - x0) * sc), ly = Math.round((r.y * p.h - y0) * sc);
+        if (lx < 0 || ly < 0 || lx >= cw || ly >= ch) return;
+        // číslo je samo „zeď“: rozhodne nejbližší volné místo kolem něj
+        let fr = 0, fi = 0, r0 = -1;
+        for (let r = 0; r < 34 && (r0 < 0 || r <= r0 + 5); r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const qx = lx + dx, qy = ly + dy; if (qx < 0 || qy < 0 || qx >= cw || qy >= ch) continue;
+          const j = qy * cw + qx; if (!wall[j]) { if (r0 < 0) r0 = r; fr++; if (fill[j]) fi++; }
+        }
+        const hit = fr > 0 && fi / fr > .5;
+        if (hit) inside.push({n: r.n, q: Math.round(fi / fr * 5), d: Math.hypot(r.x * p.w - x, r.y * p.h - y)});
+      });
+      return inside.sort((a, b) => b.q - a.q || a.d - b.d).map(r => r.n);
+    } catch (e) { return null; }
+  }
+  function cistit(t) {
+    let s = String(t || '').replace(/\s+/g, ' ').trim();
+    SLANG.forEach(([a, b]) => { s = s.replace(new RegExp('(^|[^\\p{L}])(' + a + ')(?![\\p{L}])', 'giu'), (m, p, w) => p + (w[0] !== w[0].toLowerCase() ? b[0].toUpperCase() + b.slice(1) : b)); });
+    if (s) { s = s[0].toUpperCase() + s.slice(1); if (!/[.!?]$/.test(s)) s += '.'; }
+    return s;
+  }
+  const stavba = () => (D && D.project && D.project.name) || 'Rekonstrukce objektu Hybernská 1000/8, Praha 1';
+  function zMisto() {
+    const p = planOf(Z.pin && Z.pin.floor), o = (Z.room || '')[0], a = [];
+    if (Z.room) a.push('místnost ' + Z.room); if (p) a.push(p.name); if (/[A-G]/.test(o || '')) a.push('objekt ' + o);
+    return a.join(', ');
+  }
+  const zPredmet = () => `${zTyp().s}${Z.room ? ' – místnost ' + Z.room : ''} – ${D ? projShort() : 'Hybernská 1000/8'}`;
+  // tón zprávy podle typu: nepořádek vlídněji, reklamace a BOZP rázně
+  const ZTON = {kvalita: 'věcný a rázný', reklamace: 'formální a důrazný, jde o uplatnění práva z vadného plnění', neuklizeno: 'vlídný, ale jasný', poskozeni: 'důrazný, s požadavkem na vyjádření a opravu na náklady způsobitele', nedodelek: 'věcný a pevný', bozp: 'velmi důrazný, náprava ihned, upozornit na možné smluvní sankce', jine: 'věcný a zdvořilý'};
+  const MOJE_FIRMY = ['Subterra a.s.', 'Auböck'];
+  const jaJmeno = () => me || ls.get('cx-demo-jmeno');
+  // karta přihlášeného člověka z Lidí (pozice, telefon, e-mail, firma); firmu nastavuje správce v kartě osoby na počítači
+  const ja = () => { const pp = (D && D.project && D.project.people) || {}, k = me && Object.keys(pp).find(n => isMe(n)); return (k && pp[k]) || {}; };
+  const mojeFirma = () => ja().company || ls.get('cx-moje-firma');
+  const mujEmail = () => { const o = ja(); return String(o.email || '').split(/[,;\s]+/).filter(Boolean)[0] || ((o.emails || []).find(x => x && x.a) || {}).a || ''; };
+  function podpis() {
+    const o = ja();
+    return [jaJmeno(), o.role, mojeFirma(), 'za Společnost pro rekonstrukci objektu Hybernská 8: Subterra & Auböck & VISTORIA', [o.phone ? 'tel. ' + o.phone : '', mujEmail()].filter(Boolean).join(' · ')].filter(Boolean).join('\n');
+  }
+  // náhradní zpráva bez Clauda (bez připojení ke stavbě nebo když Claude neodpoví)
+  function odborne() {
+    const t = zTyp(), m = zMisto(), st = stavba(), dn = fmtDY(todayS());
+    const uvod = {neuklizeno: `dovolujeme si Vás upozornit na stav pracoviště na stavbě ${st}. Při kontrole dne ${dn} jsme zjistili:`, reklamace: `tímto u Vás reklamujeme vadu díla na stavbě ${st}, zjištěnou při kontrole dne ${dn}:`,
+      bozp: `důrazně Vás upozorňujeme na porušení zásad BOZP, zjištěné při kontrole stavby ${st} dne ${dn}:`}[t.k] || `při kontrole stavby ${st} dne ${dn} jsme zjistili ${t.z}:`;
+    const zaver = {neuklizeno: 'Děkujeme za spolupráci.', reklamace: 'Vyhrazujeme si uplatnit všechna práva z vadného plnění podle smlouvy o dílo.', bozp: 'Do odstranění závady nelze v práci na tomto místě pokračovat. Opakované porušení BOZP bude řešeno podle smlouvy o dílo.', poskozeni: 'Žádáme o písemné vyjádření, jak ke škodě došlo.'}[t.k] || '';
+    return [`Předmět: ${zPredmet()}`, '', 'Dobrý den,', '',
+      uvod, '', `Místo: ${m || 'viz výřez půdorysu'}`, `Popis: ${cistit(Z.text) || 'viz přiložená fotodokumentace.'}`, '',
+      `${t.p} nejpozději do ${fmtDY(Z.end)}. Prosíme o potvrzení přijetí a po odstranění o zaslání fotografie.${zaver ? ' ' + zaver : ''}`, '',
+      `V příloze posíláme fotodokumentaci${Z.crop ? ' a výřez půdorysu s vyznačeným místem' : ''}.`, '',
+      'S pozdravem', '', podpis()].join('\n').trim();
+  }
+  const MOBIL = /iphone|ipad|ipod|android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /macintosh/i.test(navigator.userAgent));
+  const ICAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+  const IGAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>';
+  const IMIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+  const modeSeg = () => conn ? `<div class="kind"><button type="button" data-mode="tym" aria-pressed="${F.mode !== 'zavada'}">Pro tým<small>úkol nebo informace</small></button><button type="button" data-mode="zavada" aria-pressed="${F.mode === 'zavada'}">Závada pro firmu<small>e-mail, WhatsApp</small></button></div>` : '';
+  function vZavada() {
+    const fs = firmy(), f = firma(), p = planOf(Z.pin && Z.pin.floor), ok = F.photos.length || Z.text.trim();
+    const n = F.photos.length;
+    return `${headSmall('Závada pro firmu')}<main>
+      ${modeSeg()}
+      ${ZK ? '<div class="banner info">Zkušební verze: nic se neukládá do stavby, posíláte jen vy přes Mail nebo WhatsApp.</div>' : ''}
+      <p class="lbl">1 · Fotky ${n ? `<em>(${n})</em>` : ''}</p>
+      <div class="photos" id="z-drop">${F.photos.map((x, i) => `<div class="photo" style="background-image:url(${x.thumb})"><button type="button" data-rm="${i}" aria-label="Odebrat fotku">✕</button></div>`).join('')}
+        ${MOBIL ? `<button type="button" class="addph" data-act="zcam">${ICAM}${n ? '+ Další fotka' : 'Vyfotit'}</button><button type="button" class="addph" data-act="gal">${IGAL}Z galerie</button>`
+          : `<button type="button" class="addph" data-act="gal" style="width:150px">${IGAL}${n ? '+ Další obrázek' : 'Vybrat obrázek z počítače'}</button>`}</div>
+      ${MOBIL ? '' : '<p class="hint">Obrázky můžete do okna i přetáhnout myší.</p>'}
+      <p class="lbl">2 · Co se stalo</p>
+      <div class="chips">${ZTYPY.map(t => `<button type="button" class="chip all" data-zt="${t.k}" aria-pressed="${Z.typ === t.k}">${t.l}</button>`).join('')}</div>
+      <p class="lbl">3 · Kde</p>
+      ${Z.pin && Z.crop ? `<div class="zcrop"><img src="${Z.crop.url}" alt="Výřez půdorysu s místem závady"></div>
+        <div class="zroom">${Z.room ? `Místnost <b>${esc(Z.room)}</b>` : 'Číslo místnosti nenalezeno'} · ${esc(p ? p.name : '')}</div>
+        <p class="hint">Je to jinde? Klepněte na správné číslo:</p>
+        <div class="chips">${Z.alts.map(r => `<button type="button" class="chip all" data-zr="${esc(r)}" aria-pressed="${r === Z.room}">${esc(r)}</button>`).join('')}<button type="button" class="chip all" data-zr="">Napsat jiné…</button></div>
+        <button type="button" class="big" data-act="plan">Změnit místo na půdorysu</button>`
+      : `<button type="button" class="big pri zpin" data-act="plan">📍 Označit místo na půdorysu</button>`}
+      <p class="lbl">4 · Firma</p>
+      <div class="chips">${fs.map(x => `<button type="button" class="chip all" data-zf="${esc(x.id)}" aria-pressed="${x.id === Z.firma}">${esc(x.firma)}</button>`).join('')}<button type="button" class="chip all" data-act="firmy">${fs.length ? 'Upravit firmy' : '+ Přidat firmu'}</button></div>
+      ${f ? `<p class="hint">${esc([f.email, f.tel].filter(Boolean).join(' · ') || 'Firma nemá e-mail ani telefon. Doplňte je v Upravit firmy.')}</p>` : ''}
+      <p class="lbl">5 · Odstranit do</p>
+      <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
+      <p class="lbl">6 · Co je špatně <em>(vlastními slovy, klidně nadiktovat)</em></p>
+      <div class="txt"><textarea id="z-text" lang="cs" spellcheck="true" autocorrect="on" autocapitalize="sentences" placeholder="Napište nebo klepněte na mikrofon a řekněte, co je špatně.">${esc(Z.text)}</textarea><button type="button" class="mic" id="z-mic" aria-label="Nadiktovat">${IMIC}</button></div>
+      <div id="z-kor">${korHtml()}</div>
+      <p class="lbl">Podpis <em>(doplní se sám)</em></p>
+      ${jaJmeno() ? '' : '<input class="date" id="z-jmeno" placeholder="Vaše jméno a příjmení" autocomplete="name">'}
+      ${mojeFirma() ? `<div class="zpodpis">${esc(podpis()).replace(/\n/g, '<br>')}</div>${ja().company ? '' : '<p class="hint" style="margin:4px 0 0"><a href="#" data-act="zmojefirma">změnit firmu</a></p>'}`
+        : `<p class="hint" style="margin:0">Za kterou firmu píšete?</p><div class="chips">${MOJE_FIRMY.map(x => `<button type="button" class="chip all" data-mf="${esc(x)}">${esc(x)}</button>`).join('')}</div>`}
+      ${Z.question ? `<div class="card" style="border-color:var(--y);background:var(--y2)"><b>Claude se ptá:</b><div>${esc(Z.question)}</div>
+          <div class="txt"><textarea id="z-ans" placeholder="Odpovězte vlastními slovy">${esc(Z.answer)}</textarea><button type="button" class="mic" id="z-amic" aria-label="Nadiktovat odpověď">${IMIC}</button></div>
+          <button type="button" class="big pri" data-act="zans">Odpovědět</button><button type="button" class="big" data-act="zskip">Nevím, napiš zprávu bez toho</button></div>` : ''}
+      ${Z.formal ? '' : `<div class="sendbar"><button type="button" class="send" id="z-prep" ${ok && !Z.busy ? '' : 'disabled'}><i>✨</i>${Z.busy ? 'Claude píše zprávu…' : 'Připravit zprávu pro firmu'}</button>
+        <div class="sum">${Z.busy ? 'Chvíli to trvá, Claude si případně ověří ČSN nebo postup výrobce.' : ok ? (conn ? 'Claude z vašeho popisu napíše profesionální zprávu.' : 'Bez připojení ke stavbě napíše zprávu šablona.') : 'Nejdřív přidejte fotku nebo popis.'}</div></div>`}
+      ${Z.formal ? `<p class="lbl">7 · Zpráva pro firmu <em>(zkontrolujte, můžete upravit)</em></p>
+      <textarea id="z-formal" class="formal">${esc(Z.formal)}</textarea>
+      <button type="button" class="big" data-act="zredo">${Z.busy ? 'Claude píše…' : 'Napsat zprávu znovu'}</button>
+      <button type="button" class="big" data-act="znahled">👁 Náhled formuláře, který firma dostane</button>
+      <div class="zkomu">${f ? `Komu: <b>${esc(f.firma)}</b>${f.email ? ' · ' + esc(f.email) : ' · <a href="#" data-act="zemail">doplnit e-mail</a>'}` : 'Komu: <a href="#" data-act="zfirma">vyberte firmu v kroku 4</a>'}</div>
+      <div class="sendbar zsend">
+        <button type="button" class="send" id="z-mail"><i>✓</i>Schválit a poslat e-mailem</button>
+        <button type="button" class="send wa" id="z-wa"><i>✓</i>Schválit a poslat přes WhatsApp</button>
+        <button type="button" class="send oba" id="z-oba"><i>✓</i>Schválit a poslat e-mailem i WhatsAppem</button>
+        <div class="sum">Firma dostane formulář Constructo v PDF${n ? ' a ' + n + (n === 1 ? ' fotku' : n < 5 ? ' fotky' : ' fotek') : ''}${Z.crop ? ', s výřezem půdorysu' : ''}.</div>
+      </div>` : ''}
+      <button type="button" class="big" data-act="znew">Nová závada (vymazat formulář)</button>
+    </main>`;
+  }
+  function bindZ(v) {
+    v.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { F.photos.splice(+b.dataset.rm, 1); render(); });
+    v.querySelectorAll('[data-zt]').forEach(b => b.onclick = () => { Z.typ = b.dataset.zt; render(); });
+    v.querySelectorAll('[data-zr]').forEach(b => b.onclick = async () => {
+      let r = b.dataset.zr;
+      if (!r) { r = (prompt('Číslo místnosti (např. A1.08):', Z.room) || '').trim().toUpperCase(); if (!r) return; }
+      Z.room = r; await makeCrop(); render();
+    });
+    v.querySelectorAll('[data-zf]').forEach(b => b.onclick = () => { Z.firma = Z.firma === b.dataset.zf ? '' : b.dataset.zf; ls.set('cx-firma', Z.firma); render(); });
+    v.querySelectorAll('[data-mf]').forEach(b => b.onclick = () => { ls.set('cx-moje-firma', b.dataset.mf); render(); });
+    v.querySelectorAll('[data-zend]').forEach(b => b.onclick = () => { Z.end = addD(todayS(), +b.dataset.zend); render(); });
+    const tx = $('#z-text'), end = $('#z-end'), jm = $('#z-jmeno'), fo = $('#z-formal'), prep = $('#z-prep'), ans = $('#z-ans');
+    const upd = () => { if (prep && !Z.busy) prep.disabled = !(F.photos.length || Z.text.trim()); };
+    tx.oninput = () => { Z.text = tx.value; upd(); if (Z.kor) { Z.kor = null; kreslitKor(); } else if (!Z.korBusy && !!$('#kor-go') !== (Z.text.trim().length > 3)) kreslitKor(); };
+    tx.onblur = () => { if (!recog) zKontrola(); };
+    bindKor();
+    end.onchange = () => { if (end.value) Z.end = end.value; };
+    if (jm) jm.onchange = () => { ls.set('cx-demo-jmeno', jm.value.trim()); render(); };
+    $('#z-mic').onclick = () => dictate(tx, $('#z-mic'), s => { Z.text = s; upd(); }, () => zKontrola());
+    if (ans) { ans.oninput = () => { Z.answer = ans.value; }; $('#z-amic').onclick = () => dictate(ans, $('#z-amic'), s => { Z.answer = s; }); }
+    if (prep) prep.onclick = () => zPriprav();
+    if (fo) {
+      fo.oninput = () => { Z.formal = fo.value; };
+      $('#z-mail').onclick = () => zSend('mail');
+      $('#z-wa').onclick = () => zSend('wa');
+      $('#z-oba').onclick = () => zSend('oba');
+      if (!Z.busy) setTimeout(() => { zFormular().catch(() => {}); }, 400);  // formulář předem, aby sdílení v telefonu nečekalo
+    }
+    const drop = $('#z-drop');
+    if (drop && !MOBIL) {
+      v.ondragover = e => { e.preventDefault(); };
+      v.ondrop = e => { e.preventDefault(); if (e.dataTransfer && e.dataTransfer.files.length) onFiles(e.dataTransfer.files); };
+    }
+  }
+  // po fotce z fotoaparátu se aplikace zeptá na další (pracovníci nemusí hledat tlačítko)
+  function zDalsi() {
+    const n = F.photos.length;
+    const s = sheet(`<h3>✓ Přidáno · ${n} ${n === 1 ? 'fotka' : n < 5 ? 'fotky' : 'fotek'}</h3>
+      <div class="zthumbs">${F.photos.map(x => `<span style="background-image:url(${x.thumb})"></span>`).join('')}</div>
+      <p class="hint">Chcete přidat ještě další?</p>
+      <div class="zdalsi">${MOBIL ? `<button type="button" class="big pri" id="zd-cam">${ICAM}Vyfotit další</button><button type="button" class="big pri" id="zd-gal">${IGAL}Z galerie</button>`
+        : `<button type="button" class="big pri" id="zd-gal">${IGAL}Vybrat další obrázek</button>`}</div>
+      <button type="button" class="big" id="zd-ne">Ne, stačí – pokračovat</button>`);
+    const cam = s.querySelector('#zd-cam'); if (cam) cam.onclick = () => { closeSheet(); zCam = true; $('#in-cam').click(); };
+    s.querySelector('#zd-gal').onclick = () => { closeSheet(); $('#in-gal').click(); };
+    s.querySelector('#zd-ne').onclick = () => { closeSheet(); const e = document.querySelector('[data-zt]'); if (e) e.scrollIntoView({block: 'center', behavior: 'smooth'}); };
+  }
+  let zCam = false;
+  // půdorys přes celou obrazovku: posun jedním prstem, přiblížení dvěma prsty (nebo +/−), klepnutí = špendlík
+  async function planViewer() {
+    let pl; try { pl = await plany(); } catch (e) { toast('Půdorysy se nenačetly. Zkontrolujte signál.'); return; }
+    let p = planOf((Z.pin && Z.pin.floor) || Z.floor) || pl[0], pin = Z.pin ? Object.assign({}, Z.pin) : null, names = [];
+    let s = 1, tx = 0, ty = 0;
+    const o = document.createElement('div'); o.className = 'pv'; document.body.appendChild(o);
+    o.innerHTML = `<div class="pv-top"><div class="pv-r"><b>Klepněte na místo závady</b><button type="button" data-pv="x">Zrušit</button></div>
+        <div class="pv-floors">${pl.map(f => `<button type="button" data-f="${esc(f.id)}">${esc(f.name)}</button>`).join('')}</div></div>
+      <div class="pv-stage"><div class="pv-in"><img alt="Půdorys patra"></div>
+        <div class="pv-pin" hidden><svg viewBox="0 0 38 48"><path d="M19 47C17 38 2 30 2 18a17 17 0 0 1 34 0c0 12-15 20-17 29z" fill="#d63b24" stroke="#fff" stroke-width="2"/><circle cx="19" cy="18" r="6.5" fill="#fff"/></svg></div>
+        <div class="pv-zoom"><button type="button" data-pv="+" aria-label="Přiblížit">+</button><button type="button" data-pv="-" aria-label="Oddálit">−</button></div>
+        <div class="pv-load">Načítám půdorys…</div></div>
+      <div class="pv-bot"><div class="pv-room"></div><button type="button" class="send" data-pv="ok"><i>✓</i>Hotovo</button></div>`;
+    const st = o.querySelector('.pv-stage'), inn = o.querySelector('.pv-in'), img = inn.querySelector('img'), pinEl = o.querySelector('.pv-pin'), roomEl = o.querySelector('.pv-room'), okB = o.querySelector('[data-pv="ok"]'), load = o.querySelector('.pv-load');
+    const close = () => { o.remove(); };
+    const fit = () => Math.min(st.clientWidth / p.w, st.clientHeight / p.h);
+    const clampS = v => Math.max(fit() * .9, Math.min(2.5, v));
+    function apply() {
+      inn.style.width = p.w + 'px'; inn.style.height = p.h + 'px';
+      inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+      pinEl.hidden = !pin;
+      if (pin) { pinEl.style.left = (tx + pin.x * p.w * s) + 'px'; pinEl.style.top = (ty + pin.y * p.h * s) + 'px'; }
+    }
+    function zoomAt(ns, cx, cy) { ns = clampS(ns); const ix = (cx - tx) / s, iy = (cy - ty) / s; s = ns; tx = cx - ix * s; ty = cy - iy * s; apply(); }
+    async function info() {
+      if (!pin) { roomEl.innerHTML = 'Přibližte dvěma prsty nebo tlačítkem +, pak klepněte přesně na místo závady.'; okB.disabled = true; return; }
+      const my = pin, near = nearRooms(p, pin.x * p.w, pin.y * p.h);
+      let inRoom = null; try { inRoom = roomsByFill(p, await planImg(p), pin.x * p.w, pin.y * p.h); } catch (e) {}
+      if (my !== pin) return;
+      names = [...new Set([...(inRoom || []), ...near])].slice(0, 4);
+      roomEl.innerHTML = names.length ? `Místnost <b>${esc(names[0])}</b> · ${esc(p.name)}<br><small>Když číslo nesedí, vyberete správné v dalším kroku.</small>` : `${esc(p.name)} · číslo místnosti v tomhle místě není`;
+      okB.disabled = false;
+    }
+    function showFloor(id) {
+      p = planOf(id) || p; Z.floor = p.id; ls.set('cx-patro', p.id);
+      o.querySelectorAll('[data-f]').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === p.id));
+      if (pin && pin.floor !== p.id) pin = null;
+      load.hidden = false; img.onload = () => { load.hidden = true; }; img.src = p.img;
+      if (pin) { s = clampS(.6); tx = st.clientWidth / 2 - pin.x * p.w * s; ty = st.clientHeight / 2 - pin.y * p.h * s; }
+      else { s = fit(); tx = (st.clientWidth - p.w * s) / 2; ty = (st.clientHeight - p.h * s) / 2; }
+      apply(); info();
+    }
+    function tap(x, y) {
+      // na celém patře je místo moc malé: první klepnutí jen přiblíží
+      if (s < .3) { zoomAt(.7, x, y); toast('Přiblíženo. Teď klepněte přesně na místo.'); return; }
+      const ix = (x - tx) / s, iy = (y - ty) / s;
+      if (ix < 0 || iy < 0 || ix > p.w || iy > p.h) return;
+      pin = {floor: p.id, x: ix / p.w, y: iy / p.h}; apply(); info();
+    }
+    const pts = new Map(); let one = null, two = null, moved = false;
+    const dist = a => Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+    const mid = (a, r) => ({x: (a[0].x + a[1].x) / 2 - r.left, y: (a[0].y + a[1].y) / 2 - r.top});
+    function begin() {
+      const a = [...pts.values()], r = st.getBoundingClientRect();
+      if (a.length === 1) { one = {x: a[0].x, y: a[0].y, tx, ty, t: Date.now()}; two = null; }
+      else if (a.length >= 2) { const m = mid(a, r); two = {d: dist(a) || 1, mx: m.x, my: m.y, s, tx, ty}; one = null; moved = true; }
+    }
+    st.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; try { st.setPointerCapture(e.pointerId); } catch (x) {} pts.set(e.pointerId, {x: e.clientX, y: e.clientY}); begin(); });
+    st.addEventListener('pointermove', e => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+      const a = [...pts.values()], r = st.getBoundingClientRect();
+      if (one && a.length === 1) { const dx = a[0].x - one.x, dy = a[0].y - one.y; if (Math.hypot(dx, dy) > 8) moved = true; if (moved) { tx = one.tx + dx; ty = one.ty + dy; apply(); } }
+      else if (two && a.length >= 2) { const m = mid(a, r), ix = (two.mx - two.tx) / two.s, iy = (two.my - two.ty) / two.s; s = clampS(two.s * dist(a) / two.d); tx = m.x - ix * s; ty = m.y - iy * s; apply(); }
+    });
+    const up = e => {
+      if (!pts.has(e.pointerId)) return;
+      const r = st.getBoundingClientRect();
+      if (e.type === 'pointerup' && one && pts.size === 1 && !moved && Date.now() - one.t < 700) tap(e.clientX - r.left, e.clientY - r.top);
+      pts.delete(e.pointerId);
+      if (pts.size) { begin(); moved = true; } else { one = two = null; moved = false; }
+    };
+    st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+    st.addEventListener('wheel', e => { e.preventDefault(); const r = st.getBoundingClientRect(); zoomAt(s * Math.exp(-e.deltaY * .0015), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+    o.addEventListener('gesturestart', e => e.preventDefault());
+    o.querySelectorAll('[data-f]').forEach(b => b.onclick = () => showFloor(b.dataset.f));
+    o.querySelector('[data-pv="x"]').onclick = close;
+    o.querySelector('[data-pv="+"]').onclick = () => zoomAt(s * 1.7, st.clientWidth / 2, st.clientHeight / 2);
+    o.querySelector('[data-pv="-"]').onclick = () => zoomAt(s / 1.7, st.clientWidth / 2, st.clientHeight / 2);
+    okB.onclick = async () => {
+      if (!pin) return;
+      Z.pin = pin; Z.alts = names; Z.room = names[0] || '';
+      okB.disabled = true; okB.lastChild.textContent = 'Připravuji výřez…';
+      try { await makeCrop(); } catch (e) { toast('Výřez půdorysu se nepovedl.'); }
+      close(); render();
+    };
+    showFloor(p.id);
+  }
+  // výřez půdorysu se špendlíkem, nahoře číslo místnosti, v rohu celé patro
+  async function makeCrop() {
+    const p = planOf(Z.pin && Z.pin.floor); if (!p) return;
+    const im = await planImg(p);
+    const CW = 1000, CH = 720, SW = 760, SH = SW * CH / CW, k = CW / SW;
+    const px = Z.pin.x * p.w, py = Z.pin.y * p.h;
+    const sx = Math.max(0, Math.min(p.w - SW, px - SW / 2)), sy = Math.max(0, Math.min(p.h - SH, py - SH / 2));
+    const c = document.createElement('canvas'); c.width = CW; c.height = CH;
+    const g = c.getContext('2d'); g.imageSmoothingQuality = 'high';
+    g.fillStyle = '#fff'; g.fillRect(0, 0, CW, CH);
+    g.drawImage(im, sx, sy, SW, SH, 0, 0, CW, CH);
+    const qx = (px - sx) * k, qy = (py - sy) * k;
+    g.lineWidth = 6; g.strokeStyle = '#d63b24'; g.beginPath(); g.arc(qx, qy, 58, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#d63b24'; g.strokeStyle = '#fff'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(qx, qy); g.bezierCurveTo(qx - 4, qy - 14, qx - 22, qy - 24, qx - 22, qy - 42); g.arc(qx, qy - 42, 22, Math.PI, 0); g.bezierCurveTo(qx + 22, qy - 24, qx + 4, qy - 14, qx, qy); g.fill(); g.stroke();
+    g.fillStyle = '#fff'; g.beginPath(); g.arc(qx, qy - 42, 8, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#131518'; g.fillRect(0, 0, CW, 66);
+    g.font = '800 34px "Hanken Grotesk", Arial, sans-serif'; g.fillStyle = '#F4D23C'; g.textBaseline = 'middle';
+    g.fillText((Z.room ? 'Místnost ' + Z.room + '  ·  ' : '') + p.name + (/[A-G]/.test(Z.room[0] || '') ? '  ·  objekt ' + Z.room[0] : ''), 20, 34);
+    let iw = 250, ih = iw * p.h / p.w; if (ih > 210) { ih = 210; iw = ih * p.w / p.h; }
+    const ix = CW - iw - 14, iy = CH - ih - 14;
+    g.fillStyle = '#fff'; g.fillRect(ix - 4, iy - 4, iw + 8, ih + 8); g.strokeStyle = '#131518'; g.lineWidth = 2; g.strokeRect(ix - 4, iy - 4, iw + 8, ih + 8);
+    g.drawImage(im, 0, 0, p.w, p.h, ix, iy, iw, ih);
+    g.strokeStyle = '#d63b24'; g.lineWidth = 2; g.strokeRect(ix + sx / p.w * iw, iy + sy / p.h * ih, SW / p.w * iw, SH / p.h * ih);
+    g.fillStyle = '#d63b24'; g.beginPath(); g.arc(ix + Z.pin.x * iw, iy + Z.pin.y * ih, 5, 0, Math.PI * 2); g.fill();
+    const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', .86));
+    if (Z.crop) URL.revokeObjectURL(Z.crop.url);
+    Z.crop = {blob, url: URL.createObjectURL(blob)};
+    const t = document.createElement('canvas'); t.width = 240; t.height = 173; t.getContext('2d').drawImage(c, 0, 0, 240, 173); Z.thumb = t.toDataURL('image/jpeg', .6);
+  }
+
+  function b64File(b64, name) { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new File([u], name, {type: 'image/jpeg'}); }
+  const b64Blob = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => res(''); r.readAsDataURL(b); });
+  const zCislo = () => 'Z-' + todayS().replace(/-/g, '') + '-' + Z.id.slice(-4).toUpperCase();
+  const zSoubor = () => 'zavada-' + (Z.room || 'stavba').replace(/[^\w.-]/g, '_') + '-' + todayS() + '.pdf';
+  function stahnout(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
+
+  /* formulář Constructo (PDF): strany se nakreslí na plátno a vloží do PDF jako obrázky, takže čeština vypadá všude stejně */
+  function logoCanvas(col, h) {
+    const s = h / 310, c = document.createElement('canvas'); c.width = Math.ceil(516 * s); c.height = Math.ceil(h);
+    const g = c.getContext('2d'); g.scale(s, s); g.translate(-190, -130); g.fillStyle = col;
+    [348, 548].forEach(x => { g.beginPath(); g.arc(x, 285, 152, 0, Math.PI * 2); g.fill(); });
+    g.globalCompositeOperation = 'destination-out';
+    [348, 548].forEach(x => { g.beginPath(); g.arc(x, 285, 87, 0, Math.PI * 2); g.fill(); });
+    g.fillRect(420, 232, 62, 106);
+    g.globalCompositeOperation = 'source-over'; g.fillRect(430, 268, 67, 35);
+    return c;
+  }
+  const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+  function rrect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function wrapT(g, text, maxW) {
+    const out = [];
+    String(text).split('\n').forEach(par => {
+      if (!par.trim()) { out.push(''); return; }
+      let line = '';
+      par.split(/\s+/).filter(Boolean).forEach(w => { const t = line ? line + ' ' + w : w; if (line && g.measureText(t).width > maxW) { out.push(line); line = w; } else line = t; });
+      out.push(line);
+    });
+    return out;
+  }
+  function jpegPdf(pages) {
+    const enc = new TextEncoder(), parts = [], offs = []; let len = 0;
+    const push = x => { const b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
+    const obj = (n, fill) => { offs[n] = len; push(n + ' 0 obj\n'); fill(); push('\nendobj\n'); };
+    const W = 595.28, H = 841.89, n = pages.length;
+    push(new Uint8Array([37, 80, 68, 70, 45, 49, 46, 52, 10, 37, 226, 227, 207, 211, 10]));
+    obj(1, () => push('<< /Type /Catalog /Pages 2 0 R >>'));
+    obj(2, () => push(`<< /Type /Pages /Count ${n} /Kids [${pages.map((p, i) => (3 + i * 3) + ' 0 R').join(' ')}] >>`));
+    pages.forEach((p, i) => {
+      const pg = 3 + i * 3, c = `q ${W} 0 0 ${H} 0 0 cm /I${i} Do Q`;
+      obj(pg, () => push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /XObject << /I${i} ${pg + 1} 0 R >> >> /Contents ${pg + 2} 0 R >>`));
+      obj(pg + 1, () => { push(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`); push(p.jpg); push('\nendstream'); });
+      obj(pg + 2, () => push(`<< /Length ${c.length} >>\nstream\n${c}\nendstream`));
+    });
+    const xref = len, total = 3 + n * 3;
+    push(`xref\n0 ${total}\n0000000000 65535 f \n` + offs.slice(1).map(o => String(o).padStart(10, '0') + ' 00000 n \n').join('') + `trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+    return new Blob(parts, {type: 'application/pdf'});
+  }
+  const ZBARVA = {reklamace: '#d63b24', bozp: '#d63b24', poskozeni: '#a8650a', neuklizeno: '#2b6cb0', kvalita: '#16191c', nedodelek: '#16191c', jine: '#6b7279'};
+  const zBarvaTxt = k => k === 'kvalita' || k === 'nedodelek' ? '#F4D23C' : '#ffffff';
+  const zZprava = () => (Z.formal || odborne()).replace(/^\s*Předmět:.*\n+/i, '').trim();
+  const zPolozky = () => { const f = firma(); return [['Stavba', stavba()], ['Místo', zMisto() || '—'], ['Pro firmu', f ? [f.firma, f.email].filter(Boolean).join('\n') : '—'], ['Odstranit nejpozději do', fmtDY(Z.end)], ['Zapsal', [jaJmeno(), mojeFirma()].filter(Boolean).join(', ') || '—'], ['Datum zjištění', fmtDY(todayS())]]; };
+  let zFm = null;
+  const zFmKey = () => JSON.stringify([Z.id, Z.formal, Z.typ, Z.room, Z.end, Z.firma, (firma() || {}).email, F.photos.map(x => x.b64.length + x.b64.slice(-12)).join(), Z.crop ? Z.crop.url : '', jaJmeno(), mojeFirma()]);
+  function zFormular() {
+    const key = zFmKey();
+    if (!zFm || zFm.key !== key) { const p = kreslitFormular(), z = {key, p}; zFm = z; p.then(() => { z.hotovo = true; }, () => {}); p.catch(() => { if (zFm && zFm.p === p) zFm = null; }); }
+    return zFm.p;
+  }
+  async function kreslitFormular() {
+    const W = 1240, H = 1754, M = 86, CW = W - 2 * M, FOOT = 120, FN = '"Hanken Grotesk", Arial, sans-serif', t = zTyp(), cislo = zCislo(), dnes = fmtDY(todayS());
+    try { await Promise.all([300, 400, 600, 700, 800].map(w => document.fonts.load(`${w} 24px "Hanken Grotesk"`))); } catch (e) {}
+    const logo = logoCanvas('#F4D23C', 96), pages = []; let g, y;
+    const font = (w, px) => { g.font = `${w} ${px}px ${FN}`; };
+    function strana() {
+      const c = document.createElement('canvas'); c.width = W; c.height = H; g = c.getContext('2d'); pages.push(c);
+      g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+      const prvni = pages.length === 1, hh = prvni ? 190 : 120, lh = prvni ? 60 : 42, lw = logo.width * lh / logo.height;
+      g.fillStyle = '#131518'; g.fillRect(0, 0, W, hh); g.fillStyle = '#F4D23C'; g.fillRect(0, hh, W, 10);
+      g.drawImage(logo, M, (hh - lh) / 2, lw, lh);
+      g.textBaseline = 'middle'; g.textAlign = 'left'; font(300, prvni ? 58 : 40); g.fillStyle = '#fff'; g.fillText('Constructo', M + lw + 18, hh / 2 + 2);
+      g.textAlign = 'right'; font(800, prvni ? 40 : 28); g.fillStyle = '#F4D23C'; g.fillText('HLÁŠENÍ ZÁVADY', W - M, hh / 2 - (prvni ? 18 : 12));
+      font(400, prvni ? 24 : 20); g.fillStyle = '#c9ced3'; g.fillText(`${cislo} · ${dnes}`, W - M, hh / 2 + (prvni ? 26 : 18));
+      g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+      y = hh + 10 + (prvni ? 70 : 56);
+    }
+    const misto = h => { if (y + h > H - FOOT) strana(); };
+    function nadpis(s) { misto(120); y += 10; g.fillStyle = '#F4D23C'; g.fillRect(M, y - 30, 10, 38); font(800, 32); g.fillStyle = '#16191c'; g.fillText(s, M + 26, y); y += 44; }
+    strana();
+    // typ a předmět
+    font(800, 22); const tl = t.l.toUpperCase(), bw = g.measureText(tl).width + 40;
+    g.fillStyle = ZBARVA[t.k] || '#16191c'; rrect(g, M, y - 31, bw, 44, 22); g.fill();
+    g.fillStyle = zBarvaTxt(t.k); g.fillText(tl, M + 20, y);
+    y += 68; font(800, 44); g.fillStyle = '#16191c';
+    wrapT(g, zPredmet(), CW).forEach(l => { g.fillText(l, M, y); y += 54; });
+    y += 14;
+    // údaje ve dvou sloupcích
+    const pol = zPolozky(), colW = (CW - 80) / 2, rows = [];
+    font(600, 27);
+    for (let i = 0; i < pol.length; i += 2) { const a = wrapT(g, pol[i][1], colW), b = pol[i + 1] ? wrapT(g, pol[i + 1][1], colW) : []; rows.push({pa: pol[i], a, pb: pol[i + 1], b, h: 64 + Math.max(a.length, b.length) * 36}); }
+    const boxH = rows.reduce((s, r) => s + r.h, 0) + 30;
+    g.fillStyle = '#f4f4f1'; rrect(g, M, y, CW, boxH, 18); g.fill();
+    let ry = y + 22;
+    rows.forEach((r, ri) => {
+      [[r.pa, r.a, M + 28], [r.pb, r.b, M + 52 + colW]].forEach(([p, lines, x]) => {
+        if (!p) return;
+        font(700, 19); g.fillStyle = '#6b7279'; g.fillText(p[0].toUpperCase(), x, ry + 26);
+        font(600, 27); g.fillStyle = '#16191c'; lines.forEach((l, i) => g.fillText(l, x, ry + 64 + i * 36));
+      });
+      ry += r.h;
+      if (ri < rows.length - 1) { g.fillStyle = '#e4e4df'; g.fillRect(M + 28, ry - 2, CW - 56, 2); }
+    });
+    y += boxH + 56;
+    // zpráva
+    nadpis('Zpráva pro firmu');
+    font(400, 26);
+    wrapT(g, zZprava(), CW).forEach(l => { misto(40); font(400, 26); g.fillStyle = '#16191c'; if (l) g.fillText(l, M, y); y += l ? 38 : 20; });
+    y += 40;
+    // výřez půdorysu
+    if (Z.crop) {
+      const im = await loadImg(Z.crop.url), h = CW * im.height / im.width;
+      misto(h + 100); nadpis('Místo na půdorysu');
+      g.drawImage(im, M, y - 10, CW, h); g.strokeStyle = '#d9d9d3'; g.lineWidth = 2; g.strokeRect(M, y - 10, CW, h); y += h + 50;
+    }
+    // fotky po dvou vedle sebe
+    if (F.photos.length) {
+      const fw = (CW - 30) / 2, fh = Math.round(fw * .78);
+      misto(fh + 150); nadpis('Fotodokumentace');
+      for (let i = 0; i < F.photos.length; i += 2) {
+        misto(fh + 50);
+        for (let k = 0; k < 2 && i + k < F.photos.length; k++) {
+          const x = M + k * (fw + 30);
+          g.fillStyle = '#f4f4f1'; g.fillRect(x, y - 10, fw, fh);
+          try { const im = await loadImg('data:image/jpeg;base64,' + F.photos[i + k].b64), sc = Math.min(fw / im.width, fh / im.height), w = im.width * sc, h = im.height * sc; g.drawImage(im, x + (fw - w) / 2, y - 10 + (fh - h) / 2, w, h); } catch (e) {}
+          font(600, 19); g.fillStyle = '#6b7279'; g.fillText('Foto ' + (i + k + 1), x, y + fh + 18);
+        }
+        y += fh + 56;
+      }
+    }
+    // patička na každé straně
+    pages.forEach((c, i) => {
+      const q = c.getContext('2d');
+      q.fillStyle = '#16191c'; q.fillRect(M, H - 94, CW, 2);
+      q.font = `700 19px ${FN}`; q.textAlign = 'left'; q.fillText(`Constructo · ${cislo}`, M, H - 58);
+      q.font = `400 19px ${FN}`; q.fillStyle = '#6b7279'; q.textAlign = 'center'; q.fillText('Developed by Luboš Kozák', W / 2, H - 58);
+      q.textAlign = 'right'; q.fillText(`strana ${i + 1} / ${pages.length}`, W - M, H - 58); q.textAlign = 'left';
+    });
+    const jpgs = [];
+    for (const c of pages) { const b = await new Promise(res => c.toBlob(res, 'image/jpeg', .85)); jpgs.push({jpg: new Uint8Array(await b.arrayBuffer()), w: W, h: H}); }
+    return {pdf: jpegPdf(jpgs), pages, logo: logoCanvas('#F4D23C', 52).toDataURL('image/png').split(',')[1]};
+  }
+  // stejný formulář jako e-mail (HTML pro poštovní programy: tabulky a styly přímo v prvcích)
+  function zHtml() {
+    const t = zTyp(), e = esc, dnes = fmtDY(todayS());
+    const telo = e(zZprava()).replace(/\n/g, '<br>'), pol = zPolozky(), radky = [];
+    for (let i = 0; i < pol.length; i += 2) radky.push('<tr>' + pol.slice(i, i + 2).map(p => `<td style="padding:10px 14px;vertical-align:top;width:50%"><div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.05em">${e(p[0])}</div><div style="font-size:14px;font-weight:600;color:#16191c;margin-top:3px">${e(p[1]).replace(/\n/g, '<br>')}</div></td>`).join('') + '</tr>');
+    const sek = s => `<div style="margin:24px 0 10px;font-size:17px;font-weight:800;color:#16191c;border-left:5px solid #F4D23C;padding-left:10px">${s}</div>`;
+    const fotky = F.photos.slice(0, 6).map((x, i) => `<img src="cid:f${i}" alt="Foto ${i + 1}" width="300" style="width:48%;max-width:300px;margin:0 1% 10px 0;border-radius:6px;vertical-align:top">`).join('');
+    return `<!doctype html><html><body style="margin:0;background:#f4f4f1"><div style="background:#f4f4f1;padding:20px 8px;font-family:Arial,Helvetica,sans-serif;color:#16191c">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden">
+<tr><td style="background:#131518;padding:20px 26px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+<td style="vertical-align:middle;white-space:nowrap"><img src="cid:logo" height="26" alt="" style="vertical-align:middle;height:26px"><span style="color:#ffffff;font-size:24px;font-weight:300;vertical-align:middle;margin-left:10px">Constructo</span></td>
+<td align="right" style="vertical-align:middle;color:#F4D23C;font-size:15px;font-weight:800;letter-spacing:.08em">HLÁŠENÍ ZÁVADY<div style="color:#c9ced3;font-size:12px;font-weight:400;letter-spacing:0;margin-top:3px">${zCislo()} · ${dnes}</div></td></tr></table></td></tr>
+<tr><td style="height:5px;background:#F4D23C;font-size:0;line-height:0">&nbsp;</td></tr>
+<tr><td style="padding:22px 26px 26px">
+<span style="display:inline-block;background:${ZBARVA[t.k]};color:${zBarvaTxt(t.k)};font-size:12px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:20px">${e(t.l.toUpperCase())}</span>
+<div style="font-size:21px;font-weight:800;margin:10px 0 16px;line-height:1.3">${e(zPredmet())}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f1;border-radius:10px">${radky.join('')}</table>
+${sek('Zpráva')}<div style="font-size:15px;line-height:1.6">${telo}</div>
+${Z.crop ? sek('Místo na půdorysu') + '<img src="cid:vyrez" alt="Výřez půdorysu" width="628" style="width:100%;max-width:628px;border:1px solid #e4e4df;border-radius:8px">' : ''}
+${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
+<p style="font-size:13px;color:#6b7279;margin:18px 0 0">Celý formulář je v příloze jako PDF. Prosíme o potvrzení přijetí odpovědí na tento e-mail.</p>
+</td></tr>
+<tr><td style="background:#131518;padding:16px 26px;font-size:12px;color:#9aa1a8">Odesláno z aplikace Constructo · ${e(stavba())}<br><span style="color:#F4D23C">Developed by Luboš Kozák</span></td></tr>
+</table></div></body></html>`;
+  }
+  async function zNahled() {
+    toast('Připravuji náhled…');
+    let fm; try { fm = await zFormular(); } catch (e) { toast('Náhled se nepovedl.'); return; }
+    const n = fm.pages.length;
+    const s = sheet(`<h3>Takhle to firma dostane</h3><p class="hint">Formulář Constructo v PDF, ${n} ${n === 1 ? 'strana' : n < 5 ? 'strany' : 'stran'}.</p>
+      <div class="znahled">${fm.pages.map((c, i) => `<img src="${c.toDataURL('image/jpeg', .7)}" alt="Strana ${i + 1}">`).join('')}</div>
+      <div class="acts"><button type="button" class="big" id="zn-pdf">Stáhnout PDF</button><button type="button" class="big pri" data-close>Zavřít</button></div>`);
+    s.querySelector('[data-close]').onclick = closeSheet;
+    s.querySelector('#zn-pdf').onclick = () => stahnout(fm.pdf, zSoubor());
+  }
+
+  // odeslání: e-mail rovnou ze skriptu na Googlu (adresa firmy se doplní sama, formulář v PDF v příloze);
+  // bez připojení přes Mail / WhatsApp v telefonu, na počítači otevře e-mail s vyplněným příjemcem a PDF stáhne
+  let zSending = false;
+  async function zSend(via) {
+    if (zSending) return;
+    if (via === 'oba') { Z.oba = true; via = 'mail'; } else if (via === 'mail') Z.oba = false;
+    const f = firma();
+    if (via === 'mail') {
+      if (!f) { toast('Nejdřív v kroku 4 vyberte firmu, které se to posílá.'); act('zfirma'); return; }
+      if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho v programu na počítači: Data → Firmy.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return; }
+    }
+    const pripraveno = zFm && zFm.key === zFmKey() && zFm.hotovo;
+    zSending = true;
+    if (!pripraveno) toast('Připravuji formulář…');
+    let fm = null; try { fm = await zFormular(); } catch (e) {}
+    zSending = false;
+    const text = (Z.formal || odborne()).trim(), subj = zPredmet();
+    const pdf = fm ? new File([fm.pdf], zSoubor(), {type: 'application/pdf'}) : null, files = pdf ? [pdf] : [];
+    if (via === 'mail' && conn && !ro && fm && await zServer(f, text, subj, fm)) return;
+    const fotky = [];
+    if (Z.crop) fotky.push(new File([Z.crop.blob], 'misto-' + (Z.room || 'zavady').replace(/[^\w.-]/g, '_') + '.jpg', {type: 'image/jpeg'}));
+    F.photos.forEach((x, i) => fotky.push(b64File(x.b64, `foto-${i + 1}.jpg`)));
+    if (!MOBIL) return zFallback(via, text, subj, files.length ? files : fotky);
+    const vse = via === 'wa' ? files.concat(fotky) : files.length ? files : fotky;
+    const canFiles = !!(vse.length && navigator.canShare && navigator.canShare({files: vse}));
+    const adr = via === 'mail' && f && f.email ? f.email : '';
+    if (navigator.share && (canFiles || !vse.length)) {
+      navigator.share(canFiles ? {files: vse, title: subj, text} : {title: subj, text}).then(() => zDone(via), e => { if (!e || e.name !== 'AbortError') zFallback(via, text, subj, vse); });
+      try { const cp = adr || (via === 'wa' ? text : ''); if (cp && navigator.clipboard) navigator.clipboard.writeText(cp).catch(() => {}); } catch (e) {}
+      toast(via === 'mail' ? (adr ? `Vyberte Mail. Adresu ${adr} máte zkopírovanou, vložte ji do Komu.` : 'Vyberte Mail.') : 'Vyberte WhatsApp a firmu. Text je i ve schránce.');
+      return;
+    }
+    zFallback(via, text, subj, vse);
+  }
+  async function zServer(f, text, subj, fm) {
+    const btn = $('#z-mail'); if (btn) { btn.disabled = true; btn.lastChild.textContent = `Odesílám firmě ${f.firma}…`; }
+    const obr = {logo: fm.logo}; if (Z.crop) obr.vyrez = await b64Blob(Z.crop.blob);
+    F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; });
+    const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: subj, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
+    let r = null;
+    try {
+      const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);
+      const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), redirect: 'follow', signal: ctl.signal});
+      clearTimeout(tm); r = JSON.parse(await res.text());
+    } catch (e) { r = {error: navigator.onLine ? 'E-mail se nepodařilo odeslat.' : 'Bez signálu.'}; }
+    if (btn) { btn.disabled = false; btn.lastChild.textContent = 'Schválit a poslat e-mailem'; }
+    if (r && r.ok) { toast(`Odesláno: ${f.firma} (${f.email})${mujEmail() ? ', kopie přišla vám' : ''}.`); zDone('mail', true); return true; }
+    toast((r && r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r && r.error && typeof r.error === 'string' ? r.error : 'Skript na Googlu je starý, sám posílá až verze 7.') + ' Otevírám e-mail ručně.');
+    return false;
+  }
+  function zFallback(via, text, subj, files) {
+    const f = firma();
+    files.forEach(x => stahnout(x, x.name));
+    let url;
+    if (via === 'wa') { let n = String((f && f.tel) || '').replace(/\D/g, '').replace(/^00/, ''); if (n.length === 9) n = '420' + n; url = 'https://wa.me/' + n + '?text=' + encodeURIComponent(text); }
+    else url = 'mailto:' + encodeURIComponent((f && f.email) || '').replace(/%40/g, '@') + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(text);
+    const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+    if (files.length) toast(via === 'wa' ? 'Otevírá se WhatsApp s textem. Formulář PDF je ve Stažených souborech, přetáhněte ho myší do okna WhatsAppu.' : `E-mail pro ${(f && f.email) || 'firmu'} je připravený. Formulář PDF je ve Stažených souborech, přetáhněte ho do e-mailu.`);
+    zDone(via);
+  }
+  function zDone(via, server) {
+    const a = zHist(), f = firma(), p = planOf(Z.pin && Z.pin.floor);
+    let e = a.find(x => x.id === Z.id);
+    if (!e) { e = {id: Z.id, at: new Date().toISOString(), by: me || jaJmeno(), typ: zTyp().l, patro: p ? p.name : '', room: Z.room, firma: f ? f.firma : '', thumb: Z.thumb || (F.photos[0] && F.photos[0].thumb) || '', via: []}; a.unshift(e); }
+    e.text = Z.formal || odborne(); if (!e.via.includes(via)) e.via.push(via);
+    if (server) e.email = f && f.email;
+    ls.set('cx-zavady', JSON.stringify(a.slice(0, 40)));
+    if (!server) toast(via === 'mail' ? 'Hotovo: e-mail je připravený.' : 'Hotovo: poslané přes WhatsApp.');
+    if (view === 'hlaseni') render();
+    // „e-mail i WhatsApp“: po e-mailu nabídne WhatsApp (telefon ho smí otevřít až po dalším klepnutí)
+    if (via === 'mail' && Z.oba) {
+      Z.oba = false;
+      setTimeout(() => {
+        const s = sheet(`<h3>✓ E-mail je ${server ? 'odeslaný' : 'připravený'}</h3><p class="hint">Teď ještě WhatsApp${f && f.tel ? ' pro ' + esc(f.firma) : ''}.</p>
+          <button type="button" class="big pri zwa" id="zo-wa">Poslat i přes WhatsApp</button><button type="button" class="big" id="zo-ne">Přeskočit</button>`);
+        s.querySelector('#zo-wa').onclick = () => { closeSheet(); zSend('wa'); };
+        s.querySelector('#zo-ne').onclick = () => { closeSheet(); if (!Z.sdileno) zSdilet(); };
+      }, server ? 600 : 2000);
+      return;
+    }
+    if (!Z.sdileno) setTimeout(zSdilet, server ? 900 : 2500);
+  }
+  // po odeslání firmě: sdílet závadu s kolegy (uvidí ji v Constructu Na vědomí a přijde jim e-mail)
+  function zSdilet() {
+    if (Z.sdileno || ro || view !== 'hlaseni') return;
+    Z.sdileno = true;
+    const tm = team().filter(n => !isMe(n)), sel = new Set();
+    const s = sheet(`<h3>Sdílet s kolegy?</h3>
+      <p class="hint">${conn ? 'Kolegové uvidí závadu v Constructu v záložce Na vědomí a přijde jim e-mail s fotkami.' : 'Ve zkušební verzi bez připojení se nic nesdílí, tady je jen ukázka otázky.'}</p>
+      <button type="button" class="big pri" id="zs-all">👥 Ano, všem z týmu</button>
+      <button type="button" class="big" id="zs-vyb">Ano, jen vybraným…</button>
+      <div id="zs-list" hidden>${tm.length ? `<div class="chips">${tm.map(n => `<button type="button" class="chip all" data-zs="${esc(n)}" aria-pressed="false">${esc(n)}</button>`).join('')}</div>
+        <button type="button" class="big pri" id="zs-ok" disabled>Sdílet vybraným</button>` : '<p class="hint">Seznam týmu se ukáže po připojení ke stavbě.</p>'}</div>
+      <button type="button" class="big" id="zs-ne">Ne, nesdílet</button>`);
+    s.querySelector('#zs-all').onclick = () => zSdiletKomu(tm);
+    s.querySelector('#zs-vyb').onclick = () => { s.querySelector('#zs-list').hidden = false; s.querySelector('#zs-vyb').hidden = true; };
+    s.querySelector('#zs-ne').onclick = closeSheet;
+    const ok = s.querySelector('#zs-ok');
+    s.querySelectorAll('[data-zs]').forEach(b => b.onclick = () => { const n = b.dataset.zs; sel.has(n) ? sel.delete(n) : sel.add(n); b.setAttribute('aria-pressed', sel.has(n)); ok.disabled = !sel.size; ok.textContent = sel.size ? `Sdílet vybraným (${sel.size})` : 'Sdílet vybraným'; });
+    if (ok) ok.onclick = () => zSdiletKomu([...sel]);
+  }
+  async function zSdiletKomu(to) {
+    closeSheet();
+    if (!conn || !to.length) { toast(conn ? 'V týmu zatím nikdo další není.' : 'Ve zkušební verzi se nesdílí.'); return; }
+    const f = firma(), ph = [];
+    if (Z.crop) ph.push({b64: await b64Blob(Z.crop.blob), thumb: Z.thumb});
+    F.photos.forEach(x => ph.push(x));
+    const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...to].sort((a, b) => a.localeCompare(b, 'cs')), info: true, end: '', obj: /[A-G]/.test(Z.room[0] || '') ? Z.room[0] : '',
+      text: `Závada poslaná firmě ${f ? f.firma : ''}: ${zPredmet()}\n\n${zZprava()}`, photos: ph.slice(0, 7), att: [], state: 'wait'};
+    try { await CXQ.put(it); } catch (e) { toast('Sdílení se nepodařilo uložit. Zkuste to znovu.'); Z.sdileno = false; return; }
+    await loadQ(); kick();
+    toast(to.length === team().filter(n => !isMe(n)).length ? 'Sdíleno s celým týmem.' : 'Sdíleno: ' + to.join(', '));
+  }
+
+  /* kontrola překlepů a odborných výrazů v popisu (krok 6): s připojením ji dělá Claude, jinak slovník v aplikaci */
+  const PREKLEPY = [['zatejká', 'zatéká'], ['zatejkat', 'zatékat'], ['vokno', 'okno'], ['vokna', 'okna'], ['omitka', 'omítka'], ['omitky', 'omítky'], ['omitku', 'omítku'], ['dlazba', 'dlažba'], ['dlazby', 'dlažby'], ['dlazbu', 'dlažbu'],
+    ['sadrokarton', 'sádrokarton'], ['spara', 'spára'], ['spary', 'spáry'], ['sparovani', 'spárování'], ['zdyvo', 'zdivo'], ['obkald', 'obklad'], ['nedodelany', 'nedodělaný'], ['nedodelane', 'nedodělané'], ['prasklyna', 'prasklina'], ['praskliny', 'praskliny'],
+    ['neni', 'není'], ['nejsou', 'nejsou'], ['spatne', 'špatně'], ['spatny', 'špatný'], ['poskozeny', 'poškozený'], ['poskozena', 'poškozená'], ['poskozene', 'poškozené'], ['uklizeno', 'uklizeno'], ['neuklizeno', 'neuklizeno'], ['podlaha', 'podlaha'], ['strop', 'strop'], ['stena', 'stěna'], ['steny', 'stěny'], ['stenu', 'stěnu']];
+  const slovo = a => new RegExp('(^|[^\\p{L}])(' + a + ')(?![\\p{L}])', 'giu');
+  const velke = (w, b) => w[0] !== w[0].toLowerCase() ? b[0].toUpperCase() + b.slice(1) : b;
+  function lokalniOprava(t) {
+    let s = t.replace(/[ \t]+/g, ' ').replace(/ +([,.!?;:])/g, '$1').replace(/([,;:])(?=[^\s\d])/g, '$1 ').replace(/([.!?])(?=\p{L})/gu, '$1 ').trim();
+    PREKLEPY.forEach(([a, b]) => { if (a !== b) s = s.replace(slovo(a), (m, p, w) => p + velke(w, b)); });
+    s = s.replace(/(^|[.!?]\s+)(\p{Ll})/gu, (m, p, c) => p + c.toUpperCase());
+    if (s && !/[.!?…]$/.test(s)) s += '.';
+    const navrhy = [];
+    SLANG.forEach(([a, b]) => { const m = s.match(slovo(a)); if (m) { const w = m[0].replace(/^[^\p{L}]+/u, ''); if (w.toLowerCase() !== b.toLowerCase() && !navrhy.some(x => x.z.toLowerCase() === w.toLowerCase())) navrhy.push({z: w, na: velke(w, b)}); } });
+    return {text: s, navrhy: navrhy.slice(0, 5)};
+  }
+  function diffHtml(a, b) {
+    const A = a.split(/\s+/), B = b.split(/\s+/), n = A.length, m = B.length;
+    if (n * m > 200000) return esc(b);
+    const L = Array.from({length: n + 1}, () => new Uint16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    const out = []; let i = 0, j = 0;
+    while (j < m) { if (i < n && A[i] === B[j]) { out.push(esc(B[j])); i++; j++; } else if (i < n && L[i + 1][j] >= L[i][j + 1]) i++; else { out.push('<mark>' + esc(B[j]) + '</mark>'); j++; } }
+    return out.join(' ');
+  }
+  function korHtml() {
+    const k = Z.kor, t = Z.text.trim();
+    if (Z.korBusy) return `<p class="hint zkor-wait">${conn ? 'Claude kontroluje' : 'Kontroluji'} překlepy a výrazy…</p>`;
+    if (!k) return t.length > 3 ? '<button type="button" class="zkor-go" id="kor-go">✓ Zkontrolovat překlepy a výrazy</button>' : '';
+    const zmena = k.text && k.text !== t;
+    if (!zmena && !k.navrhy.length) return '<p class="hint zkor-ok">✓ Text je v pořádku, bez překlepů.</p>';
+    return `<div class="zkor">${zmena ? `<b>Návrh opravy</b> <small>(změny jsou žlutě)</small><div class="zkor-t">${diffHtml(t, k.text)}</div>
+      <div class="acts"><button type="button" class="big pri" id="kor-ok">✓ Použít opravu</button><button type="button" class="big" id="kor-ne">Nechat můj text</button></div>` : ''}
+      ${k.navrhy.length ? `<b>Odborně se řekne</b><div class="chips">${k.navrhy.map((x, i) => `<button type="button" class="chip all" data-kn="${i}">${esc(x.z)} → <b>${esc(x.na)}</b></button>`).join('')}</div><p class="hint" style="margin:2px 0 0">Klepnutím výraz v textu nahradíte.</p>` : ''}</div>`;
+  }
+  function kreslitKor() { const e = $('#z-kor'); if (e) { e.innerHTML = korHtml(); bindKor(); } }
+  function bindKor() {
+    const tx = () => $('#z-text');
+    const go = $('#kor-go'); if (go) go.onclick = () => zKontrola(true);
+    const ok = $('#kor-ok'); if (ok) ok.onclick = () => { Z.text = Z.kor.text; Z.korFor = Z.text; if (tx()) tx().value = Z.text; kreslitKor(); };
+    const ne = $('#kor-ne'); if (ne) ne.onclick = () => { Z.kor = {text: Z.text.trim(), navrhy: Z.kor.navrhy}; kreslitKor(); };
+    document.querySelectorAll('[data-kn]').forEach(b => b.onclick = () => {
+      const x = Z.kor && Z.kor.navrhy[+b.dataset.kn]; if (!x) return;
+      const nahr = s => { const i = s.toLowerCase().indexOf(x.z.toLowerCase()); return i < 0 ? s : s.slice(0, i) + x.na + s.slice(i + x.z.length); };
+      const stejne = Z.kor.text === Z.text.trim();
+      Z.text = nahr(Z.text); Z.kor.text = stejne ? Z.text.trim() : nahr(Z.kor.text || Z.text);
+      Z.kor.navrhy = Z.kor.navrhy.filter(y => y !== x); Z.korFor = Z.text.trim();
+      if (tx()) tx().value = Z.text; kreslitKor();
+    });
+  }
+  async function zKontrola(force) {
+    const t = Z.text.trim();
+    if (t.length < 4 || Z.korBusy || (!force && t === Z.korFor)) return;
+    Z.korFor = t; Z.korBusy = true; kreslitKor();
+    let k = null;
+    if (conn && !ro) {
+      try {
+        const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 30000);
+        const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({key: conn.key, akce: 'korektura', typ: zTyp().l, popis: t}), redirect: 'follow', signal: ctl.signal});
+        clearTimeout(tm); const r = JSON.parse(await res.text());
+        if (r && typeof r.text === 'string' && r.text.trim()) k = {text: r.text.trim(), navrhy: (Array.isArray(r.navrhy) ? r.navrhy : []).filter(x => x && x.z && x.na && x.z !== x.na).slice(0, 5)};
+      } catch (e) {}
+    }
+    if (!k) k = lokalniOprava(t);
+    Z.korBusy = false;
+    if (Z.text.trim() !== t) { Z.kor = null; kreslitKor(); return; }
+    k.navrhy = k.navrhy.filter(x => (k.text || t).toLowerCase().includes(String(x.z).toLowerCase()));
+    Z.kor = k; kreslitKor();
+  }
+  function firmyDlg(editId) {
+    const a = mistniFirmy(), sp = spolecneFirmy(), ed = a.find(x => x.id === editId) || null;
+    const s = sheet(`<h3>Firmy (subdodavatelé)</h3>
+      <p class="hint">Seznam firem se pohodlně spravuje v programu na počítači: <b>Data → Firmy – adresy pro závady</b>. Telefon si ho převezme sám.${conn ? '' : ' (Ve zkoušce bez připojení se firmy z počítače nenačtou.)'}</p>
+      ${sp.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')} · z počítače</span></div>`).join('')}
+      ${a.length ? '<p class="hint" style="margin:6px 0 0">Jen v tomto telefonu:</p>' : ''}
+      ${a.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')}</span><div class="acts"><button type="button" class="big" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="big" data-fd="${esc(x.id)}" style="color:var(--red)">Smazat</button></div></div>`).join('')}
+      <div class="card fform"><b>${ed ? 'Upravit firmu' : 'Rychle přidat firmu jen v tomto telefonu'}</b>
+        <input class="date" id="ff-n" placeholder="Název firmy, např. ALPOD" value="${esc(ed ? ed.firma : '')}">
+        <input class="date" id="ff-e" type="email" inputmode="email" autocapitalize="off" autocomplete="off" placeholder="E-mail" value="${esc(ed ? ed.email : '')}">
+        <input class="date" id="ff-t" type="tel" inputmode="tel" placeholder="Telefon pro WhatsApp, např. 777 123 456" value="${esc(ed ? ed.tel : '')}">
+        <button type="button" class="big pri" id="ff-ok">Uložit firmu</button></div>
+      <button type="button" class="big" data-close>Hotovo</button>`);
+    s.querySelector('[data-close]').onclick = () => { closeSheet(); render(); };
+    s.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => firmyDlg(b.dataset.fe));
+    s.querySelectorAll('[data-fd]').forEach(b => b.onclick = () => {
+      if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; return; }
+      ls.set('cx-firmy', JSON.stringify(a.filter(x => x.id !== b.dataset.fd))); if (Z.firma === b.dataset.fd) Z.firma = ''; firmyDlg();
+    });
+    $('#ff-ok').onclick = () => {
+      const n = $('#ff-n').value.trim(), em = $('#ff-e').value.trim(), tel = $('#ff-t').value.trim();
+      if (!n) { toast('Napište název firmy.'); return; }
+      if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { toast('E-mail nevypadá správně.'); return; }
+      const x = {id: ed ? ed.id : 'f' + Date.now().toString(36), firma: n, email: em, tel};
+      ls.set('cx-firmy', JSON.stringify(ed ? a.map(y => y.id === ed.id ? x : y) : a.concat(x)));
+      Z.firma = x.id; ls.set('cx-firma', x.id);
+      toast('Firma uložena'); firmyDlg();
+    };
+  }
+  // zprávu napíše Claude přes skript na Googlu (klíč je jen tam, v aplikaci ani na webu není).
+  // Když je popis nejasný, Claude se nejdřív zeptá; odpověď se pošle znovu s celým popisem.
+  async function zPriprav(bez) {
+    if (!F.photos.length && !Z.text.trim()) { toast('Přidejte fotku nebo popis.'); return; }
+    if (!jaJmeno()) { toast('Napište nahoře do podpisu své jméno.'); return; }
+    if (!conn) { Z.formal = odborne(); Z.question = ''; render(); toast('Zprávu napsala šablona. Claude píše, až když je aplikace připojená ke stavbě.'); return; }
+    Z.busy = true; render();
+    const vyrez = Z.crop ? await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => res(''); r.readAsDataURL(Z.crop.blob); }) : '';
+    const body = {key: conn.key, akce: 'odborne', typ: zTyp().l, ton: ZTON[Z.typ] || '', predmet: zPredmet(), misto: zMisto(), popis: Z.text.trim(), dotazy: Z.qa, bezDotazu: !!bez,
+      termin: fmtDY(Z.end), stavba: stavba(), datum: fmtDY(todayS()), podpis: podpis(), vyrez, fotky: F.photos.slice(0, 3).map(x => x.b64)};
+    let r;
+    try {
+      // Claude si může dohledat ČSN nebo postup výrobce, proto delší čekání než u ostatních požadavků
+      const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 170000);
+      const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), redirect: 'follow', signal: ctl.signal});
+      clearTimeout(tm); r = JSON.parse(await res.text());
+    } catch (e) { r = {error: navigator.onLine ? 'Claude neodpověděl včas. Zkuste to znovu.' : 'Bez signálu.'}; }
+    Z.busy = false;
+    if (r && r.dotaz) { Z.question = r.dotaz; Z.answer = ''; }
+    else if (r && r.text) { Z.formal = r.text; Z.question = ''; toast('Zprávu napsal Claude. Zkontrolujte ji a schvalte.'); }
+    else {
+      Z.formal = odborne(); Z.question = '';
+      toast((!r || (!r.error && !r.text) ? 'Skript na Googlu je starý, Claude umí až verze 7.' : r.error === 'klic' ? 'Na Googlu ještě není vložený klíč pro Claude.' : r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r.error) + ' Zprávu zatím napsala šablona.');
+    }
+    if (view === 'hlaseni') render();
+  }
+  function zDetail(id) {
+    const e = zHist().find(x => x.id === id); if (!e) return;
+    const s = sheet(`<h3>${esc(e.typ)}${e.room ? ' · ' + esc(e.room) : ''}</h3>
+      ${e.thumb ? `<div class="big-ph"><img src="${e.thumb}" alt=""></div>` : ''}
+      <div class="kv"><span>Firma</span><b>${esc(e.firma || '—')}</b><span>Odesláno</span><span style="color:var(--ink)">${fmtT(e.at)} · ${e.via.map(v => v === 'wa' ? 'WhatsApp' : 'e-mail').join(', ')}</span></div>
+      <textarea class="formal" readonly>${esc(e.text)}</textarea>
+      <button type="button" class="big" data-close>Zavřít</button>`);
+    s.querySelector('[data-close]').onclick = closeSheet;
   }
 
   /* ---------- okna ---------- */
