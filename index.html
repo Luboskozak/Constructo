@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-LP2qiAXfYrz/ER8UBxt/jXssNay16wWog9nxoHk/6O4=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-onNzCE/+XAlT+50dnvST6TMLSbqk/z14hYHmVaGWOzA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -229,7 +229,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script>
 (() => {
-  const VERSION = '1.7';
+  const VERSION = '1.8';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -700,8 +700,21 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       return inside.sort((a, b) => b.q - a.q || a.d - b.d).map(r => r.n);
     } catch (e) { return null; }
   }
+  // vulgarismy a urážky: citoslovce se vynechají, ostatní se nahradí slušným výrazem (platí i před odesláním Claudovi)
+  const VULG = [['(?:do\\s+)?(?:prdele|píči|piči|pici|hajzlu|řiti)|doprdele|dopíči|dopiči|kurva|kurvadrát|kurvafix|kurde|kurňa|ty\\s+vole|vole|píčo|pičo|kurvo', ''],
+    ['zkurven\\p{L}*|posran\\p{L}*|zasran\\p{L}*|vysran\\p{L}*|vyjeban\\p{L}*|zjeban\\p{L}*|zmrdan\\p{L}*|debiln\\p{L}*|kreténsk\\p{L}*|píčovsk\\p{L}*|kokotsk\\p{L}*|hovadsk\\p{L}*|zasrat\\p{L}*', ''],
+    ['debilové|debilové|debilní|kokoti|čuráci|curaci|idioti|kreténi|zmrdi|blbci|hovada|prasata|magoři', 'pracovníci'],
+    ['debil|debila|debilem|kokot|kokota|čurák|curak|čuráka|idiot|idiota|kretén|kreténa|zmrd|zmrda|blbec|blbce|hovado|magor|píča|pica', 'pracovník'],
+    ['hovno|hovna|hovnem|sračka|sračky|sračku|sracky|sracka', 'nečistoty'], ['vysraný|vysraná|vysrané', 'poškozený'],
+    ['zprasil|zprasila|zprasili|zprasený|zprasená|zprasené|zprasenej|zprasený', 'nekvalitně provedl'], ['zmrvil|zmrvila|zmrvili|zjebal|zjebali|zkurvil|zkurvili|posral|posrali|zasral|zasrali', 'poškodil'],
+    ['zmrvený|zmrvená|zmrvené|zmrvenej|zjebaný|zjebaná|zjebané', 'poškozený'], ['blbě|blbe', 'nesprávně'], ['blbý|blbá|blbé|blbej', 'nevhodný'], ['nasraný|nasrat|srát|sere|serou|jebat|jebe|mrdat|mrdá', '']];
+  function slusne(t) {
+    let s = String(t || '');
+    VULG.forEach(([a, b]) => { s = s.replace(new RegExp('(^|[^\\p{L}])(' + a + ')(?![\\p{L}])', 'giu'), (m, p, w) => p + (b && w[0] !== w[0].toLowerCase() ? b[0].toUpperCase() + b.slice(1) : b)); });
+    return s.replace(/[ \t]{2,}/g, ' ').replace(/\s+([,.!?])/g, '$1').replace(/([,!?.])(\s*[,!?])+/g, '$1').replace(/,\s*(?=[.!?]|$)/g, '').replace(/^[\s,!?.]+/, '').replace(/\n[ \t]*[,!?]+\s*/g, '\n').trim();
+  }
   function cistit(t) {
-    let s = String(t || '').replace(/\s+/g, ' ').trim();
+    let s = slusne(t).replace(/\s+/g, ' ').trim();
     SLANG.forEach(([a, b]) => { s = s.replace(new RegExp('(^|[^\\p{L}])(' + a + ')(?![\\p{L}])', 'giu'), (m, p, w) => p + (w[0] !== w[0].toLowerCase() ? b[0].toUpperCase() + b.slice(1) : b)); });
     if (s) { s = s[0].toUpperCase() + s.slice(1); if (!/[.!?]$/.test(s)) s += '.'; }
     return s;
@@ -1258,7 +1271,7 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
   const slovo = a => new RegExp('(^|[^\\p{L}])(' + a + ')(?![\\p{L}])', 'giu');
   const velke = (w, b) => w[0] !== w[0].toLowerCase() ? b[0].toUpperCase() + b.slice(1) : b;
   function lokalniOprava(t) {
-    let s = t.replace(/[ \t]+/g, ' ').replace(/ +([,.!?;:])/g, '$1').replace(/([,;:])(?=[^\s\d])/g, '$1 ').replace(/([.!?])(?=\p{L})/gu, '$1 ').trim();
+    let s = slusne(t).replace(/[ \t]+/g, ' ').replace(/ +([,.!?;:])/g, '$1').replace(/([,;:])(?=[^\s\d])/g, '$1 ').replace(/([.!?])(?=\p{L})/gu, '$1 ').trim();
     PREKLEPY.forEach(([a, b]) => { if (a !== b) s = s.replace(slovo(a), (m, p, w) => p + velke(w, b)); });
     s = s.replace(/(^|[.!?]\s+)(\p{Ll})/gu, (m, p, c) => p + c.toUpperCase());
     if (s && !/[.!?…]$/.test(s)) s += '.';
@@ -1308,7 +1321,7 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     if (conn && !ro) {
       try {
         const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 30000);
-        const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({key: conn.key, akce: 'korektura', typ: zTyp().l, popis: t}), redirect: 'follow', signal: ctl.signal});
+        const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({key: conn.key, akce: 'korektura', typ: zTyp().l, popis: slusne(t)}), redirect: 'follow', signal: ctl.signal});
         clearTimeout(tm); const r = JSON.parse(await res.text());
         if (r && typeof r.text === 'string' && r.text.trim()) k = {text: r.text.trim(), navrhy: (Array.isArray(r.navrhy) ? r.navrhy : []).filter(x => x && x.z && x.na && x.z !== x.na).slice(0, 5)};
       } catch (e) {}
@@ -1356,7 +1369,7 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     if (!conn) { Z.formal = odborne(); Z.question = ''; render(); toast('Zprávu napsala šablona. Claude píše, až když je aplikace připojená ke stavbě.'); return; }
     Z.busy = true; render();
     const vyrez = Z.crop ? await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => res(''); r.readAsDataURL(Z.crop.blob); }) : '';
-    const body = {key: conn.key, akce: 'odborne', typ: zTyp().l, ton: ZTON[Z.typ] || '', predmet: zPredmet(), misto: zMisto(), popis: Z.text.trim(), dotazy: Z.qa, bezDotazu: !!bez,
+    const body = {key: conn.key, akce: 'odborne', typ: zTyp().l, ton: ZTON[Z.typ] || '', predmet: zPredmet(), misto: zMisto(), popis: slusne(Z.text), dotazy: Z.qa, bezDotazu: !!bez,
       termin: fmtDY(Z.end), stavba: stavba(), datum: fmtDY(todayS()), podpis: podpis(), vyrez, fotky: F.photos.slice(0, 3).map(x => x.b64)};
     let r;
     try {
