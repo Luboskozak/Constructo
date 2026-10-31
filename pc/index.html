@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-gz9X7q+Mgw4grLgxaV9O8lFvBHDa2DBmwejBWYb4mE0=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-SO+NufMY/26kxwpum5P/nNz1WYUCni5l5A3YH2CC0b0=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -989,10 +989,11 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
       <div class="fld"><label for="pd-name">Jméno</label><input id="pd-name" value="${esc(n || '')}" placeholder="např. Jan Novák"></div>
       <div class="fld"><label for="pd-role">Pozice</label><select id="pd-role"><option value="">– vyberte –</option>${[...new Set([...ROLES, ...(p.role ? [p.role] : [])])].map(r => `<option${p.role === r ? ' selected' : ''}>${esc(r)}</option>`).join('')}</select></div>
       <div class="fld"><label for="pd-phone">Telefon</label><input id="pd-phone" type="tel" value="${esc(p.phone || '')}" placeholder="+420 …"></div>
+      <div class="fld"><label for="pd-comp">Za firmu (podpis závad v mobilu)</label><select id="pd-comp"><option value="">– neuvedeno –</option>${[...new Set(['Subterra a.s.', 'Auböck', ...(p.company ? [p.company] : [])])].map(c => `<option${p.company === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></div>
       <div class="fld"><label>E-maily</label><div class="pd-mails" id="pd-mails">${mails.map(row).join('')}</div><button type="button" class="pd-addm" id="pd-addm">+ Přidat další e-mail</button></div>
       <div class="fld"><label>Přístup do aplikace</label><div class="iv-roles">${Object.entries(ACCESS).map(([k, l]) => `<label><input type="radio" name="pd-acc" value="${k}"${acc === k ? ' checked' : ''}${adm && k === 'nahlizi' ? ' disabled' : ''}>${l}<span>${k === 'zapisuje' ? 'zadává úkoly, píše zápisy' : adm ? 'správce musí zapisovat' : 'na svém zařízení jen prohlíží'}</span></label>`).join('')}</div></div>
       <p class="hcap" style="margin:0">${n ? 'Změna jména se promítne do všech úkolů a zápisů této osoby. Reporty (zápisy z porad, úkoly, pondělní přehled) chodí jen na zaškrtnuté adresy.' : 'Osoba se objeví mezi Lidmi a půjde jí přidělovat úkoly.'}</p>`, n ? 'Uložit' : 'Přidat osobu', () => {
-        const name = $('#pd-name').value.trim().replace(/\s+/g, ' '), role = $('#pd-role').value, phone = $('#pd-phone').value.trim();
+        const name = $('#pd-name').value.trim().replace(/\s+/g, ' '), role = $('#pd-role').value, phone = $('#pd-phone').value.trim(), company = $('#pd-comp').value;
         const access = (document.querySelector('input[name="pd-acc"]:checked') || {}).value === 'nahlizi' && !adm ? 'nahlizi' : 'zapisuje';
         const list = [...document.querySelectorAll('#pd-mails .pd-mail')].map(r => ({a: r.querySelector('input[type=email]').value.trim(), rep: r.querySelector('input[type=checkbox]').checked})).filter(x => x.a);
         if (!name) { toast('Vyplňte jméno.'); $('#pd-name').focus(); return 'keep'; }
@@ -1002,7 +1003,7 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
         const key = n ? name : (exists || name);
         if (n && name !== n) { if (exists && exists !== n) { toast(`${exists} už v projektu je. Sloučení udělejte v Data → Přejmenovat nebo sloučit osobu.`); return 'keep'; } renameOwner(n, name); if (S.owner === n) S.owner = name; }
         const pp = Object.assign({}, D.project.people || {}); if (n && n !== key) delete pp[n];
-        pp[key] = Object.assign({}, pp[key] || {}, {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role, phone, access});
+        pp[key] = Object.assign({}, pp[key] || {}, {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role, phone, access, company});
         D.project.people = pp;
         if (!teamList().includes(key)) D.project.team = [...teamList(), key];
         commit(); toast(n ? 'Uloženo' : exists ? `${exists} už v projektu je, údaje jsou doplněné` : 'Osoba přidána: ' + key);
@@ -2518,7 +2519,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 6
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 7
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
 
@@ -2531,8 +2532,10 @@ function doPost(e) {
     lock.waitLock(25000);
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
-  if (b.akce === 'verze') return json_({verze: 6});
+  if (b.akce === 'verze') return json_({verze: 7});
   if (b.akce === 'odborne') return odborne_(b);
+  if (b.akce === 'korektura') return korektura_(b);
+  if (b.akce === 'zavada') return zavada_(b);
   if (b.akce === 'pozvanka') return pozvanka_(b);
   if (b.akce === 'pripojit') return pripojit_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
@@ -2672,6 +2675,48 @@ function odborne_(b) {
   const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim();
   if (/^DOTAZ:/i.test(text)) return json_({dotaz: text.replace(/^DOTAZ:\\s*/i, '').split('\\n')[0].trim()});
   return json_(text ? {text: text} : {error: 'Claude nevrátil žádný text.'});
+}
+// Kontrola popisu závady (krok 6 v mobilu): opraví překlepy a navrhne odborné výrazy, text jinak nechá, jak ho pracovník napsal.
+function korektura_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const popis = String(b.popis || '').slice(0, 4000);
+  if (!popis.trim()) return json_({text: '', navrhy: []});
+  const zadani = 'Kontroluješ krátký popis závady na stavbě, který napsal nebo nadiktoval pracovník (není odborník). Oprav překlepy, diakritiku, gramatiku, interpunkci a chyby z diktování podle smyslu. ' +
+    'Smysl, rozsah a fakta zachovej, nic nepřidávej, nepiš z toho dopis. Hovorové nebo nepřesné výrazy v textu nech, ale navrhni k nim správnou stavební terminologii (nejvýš 5 návrhů, jen když je to opravdu lepší). ' +
+    'Odpověz jen JSON objektem bez dalšího textu: {"text": "opravený text", "navrhy": [{"z": "výraz přesně tak, jak je v opraveném textu", "na": "odborný výraz"}]}';
+  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 2000, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani,
+      messages: [{role: 'user', content: 'Typ závady: ' + String(b.typ || '') + '\\nPopis od pracovníka:\\n' + popis}]})});
+  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('');
+  const m = text.match(/\\{[\\s\\S]*\\}/);
+  let j = null; try { j = m ? JSON.parse(m[0]) : null; } catch (x) {}
+  if (!j || typeof j.text !== 'string') return json_({error: 'Claude nevrátil opravu.'});
+  return json_({text: j.text, navrhy: (Array.isArray(j.navrhy) ? j.navrhy : []).slice(0, 5)});
+}
+// Závada pro firmu z mobilu: e-mail přímo na adresu firmy (formulář Constructo v HTML, v příloze PDF).
+// Odchází z účtu Google, pod kterým běží skript, jménem pisatele; odpověď jde pisateli, ten dostane i kopii.
+function zavada_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties();
+  if (b.cid && p.getProperty('mail:' + b.cid)) return json_({ok: true, opakovane: true});
+  const adr = /^[^@\\s,;]+@[^@\\s,;]+\\.[^@\\s,;]+$/, komu = String(b.komu || '').trim();
+  if (!adr.test(komu)) return json_({error: 'E-mail firmy nevypadá správně.'});
+  const blob_ = function (d, typ, jm) { return Utilities.newBlob(Utilities.base64Decode(String(d)), typ, jm); };
+  const obr = {};
+  Object.keys(b.obr || {}).slice(0, 10).forEach(function (k) { if (/^\\w+$/.test(k) && b.obr[k]) obr[k] = blob_(b.obr[k], k === 'logo' ? 'image/png' : 'image/jpeg', k + (k === 'logo' ? '.png' : '.jpg')); });
+  const o = {to: komu, subject: String(b.predmet || 'Hlášení závady').slice(0, 200), body: String(b.text || ''), htmlBody: String(b.html || ''), inlineImages: obr,
+    attachments: b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\\w.-]/g, '_'))] : [],
+    name: (String(b.od || '').slice(0, 60) || 'Constructo') + ' (Constructo)'};
+  const zpet = String(b.odpovedet || '').trim();
+  if (adr.test(zpet)) { o.replyTo = zpet; o.cc = zpet; }
+  MailApp.sendEmail(o);
+  if (b.cid) p.setProperty('mail:' + b.cid, '1');
+  return json_({ok: true});
 }
 // Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program).
 function zapis_(b) {
