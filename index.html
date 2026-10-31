@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-onNzCE/+XAlT+50dnvST6TMLSbqk/z14hYHmVaGWOzA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-jS3hzKGzc3uI6S+aQlI6GZoX1I90xv3EPHFC0mZSCHQ=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -254,7 +254,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   const setRo = v => { ro = !!v; ls.set('cx-ro', ro ? '1' : ''); document.body.classList.toggle('ro', ro); if (ro) { view = 'prehled'; ufilter = 'vse'; } };
   const F = {photos: [], to: new Set(), info: false, end: addD(todayS(), 7), obj: new Set(), text: '', result: null, mode: ls.get('cx-mode') || 'tym'};
 
-  function toast(t) { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 3200); }
+  function toast(t, ms) { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), ms || 3200); }
 
   /* ---------- data z programu ---------- */
   const eff = t => { const d = Number(t.done) || 0; if (t.status === 'done' || d >= 100) return 'done'; if (t.status === 'hold') return 'hold'; if (t.end && t.end < todayS()) return 'late'; if (d > 0 || t.status === 'doing') return 'doing'; if (t.kind !== 'simple' && !t.src && t.start && t.start < todayS()) return 'late'; return 'todo'; };
@@ -1163,11 +1163,15 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     const pripraveno = zFm && zFm.key === zFmKey() && zFm.hotovo;
     zSending = true;
     if (!pripraveno) toast('Připravuji formulář…');
-    let fm = null; try { fm = await zFormular(); } catch (e) {}
+    let fm = null, fmErr = ''; try { fm = await zFormular(); } catch (e) { fmErr = (e && (e.message || e.name)) || String(e); }
     zSending = false;
     const text = (Z.formal || odborne()).trim(), subj = zPredmet();
     const pdf = fm ? new File([fm.pdf], zSoubor(), {type: 'application/pdf'}) : null, files = pdf ? [pdf] : [];
-    if (via === 'mail' && conn && !ro && fm && await zServer(f, text, subj, fm)) return;
+    if (via === 'mail' && conn && !ro) {
+      if (!fm) { zChyba('Formulář PDF se nepodařilo připravit.', fmErr); return; }
+      if (await zServer(f, text, subj, fm)) return;
+      return;
+    }
     const fotky = [];
     if (Z.crop) fotky.push(new File([Z.crop.blob], 'misto-' + (Z.room || 'zavady').replace(/[^\w.-]/g, '_') + '.jpg', {type: 'image/jpeg'}));
     F.photos.forEach((x, i) => fotky.push(b64File(x.b64, `foto-${i + 1}.jpg`)));
@@ -1188,16 +1192,38 @@ ${fotky ? sek('Fotodokumentace') + '<div>' + fotky + '</div>' : ''}
     const obr = {logo: fm.logo}; if (Z.crop) obr.vyrez = await b64Blob(Z.crop.blob);
     F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; });
     const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: subj, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
-    let r = null;
+    let r = null, detail = '';
     try {
       const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);
       const res = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), redirect: 'follow', signal: ctl.signal});
-      clearTimeout(tm); r = JSON.parse(await res.text());
-    } catch (e) { r = {error: navigator.onLine ? 'E-mail se nepodařilo odeslat.' : 'Bez signálu.'}; }
+      clearTimeout(tm);
+      const raw = await res.text();
+      try { r = JSON.parse(raw); } catch (x) { detail = `HTTP ${res.status}: ` + raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200); }
+    } catch (e) { detail = (e && e.name === 'AbortError') ? 'Server neodpověděl do 90 s.' : (e && (e.message || e.name)) || String(e); }
     if (btn) { btn.disabled = false; btn.lastChild.textContent = 'Schválit a poslat e-mailem'; }
-    if (r && r.ok) { toast(`Odesláno: ${f.firma} (${f.email})${mujEmail() ? ', kopie přišla vám' : ''}.`); zDone('mail', true); return true; }
-    toast((r && r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r && r.error && typeof r.error === 'string' ? r.error : 'Skript na Googlu je starý, sám posílá až verze 7.') + ' Otevírám e-mail ručně.');
+    if (r && r.ok) { toast(`✓ Odesláno firmě ${f.firma} na ${f.email}${mujEmail() ? '. Kopie přišla i vám' : ''}.`, 6000); zDone('mail', true); return true; }
+    zChyba(!navigator.onLine ? 'Telefon je bez signálu.' : r && r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r && typeof r.error === 'string' ? r.error : r ? 'Skript na Googlu ještě neumí posílat závady (potřebuje verzi 7).' : 'E-mail se nepodařilo odeslat.', detail);
     return false;
+  }
+  // chyba při odeslání: okno zůstane, dokud ho člověk nezavře (bublina zmizí moc rychle)
+  function zChyba(proc, detail) {
+    const s = sheet(`<h3>E-mail se neodeslal</h3><p>${esc(proc)}</p>${detail ? `<p class="hint" style="word-break:break-word">Podrobnosti pro Clauda: ${esc(detail)}</p>` : ''}
+      <button type="button" class="big pri" id="zc-znovu">Zkusit znovu</button><button type="button" class="big" id="zc-rucne">Poslat ručně přes Mail</button><button type="button" class="big" data-close>Zavřít</button>`);
+    s.querySelector('[data-close]').onclick = closeSheet;
+    s.querySelector('#zc-znovu').onclick = () => { closeSheet(); zSend('mail'); };
+    s.querySelector('#zc-rucne').onclick = () => { closeSheet(); zRucne(); };
+  }
+  async function zRucne() {
+    const text = (Z.formal || odborne()).trim(), subj = zPredmet();
+    let fm = null; try { fm = await zFormular(); } catch (e) {}
+    const files = fm ? [new File([fm.pdf], zSoubor(), {type: 'application/pdf'})] : [];
+    if (MOBIL && navigator.share && files.length && navigator.canShare && navigator.canShare({files})) {
+      const f = firma(); try { if (f && f.email && navigator.clipboard) navigator.clipboard.writeText(f.email).catch(() => {}); } catch (e) {}
+      navigator.share({files, title: subj, text}).then(() => zDone('mail'), () => {});
+      toast(f && f.email ? `Vyberte Mail. Adresu ${f.email} máte zkopírovanou, vložte ji do Komu.` : 'Vyberte Mail.', 6000);
+      return;
+    }
+    zFallback('mail', text, subj, files);
   }
   function zFallback(via, text, subj, files) {
     const f = firma();
