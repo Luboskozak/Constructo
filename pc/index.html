@@ -2518,7 +2518,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 5
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 6
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
 
@@ -2531,7 +2531,8 @@ function doPost(e) {
     lock.waitLock(25000);
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
-  if (b.akce === 'verze') return json_({verze: 5});
+  if (b.akce === 'verze') return json_({verze: 6});
+  if (b.akce === 'odborne') return odborne_(b);
   if (b.akce === 'pozvanka') return pozvanka_(b);
   if (b.akce === 'pripojit') return pripojit_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
@@ -2634,6 +2635,30 @@ function uloz_(p, d) {
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 ${mergeData.toString()}
+// Odborný přepis závady pro firmu (z mobilu): text napíše Claude podle popisu, fotek a výřezu půdorysu.
+// Klíč Anthropic patří do Nastavení projektu → Vlastnosti skriptu jako CLAUDE_KLIC, nikdy přímo sem.
+function odborne_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const obsah = [];
+  if (b.vyrez) obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(b.vyrez)}});
+  (b.fotky || []).slice(0, 3).forEach(function (f) { obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(f)}}); });
+  const udaje = {typ: b.typ, predmet: b.predmet, misto: b.misto, popis_od_kolegy: b.popis, odstranit_do: b.termin, stavba: b.stavba, datum_kontroly: b.datum, odesilatel: b.podpis};
+  obsah.push({type: 'text', text: 'Podklady k závadě (první obrázek je výřez půdorysu s vyznačeným místem, další jsou fotky ze stavby):\\n' + JSON.stringify(udaje, null, 2)});
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele. Z podkladů napiš zprávu subdodavateli o zjištěné závadě. ' +
+    'Piš česky, věcně, odborně a zdvořile, správnou stavební terminologií. Popis od kolegy přepiš odborně a přesně; z fotek doplň jen to, co je na nich jasně vidět, nic si nevymýšlej. ' +
+    'Nepoužívej Markdown, hvězdičky ani nadpisy. Dodrž stavbu zprávy: první řádek „Předmět: …“, prázdný řádek, „Dobrý den,“, odstavec se zjištěním (stavba a datum kontroly), řádek „Místo: …“, odstavec „Popis vady: …“, ' +
+    'odstavec s požadavkem na odstranění a termínem, věta o přílohách (fotodokumentace a výřez půdorysu s vyznačeným místem), „S pozdravem“ a jméno odesílatele. Vrať jen text zprávy.';
+  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 4000, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani, messages: [{role: 'user', content: obsah}]})});
+  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  if (o.stop_reason === 'refusal') return json_({error: 'Claude tenhle text napsat odmítl.'});
+  const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim();
+  return json_(text ? {text: text} : {error: 'Claude nevrátil žádný text.'});
+}
 // Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program).
 function zapis_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
@@ -2880,7 +2905,7 @@ ${tydenniHtml.toString()}
     };
     $('#mo-test').onclick = async () => {
       const b = $('#mo-test'); b.disabled = true; b.textContent = 'Ověřuji…';
-      try { const r = await call('POST', {key: SY.key, akce: 'verze'}); toast(r && r.verze >= 3 ? `Skript je aktuální (verze ${r.verze}), fotky, e-maily${r.verze >= 4 ? ', zápisy z porad' : ''}${r.verze >= 5 ? ', kódy jen na prohlížení' : ''} i pozvánky budou fungovat.` : r && r.verze >= 2 ? 'Fotky a e-maily fungují. Pro zvací kódy klikněte Aktualizovat skript.' : 'Skript je starý. Klikněte Aktualizovat skript.'); }
+      try { const r = await call('POST', {key: SY.key, akce: 'verze'}); toast(r && r.verze >= 3 ? `Skript je aktuální (verze ${r.verze}), fotky, e-maily${r.verze >= 4 ? ', zápisy z porad' : ''}${r.verze >= 5 ? ', kódy jen na prohlížení' : ''}${r.verze >= 6 ? ', odborný přepis závad' : ''} i pozvánky budou fungovat.` : r && r.verze >= 2 ? 'Fotky a e-maily fungují. Pro zvací kódy klikněte Aktualizovat skript.' : 'Skript je starý. Klikněte Aktualizovat skript.'); }
       catch (e) { toast(e.message || 'Bez spojení s Googlem.'); }
       b.disabled = false; b.textContent = 'Ověřit skript';
     };

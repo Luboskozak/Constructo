@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-FmUB7PxXu1lExW3ViEHt+WEG234ExBjyXou9cp2Zz4w=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-smf/PqWcfbjgjJ5to4VO9y1JJmPUMnWvx8zhMOx57Ww=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -183,6 +183,13 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 .pv-load{position:absolute;left:50%;top:40%;transform:translateX(-50%);background:var(--k);color:#fff;border-radius:12px;padding:10px 16px;font-weight:700}
 .pv-bot{background:var(--card);padding:12px 14px calc(12px + var(--sb));display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)}
 .pv-room{font-size:16px;min-height:2.6em}
+/* na počítači (iMac, Dell) aplikace jako telefon uprostřed obrazovky */
+@media (min-width:760px){
+  html{background:#e6e6e1}
+  body{max-width:560px;margin:0 auto;box-shadow:0 0 0 1px var(--line),0 10px 40px rgba(0,0,0,.08)}
+  .nav{left:50%;right:auto;width:560px;transform:translateX(-50%)}
+  .sheet{left:50%;right:auto;width:560px;transform:translateX(-50%)}
+}
 </style>
 </head>
 <body>
@@ -531,6 +538,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'firmy') firmyDlg();
     else if (a === 'znew') { zReset(); F.photos = []; render(); scrollTo(0, 0); }
     else if (a === 'zformal') { Z.edited = false; render(); }
+    else if (a === 'zai') zAi();
   }
   async function onFiles(files) {
     const arr = [...files].filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|heic|heif|webp)$/i.test(f.name));
@@ -718,7 +726,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
       <p class="lbl">Text pro firmu <em>(připravený odborně, můžete upravit)</em></p>
       <textarea id="z-formal" class="formal">${esc(Z.formal)}</textarea>
-      ${Z.edited ? '<button type="button" class="big" data-act="zformal">Připravit text znovu</button>' : ''}
+      ${conn ? '<button type="button" class="big pri" data-act="zai" id="z-ai">✨ Napsat odborně pomocí Claude</button>' : '<p class="hint">Přepis pomocí Claude jde, až když je aplikace připojená ke stavbě.</p>'}
+      ${Z.edited ? '<button type="button" class="big" data-act="zformal">Vrátit text podle šablony</button>' : ''}
       <div class="sendbar zsend">
         <button type="button" class="send" id="z-mail" ${ok ? '' : 'disabled'}><i>@</i>Poslat e-mailem</button>
         <button type="button" class="send wa" id="z-wa" ${ok ? '' : 'disabled'}><i>✆</i>Poslat přes WhatsApp</button>
@@ -929,6 +938,19 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       Z.firma = x.id; ls.set('cx-firma', x.id);
       toast('Firma uložena'); firmyDlg();
     };
+  }
+  // odborný text napíše Claude přes skript na Googlu (klíč je jen tam, v aplikaci ani na webu není)
+  async function zAi() {
+    if (!conn) return;
+    if (!F.photos.length && !Z.text.trim()) { toast('Přidejte fotku nebo popis.'); return; }
+    const b = $('#z-ai'); if (b) { b.disabled = true; b.textContent = 'Claude píše… (asi 20 s)'; }
+    const vyrez = Z.crop ? await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => res(''); r.readAsDataURL(Z.crop.blob); }) : '';
+    let r;
+    try { r = await CXQ.post(conn, {key: conn.key, akce: 'odborne', typ: zTyp().l, predmet: zPredmet(), misto: zMisto(), popis: Z.text.trim(), termin: fmtDY(Z.end), stavba: stavba(), datum: fmtDY(todayS()), podpis: me, vyrez, fotky: F.photos.slice(0, 3).map(x => x.b64)}); }
+    catch (e) { r = {error: e.message === 'OFFLINE' ? 'Bez signálu. Text zůstal podle šablony.' : e.message}; }
+    if (r && r.text) { Z.formal = r.text; Z.edited = true; toast('Hotovo, text napsal Claude. Můžete ho upravit.'); }
+    else toast(!r || (!r.error && !r.text) ? 'Skript na Googlu je starý, Claude umí až verze 6.' : r.error === 'klic' ? 'Na Googlu ještě není vložený klíč pro Claude.' : r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r.error);
+    if (view === 'hlaseni') render();
   }
   function zDetail(id) {
     const e = zHist().find(x => x.id === id); if (!e) return;
