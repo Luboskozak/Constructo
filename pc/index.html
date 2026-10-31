@@ -2635,7 +2635,8 @@ function uloz_(p, d) {
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 ${mergeData.toString()}
-// Odborný přepis závady pro firmu (z mobilu): text napíše Claude podle popisu, fotek a výřezu půdorysu.
+// Zpráva o závadě pro firmu (z mobilu): napíše ji Claude podle popisu, fotek a výřezu půdorysu.
+// Když je popis nejasný, vrátí jednu otázku (dotaz) pro pracovníka. Smí si dohledat ČSN nebo technologický postup výrobce.
 // Klíč Anthropic patří do Nastavení projektu → Vlastnosti skriptu jako CLAUDE_KLIC, nikdy přímo sem.
 function odborne_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
@@ -2644,19 +2645,32 @@ function odborne_(b) {
   const obsah = [];
   if (b.vyrez) obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(b.vyrez)}});
   (b.fotky || []).slice(0, 3).forEach(function (f) { obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(f)}}); });
-  const udaje = {typ: b.typ, predmet: b.predmet, misto: b.misto, popis_od_kolegy: b.popis, odstranit_do: b.termin, stavba: b.stavba, datum_kontroly: b.datum, odesilatel: b.podpis};
-  obsah.push({type: 'text', text: 'Podklady k závadě (první obrázek je výřez půdorysu s vyznačeným místem, další jsou fotky ze stavby):\\n' + JSON.stringify(udaje, null, 2)});
-  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele. Z podkladů napiš zprávu subdodavateli o zjištěné závadě. ' +
-    'Piš česky, věcně, odborně a zdvořile, správnou stavební terminologií. Popis od kolegy přepiš odborně a přesně; z fotek doplň jen to, co je na nich jasně vidět, nic si nevymýšlej. ' +
-    'Nepoužívej Markdown, hvězdičky ani nadpisy. Dodrž stavbu zprávy: první řádek „Předmět: …“, prázdný řádek, „Dobrý den,“, odstavec se zjištěním (stavba a datum kontroly), řádek „Místo: …“, odstavec „Popis vady: …“, ' +
-    'odstavec s požadavkem na odstranění a termínem, věta o přílohách (fotodokumentace a výřez půdorysu s vyznačeným místem), „S pozdravem“ a jméno odesílatele. Vrať jen text zprávy.';
-  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
-    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
-    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 4000, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani, messages: [{role: 'user', content: obsah}]})});
-  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
-  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  const udaje = {typ_zavady: b.typ, ton_zpravy: b.ton, predmet: b.predmet, misto: b.misto, popis_od_pracovnika: b.popis, doplneni_od_pracovnika: b.dotazy || [],
+    odstranit_do: b.termin, stavba: b.stavba, datum_kontroly: b.datum, podpis: b.podpis};
+  obsah.push({type: 'text', text: 'Podklady k závadě (první obrázek je výřez půdorysu s vyznačeným místem, další jsou fotky ze stavby):\\n' + JSON.stringify(udaje, null, 2) +
+    (b.bezDotazu ? '\\nPracovník už nic doplnit neumí: napiš zprávu z toho, co máš, bez dalšího dotazu.' : '')});
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele (Společnost pro rekonstrukci objektu Hybernská 8: Subterra & Auböck & VISTORIA). Z podkladů napiš zprávu subdodavateli o zjištěné závadě. ' +
+    'Piš česky, správnou stavební terminologií, zdvořile, ale dostatečně rázně; tón řiď podle pole ton_zpravy (nepořádek vlídněji, reklamace a BOZP tvrději). ' +
+    'Popis od pracovníka přepiš odborně a přesně. Z fotek doplň jen to, co je na nich jasně vidět, nic si nevymýšlej. Když se to hodí, odkaž na konkrétní ČSN nebo technologický postup výrobce; ' +
+    'normy a postupy si můžeš ověřit vyhledáním na webu, neuváděj čísla norem, která sis neověřil. ' +
+    'Pokud je popis tak nejasný, že z něj nejde poznat, o jakou vadu jde, a doplnění od pracovníka to neřeší, odpověz místo zprávy jediným řádkem: DOTAZ: a jedna krátká, jednoduchá otázka pro pracovníka na stavbě (není odborník). ' +
+    'Jinak vrať jen hotovou zprávu bez Markdownu, hvězdiček a nadpisů v této stavbě: první řádek „Předmět: …“, prázdný řádek, „Dobrý den,“, odstavec se zjištěním (stavba, datum kontroly, místo), ' +
+    'odstavec „Popis vady: …“, odstavec s požadavkem na odstranění a termínem, věta o přílohách (fotodokumentace a výřez půdorysu s vyznačeným místem), „S pozdravem“, prázdný řádek a pole podpis přesně tak, jak je.';
+  const zpravy = [{role: 'user', content: obsah}];
+  let o = {};
+  for (let kolo = 0; kolo < 4; kolo++) {
+    const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+      payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 6000, fallbacks: 'default', output_config: {effort: 'medium'}, system: zadani, messages: zpravy,
+        tools: [{type: 'web_search_20260209', name: 'web_search', max_uses: 3}]})});
+    o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+    if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+    if (o.stop_reason !== 'pause_turn') break;
+    zpravy.push({role: 'assistant', content: o.content});  // dlouhé hledání na webu: nechat Clauda pokračovat
+  }
   if (o.stop_reason === 'refusal') return json_({error: 'Claude tenhle text napsat odmítl.'});
   const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim();
+  if (/^DOTAZ:/i.test(text)) return json_({dotaz: text.replace(/^DOTAZ:\\s*/i, '').split('\\n')[0].trim()});
   return json_(text ? {text: text} : {error: 'Claude nevrátil žádný text.'});
 }
 // Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program).
