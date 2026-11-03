@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9kD+tveo/9Ufzar1s5rWVHo/eHkjPu64xDC/OenSvO8=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-0RZzUMpqArZ5IsER3k4OQmesL7HmI3DvMXQ27COTrYM=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -555,6 +555,29 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
 .zp-vbar .btn{color:var(--ink)}
 #zp-view iframe{flex:1;border:0;background:#fff;border-radius:0 0 12px 12px;width:100%}
 @media print{#porada,#zp-view{display:none!important}}
+.zp-newbtn{font-size:16px!important;padding:10px 18px!important;font-weight:800;background:var(--accent)!important;color:#16191c!important}
+#zp-big{font-size:19px;white-space:nowrap}
+.zp-skript{background:#FFF4BF;border-bottom:1px solid #e0b100;padding:8px 18px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.zp-skript[hidden]{display:none}
+.zp-entry{display:grid;grid-template-columns:minmax(0,1fr) 210px 190px auto;gap:10px;align-items:start;padding:10px 18px;background:var(--panel);border-bottom:2px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.zp-entry textarea,.zp-entry select,.zp-entry input{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--bg);color:var(--ink)}
+.zp-entry textarea{resize:none;overflow:hidden;min-height:42px;line-height:1.4;field-sizing:content}
+.zp-entry .miss{background:#FFF4BF;border-color:#e0b100}
+.zp-ebtns{display:flex;flex-direction:column;gap:6px}.zp-create{font-size:15px!important;padding:10px 16px!important;font-weight:800;white-space:nowrap}
+.zp-entry.flash{animation:zpflash .7s}@keyframes zpflash{0%{background:var(--accent-soft)}100%{background:var(--panel)}}
+.zp-navrh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:6px;padding:8px 10px;border-radius:10px;background:#f1ebfa;border:1px solid #d9c9f0;font-size:14px}.zp-navrh[hidden]{display:none}
+.zp-nvl{font-size:11.5px;font-weight:700;color:#7b4bb7;width:100%}.zp-nvt{flex:1;min-width:200px}.zp-nvb{display:flex;gap:6px}.zp-nvb .btn{padding:4px 10px;font-size:12.5px}
+.zp-vw{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.zp-vw button{border:0;background:var(--panel);padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}.zp-vw button[aria-pressed="true"]{background:var(--accent);font-weight:700}
+#zp-fo{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--panel)}
+.zp-t .c b{font-size:15px;color:var(--ink)}
+.zp-tg{display:inline-block;border-radius:4px;padding:0 6px;font-size:11.5px;font-weight:700;margin:2px 4px 0 0}.zp-tg.nov{background:#d7eedd;color:#2f7d4f}.zp-tg.txt{background:#efe6f8;color:#7b4bb7}.zp-tg.os{background:#e3eefb;color:#1f5fa8}.zp-tg.dt{background:#fff1d6;color:#9a5b00}
+.zp-osa{position:relative;height:7px;border-radius:4px;background:var(--line);margin-top:7px}.zp-osa i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#2f7d4f}.zp-osa b{position:absolute;top:-4px;width:2px;height:15px;background:var(--ink);margin-left:-1px}
+.zp-osa.soon i{background:#c27a00}.zp-osa.late i{background:#b3261e}
+.zp-osat{display:flex;justify-content:space-between;gap:4px;font-size:11px;color:var(--muted);margin-top:2px}.zp-osat em{font-style:normal;font-weight:700;color:var(--ink)}.zp-osa.late+.zp-osat em{color:#b3261e}.zp-osa.soon+.zp-osat em{color:#9a5b00}
+tr.zp-new td{animation:zpflash 1.6s}
+#zp-write summary{cursor:pointer;list-style:none}#zp-write summary::-webkit-details-marker{display:none}#zp-write[open] summary{margin-bottom:8px}
+.zp-af{display:flex;flex-wrap:wrap;gap:8px}.zp-af label{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--muted)}.zp-af select,.zp-af input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 7px}
+.zp-ano{min-width:52px;font-size:15px}
+@media (max-width:1000px){.zp-entry{grid-template-columns:1fr 1fr}.zp-etext{grid-column:1/-1}}
 .zp-hd{padding:10px 14px}.zp-hd summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .zp-hd summary::-webkit-details-marker{display:none}.zp-hd #zp-hsum{color:var(--muted);font-size:13.5px}
 .zp-hopen{margin-left:auto;font-size:12.5px;color:var(--muted)}.zp-hd[open] .zp-hopen{display:none}.zp-hd[open] summary{margin-bottom:10px}
@@ -753,13 +776,21 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 
 <div id="porada" hidden role="dialog" aria-label="Zápis z porady">
   <div class="zp-bar">
-    <b>Zápis z porady</b>
+    <b id="zp-big">Zápis z porady</b>
+    <button type="button" class="btn primary zp-newbtn" id="zp-newtask">Nový úkol z porady</button>
     <select id="zp-list" aria-label="Uložené zápisy"></select>
     <button type="button" class="btn" id="zp-arch">Archiv zápisů</button>
     <span class="zp-sp"></span>
     <span class="hcap" id="zp-state"></span>
     <button type="button" class="btn" id="zp-fs" title="Celá obrazovka bez lišt prohlížeče">⛶ Celá obrazovka</button>
     <button type="button" class="btn" id="zp-close">Zavřít</button>
+  </div>
+  <div class="zp-skript" id="zp-skript" hidden>Pro PDF zápisu a návrhy textu od Clauda je potřeba nová verze skriptu na Googlu (verze 10). <button type="button" class="btn" id="zp-skript-btn">Aktualizovat skript…</button></div>
+  <div class="zp-entry" id="zp-entry">
+    <div class="zp-etext"><textarea id="zp-e-text" rows="1" placeholder="Nový úkol z porady: napište, co se má udělat…" aria-label="Text nového úkolu"></textarea><div class="zp-navrh" id="zp-e-navrh" hidden></div></div>
+    <select id="zp-e-owner" class="miss" aria-label="Kdo to udělá"></select>
+    <div class="zp-edate"><input id="zp-e-end" type="date" aria-label="Termín"><div class="zp-q"><button type="button" data-eq="zitra">Zítra</button><button type="button" data-eq="patek">Pátek</button><button type="button" data-eq="tyden">Týden</button><button type="button" data-eq="dva">14 dní</button></div></div>
+    <div class="zp-ebtns"><button type="button" class="btn primary zp-create" id="zp-e-add">Vytvořit úkol</button><button type="button" class="btn" id="zp-e-note" title="Bod bez osoby a termínu, přidá se do Ostatních bodů">Jen poznámka</button></div>
   </div>
   <div class="zp-body">
     <div class="zp-main">
@@ -780,7 +811,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
       </details>
       <div id="zp-edit">
         <div class="card">
-          <div class="zp-eh"><h3>Úkoly podle osob</h3><span class="hcap" id="zp-n"></span><span class="zp-sp"></span><button type="button" class="btn" id="zp-addrow">+ Přidat úkol</button></div>
+          <div class="zp-eh"><h3>Úkoly z porady</h3><span class="hcap" id="zp-n"></span><span class="zp-sp"></span><div class="zp-vw" id="zp-vw" role="group" aria-label="Řazení úkolů"><button type="button" data-zv="cislo">Podle čísla</button><button type="button" data-zv="osoby">Podle osob</button></div><select id="zp-fo" aria-label="Jen úkoly osoby"></select></div>
           <p class="zp-sum" id="zp-sum"></p>
           <div id="zp-groups"></div>
         </div>
@@ -790,8 +821,9 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
           <div id="zp-info"></div>
         </div>
       </div>
-      <div class="card" id="zp-write">
-        <div class="zp-eh"><h3>Nové body</h3><span class="hcap">Pište jako ve Wordu. Úkol = řádek a za pomlčku jméno, případně termín.</span><span class="zp-sp"></span><button type="button" class="btn" id="zp-vzor" hidden>Vložit body z PDF porady 13. 10.</button></div>
+      <details class="card" id="zp-write">
+        <summary class="zp-ws"><b>Vložit delší text</b> <span class="hcap">např. z Wordu nebo e-mailu: úkol = řádek a za pomlčku jméno, případně termín</span></summary>
+        <div class="zp-eh"><span class="zp-sp"></span><span class="zp-sp"></span><button type="button" class="btn" id="zp-vzor" hidden>Vložit body z PDF porady 13. 10.</button></div>
         <div class="zp-tools" id="zp-tools">
           <button type="button" data-cmd="bold" title="Tučně"><b>B</b></button>
           <button type="button" data-cmd="italic" title="Kurzíva"><i>I</i></button>
@@ -805,7 +837,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
         </div>
         <div id="zp-text" class="zp-text" contenteditable="true" spellcheck="true" lang="cs" data-ph="Sem pište průběh porady.&#10;Každý úkol na samostatný řádek a za pomlčku jméno, třeba:&#10;Objednat lešení na dvorní fasádu – Kleňha – do 24. 10."></div>
         <div class="zp-eh"><p class="zp-hint" style="flex:1">Řádky s úkolem se podbarví žlutě. Tlačítkem vpravo se nové body propíšou nahoru: úkoly do rámečků podle osob, ostatní do Ostatních bodů.</p><button type="button" class="btn primary" id="zp-next">Propsat nové body ↑</button></div>
-      </div>
+      </details>
     </div>
   </div>
   <div class="zp-foot">
@@ -862,7 +894,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.20';
+  const APP_VERSION = '4.21';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -2873,7 +2905,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 9
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 10
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
 
@@ -2890,9 +2922,11 @@ function doPost_(e) {
     lock.waitLock(25000);
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
-  if (b.akce === 'verze') return json_({verze: 9});
+  if (b.akce === 'verze') return json_({verze: 10});
   if (b.akce === 'odborne') return odborne_(b);
   if (b.akce === 'korektura') return korektura_(b);
+  if (b.akce === 'formulace') return formulace_(b);
+  if (b.akce === 'zapis_pdf') return zapisPdf_(b);
   if (b.akce === 'zavada') return zavada_(b);
   if (b.akce === 'pozvanka') return pozvanka_(b);
   if (b.akce === 'pripojit') return pripojit_(b);
@@ -3168,7 +3202,33 @@ function firmaUpozornit_(d, r, o) {
     '<br><a href="' + ODKAZ + '">Otevřít Constructo</a></p></div>';
   MailApp.sendEmail({to: komu, subject: (r.firma || 'Firma') + ' ' + co + ' – ' + (r.cislo || ''), htmlBody: html, name: 'Constructo'});
 }
-// Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program).
+// Zápis z porady jako PDF: z HTML zápisu (připraví program) udělá PDF, uloží ho na Disk do složky „Constructo – zápisy z porad“ a vrátí odkaz.
+function zapisPdf_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const jm = String(b.jmeno || 'Zapis-z-porady.pdf').replace(/[^\\w.-]/g, '_');
+  const pdf = Utilities.newBlob(String(b.html || ''), 'text/html', 'zapis.html').getAs('application/pdf').setName(jm);
+  const f = slozka_(DriveApp.getRootFolder(), 'Constructo – zápisy z porad').createFile(pdf);
+  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+  return json_({id: f.getId(), url: 'https://drive.google.com/file/d/' + f.getId() + '/view'});
+}
+// Návrh odborného textu bodu porady: Claude přepíše rychle napsaný bod spisovně a odborně, smysl a fakta nemění.
+function formulace_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const text = String(b.text || '').slice(0, 1500);
+  if (!text.trim()) return json_({text: ''});
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele a píšeš zápis z kontrolního dne stavby ' + String(b.stavba || '').slice(0, 80) + '. Dostaneš jeden bod porady, který někdo rychle napsal během jednání (zkratky, překlepy, chybějící slova). ' +
+    'Přepiš ho na jednu nebo dvě věty spisovnou češtinou se správnou stavební terminologií, věcně a jednoznačně, jak se píše do zápisu. Zachovej smysl a přesně zachovej jména, firmy, čísla, místa a termíny; nic nepřidávej a nevymýšlej. ' +
+    'Zkratky, kterým nerozumíš, nech beze změny. Odpověz jen přepsaným textem bez uvozovek a bez komentáře.';
+  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 600, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani, messages: [{role: 'user', content: text}]})});
+  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  return json_({text: (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim()});
+}
+// Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program), v příloze PDF zápisu.
 function zapis_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
   const p = PropertiesService.getScriptProperties();
@@ -3177,7 +3237,8 @@ function zapis_(b) {
   const komu = [], chybi = [];
   (b.to || []).forEach(function (n) { const e = lide[n] && lide[n].email; if (e) komu.push(e); else chybi.push(n); });
   if (!komu.length) return json_({ok: false, sent: 0, missing: chybi});
-  MailApp.sendEmail({to: komu.join(','), subject: String(b.predmet || 'Zápis z porady'), htmlBody: String(b.html || ''), name: 'Constructo'});
+  let pril = []; try { if (b.pdfId) pril = [DriveApp.getFileById(String(b.pdfId)).getBlob()]; } catch (x) {}
+  MailApp.sendEmail({to: komu.join(','), subject: String(b.predmet || 'Zápis z porady'), htmlBody: String(b.html || ''), attachments: pril, name: 'Constructo'});
   p.setProperty('mail:' + b.cid, '1');
   return json_({ok: true, sent: komu.length, missing: chybi});
 }
@@ -3414,7 +3475,7 @@ ${tydenniHtml.toString()}
     };
     $('#mo-test').onclick = async () => {
       const b = $('#mo-test'); b.disabled = true; b.textContent = 'Ověřuji…';
-      try { const r = await call('POST', {key: SY.key, akce: 'verze'}); toast(r && r.verze >= 3 ? `Skript je aktuální (verze ${r.verze}), fotky, e-maily${r.verze >= 4 ? ', zápisy z porad' : ''}${r.verze >= 5 ? ', kódy jen na prohlížení' : ''}${r.verze >= 6 ? ', odborný přepis závad' : ''}${r.verze >= 9 ? ', seznam zpráv pro firmy, ARES, odpovědi firem' : ''} i pozvánky budou fungovat.` : r && r.verze >= 2 ? 'Fotky a e-maily fungují. Pro zvací kódy klikněte Aktualizovat skript.' : 'Skript je starý. Klikněte Aktualizovat skript.'); }
+      try { const r = await call('POST', {key: SY.key, akce: 'verze'}); toast(r && r.verze >= 3 ? `Skript je aktuální (verze ${r.verze}), fotky, e-maily${r.verze >= 4 ? ', zápisy z porad' : ''}${r.verze >= 5 ? ', kódy jen na prohlížení' : ''}${r.verze >= 6 ? ', odborný přepis závad' : ''}${r.verze >= 9 ? ', seznam zpráv pro firmy, ARES, odpovědi firem' : ''}${r.verze >= 10 ? ', PDF zápisu z porady, návrhy textu' : ''} i pozvánky budou fungovat.` : r && r.verze >= 2 ? 'Fotky a e-maily fungují. Pro zvací kódy klikněte Aktualizovat skript.' : 'Skript je starý. Klikněte Aktualizovat skript.'); }
       catch (e) { toast(e.message || 'Bez spojení s Googlem.'); }
       b.disabled = false; b.textContent = 'Ověřit skript';
     };
@@ -3749,7 +3810,7 @@ ${tydenniHtml.toString()}
   }
   const zActive = rec => (rec.rows || []).filter(r => !r.off && !r.doneAt && String(r.title || '').trim());
   const zSig = r => [String(r.title || '').trim(), r.owner || '', r.end || ''].join('|');
-  const zLabel = r => `${fmtDY(r.date)}${r.title ? ' · ' + r.title : ''}${r.no ? ' č. ' + r.no : ''}`;
+  const zLabel = r => `${r.no ? 'č. ' + r.no + ' · ' : ''}${fmtDY(r.date)}${r.title ? ' · ' + r.title : ''}`;
   const zN = (n, a, b, c) => n === 1 ? a : n > 1 && n < 5 ? b : c;
 
   let ZC = null, zDirty = false, zT = null;
@@ -3789,7 +3850,7 @@ ${tydenniHtml.toString()}
     const rec = {id: '', kind: 'porada', v2: true, title: (last || {}).title || 'Kontrolní den stavby', no: String(Math.max(0, ...PORADY().map(r => Number(r.no) || 0)) + 1), date: today, time: (last || {}).time || '', place: (last || {}).place || '', present: [], guests: (last || {}).guests || '', by: me(), html: '', rows: [], notes: [], added: {}, sent: {}};
     if (!last) return rec;
     const all = (last.rows || []).filter(r => !r.off && String(r.title || '').trim()), rows = all.filter(r => !r.doneAt && !zDone(zTaskOf(last, r)));
-    rec.rows = clone(rows).map(r => Object.assign(r, {carried: true}));
+    rec.rows = clone(rows).map(r => { delete r.navrh; delete r.navrhNe; return Object.assign(r, {carried: true}); });
     rec.notes = clone(last.notes || []);
     rec.present = [...(last.present || [])];
     rows.forEach(r => { if ((last.added || {})[r.key]) rec.added[r.key] = last.added[r.key]; Object.keys(last.sent || {}).forEach(k => { if (k.startsWith(r.key + '|')) rec.sent[k] = last.sent[k]; }); });
@@ -3811,6 +3872,7 @@ ${tydenniHtml.toString()}
   }
   const zHasText = () => !!$('#zp-text').textContent.trim();
   function poradaOpen(id) {
+    zOznac421();
     let dr = null; try { dr = JSON.parse(store.get(ZDRAFT) || 'null'); } catch (e) {}
     if (id === undefined && dr && dr.kind === 'porada') { ZC = dr; zDirty = true; toast('Pokračujete v rozepsaném zápisu'); }
     else { const rec = id && id !== '__blank' ? D.diary.find(e => e.id === id) : null; ZC = rec ? clone(rec) : zNew(id === '__blank'); zDirty = false;
@@ -3819,12 +3881,14 @@ ${tydenniHtml.toString()}
     if (!Array.isArray(ZC.present)) ZC.present = [];
     if (!Array.isArray(ZC.rows)) ZC.rows = [];
     if (!Array.isArray(ZC.notes)) ZC.notes = [];
-    zPull(ZC);
+    if (ZC.id) { const cur = D.diary.find(e => e.id === ZC.id); if (cur) { ['no', 'date', 'title', 'm421'].forEach(k => { ZC[k] = cur[k]; }); const cn = new Map((cur.rows || []).map(r => [r.key, r.n])); ZC.rows.forEach(r => { if (!r.n && cn.get(r.key)) r.n = cn.get(r.key); }); } }
+    zPull(ZC); zNumber(ZC);
     $('#porada').hidden = false; document.body.style.overflow = 'hidden';
     zFill();
     // starší zápis (text nahoře, tabulka zvlášť): text se jednou propíše do rámečků a ostatních bodů
     if (!ZC.v2) { ZC.v2 = true; if (zHasText()) { const d = zDirty; zPropsat(true); zDirty = d; zState(); } }
-    zRender(); $('#zp-del').hidden = !ZC.id; $('.zp-body').scrollTop = 0;
+    zEntryFill(); zRender(); zSkriptCheck(); $('#zp-del').hidden = !ZC.id; $('.zp-body').scrollTop = 0;
+    setTimeout(() => $('#zp-e-text').focus(), 50);
   }
   function zFill() {
     const set = (i, v) => { $('#zp-' + i).value = v || ''; };
@@ -3839,7 +3903,7 @@ ${tydenniHtml.toString()}
     zList(); zMark(); zState(); zHsum();
     $('#zp-hd').open = !PORADY().length && !ZC.id;
   }
-  const zHsum = () => { $('#zp-hsum').textContent = [($('#zp-title').value || 'Porada') + ($('#zp-no').value ? ' č. ' + $('#zp-no').value : ''), fmtDY($('#zp-date').value || today), ZC.present.length ? 'přítomno ' + ZC.present.length : '', $('#zp-place').value].filter(Boolean).join(' · '); };
+  const zHsum = () => { $('#zp-big').textContent = `Zápis z porady${$('#zp-no').value ? ' č. ' + $('#zp-no').value : ''} · ${fmtDY($('#zp-date').value || today)}`; $('#zp-hsum').textContent = [($('#zp-title').value || 'Porada') + ($('#zp-no').value ? ' č. ' + $('#zp-no').value : ''), fmtDY($('#zp-date').value || today), ZC.present.length ? 'přítomno ' + ZC.present.length : '', $('#zp-place').value].filter(Boolean).join(' · '); };
   function zList() {
     const ps = PORADY();
     $('#zp-list').innerHTML = `<option value="">+ Nový zápis${ps.length ? ' (z minulého)' : ''}</option>${ps.length ? '<option value="__blank">+ Prázdný zápis</option>' : ''}` + ps.map(r => `<option value="${esc(r.id)}"${r.id === ZC.id ? ' selected' : ''}>${esc(zLabel(r))}</option>`).join('');
@@ -3864,41 +3928,51 @@ ${tydenniHtml.toString()}
     $('#zp-next').textContent = n ? `Propsat nové body (${n} ${zN(n, 'úkol', 'úkoly', 'úkolů')}) ↑` : 'Propsat nové body ↑';
   }
   const zPeopleAll = () => [...new Set([...owners().filter(n => n !== 'Bez přiřazení'), ...(ZC.rows || []).map(r => r.owner).filter(Boolean)])].sort((a, b) => a.localeCompare(b, 'cs'));
-  // tabulka úkolů seskupená podle osob
+  // úkoly v zápisu: podle čísla úkolu (jedna tabulka), nebo podle osob; pořadí se řídí jen číslem, změna termínu ho nemění
+  let zVw = ['cislo', 'osoby'].includes(store.get('hyb-zview')) ? store.get('hyb-zview') : 'cislo', zFo = '';
   function zRender() {
     if (!ZC) return;
-    const team = owners(), all = zPeopleAll(), act = (ZC.rows || []).filter(r => !r.off && !r.doneAt);
+    zNumber(ZC);
+    const team = owners(), all = zPeopleAll(), act0 = (ZC.rows || []).filter(r => !r.off && !r.doneAt).sort((a, b) => (a.n || 0) - (b.n || 0));
+    const act = zFo ? act0.filter(r => r.owner === zFo || (r.with || []).includes(zFo)) : act0;
     const groups = {}; act.forEach(r => (groups[r.owner || ''] ||= []).push(r));
     const names = Object.keys(groups).sort((a, b) => (a ? 0 : 1) - (b ? 0 : 1) || a.localeCompare(b, 'cs'));
-    const noOwner = (groups[''] || []).length, noEnd = act.filter(r => !r.end && !r.perm).length;
-    $('#zp-n').textContent = act.length ? `${act.length} ${zN(act.length, 'úkol', 'úkoly', 'úkolů')} · ${names.filter(Boolean).length} ${zN(names.filter(Boolean).length, 'osoba', 'osoby', 'osob')}` : '';
-    $('#zp-sum').innerHTML = noOwner || noEnd ? `Zbývá doplnit: ${noOwner ? `<b>${noOwner}× osoba</b>` : ''}${noOwner && noEnd ? ', ' : ''}${noEnd ? `<b>${noEnd}× termín</b>` : ''}. Klikněte do žlutého políčka a vyberte.` : act.length ? 'Všechny úkoly mají osobu i termín. Zkontrolujte a klikněte <b>Uzavřít zápis a odeslat</b>.' : '';
+    const noOwner = act0.filter(r => !r.owner).length, noEnd = act0.filter(r => !r.end && !r.perm).length, nP = new Set(act0.map(r => r.owner).filter(Boolean)).size;
+    $('#zp-n').textContent = act0.length ? `${act0.length} ${zN(act0.length, 'úkol', 'úkoly', 'úkolů')} · ${nP} ${zN(nP, 'osoba', 'osoby', 'osob')}` : '';
+    $('#zp-sum').innerHTML = noOwner || noEnd ? `Zbývá doplnit: ${noOwner ? `<b>${noOwner}× osoba</b>` : ''}${noOwner && noEnd ? ', ' : ''}${noEnd ? `<b>${noEnd}× termín</b>` : ''}. Klikněte do žlutého políčka a vyberte.` : act0.length ? 'Všechny úkoly mají osobu i termín. Zkontrolujte a klikněte <b>Uzavřít zápis a odeslat</b>.' : '';
+    document.querySelectorAll('#zp-vw [data-zv]').forEach(b => b.setAttribute('aria-pressed', b.dataset.zv === zVw));
+    const fo = $('#zp-fo'), fos = [...new Set(act0.flatMap(r => [r.owner, ...(r.with || [])]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'cs'));
+    if (zFo && !fos.includes(zFo)) fos.unshift(zFo);
+    fo.innerHTML = `<option value="">Všechny osoby</option>${fos.map(n => `<option${n === zFo ? ' selected' : ''}>${esc(n)}</option>`).join('')}`;
+    const prev = zPrevMap(ZC);
     const sel = r => `<select data-f="owner" class="${r.owner ? '' : 'miss'}" aria-label="Osoba"><option value="">— vyberte osobu —</option>${all.map(n => `<option${n === r.owner ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>${(r.with || []).map(w => `<span class="zp-w">${esc(w)}<button type="button" data-wx="${esc(w)}" title="Odebrat ${esc(w)} z úkolu">×</button></span>`).join('')}${r.owner ? `<select data-f="with" class="zp-wadd" aria-label="Přidat další osobu"><option value="">+ další osoba</option>${all.filter(n => n !== r.owner && !(r.with || []).includes(n)).map(n => `<option>${esc(n)}</option>`).join('')}</select>` : ''}`;
-    $('#zp-groups').innerHTML = !act.length ? `<div class="zp-empty">Zatím žádný úkol. Dole do <b>Nových bodů</b> napište úkol jako řádek se jménem za pomlčkou, třeba <i>Radiátory osadit – Petr – do pátku</i>a klikněte <b>Propsat nové body</b>. Nebo klikněte <b>+ Přidat úkol</b>.</div>` : names.map(n => {
-      const p = n ? personOf(n) : {}, rs = groups[n].sort((a, b) => (a.end || '9').localeCompare(b.end || '9'));
-      return `<div class="zp-g${n ? '' : ' none'}"><div class="zp-gh">${n ? `<span class="av" style="background:${pcol(n)}">${esc(initials(n))}</span><b>${esc(n)}</b>` : '<b>Čeká na přiřazení odpovědné osoby</b>'}
-          <span class="hcap">${rs.length} ${zN(rs.length, 'úkol', 'úkoly', 'úkolů')}${n ? (team.includes(n) ? '' : ' · nová osoba') + (p.email ? ' · ' + esc(p.email) : ' · <span class="zp-bad">chybí e-mail</span>') : ' · vyberte, kdo úkol udělá'}</span>
+    const tr = r => { const i = ZC.rows.indexOf(r), tk = zTaskOf(ZC, r), inApp = !!tk, late = r.end && r.end < today && !zDone(tk), ch = zChg(prev, r);
+      const tags = [ch.nov ? '<span class="zp-tg nov">nový bod</span>' : '', ch.title != null ? `<span class="zp-tg txt" title="${esc(ch.title)}">upraven text</span>` : '', ch.owner != null ? `<span class="zp-tg os">dříve ${esc(ch.owner || 'bez osoby')}</span>` : '', ch.end != null ? `<span class="zp-tg dt">termín dříve ${esc(ch.end ? fmtDY(ch.end) : 'žádný')}</span>` : '', inApp ? (zDone(tk) ? '<span class="zp-okt">✓ splněno</span>' : '<span class="zp-okt">✓ v úkolech</span>') : ''].filter(Boolean).join(' ');
+      return `<tr data-i="${i}" id="zp-r-${i}"><td class="c"><b>${r.n || ''}</b></td>
+        <td><textarea data-f="title" rows="1" aria-label="Úkol">${esc(r.title)}</textarea><div class="zp-navrh" data-nv="${i}"${r.navrh ? '' : ' hidden'}>${r.navrh ? zNavrhHtml(r.navrh) : ''}</div>${r.asked && !r.owner ? `<div class="hcap">v zápisu: ${esc(r.asked)}</div>` : ''}${tags ? `<div class="hcap">${tags}</div>` : ''}</td>
+        <td class="o">${sel(r)}</td>
+        <td class="d">${r.perm ? `<div class="zp-perm">Trvalý úkol</div><div class="zp-q"><button type="button" data-noperm>Zadat termín</button></div>` : `<input data-f="end" type="date" value="${esc(r.end || '')}" class="${r.end ? (late ? 'late' : '') : 'miss'}" aria-label="Termín" title="Klikněte a vyberte termín">${zOsa(r)}<div class="zp-q">${[['zitra', 'Zítra'], ['patek', 'Pátek'], ['tyden', 'Týden'], ['dva', '14 dní']].map(([k, l]) => `<button type="button" data-qd="${k}">${l}</button>`).join('')}</div><div class="zp-q"><button type="button" data-perm title="Úkol bez data, plní se po celou stavbu nebo delší dobu">Trvalý úkol</button></div>`}${!r.end && !r.perm && r.note ? `<div class="hcap">${esc(r.note)}</div>` : ''}</td>
+        <td class="x"><button type="button" class="zp-ok" data-done title="Úkol je hotový: zmizí ze zápisu a v Úkolech se označí jako splněný">Splněno</button><button type="button" class="zp-rm" data-del title="Odebrat úkol z tabulky i z Úkolů (jde vrátit v Ostatních bodech)">Odstranit</button></td></tr>`; };
+    const head = `<thead><tr><th class="c">Č.</th><th>Úkol</th><th class="o">Osoba</th><th class="d">Termín a časová osa</th><th class="x"></th></tr></thead>`;
+    $('#zp-groups').innerHTML = !act.length ? `<div class="zp-empty">${zFo ? `${esc(zFo)} v tomto zápisu nemá žádný úkol.` : 'Zatím žádný úkol. Nahoře v řádku <b>Nový úkol z porady</b> napište, co se má udělat, vyberte osobu a termín a klikněte <b>Vytvořit úkol</b>.'}</div>`
+      : zVw === 'cislo' ? `<div class="zp-g"><table class="zp-t">${head}<tbody>${act.map(tr).join('')}</tbody></table></div>`
+      : names.map(n => {
+        const p = n ? personOf(n) : {}, rs = groups[n];
+        return `<div class="zp-g${n ? '' : ' none'}"><div class="zp-gh">${n ? `<span class="av" style="background:${pcol(n)}">${esc(initials(n))}</span><b>${esc(n)}</b>` : '<b>Čeká na přiřazení odpovědné osoby</b>'}
+          <span class="hcap">${rs.length} ${zN(rs.length, 'úkol', 'úkoly', 'úkolů')}${n ? (team.includes(n) ? '' : ' · není v Lidech') + (p.email ? ' · ' + esc(p.email) : ' · <span class="zp-bad">chybí e-mail</span>') : ' · vyberte, kdo úkol udělá'}</span>
           <span class="zp-sp"></span>${n && !p.email ? `<button type="button" class="btn" data-pe="${esc(n)}">Doplnit e-mail</button>` : ''}<button type="button" class="btn" data-add="${esc(n)}">+ Úkol${n ? ' pro ' + esc(n) : ''}</button></div>
-        <table class="zp-t"><thead><tr><th class="c">#</th><th>Úkol</th><th class="o">Osoba</th><th class="d">Termín</th><th class="x"></th></tr></thead><tbody>
-        ${rs.map(r => { const i = ZC.rows.indexOf(r), tk = zTaskOf(ZC, r), inApp = !!tk, late = r.end && r.end < today && !zDone(tk);
-          return `<tr data-i="${i}"><td class="c">${act.indexOf(r) + 1}</td>
-            <td><textarea data-f="title" rows="1" aria-label="Úkol">${esc(r.title)}</textarea>${r.asked && !r.owner ? `<div class="hcap">v zápisu: ${esc(r.asked)}</div>` : ''}${inApp ? `<div class="hcap">${inApp ? (zDone(tk) ? '<span class="zp-okt">✓ splněno</span>' : '<span class="zp-okt">✓ v úkolech</span>') : ''}</div>` : ''}</td>
-            <td class="o">${sel(r)}</td>
-            <td class="d">${r.perm ? `<div class="zp-perm">Trvalý úkol</div><div class="zp-q"><button type="button" data-noperm>Zadat termín</button></div>` : `<input data-f="end" type="date" value="${esc(r.end || '')}" class="${r.end ? (late ? 'late' : '') : 'miss'}" aria-label="Termín" title="Klikněte a vyberte termín"><div class="zp-q">${[['zitra', 'Zítra'], ['patek', 'Pátek'], ['tyden', 'Týden'], ['dva', '14 dní']].map(([k, l]) => `<button type="button" data-qd="${k}">${l}</button>`).join('')}</div><div class="zp-q"><button type="button" data-perm title="Úkol bez data, plní se po celou stavbu nebo delší dobu">Trvalý úkol</button></div>`}${late ? `<div class="hcap lt">po termínu ${dayDiff(r.end, today)} ${zN(dayDiff(r.end, today), 'den', 'dny', 'dní')}</div>` : !r.end && !r.perm && r.note ? `<div class="hcap">${esc(r.note)}</div>` : ''}</td>
-            <td class="x"><button type="button" class="zp-ok" data-done title="Úkol je hotový: zmizí ze zápisu a v Úkolech se označí jako splněný">Splněno</button><button type="button" class="zp-rm" data-del title="Odebrat úkol z tabulky i z Úkolů (jde vrátit v Ostatních bodech)">Odstranit</button></td></tr>`; }).join('')}
-        </tbody></table></div>`;
-    }).join('');
+        <table class="zp-t">${head}<tbody>${rs.map(tr).join('')}</tbody></table></div>`;
+      }).join('');
     const off = (ZC.rows || []).filter(r => r.off), notes = ZC.notes || [], fin = (ZC.rows || []).filter(r => r.doneAt && !r.off);
     $('#zp-info').innerHTML = (!notes.length && !off.length ? (fin.length ? '' : '<p class="hcap">Žádné další body.</p>') :
-      notes.map((x, j) => `<div class="zp-note"><textarea data-note="${j}" rows="1" aria-label="Bod porady">${esc(x.text)}</textarea><button type="button" class="btn" data-mk="${j}">Udělat úkol</button><button type="button" class="btn" data-nd="${j}" title="Odstranit bod">Odstranit</button></div>`).join('') +
-      (off.length ? `<p class="hcap" style="margin:10px 0 0">Odebrané z úkolů:</p>` + off.map(r => `<div class="zp-il"><span>${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-back="${ZC.rows.indexOf(r)}">Vrátit do úkolů</button><button type="button" class="btn" data-rmoff="${ZC.rows.indexOf(r)}" title="Smazat bod ze zápisu úplně">Odstranit</button></div>`).join('') : '')) +
-      (fin.length ? `<p class="hcap" style="margin:10px 0 0">Splněné na této poradě:</p>` + fin.map(r => `<div class="zp-il"><span>✓ ${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-undone="${ZC.rows.indexOf(r)}">Vrátit, není hotové</button></div>`).join('') : '');
+      notes.map((x, j) => `<div class="zp-note"><div style="flex:1;min-width:0"><textarea data-note="${j}" rows="1" aria-label="Bod porady">${esc(x.text)}</textarea><div class="zp-navrh" data-nn="${j}"${x.navrh ? '' : ' hidden'}>${x.navrh ? zNavrhHtml(x.navrh) : ''}</div></div><button type="button" class="btn" data-mk="${j}">Udělat úkol</button><button type="button" class="btn" data-nd="${j}" title="Odstranit bod">Odstranit</button></div>`).join('') +
+      (off.length ? `<p class="hcap" style="margin:10px 0 0">Odebrané z úkolů:</p>` + off.map(r => `<div class="zp-il"><span>${r.n ? r.n + '. ' : ''}${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-back="${ZC.rows.indexOf(r)}">Vrátit do úkolů</button><button type="button" class="btn" data-rmoff="${ZC.rows.indexOf(r)}" title="Smazat bod ze zápisu úplně">Odstranit</button></div>`).join('') : '')) +
+      (fin.length ? `<p class="hcap" style="margin:10px 0 0">Splněné na této poradě:</p>` + fin.map(r => `<div class="zp-il"><span>✓ ${r.n ? r.n + '. ' : ''}${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-undone="${ZC.rows.indexOf(r)}">Vrátit, není hotové</button></div>`).join('') : '');
     const box = $('#zp-edit'), row = el => ZC.rows[Number(el.closest('tr').dataset.i)];
     box.querySelectorAll('textarea[data-f]').forEach(el => { const fit = () => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }; fit();
-      el.oninput = () => { row(el).title = el.value; fit(); zTouch(); zPush(row(el)); }; });
+      el.oninput = () => { const r = row(el); r.title = el.value; fit(); zTouch(); zPush(r); zNavrhLater(el, r, $(`#zp-groups [data-nv="${ZC.rows.indexOf(r)}"]`)); }; });
     box.querySelectorAll('select[data-f=owner]').forEach(el => el.onchange = () => {
       const r = row(el);
-      if (el.value === '__new') { zNewPerson(n => { r.owner = n; r.with = (r.with || []).filter(x => x !== n); zTouch(); zRender(); }); return; }
       r.owner = el.value; r.with = r.owner ? (r.with || []).filter(x => x !== r.owner) : []; zPush(r); zTouch(); zRender();
     });
     box.querySelectorAll('select[data-f=with]').forEach(el => el.onchange = () => { const r = row(el); if (el.value) r.with = [...(r.with || []), el.value]; zPush(r); zTouch(); zRender(); });
@@ -3916,11 +3990,13 @@ ${tydenniHtml.toString()}
     const md = ZC.date || today, qd = {zitra: addD(md, 1), patek: addD(md, (5 - pd(md).getDay() + 7) % 7 || 7), tyden: addD(md, 7), dva: addD(md, 14)};
     box.querySelectorAll('[data-qd]').forEach(b => b.onclick = () => { row(b).end = qd[b.dataset.qd]; zPush(row(b)); zTouch(); zRender(); });
     box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { const r = row(b); r.off = true; zDropTask(r); zTouch(); zRender(); });
-    box.querySelectorAll('[data-add]').forEach(b => b.onclick = () => zAddRow(b.dataset.add));
+    box.querySelectorAll('[data-add]').forEach(b => b.onclick = () => zEntryFocus(b.dataset.add));
     box.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => personDialog(b.dataset.pe));
+    box.querySelectorAll('[data-nv]').forEach(el => zNavrhWire(el, () => ZC.rows[Number(el.dataset.nv)], v => { const r = ZC.rows[Number(el.dataset.nv)]; r.title = v; zPush(r); }));
     const ib = $('#zp-info');
     ib.querySelectorAll('textarea[data-note]').forEach(el => { const fit = () => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }; fit();
-      el.oninput = () => { ZC.notes[Number(el.dataset.note)].text = el.value; fit(); zTouch(); }; });
+      el.oninput = () => { const x = ZC.notes[Number(el.dataset.note)]; x.text = el.value; fit(); zTouch(); zNavrhLater(el, x, ib.querySelector(`[data-nn="${el.dataset.note}"]`)); }; });
+    ib.querySelectorAll('[data-nn]').forEach(el => zNavrhWire(el, () => ZC.notes[Number(el.dataset.nn)], v => { ZC.notes[Number(el.dataset.nn)].text = v; }));
     ib.querySelectorAll('[data-nd]').forEach(b => b.onclick = () => { ZC.notes.splice(Number(b.dataset.nd), 1); zTouch(); zRender(); });
     ib.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { ZC.rows[Number(b.dataset.back)].off = false; zTouch(); zRender(); });
     ib.querySelectorAll('[data-undone]').forEach(b => b.onclick = () => { const r = ZC.rows[Number(b.dataset.undone)], t = zTaskOf(ZC, r), now = new Date().toISOString();
@@ -3931,10 +4007,9 @@ ${tydenniHtml.toString()}
       confirmModal('Odstranit bod ze zápisu?', `<p><b>${esc(r.title)}</b></p><p class="hcap">Bod zmizí ze zápisu úplně a nepůjde vrátit.</p>`, 'Odstranit', () => { zDropTask(r); ZC.rows.splice(ZC.rows.indexOf(r), 1); zTouch(); zRender(); }); });
     ib.querySelectorAll('[data-mk]').forEach(b => b.onclick = () => {
       const x = ZC.notes[Number(b.dataset.mk)], p = zParse(x.text, ZC.date || today, zPeople());
-      zTaskDialog({nadpis: 'Udělat úkol', title: p.title || x.text, owner: p.owners[0] || '', end: p.end}, v => {
+      zTaskDialog({nadpis: 'Udělat úkol', title: p.title || x.text, owner: p.owners.find(o => team.includes(o)) || '', end: p.end}, v => {
         ZC.notes = ZC.notes.filter(y => y !== x);
-        ZC.rows.push(Object.assign({key: 'm:' + uid(), manual: 'new', carried: true, with: []}, v));
-        zTouch(); zRender(); });
+        zCreate(Object.assign({key: 'm:' + uid(), manual: 'new', carried: true, with: []}, v)); });
     });
   }
   function zAddRow(owner) {
@@ -3961,6 +4036,7 @@ ${tydenniHtml.toString()}
     Object.assign(ZC, {kind: 'porada', owner: '', text: 'Zápis z porady ' + zLabel(ZC), editedAt: now, editedBy: me()});
     delete ZC.ov;
     const rec = clone(ZC), i = D.diary.findIndex(e => e.id === ZC.id);
+    (rec.rows || []).forEach(r => { delete r.navrh; delete r.navrhNe; }); (rec.notes || []).forEach(x => { delete x.navrh; delete x.navrhNe; });
     if (i >= 0) D.diary[i] = rec; else D.diary.push(rec);
     clearTimeout(zT); commit(); zDirty = false; store.set(ZDRAFT, ''); zState(); zList();
     if (!silent) toast('Zápis uložen');
@@ -3992,7 +4068,7 @@ ${tydenniHtml.toString()}
       </ol>
       ${noMail.length ? `<p style="color:var(--bad)">Bez e-mailu: <b>${noMail.map(esc).join(', ')}</b>. Ti e-mail nedostanou, dokud jim ho nedoplníte (v tabulce tlačítko Doplnit e-mail).</p>` : ''}
       ${ZAPIS_TEST ? '<p class="hcap">Zkušební verze: e-maily neodejdou samy. Další okno vám je připraví a odešlete je ze svého e-mailu jedním kliknutím.</p>' : ''}`,
-      'Uzavřít a odeslat', () => { ZC.closedAt = new Date().toISOString(); zApply(plan); const m = zMailPlan(rows); setTimeout(() => zSend(m), 0); });
+      'Uzavřít a odeslat', () => { ZC.closedAt = new Date().toISOString(); ZC.snap = zSnap(ZC); zApply(plan); const m = zMailPlan(rows); setTimeout(() => zSend(m), 0); });
   }
   // komu poslat: jen úkoly, které ještě neodešly, nebo se od odeslání změnily
   function zMailPlan(rows) {
@@ -4001,7 +4077,7 @@ ${tydenniHtml.toString()}
     (ZC.present || []).forEach(n => { mail[n] ||= []; });
     return mail;
   }
-  function zApply(plan) {
+  function zApply(plan, quiet) {
     const now = new Date().toISOString(), meet = ZC.date || today, label = `Zápis z porady ${fmtDY(meet)}${ZC.no ? ' č. ' + ZC.no : ''}`;
     let nA = 0, nU = 0;
     plan.forEach(({r, t}) => {
@@ -4020,7 +4096,7 @@ ${tydenniHtml.toString()}
       ZC.added[r.key] = id; nA++;
     });
     zSave(true); zRender();
-    toast(nA || nU ? `Uloženo do úkolů: ${nA} nových${nU ? ', ' + nU + ' upraveno' : ''}` : 'Zápis uložen');
+    if (!quiet) toast(nA || nU ? `Uloženo do úkolů: ${nA} nových${nU ? ', ' + nU + ' upraveno' : ''}` : 'Zápis uložen');
   }
   const zSubject = () => `Zápis z porady ${fmtDY(ZC.date)}${ZC.title ? ' – ' + ZC.title : ''}${ZC.no ? ' č. ' + ZC.no : ''}`;
   const zMailText = (n, rows) => zSubject() + '\n\n' + (rows.length ? 'Vaše úkoly z této porady:\n' : 'Z této porady pro vás nejsou žádné úkoly.') + rows.map((r, i) => `${i + 1}. ${r.title.trim()} – ${r.perm ? 'trvalý úkol' : r.end ? 'termín ' + fmtDY(r.end) : r.note || 'bez termínu'}${(r.with || []).length ? ' (spolu s ' + r.with.join(', ') + ')' : ''}`).join('\n');
@@ -4127,21 +4203,24 @@ ${tydenniHtml.toString()}
     if (ZAPIS_TEST || !SY) { zMailtoDialog(mail); return; }
     toast('Posílám e-maily…');
     if (sync.dirty || sync.busy) await new Promise(res => { const tm = setTimeout(res, 40000), prev = sync.onDone; sync.onDone = () => { clearTimeout(tm); if (prev) prev(); res(); }; if (!sync.busy) syncNow(); });
+    let pdfId = '';
+    try { const v = await call('POST', {key: SY.key, akce: 'verze'}); zVer = Number(v && v.verze) || 0;
+      if (zVer >= 10) { const r = await call('POST', {key: SY.key, akce: 'zapis_pdf', jmeno: zFileName('pdf'), html: zDocHtml(ZC, false)}); if (r && r.id) { pdfId = r.id; ZC.pdf = {id: r.id, url: r.url, at: new Date().toISOString()}; } } } catch (e) {}
     const ok = [], miss = [], bad = [];
     for (const n of names) {
       if (!personOf(n).email) { miss.push(n); continue; }
       const text = zMailText(n, mail[n]);
       let h = 0; for (const c of n + text) h = (h * 31 + c.charCodeAt(0)) >>> 0;
       try {
-        let r = await call('POST', {key: SY.key, akce: 'zapis', cid: `zapis-${ZC.id}-${h.toString(36)}`, to: [n], predmet: zSubject(), html: zMailHtml(n, mail[n])});
+        let r = await call('POST', {key: SY.key, akce: 'zapis', cid: `zapis-${ZC.id}-${h.toString(36)}`, to: [n], predmet: zSubject(), html: zMailHtml(n, mail[n]), pdfId});
         if (!r || r.ok === undefined) r = await call('POST', {key: SY.key, akce: 'mail', cid: `porada-${ZC.id}-${h.toString(36)}`, by: me() || ZC.by || 'Constructo', to: [n], info: false, text, end: mail[n].length === 1 ? mail[n][0].end : '', obj: ''});  // starý skript (verze 3) umí jen text úkolů
         if (r && r.sent) { ok.push(n); zMarkSent(n, mail[n]); } else if (r && r.missing && r.missing.length) miss.push(n); else if (r && r.opakovane) { ok.push(n); zMarkSent(n, mail[n]); } else bad.push(n);
       } catch (e) { bad.push(n); }
     }
-    if (ok.length) zSave(true);
+    if (ok.length || pdfId) zSave(true);
     if (ZC) zRender();
     const rest = {}; [...miss, ...bad].forEach(n => { rest[n] = mail[n]; });
-    if (!miss.length && !bad.length) { confirmModal('Zápis odeslán', `<p>Zápis e-mailem dostali: <b>${ok.map(esc).join(', ')}</b>.</p><p class="hcap">Úkoly najdou v Constructu v záložce Úkoly.</p>`); return; }
+    if (!miss.length && !bad.length) { confirmModal('Zápis odeslán', `<p>Zápis e-mailem dostali: <b>${ok.map(esc).join(', ')}</b>.</p>${pdfId ? '<p>V příloze je zápis v PDF. PDF je uložené i v Archivu zápisů a na Disku Google ve složce „Constructo – zápisy z porad“.</p>' : ''}<p class="hcap">Úkoly najdou v Constructu v záložce Úkoly.</p>`); return; }
     confirmModal('Některé e-maily neodešly', `${ok.length ? `<p>Odesláno: <b>${ok.map(esc).join(', ')}</b>.</p>` : ''}
       ${miss.length ? `<p>Bez e-mailu: <b>${miss.map(esc).join(', ')}</b>. Doplňte e-mail (Lidé → osoba → Upravit osobu) a klikněte znovu na Uzavřít zápis a odeslat.</p>` : ''}
       ${bad.length ? `<p>Nepodařilo se odeslat: <b>${bad.map(esc).join(', ')}</b>. Nejspíš chybí internet nebo je skript na Googlu starý (Data → Automatická synchronizace → Aktualizovat skript).</p>` : ''}`, null, null,
@@ -4164,27 +4243,36 @@ ${tydenniHtml.toString()}
   }
 
   /* hotový zápis: tisk, PDF a Word */
-  // hotový zápis (tisk, Word, e-mail): stejná stavba jako v aplikaci – úkoly v tabulkách podle osob, pod nimi ostatní body
+  // hotový zápis (tisk, PDF, Word, e-mail): úkoly podle osob s trvalými čísly a časovou osou, barevně změny proti minulé poradě, pod nimi ostatní body
   function zDocHtml(rec, word, mine) {
     const info = (rec.notes || []).filter(x => String(x.text || '').trim()).map(x => ({line: x.text}));
-    const rows = (rec.rows || []).filter(r => !r.off && String(r.title || '').trim()), groups = {};
+    const rows = (rec.rows || []).filter(r => !r.off && !r.doneAt && String(r.title || '').trim()).sort((a, b) => (a.n || 0) - (b.n || 0)), groups = {};
     rows.forEach(r => (groups[r.owner || ''] ||= []).push(r));
     const names = Object.keys(groups).sort((a, b) => (a ? 0 : 1) - (b ? 0 : 1) || a.localeCompare(b, 'cs'));
+    const prevRec = zPrevRec(rec), prev = zPrevMap(rec);
+    const done = (rec.rows || []).filter(r => !r.off && String(r.title || '').trim() && (r.doneAt || zDone(zTaskOf(rec, r))));
     const pres = [...(rec.present || [])].join(', ') + (rec.guests ? ((rec.present || []).length ? ', ' : '') + rec.guests : '');
     const F = 'font-family:Arial,Helvetica,sans-serif;', td = 'padding:7px 9px;border-bottom:1px solid #e4e4df;vertical-align:top;font-size:14px;';
     const th = 'padding:6px 9px;text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#6b7279;border-bottom:1px solid #e4e4df;font-weight:600;';
-    let no = 0;
-    const tab = rs => `<table class="zt" style="border-collapse:collapse;width:100%"><thead><tr><th style="${th}width:26px">#</th><th style="${th}">Úkol</th><th style="${th}width:118px">Termín</th></tr></thead><tbody>${rs.map(r => {
-      const t = zTaskOf(rec, r), done = zDone(t) || !!r.doneAt, late = r.end && r.end < today && !done, n = late ? dayDiff(r.end, today) : 0; no++;
-      return `<tr style="${late ? 'background:#fdecea;color:#b3261e;' : ''}"><td style="${td}color:#6b7279">${no}</td><td style="${td}">${esc(r.title)}${(r.with || []).length || done ? `<div style="font-size:12px;color:${done ? '#2f7d4f' : '#6b7279'};margin-top:2px">${[(r.with || []).length ? 'spolu s ' + esc(r.with.join(', ')) : '', done ? '✓ splněno' : ''].filter(Boolean).join(' · ')}</div>` : ''}</td>
-        <td style="${td}white-space:nowrap;font-weight:700">${r.perm ? '<span style="font-weight:400">trvalý úkol</span>' : r.end ? esc(fmtDY(r.end)) : `<span style="color:#9a5b00;font-weight:400">${esc(r.note || 'bez termínu')}</span>`}${late ? `<div style="font-size:12px">po termínu ${n} ${zN(n, 'den', 'dny', 'dní')}</div>` : ''}</td></tr>`; }).join('')}</tbody></table>`;
+    const tag = (bg, c, t) => `<span style="display:inline-block;background:${bg};color:${c};border-radius:4px;padding:0 6px;font-size:11px;font-weight:700;margin-right:4px">${t}</span>`;
+    let nCh = 0;
+    const tab = rs => `<table class="zt" style="border-collapse:collapse;width:100%"><thead><tr><th style="${th}width:34px">Č.</th><th style="${th}">Úkol</th><th style="${th}width:150px">Termín</th></tr></thead><tbody>${rs.map(r => {
+      const late = r.end && r.end < today, ch = zChg(prev, r);
+      if (ch.nov || ch.title != null || ch.owner != null || ch.end != null) nCh++;
+      const pozn = [(r.with || []).length ? 'spolu s ' + esc(r.with.join(', ')) : '', ch.owner != null ? `<span style="color:#1f5fa8">dříve: ${esc(ch.owner || 'bez osoby')}</span>` : ''].filter(Boolean).join(' · ');
+      return `<tr style="${late ? 'background:#fdecea;' : ch.nov ? 'background:#eef7f0;' : ''}"><td style="${td}color:#6b7279;font-weight:700">${r.n || ''}</td>
+        <td style="${td}${ch.title != null ? 'border-left:3px solid #7b4bb7;' : ''}">${ch.nov ? tag('#d7eedd', '#2f7d4f', 'NOVÝ') : ''}${ch.title != null ? tag('#efe6f8', '#7b4bb7', 'UPRAVENO') : ''}${ch.owner != null ? tag('#e3eefb', '#1f5fa8', 'JINÁ OSOBA') : ''}${ch.end != null ? tag('#fff1d6', '#9a5b00', 'NOVÝ TERMÍN') : ''}${esc(r.title)}
+          ${ch.title != null ? `<div style="font-size:12px;color:#7b4bb7;margin-top:2px">původně: <s>${esc(ch.title)}</s></div>` : ''}${pozn ? `<div style="font-size:12px;color:#6b7279;margin-top:2px">${pozn}</div>` : ''}</td>
+        <td style="${td}white-space:nowrap;font-weight:700;${late ? 'color:#b3261e;' : ''}">${ch.end != null ? `<s style="color:#9a5b00;font-weight:400">${esc(ch.end ? fmtDY(ch.end) : 'bez termínu')}</s><br>` : ''}${r.perm ? '<span style="font-weight:400">trvalý úkol</span>' : r.end ? `<span style="${ch.end != null ? 'background:#fff1d6;color:#9a5b00;padding:0 4px;border-radius:3px' : ''}">${esc(fmtDY(r.end))}</span>` : `<span style="color:#9a5b00;font-weight:400">${esc(r.note || 'bez termínu')}</span>`}${zOsaDoc(r)}</td></tr>`; }).join('')}</tbody></table>`;
     const grp = n => { const p = n ? personOf(n) : {}, me_ = mine && n === mine;
       return `<div class="zg" style="border:1px solid ${me_ ? '#F4D23C' : n ? '#e4e4df' : '#e0b100'};border-radius:12px;overflow:hidden;margin:0 0 12px;${me_ ? 'box-shadow:0 0 0 2px #FFF4BF;' : ''}">
         <div class="zgh" style="background:${me_ ? '#FFF4BF' : '#efefeb'};padding:8px 12px;font-size:14px">${n ? `<span style="display:inline-block;width:24px;height:24px;line-height:24px;border-radius:50%;background:${pcol(n)};color:#fff;text-align:center;font-size:10px;font-weight:700;margin-right:8px;vertical-align:middle">${esc(initials(n))}</span><b style="font-size:15px;vertical-align:middle">${esc(n)}</b>` : '<b style="font-size:15px">Čeká na přiřazení odpovědné osoby</b>'}
           <span style="color:#6b7279;font-size:12.5px;margin-left:8px;vertical-align:middle">${groups[n].length} ${zN(groups[n].length, 'úkol', 'úkoly', 'úkolů')}${me_ ? ' · to jste vy' : p.role ? ' · ' + esc(p.role) : ''}</span></div>${tab(groups[n])}</div>`; };
     const order = mine && groups[mine] ? [mine, ...names.filter(n => n !== mine)] : names;
+    const body = rows.length ? order.map(grp).join('') : '<p style="color:#6b7279">Bez otevřených úkolů.</p>';
+    const legend = prev && nCh ? `<div style="font-size:12px;color:#6b7279;margin:-4px 0 10px">Změny proti zápisu č. ${esc(prevRec.no || '')} (${esc(fmtDY(prevRec.date))}): ${tag('#d7eedd', '#2f7d4f', 'NOVÝ')} nový bod ${tag('#fff1d6', '#9a5b00', 'NOVÝ TERMÍN')} změněný termín ${tag('#e3eefb', '#1f5fa8', 'JINÁ OSOBA')} jiná osoba ${tag('#efe6f8', '#7b4bb7', 'UPRAVENO')} upravený text</div>` : '';
     const head = word ? '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' : '<!doctype html><html lang="cs">';
-    return `${head}<head><meta charset="utf-8"><title>Zápis z porady ${esc(fmtDY(rec.date))}</title><style>@page{size:A4;margin:12mm 12mm 14mm}
+    return `${head}<head><meta charset="utf-8"><title>Zápis z porady${rec.no ? ' č. ' + esc(rec.no) : ''} ${esc(fmtDY(rec.date))}</title><style>@page{size:A4;margin:12mm 12mm 14mm}
       @media screen{body{background:#f4f4f1}}
       *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .zg{break-inside:avoid;page-break-inside:avoid}.zgh{break-after:avoid;page-break-after:avoid}
@@ -4201,12 +4289,13 @@ ${tydenniHtml.toString()}
           <td style="vertical-align:top;text-align:right;white-space:nowrap"><div style="font-size:18px;font-weight:800">${esc(fmtDY(rec.date))}</div><div style="color:#6b7279;font-size:13px">${[rec.time, rec.place].filter(Boolean).map(esc).join(' · ')}</div></td>
         </tr></table>
         <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#f4f4f1;border-radius:10px;margin-bottom:14px"><tr>
-          <td style="padding:9px 12px;vertical-align:top;width:62%"><div style="color:#6b7279;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Přítomni</div>${esc(pres || '–')}</td>
+          <td style="padding:9px 12px;vertical-align:top;width:58%"><div style="color:#6b7279;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Přítomni</div>${esc(pres || '–')}</td>
           <td style="padding:9px 12px;vertical-align:top"><div style="color:#6b7279;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Zapsal</div>${esc(rec.by || me() || '')}</td>
-          <td style="padding:9px 12px;vertical-align:top;white-space:nowrap"><div style="color:#6b7279;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Úkoly</div><b>${rows.length}</b>${rows.filter(r => r.end && r.end < today && !zDone(zTaskOf(rec, r))).length ? ` · <b style="color:#b3261e">${rows.filter(r => r.end && r.end < today && !zDone(zTaskOf(rec, r))).length} po termínu</b>` : ''}</td>
+          <td style="padding:9px 12px;vertical-align:top;white-space:nowrap"><div style="color:#6b7279;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Úkoly</div><b>${rows.length}</b>${rows.filter(r => r.end && r.end < today).length ? ` · <b style="color:#b3261e">${rows.filter(r => r.end && r.end < today).length} po termínu</b>` : ''}</td>
         </tr></table>
         <div class="zsec" style="border-top:3px solid #F4D23C;padding-top:10px;margin-bottom:10px"><b style="font-size:17px">Úkoly podle osob</b><span style="color:#6b7279;font-size:13px;margin-left:8px">${rows.length} ${zN(rows.length, 'úkol', 'úkoly', 'úkolů')} · ${names.filter(Boolean).length} ${zN(names.filter(Boolean).length, 'osoba', 'osoby', 'osob')}</span></div>
-        ${rows.length ? order.map(grp).join('') : '<p style="color:#6b7279">Bez úkolů.</p>'}
+        ${legend}${body}
+        ${done.length ? `<div class="zsec" style="margin:18px 0 6px;border-top:3px solid #2f7d4f;padding-top:10px"><b style="font-size:17px">Splněno</b></div><ul class="zinfo" style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.55;color:#2f7d4f">${done.map(r => `<li>${r.n ? r.n + '. ' : ''}${esc(r.title)}${r.owner ? ' – ' + esc(r.owner) : ''}</li>`).join('')}</ul>` : ''}
         ${info.length ? `<div class="zsec" style="margin:18px 0 6px;border-top:3px solid #F4D23C;padding-top:10px"><b style="font-size:17px">Ostatní body porady</b></div><ul class="zinfo" style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.55">${info.map(x => `<li>${esc(x.line.replace(/^[-–•*]\s*/, ''))}</li>`).join('')}</ul>` : ''}
         <p style="color:#9aa0a6;font-size:12px;margin:16px 0 12px">Zapsal ${esc(rec.by || me() || '')} · vyhotoveno ${esc(fmtDY(today))} v aplikaci Constructo</p>
       </div></div></body></html>`;
@@ -4229,15 +4318,175 @@ ${tydenniHtml.toString()}
   }
   function zWord() { if (zHasText()) zPropsat(true); zRead(); download(zFileName('doc'), '﻿' + zDocHtml(ZC, true), 'application/msword'); toast('Zápis uložen do Stažených souborů, otevřete ho ve Wordu.'); }
 
+  /* 4.21: čísla úkolů, nový úkol z horní lišty, návrh textu od Clauda, časová osa, změny proti minulé poradě, archiv */
+  // trvalé číslo úkolu: stejný bod má ve všech zápisech stejné číslo, nový bod dostane další volné
+  function zNumber(rec) {
+    const known = new Map(); let max = 0;
+    [...PORADY().filter(p => p.id !== rec.id), rec].forEach(p => (p.rows || []).concat(p.snap || []).forEach(r => { if (r.n) { max = Math.max(max, r.n); if (!known.has(r.key)) known.set(r.key, r.n); } }));
+    (rec.rows || []).concat(rec.snap || []).forEach(r => {
+      if (!r.n) { r.n = known.get(r.key) || ++max; known.set(r.key, r.n); }
+      if (!r.od) { const t = zTaskOf(rec, r); r.od = (t && t.start) || rec.date || today; }
+    });
+  }
+  // minulý zápis (ten, ze kterého tento vznikl, jinak předchozí číslo) a jeho body tak, jak byly při uzavření
+  function zPrevRec(rec) {
+    const ps = PORADY().filter(p => p.id !== rec.id);
+    return (rec.from && ps.find(p => p.id === rec.from)) || ps.filter(p => Number(p.no) && Number(p.no) < Number(rec.no)).sort((a, b) => Number(b.no) - Number(a.no))[0] || null;
+  }
+  function zPrevMap(rec) {
+    const p = zPrevRec(rec);
+    return p ? new Map((p.snap || p.rows || []).filter(r => !r.off).map(r => [r.key, r])) : null;
+  }
+  // co se u bodu změnilo od minulé porady (null = beze změny)
+  function zChg(prev, r) {
+    if (!prev) return {};
+    const p = prev.get(r.key);
+    if (!p) return {nov: true};
+    return {title: String(p.title || '').trim() !== String(r.title || '').trim() ? String(p.title || '') : null,
+      owner: (p.owner || '') !== (r.owner || '') ? (p.owner || '') : null,
+      end: !r.perm && !p.perm && (p.end || '') !== (r.end || '') ? (p.end || '') : null};
+  }
+  // časová osa: od zadání do termínu, svislá čárka = dnes
+  function zOsaData(r) {
+    if (r.perm || !r.end) return null;
+    let od = r.od || today; if (od >= r.end) od = addD(r.end, -1);
+    const total = Math.max(1, dayDiff(od, r.end)), x = Math.min(1, Math.max(0, dayDiff(od, today) / total)), left = dayDiff(today, r.end);
+    const st = left < 0 ? 'late' : left <= 2 || x >= .75 ? 'soon' : 'ok';
+    const txt = left < 0 ? `po termínu ${-left} ${zN(-left, 'den', 'dny', 'dní')}` : left === 0 ? 'termín je dnes' : `zbývá ${left} ${zN(left, 'den', 'dny', 'dní')}`;
+    return {od, x, st, txt};
+  }
+  function zOsa(r) {
+    const o = zOsaData(r); if (!o) return '';
+    return `<div class="zp-osa ${o.st}" title="Zadáno ${esc(fmtDY(o.od))}, termín ${esc(fmtDY(r.end))}, dnes ${esc(fmtDY(today))}"><i style="width:${(o.x * 100).toFixed(1)}%"></i><b style="left:${(o.x * 100).toFixed(1)}%"></b></div><div class="zp-osat"><span>${esc(fmtD(o.od))}</span><em>${esc(o.txt)}</em><span>${esc(fmtD(r.end))}</span></div>`;
+  }
+  const ZOSA_BARVY = {ok: '#2f7d4f', soon: '#c27a00', late: '#b3261e'};
+  function zOsaDoc(r) {
+    const o = zOsaData(r); if (!o) return '';
+    return `<div style="position:relative;height:6px;background:#e4e4df;border-radius:3px;margin-top:6px;overflow:hidden"><div style="width:${(o.x * 100).toFixed(1)}%;height:6px;background:${ZOSA_BARVY[o.st]}"></div></div><div style="font-size:11px;font-weight:400;color:${o.st === 'ok' ? '#6b7279' : ZOSA_BARVY[o.st]};margin-top:2px">${esc(o.txt)}</div>`;
+  }
+
+  // návrh odborného textu od Clauda: objeví se pod textem, jde použít, nebo nechat vlastní text
+  const ZNV = {}, ZAPIS_NAVRHY = {};  // ZAPIS_NAVRHY: jen zkušební verze, připravené ukázky
+  let zNvOff = false;
+  const zNavrhHtml = v => `<span class="zp-nvl">✨ Návrh od Clauda</span><span class="zp-nvt">${esc(v)}</span><span class="zp-nvb"><button type="button" class="btn primary" data-nvu>Použít</button><button type="button" class="btn" data-nvk>Nechat můj text</button></span>`;
+  async function zNavrhGet(t) {
+    t = String(t || '').trim().replace(/\s+/g, ' ');
+    if (t.split(' ').length < 3) return '';
+    if (ZNV[t] !== undefined) return ZNV[t];
+    let v = '';
+    if (ZAPIS_TEST) v = ZAPIS_NAVRHY[zf(t).replace(/[^a-z0-9]+/g, ' ').trim()] || '';
+    else if (SY && !RO() && !zNvOff) {
+      try { const r = await call('POST', {key: SY.key, akce: 'formulace', text: t, stavba: (D.project && D.project.name) || ''});
+        if (r && typeof r.text === 'string') v = r.text.trim(); else if (!r || r.error === 'klic' || r.error === 'heslo' || r.text === undefined) zNvOff = true; } catch (e) {}
+    }
+    if (v === t) v = '';
+    ZNV[t] = v; return v;
+  }
+  // po chvíli bez psaní zeptat se na návrh; obj = řádek, bod nebo rozepsaný nový úkol
+  function zNavrhLater(el, obj, box) {
+    if (!box) return;
+    clearTimeout(el._nvT);
+    if (obj.navrh) { delete obj.navrh; box.hidden = true; }
+    el._nvT = setTimeout(async () => {
+      const t = el.value.trim(); if (!t || t === obj.navrhNe) return;
+      const v = await zNavrhGet(t);
+      if (!v || el.value.trim() !== t || !box.isConnected) return;
+      obj.navrh = v; box.innerHTML = zNavrhHtml(v); box.hidden = false; zNavrhWire(box, () => obj, null);
+    }, 1400);
+  }
+  function zNavrhWire(box, getObj, apply) {
+    const ta = box.previousElementSibling, fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; };
+    const u = box.querySelector('[data-nvu]'), k = box.querySelector('[data-nvk]');
+    if (u) u.onclick = () => { const o = getObj(), v = o.navrh; if (!v) return; ta.value = v; fit(); if (apply) apply(v); else if (ta.dataset.f === 'title' || ta.dataset.note != null) ta.dispatchEvent(new Event('input')); o.navrhNe = v; delete o.navrh; box.hidden = true; if (ZC) zTouch(); };
+    if (k) k.onclick = () => { const o = getObj(); o.navrhNe = ta.value.trim(); delete o.navrh; box.hidden = true; };
+  }
+
+  // nový úkol z porady (řádek nahoře): text, osoba, termín → Vytvořit úkol
+  const ZE = {};
+  function zEntryFill() {
+    const sel = $('#zp-e-owner'), v = sel.value;
+    sel.innerHTML = `<option value="">— kdo to udělá —</option>${zPeopleAll().map(n => `<option${n === v ? ' selected' : ''}>${esc(n)}</option>`).join('')}`;
+    sel.classList.toggle('miss', !sel.value);
+  }
+  function zEntryFocus(owner) {
+    if (owner) { zEntryFill(); $('#zp-e-owner').value = owner; $('#zp-e-owner').classList.remove('miss'); }
+    const e = $('#zp-entry'); e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
+    $('#zp-e-text').focus();
+  }
+  function zEntryAdd(note) {
+    const ta = $('#zp-e-text'), text = ta.value.trim().replace(/\s+/g, ' ');
+    if (!text) { toast(note ? 'Napište text bodu.' : 'Napište, co se má udělat.'); ta.focus(); return; }
+    if (note) { ZC.notes = [...(ZC.notes || []), {id: uid(), text}]; zTouch(); zRender(); toast('Přidáno do Ostatních bodů porady'); }
+    else zCreate({key: 'm:' + uid(), manual: 'new', carried: true, with: [], title: text, owner: $('#zp-e-owner').value, end: $('#zp-e-end').value});
+    ta.value = ''; ta.style.height = ''; $('#zp-e-end').value = ''; $('#zp-e-owner').value = ''; $('#zp-e-owner').classList.add('miss');
+    delete ZE.navrh; delete ZE.navrhNe; $('#zp-e-navrh').hidden = true; ta.focus();
+  }
+  // úkol se hned propíše do zápisu (k osobě) i do záložky Úkoly, stejně jako všude jinde
+  function zCreate(r) {
+    r.od = r.od || ZC.date || today;
+    ZC.rows.push(r); zNumber(ZC);
+    if (!RO()) zApply([{r, t: null}], true); else { zTouch(); zRender(); }
+    toast(`Úkol č. ${r.n} vytvořen${r.owner ? ' · ' + r.owner : ' · čeká na osobu'}`);
+    setTimeout(() => { const el = $('#zp-r-' + ZC.rows.indexOf(r)); if (el) { el.scrollIntoView({block: 'center', behavior: 'smooth'}); el.classList.add('zp-new'); } }, 60);
+  }
+
+  // 4.21: dosavadní zápis se označí jako zápis z porady z 3. 11. 2026 (den, kdy to Luboš zadal), všechny zápisy dostanou pořadové číslo
+  const Z421_DATUM = '2026-11-03';
+  function zOznac421() {
+    if (RO()) return;
+    const ps = PORADY(); if (!ps.length || ps.some(p => p.m421)) return;
+    const asc = [...ps].sort((a, b) => (Number(a.no) || 1e9) - (Number(b.no) || 1e9) || (a.at || a.date || '').localeCompare(b.at || b.date || ''));
+    let max = Math.max(0, ...asc.map(p => Number(p.no) || 0));
+    asc.forEach(p => { if (!Number(p.no)) p.no = String(++max); p.m421 = true; if (!p.title) p.title = 'Kontrolní den stavby'; });
+    asc.forEach(p => zNumber(p));
+    const last = asc.sort((a, b) => Number(b.no) - Number(a.no))[0];
+    last.date = Z421_DATUM;
+    ps.forEach(p => { p.text = 'Zápis z porady ' + zLabel(p); });
+    commit();
+  }
+  const zSnap = rec => clone((rec.rows || []).filter(r => !r.off && String(r.title || '').trim())).map(r => { delete r.navrh; delete r.navrhNe; return r; });
+
+  // archiv: řazení a filtr podle data porady, vytvoření, změny a osoby; každý zápis jde zobrazit (se změnami barevně), otevřít a stáhnout jeho PDF
+  const ZA = {sort: 'cislo', osoba: '', od: '', do: '', pole: 'porada'};
   function zArchive() {
-    const ps = PORADY().sort((a, b) => (Number(b.no) || 0) - (Number(a.no) || 0) || (b.date || '').localeCompare(a.date || ''));
-    confirmModal('Archiv zápisů z porad', ps.length ? `<p class="hcap" style="margin-top:0">${ps.length} ${zN(ps.length, 'zápis', 'zápisy', 'zápisů')}, nejnovější nahoře.</p><div style="max-height:60vh;overflow:auto">` + ps.map(r => { const n = zActive(r).length;
-        return `<div class="zp-arch"><b style="min-width:52px">č. ${esc(r.no || '–')}</b><span style="flex:1">${esc(fmtDY(r.date))} · ${esc(r.title || 'Porada')}<br><span class="hcap">${n} ${zN(n, 'úkol', 'úkoly', 'úkolů')} · ${(r.notes || []).length} ${zN((r.notes || []).length, 'ostatní bod', 'ostatní body', 'ostatních bodů')} · ${r.closedAt ? 'uzavřeno ' + esc(fmtD(r.closedAt.slice(0, 10))) : 'neuzavřeno'}</span></span><button type="button" class="btn" data-av="${esc(r.id)}">Zobrazit</button><button type="button" class="btn" data-ao="${esc(r.id)}">Otevřít</button></div>`; }).join('') + '</div>' : '<p>Zatím není uložený žádný zápis.</p>');
-    const ov = $('#overlay');
-    ov.querySelectorAll('[data-av]').forEach(b => b.onclick = () => { const r = D.diary.find(e => e.id === b.dataset.av); if (r) zView(`Zápis z porady č. ${r.no || ''} · ${fmtDY(r.date)}`, zDocHtml(clone(r), false)); });
-    ov.querySelectorAll('[data-ao]').forEach(b => b.onclick = () => { const id = b.dataset.ao; $('#m-cancel').click();
-      const go = () => { store.set(ZDRAFT, ''); poradaOpen(id); };
-      if (!zDirty) go(); else setTimeout(() => confirmModal('Otevřít jiný zápis?', '<p>V tomto zápisu jsou neuložené změny.</p>', 'Uložit a otevřít', () => { zSave(); go(); }, [['Zahodit změny', go]]), 0); });
+    const lide = [...new Set([...owners().filter(n => n !== 'Bez přiřazení'), ...PORADY().flatMap(r => [r.by, r.editedBy, ...(r.present || [])])].filter(Boolean))].sort((a, b) => a.localeCompare(b, 'cs'));
+    confirmModal('Archiv zápisů z porad', `
+      <div class="zp-af">
+        <label>Seřadit<select id="za-sort"><option value="cislo">podle čísla porady</option><option value="porada">podle data porady</option><option value="vytvoreno">podle data vytvoření</option><option value="zmeneno">podle poslední změny</option><option value="osoba">podle osoby (zapsal)</option></select></label>
+        <label>Osoba<select id="za-osoba"><option value="">všichni</option>${lide.map(n => `<option>${esc(n)}</option>`).join('')}</select></label>
+        <label>Datum<select id="za-pole"><option value="porada">porady</option><option value="vytvoreno">vytvoření</option><option value="zmeneno">změny</option></select></label>
+        <label>od<input id="za-od" type="date"></label><label>do<input id="za-do" type="date"></label>
+      </div>
+      <p class="hcap" id="za-n" style="margin:8px 0 4px"></p><div id="za-list" style="max-height:58vh;overflow:auto"></div>`);
+    const set = () => { ZA.sort = $('#za-sort').value; ZA.osoba = $('#za-osoba').value; ZA.pole = $('#za-pole').value; ZA.od = $('#za-od').value; ZA.do = $('#za-do').value; draw(); };
+    ['sort', 'osoba', 'pole', 'od', 'do'].forEach(k => { const el = $('#za-' + k); el.value = ZA[k]; el.onchange = set; });
+    const dOf = (r, pole) => pole === 'vytvoreno' ? (r.at || '').slice(0, 10) : pole === 'zmeneno' ? (r.editedAt || r.at || '').slice(0, 10) : r.date || '';
+    const kdo = r => [r.by, r.editedBy, ...(r.present || []), ...(r.snap || r.rows || []).flatMap(x => [x.owner, ...(x.with || [])])];
+    const draw = () => {
+      let ps = PORADY().filter(r => (!ZA.osoba || kdo(r).includes(ZA.osoba)) && (!ZA.od || dOf(r, ZA.pole) >= ZA.od) && (!ZA.do || dOf(r, ZA.pole) <= ZA.do));
+      const k = {cislo: r => String(Number(r.no) || 0).padStart(6, '0'), porada: r => r.date || '', vytvoreno: r => r.at || '', zmeneno: r => r.editedAt || r.at || '', osoba: r => r.by || ''}[ZA.sort];
+      ps = ps.sort((a, b) => ZA.sort === 'osoba' ? k(a).localeCompare(k(b), 'cs') || (Number(b.no) || 0) - (Number(a.no) || 0) : k(b).localeCompare(k(a)) || (Number(b.no) || 0) - (Number(a.no) || 0));
+      $('#za-n').textContent = `${ps.length} ${zN(ps.length, 'zápis', 'zápisy', 'zápisů')}${ZA.osoba || ZA.od || ZA.do ? ' odpovídá výběru' : ''}`;
+      $('#za-list').innerHTML = ps.length ? ps.map(r => { const n = zActive(r).length;
+        return `<div class="zp-arch"><b class="zp-ano">č. ${esc(r.no || '–')}</b><span style="flex:1;min-width:0"><b>${esc(fmtDY(r.date))}</b> · ${esc(r.title || 'Porada')}${r.id === (ZC && ZC.id) ? ' <span class="zp-tg nov">otevřený</span>' : ''}
+          <br><span class="hcap">vytvořil ${esc(r.by || '–')} ${r.at ? esc(fmtD(r.at.slice(0, 10))) : ''} · změna ${esc(r.editedBy || r.by || '–')} ${r.editedAt ? esc(fmtD(r.editedAt.slice(0, 10))) : ''} · ${n} ${zN(n, 'úkol', 'úkoly', 'úkolů')} · ${r.closedAt ? 'uzavřeno ' + esc(fmtD(r.closedAt.slice(0, 10))) : 'rozpracováno'}</span></span>
+          ${r.pdf && r.pdf.url ? `<a class="btn" href="${esc(r.pdf.url)}" target="_blank" rel="noopener">PDF</a>` : ''}<button type="button" class="btn" data-av="${esc(r.id)}">Zobrazit</button><button type="button" class="btn primary" data-ao="${esc(r.id)}">Otevřít</button></div>`; }).join('') : '<p>Výběru neodpovídá žádný zápis.</p>';
+      const ov = $('#overlay');
+      ov.querySelectorAll('[data-av]').forEach(b => b.onclick = () => { const r = clone(D.diary.find(e => e.id === b.dataset.av)); if (!r) return; if (r.snap) r.rows = r.snap; zView(`Zápis z porady č. ${r.no || ''} · ${fmtDY(r.date)}`, zDocHtml(r, false)); });
+      ov.querySelectorAll('[data-ao]').forEach(b => b.onclick = () => { const id = b.dataset.ao; $('#m-cancel').click();
+        const go = () => { store.set(ZDRAFT, ''); poradaOpen(id); };
+        if (!zDirty) go(); else setTimeout(() => confirmModal('Otevřít jiný zápis?', '<p>V tomto zápisu jsou neuložené změny.</p>', 'Uložit a otevřít', () => { zSave(); go(); }, [['Zahodit změny', go]]), 0); });
+    };
+    draw();
+  }
+  // žlutý pruh, když skript na Googlu ještě neumí PDF zápisu a návrhy textu (verze 10)
+  let zVer = null;
+  function zSkriptCheck() {
+    const bar = $('#zp-skript'); bar.hidden = true;
+    if (ZAPIS_TEST || !SY || RO()) return;
+    const show = () => { bar.hidden = !(zVer !== null && zVer < 10); };
+    if (zVer !== null) { show(); return; }
+    call('POST', {key: SY.key, akce: 'verze'}).then(r => { zVer = Number(r && r.verze) || 0; show(); }, () => {});
   }
 
   /* napojení */
@@ -4254,7 +4503,18 @@ ${tydenniHtml.toString()}
     $('#zp-arch').onclick = zArchive;
     $('#zp-vzor').hidden = !ZAPIS_VZOR;
     $('#zp-vzor').onclick = () => { const ed = $('#zp-text'); ed.innerHTML = ZAPIS_VZOR.split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join(''); zPropsat(); };
-    $('#zp-addrow').onclick = () => zAddRow('');
+    $('#zp-newtask').onclick = () => zEntryFocus();
+    $('#zp-e-add').onclick = () => zEntryAdd(false);
+    $('#zp-e-note').onclick = () => zEntryAdd(true);
+    $('#zp-e-text').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); zEntryAdd(false); } });
+    $('#zp-e-text').addEventListener('input', () => zNavrhLater($('#zp-e-text'), ZE, $('#zp-e-navrh')));
+    $('#zp-e-owner').onchange = () => $('#zp-e-owner').classList.toggle('miss', !$('#zp-e-owner').value);
+    $('#zp-e-end').onclick = () => { try { $('#zp-e-end').showPicker(); } catch (e) {} };
+    document.querySelectorAll('#zp-entry [data-eq]').forEach(b => b.onclick = () => { const md = (ZC && ZC.date) || today;
+      $('#zp-e-end').value = {zitra: addD(md, 1), patek: addD(md, (5 - pd(md).getDay() + 7) % 7 || 7), tyden: addD(md, 7), dva: addD(md, 14)}[b.dataset.eq]; });
+    document.querySelectorAll('#zp-vw [data-zv]').forEach(b => b.onclick = () => { zVw = b.dataset.zv; store.set('hyb-zview', zVw); zRender(); });
+    $('#zp-fo').onchange = () => { zFo = $('#zp-fo').value; zRender(); };
+    $('#zp-skript-btn').onclick = () => scriptUpdateDialog();
     $('#zp-addnote').onclick = () => { ZC.notes = [...(ZC.notes || []), {id: uid(), text: ''}]; zRender(); const t = [...$('#zp-info').querySelectorAll('textarea[data-note]')].pop(); if (t) t.focus(); };
     $('#zp-fs').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { toast('Celou obrazovku zapnete klávesou F11.'); } };
     document.addEventListener('fullscreenchange', () => { $('#zp-fs').textContent = document.fullscreenElement ? '⛶ Zmenšit' : '⛶ Celá obrazovka'; });
