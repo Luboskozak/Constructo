@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-RFlQBaRgqN3pbZOeNJSkHRKG3m8+sCpaXxR302OBQkg='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-xoTiagppgEhAZmaauvZeXsxN8oO8ASLBGbjvFC6J7Ck='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
@@ -95,7 +95,8 @@ footer{max-width:720px;margin:0 auto;padding:0 16px 30px;color:var(--mut);font-s
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const ls = {get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
-  const [z, t] = decodeURIComponent(location.hash.slice(1)).split('.');
+  let hs = ''; try { hs = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  const [z, t] = (hs || window.ZKOUSKA_HASH || '').split('.');
   const STAV = {odeslano: 'Čeká na vaši odpověď', vedomi: 'Potvrzeno, že berete na vědomí', opraveno: 'Nahlášeno jako opravené', nesouhlas: 'Nesouhlasíte', vraceno: 'Vráceno k opravě', uzavreno: 'Uzavřeno'};
   const CO = {vedomi: 'Bereme na vědomí', opraveno: 'Opraveno', nesouhlas: 'Nesouhlasíme', uzavreno: 'Uzavřeno stavbou', vraceno: 'Vráceno k opravě'};
   const datum = s => { const d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric'}) + ' ' + d.toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}); };
