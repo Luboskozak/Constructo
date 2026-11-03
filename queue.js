@@ -74,6 +74,22 @@ const CXQ = (() => {
     let sent = 0;
     for (const it of items) {
       try {
+        if (it.kind === 'zavada') {
+          // hlášení závady: soubory na Disk (PDF a jedna fotka), pak záznam do dat stavby
+          const rec = it.rec;
+          for (const f of it.files || []) {
+            if (f.done) continue;
+            const r = await post(conn, {key: conn.key, akce: 'foto', name: f.name, mime: f.mime, den: it.day || it.at.slice(0, 10), data: f.b64});
+            if (r.error) throw new Error(errTxt(r.error));
+            if (!r.id) throw new Error('Skript na Googlu je potřeba aktualizovat.');
+            rec[f.k] = {id: r.id, url: r.url, thumb: f.k === 'foto' ? r.thumb : ''};
+            f.done = true; f.b64 = ''; await put(it);
+          }
+          const r = await post(conn, {key: conn.key, rev: 0, data: {zavady: [Object.assign({}, rec, {_ts: Date.now()})]}});
+          if (r.error) throw new Error(errTxt(r.error));
+          if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+          await del(it.cid); sent++; continue;
+        }
         if (it.kind === 'upd') {
           const r = await post(conn, {key: conn.key, rev: 0, data: it.data});
           if (r.error) throw new Error(errTxt(r.error));
