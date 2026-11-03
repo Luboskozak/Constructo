@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-RFlQBaRgqN3pbZOeNJSkHRKG3m8+sCpaXxR302OBQkg='; object-src 'none'; base-uri 'self'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Odpověď na zprávu · Constructo</title>
+<meta name="theme-color" content="#131518">
+<link rel="icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap">
+<style>
+/* Constructo: stránka pro firmu – odpověď na jednu zprávu (nic jiného ze stavby tu není) */
+:root{
+  --y:#F4D23C; --y2:#FFF4BF; --k:#131518; --bg:#f4f4f1; --card:#fff; --ink:#16191c; --mut:#6b7279; --line:#e4e4df;
+  --red:#d63b24; --red2:#fdeae6; --grn:#2f8a52; --grn2:#dcefe3; --blu:#2b6cb0; --blu2:#dfeaf6;
+  --f:"Hanken Grotesk","Helvetica Neue",Arial,system-ui,sans-serif; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--blu);outline-offset:2px}
+.head{background:var(--k);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 20px;border-radius:0 0 24px 24px}
+.head .in{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.logo{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:300}
+.logo svg{height:20px;width:auto;fill:var(--y)}
+.head h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em}
+.head p{margin:0;color:#c9ced3;font-size:14px}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 0 var(--line)}
+.card h2{margin:0 0 10px;font-size:18px;font-weight:800}
+.pill{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 11px;border-radius:20px;background:var(--y);color:var(--ink)}
+.st{display:inline-block;font-size:13px;font-weight:700;padding:4px 11px;border-radius:20px;margin-left:6px}
+.st.odeslano{background:#e8eaed}.st.vedomi{background:var(--blu2);color:var(--blu)}.st.opraveno{background:var(--y2);color:#6d5600}
+.st.nesouhlas,.st.vraceno{background:var(--red2);color:var(--red)}.st.uzavreno{background:var(--grn2);color:var(--grn)}
+.pred{font-size:20px;font-weight:800;line-height:1.3;margin:10px 0 12px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--bg);border-radius:12px;padding:12px 14px}
+.meta div small{display:block;font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.meta div b{font-size:14.5px;font-weight:600}
+.foto{margin-top:12px;max-width:100%;max-height:340px;border-radius:10px;display:block}
+.txt{white-space:pre-wrap;font-size:15px;line-height:1.6;margin-top:14px}
+.txt.zav{max-height:220px;overflow:hidden;position:relative}
+.txt.zav::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(transparent,#fff)}
+.lnk{display:inline-flex;align-items:center;gap:6px;margin-top:10px;border:1px solid var(--line);background:#fff;border-radius:22px;padding:8px 14px;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none}
+.hist{display:flex;flex-direction:column;gap:10px}
+.od{border-left:4px solid var(--line);padding:4px 0 4px 12px}
+.od.f{border-color:var(--y)}.od.n{border-color:var(--k)}
+.od .h{font-size:13px;color:var(--mut)}.od .h b{color:var(--ink)}
+.od p{margin:4px 0 0;white-space:pre-wrap}
+.od .ft{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.od .ft img{width:84px;height:84px;object-fit:cover;border-radius:8px}
+.vol{display:flex;flex-direction:column;gap:10px}
+.vol button{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px 16px;font-size:17px;font-weight:700}
+.vol button i{font-style:normal;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:18px;background:var(--bg)}
+.vol button small{display:block;font-size:13px;font-weight:400;color:var(--mut)}
+.vol button[aria-pressed=true]{border-color:var(--k);background:var(--y2)}
+.vol button[aria-pressed=true] i{background:var(--y)}
+.fld{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.fld label{font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.fld input:not([type=file]),.fld textarea{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:16px;width:100%}
+.fld textarea{min-height:110px;resize:vertical}
+.fotky{display:flex;gap:8px;flex-wrap:wrap}
+.fotky .fo{position:relative}.fotky img{width:92px;height:92px;object-fit:cover;border-radius:10px;display:block}
+.fotky .fo button{position:absolute;top:-6px;right:-6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--k);color:#fff;font-size:13px}
+.add{width:92px;height:92px;border:2px dashed #c9ccc4;border-radius:10px;background:#fff;color:var(--mut);font-size:13px;font-weight:600;display:grid;place-items:center;text-align:center;padding:6px}
+.send{margin-top:18px;width:100%;border:0;border-radius:14px;background:var(--k);color:#fff;font-size:18px;font-weight:800;padding:16px}
+.send:disabled{opacity:.55}
+.err{color:var(--red);font-weight:600;margin:10px 0 0}
+.hint{color:var(--mut);font-size:14px;margin:6px 0 0}
+.ok{background:var(--grn2);color:#1d5e37;border-radius:14px;padding:16px;font-weight:600}
+.big{text-align:center;padding:40px 18px}.big b{display:block;font-size:19px;margin-bottom:6px}
+footer{max-width:720px;margin:0 auto;padding:0 16px 30px;color:var(--mut);font-size:12.5px;text-align:center}
+@media (max-width:480px){.meta{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <mask id="cx-cut" maskUnits="userSpaceOnUse" x="190" y="130" width="516" height="310"><rect x="190" y="130" width="516" height="310" fill="#fff"/><circle cx="348" cy="285" r="87" fill="#000"/><circle cx="548" cy="285" r="87" fill="#000"/><rect x="420" y="232" width="62" height="106" fill="#000"/></mask>
+ <symbol id="cx-mark" viewBox="190 130 516 310"><g mask="url(#cx-cut)"><circle cx="348" cy="285" r="152"/><circle cx="548" cy="285" r="152"/></g><rect x="430" y="268" width="67" height="35"/></symbol>
+</defs></svg>
+<header class="head"><div class="in">
+  <div class="logo"><svg viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg>Constructo</div>
+  <h1>Odpověď na zprávu ze stavby</h1>
+  <p id="sub">Načítám zprávu…</p>
+</div></header>
+<main id="main"><div class="card big"><b>Načítám zprávu…</b>Chvilku strpení.</div></main>
+<footer>Tato stránka ukazuje jen jednu zprávu, kterou vám poslal generální dodavatel stavby. Odkaz nikomu dalšímu neposílejte.<br>Constructo · Developed by Luboš Kozák</footer>
+<script>
+(() => {
+  'use strict';
+  const API = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  const ls = {get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
+  const [z, t] = decodeURIComponent(location.hash.slice(1)).split('.');
+  const STAV = {odeslano: 'Čeká na vaši odpověď', vedomi: 'Potvrzeno, že berete na vědomí', opraveno: 'Nahlášeno jako opravené', nesouhlas: 'Nesouhlasíte', vraceno: 'Vráceno k opravě', uzavreno: 'Uzavřeno'};
+  const CO = {vedomi: 'Bereme na vědomí', opraveno: 'Opraveno', nesouhlas: 'Nesouhlasíme', uzavreno: 'Uzavřeno stavbou', vraceno: 'Vráceno k opravě'};
+  const datum = s => { const d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric'}) + ' ' + d.toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}); };
+  const den = s => s ? s.split('-').reverse().map(Number).join('. ') : '';
+  let Zp = null, vyber = '', fotky = [], posilam = false, hotovo = false;
+
+  async function call(o) {
+    if (typeof window.ZKOUSKA_API === 'function') return window.ZKOUSKA_API(o);
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 60000);
+    try {
+      const r = await fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(o), redirect: 'follow', signal: ctl.signal});
+      return await r.json();
+    } finally { clearTimeout(tm); }
+  }
+  function chyba(nadpis, text) {
+    $('#sub').textContent = 'Zprávu se nepodařilo otevřít';
+    $('#main').innerHTML = `<div class="card big"><b>${esc(nadpis)}</b>${esc(text)}</div>`;
+  }
+  async function nacti() {
+    if (!z || !t) return chyba('Odkaz není celý.', 'Otevřete prosím odkaz znovu přímo z e-mailu nebo zprávy WhatsApp, celý najednou.');
+    let r;
+    try { r = await call({akce: 'firma_zprava', z, t}); } catch (e) { return chyba('Spojení se nepodařilo.', 'Zkontrolujte připojení k internetu a stránku obnovte.'); }
+    if (r && r.zprava) { Zp = r.zprava; return kresli(); }
+    if (r && r.error === 'nenalezeno') return chyba('Zprávu jsme nenašli.', 'Pokud vám přišla právě teď, zkuste to prosím za pár minut znovu. Jinak se ozvěte tomu, kdo vám zprávu poslal.');
+    if (r && r.error === 'heslo') return chyba('Odpovědi zatím nejsou zapnuté.', 'Ozvěte se prosím tomu, kdo vám zprávu poslal.');
+    chyba('Zprávu se nepodařilo otevřít.', (r && r.error) || 'Zkuste to prosím později.');
+  }
+  function kresli() {
+    const s = Zp.stav || 'odeslano', konec = s === 'uzavreno';
+    $('#sub').textContent = `${Zp.stavba || 'Stavba'} · zpráva ${Zp.cislo || ''}`;
+    const hist = (Zp.odpovedi || []).map(o => `<div class="od ${o.nase ? 'n' : 'f'}"><div class="h"><b>${esc(CO[o.stav] || o.stav)}</b> · ${esc(o.jmeno || '')}${o.nase ? ' (stavba)' : ''} · ${esc(datum(o.at))}${o.termin ? ' · oprava do ' + esc(den(o.termin)) : ''}</div>
+      ${o.text ? `<p>${esc(o.text)}</p>` : ''}${(o.fotky || []).length ? `<div class="ft">${o.fotky.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener"><img src="${esc(f.thumb || f.url)}" alt="Fotka" loading="lazy" referrerpolicy="no-referrer"></a>`).join('')}</div>` : ''}</div>`).join('');
+    let h = `<div class="card">
+      <span class="pill">${esc(Zp.typ || 'Zpráva')}</span><span class="st ${esc(s)}">${esc(STAV[s] || s)}</span>
+      <div class="pred">${esc(Zp.predmet || '')}</div>
+      <div class="meta"><div><small>Pro firmu</small><b>${esc(Zp.firma || '')}</b>${Zp.komu ? `<br><span class="hint">${esc(Zp.komu)}</span>` : ''}</div><div><small>Odeslal</small><b>${esc(Zp.by || '')}</b><br><span class="hint">${esc(datum(Zp.at))}</span></div>
+        ${Zp.misto ? `<div><small>Místo</small><b>${esc(Zp.misto)}</b></div>` : ''}<div><small>Číslo zprávy</small><b>${esc(Zp.cislo || '')}</b></div></div>
+      ${Zp.foto ? `<img class="foto" src="${esc(Zp.foto)}" alt="Fotka ze stavby" referrerpolicy="no-referrer">` : ''}
+      <div class="txt zav" id="txt">${esc(Zp.text || '')}</div>
+      <button type="button" class="lnk" id="vic">Zobrazit celou zprávu</button>
+      ${Zp.pdf ? `<a class="lnk" href="${esc(Zp.pdf)}" target="_blank" rel="noopener">Formulář PDF s fotkami</a>` : ''}</div>`;
+    if (hist) h += `<div class="card"><h2>Odpovědi</h2><div class="hist">${hist}</div></div>`;
+    if (hotovo) h += `<div class="ok">✓ Děkujeme, odpověď je odeslaná. Stavbyvedoucí ji uvidí v Constructu a dostane upozornění e-mailem.${konec ? '' : ' Pokud budete chtít něco doplnit, můžete odpovědět znovu.'}</div>`;
+    if (konec) h += `<div class="card"><h2>Zpráva je uzavřená</h2><p class="hint" style="margin:0">Stavba opravu zkontrolovala a zprávu uzavřela. Děkujeme.</p></div>`;
+    else h += `<div class="card" id="form"><h2>${hist ? 'Nová odpověď' : 'Vaše odpověď'}</h2>
+      <div class="vol" role="group" aria-label="Odpověď">
+        <button type="button" data-v="vedomi" aria-pressed="${vyber === 'vedomi'}"><i>👍</i><span>Bereme na vědomí<small>Zprávu jsme dostali a zajistíme nápravu.</small></span></button>
+        <button type="button" data-v="opraveno" aria-pressed="${vyber === 'opraveno'}"><i>✓</i><span>Opraveno<small>Hotovo, můžete přiložit fotku opravy.</small></span></button>
+        <button type="button" data-v="nesouhlas" aria-pressed="${vyber === 'nesouhlas'}"><i>✕</i><span>Nesouhlasíme<small>Napište prosím důvod.</small></span></button>
+      </div>
+      <div class="fld" id="f-termin"${vyber === 'vedomi' ? '' : ' hidden'}><label for="termin">Opravíme do (nepovinné)</label><input type="date" id="termin"></div>
+      <div class="fld" id="f-foto"${vyber === 'opraveno' ? '' : ' hidden'}><label>Fotky opravy (nepovinné, nejvýš 4)</label><div class="fotky" id="fotky"></div><input type="file" id="in-foto" accept="image/*" multiple hidden></div>
+      <div class="fld"><label for="text">${vyber === 'nesouhlas' ? 'Proč nesouhlasíte' : 'Zpráva pro stavbu (nepovinné)'}</label><textarea id="text" placeholder="${vyber === 'nesouhlas' ? 'Napište prosím důvod…' : 'Např. kdy přijdete, co je potřeba…'}"></textarea></div>
+      <div class="fld"><label for="jmeno">Vaše jméno</label><input id="jmeno" autocomplete="name" placeholder="Jméno a příjmení" value="${esc(ls.get('cx-odp-jmeno'))}"></div>
+      <p class="err" id="err" hidden></p>
+      <button type="button" class="send" id="send">Odeslat odpověď</button></div>`;
+    const keep = {text: $('#text') ? $('#text').value : '', termin: $('#termin') ? $('#termin').value : '', jmeno: $('#jmeno') ? $('#jmeno').value : ''};
+    $('#main').innerHTML = h;
+    if ($('#text')) { $('#text').value = keep.text; $('#termin').value = keep.termin; if (keep.jmeno) $('#jmeno').value = keep.jmeno; }
+    const tx = $('#txt'), vic = $('#vic');
+    if (tx.scrollHeight <= 230) { tx.classList.remove('zav'); vic.hidden = true; }
+    vic.onclick = () => { tx.classList.remove('zav'); vic.hidden = true; };
+    if (konec) return;
+    document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { vyber = b.dataset.v; kresli(); });
+    kresliFotky();
+    $('#in-foto').onchange = e => { pridej([...e.target.files]); e.target.value = ''; };
+    $('#send').onclick = posli;
+  }
+  function kresliFotky() {
+    const el = $('#fotky'); if (!el) return;
+    el.innerHTML = fotky.map((f, i) => `<div class="fo"><img src="${f.url}" alt="Fotka ${i + 1}"><button type="button" data-rm="${i}" aria-label="Odebrat fotku">✕</button></div>`).join('') +
+      (fotky.length < 4 ? '<button type="button" class="add" id="add">+ Přidat fotku</button>' : '');
+    el.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { fotky.splice(+b.dataset.rm, 1); kresliFotky(); });
+    const a = $('#add'); if (a) a.onclick = () => $('#in-foto').click();
+  }
+  // fotka se zmenší na 1600 px, aby šla rychle i přes mobilní data
+  async function zmensi(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = url; });
+      const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      const d = c.toDataURL('image/jpeg', .82);
+      return {url: d, b64: d.split(',')[1]};
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function pridej(files) {
+    for (const f of files.filter(x => /^image\//.test(x.type)).slice(0, 4 - fotky.length)) { try { fotky.push(await zmensi(f)); } catch (e) {} }
+    kresliFotky();
+  }
+  async function posli() {
+    if (posilam) return;
+    const err = $('#err'), text = $('#text').value.trim(), jmeno = $('#jmeno').value.trim();
+    const ukaz = m => { err.textContent = m; err.hidden = false; };
+    if (!vyber) return ukaz('Vyberte prosím jednu z odpovědí nahoře.');
+    if (vyber === 'nesouhlas' && !text) { $('#text').focus(); return ukaz('Napište prosím, proč nesouhlasíte.'); }
+    if (!jmeno) { $('#jmeno').focus(); return ukaz('Napište prosím své jméno.'); }
+    ls.set('cx-odp-jmeno', jmeno);
+    posilam = true; const b = $('#send'); b.disabled = true; b.textContent = 'Odesílám…'; err.hidden = true;
+    let r = null;
+    try {
+      r = await call({akce: 'firma_odpoved', z, t, cid: 'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), stav: vyber, text, jmeno,
+        termin: vyber === 'vedomi' ? $('#termin').value : '', fotky: vyber === 'opraveno' ? fotky.map(f => f.b64) : []});
+    } catch (e) {}
+    posilam = false;
+    if (r && r.ok && r.zprava) { Zp = r.zprava; vyber = ''; fotky = []; hotovo = true; $('#text').value = ''; kresli(); window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); return; }
+    if (r && r.zprava) { Zp = r.zprava; kresli(); }
+    const b2 = $('#send'); if (b2) { b2.disabled = false; b2.textContent = 'Odeslat odpověď'; }
+    const e2 = $('#err'); if (e2) { e2.textContent = r && r.error && r.error !== 'nenalezeno' ? r.error : 'Odpověď se nepodařilo odeslat. Zkontrolujte připojení a zkuste to znovu.'; e2.hidden = false; }
+  }
+  nacti();
+})();
+</script>
+</body>
+</html>
