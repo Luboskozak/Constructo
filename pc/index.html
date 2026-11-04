@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-0RZzUMpqArZ5IsER3k4OQmesL7HmI3DvMXQ27COTrYM=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-m66JSOgzj5g80/fsE3o4VqJ3vLavzSHnKY9/KW75z/g=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -558,11 +558,17 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
 .zp-newbtn{font-size:16px!important;padding:10px 18px!important;font-weight:800;background:var(--accent)!important;color:#16191c!important}
 #zp-big{font-size:19px;white-space:nowrap}
 .zp-skript{background:#FFF4BF;border-bottom:1px solid #e0b100;padding:8px 18px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.zp-skript[hidden]{display:none}
-.zp-entry{display:grid;grid-template-columns:minmax(0,1fr) 210px 190px auto;gap:10px;align-items:start;padding:10px 18px;background:var(--panel);border-bottom:2px solid var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.zp-entry{border:2px solid var(--accent)!important}
+.zp-egrid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start}
+.zp-eside{display:flex;flex-direction:column;gap:8px}
+.zp-etools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.zp-etools button{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}.zp-etools .hcap{margin-left:auto}
+.zp-enote{font-size:13px!important}
+.zp-sdone{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px}.zp-sdone .zp-il span{color:#2f7d4f}
+.zp-komu{display:flex;flex-direction:column;gap:4px;margin:8px 0;max-height:40vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 10px}.zp-komu label{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:14px}.zp-komu input{width:18px;height:18px}
 .zp-entry textarea,.zp-entry select,.zp-entry input{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--bg);color:var(--ink)}
-.zp-entry textarea{resize:none;overflow:hidden;min-height:42px;line-height:1.4;field-sizing:content}
+.zp-entry textarea{resize:vertical;min-height:120px;line-height:1.45;field-sizing:content;font-size:16px}
 .zp-entry .miss{background:#FFF4BF;border-color:#e0b100}
-.zp-ebtns{display:flex;flex-direction:column;gap:6px}.zp-create{font-size:15px!important;padding:10px 16px!important;font-weight:800;white-space:nowrap}
+.zp-create{font-size:15px!important;padding:10px 16px!important;font-weight:800;white-space:nowrap}
 .zp-entry.flash{animation:zpflash .7s}@keyframes zpflash{0%{background:var(--accent-soft)}100%{background:var(--panel)}}
 .zp-navrh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:6px;padding:8px 10px;border-radius:10px;background:#f1ebfa;border:1px solid #d9c9f0;font-size:14px}.zp-navrh[hidden]{display:none}
 .zp-nvl{font-size:11.5px;font-weight:700;color:#7b4bb7;width:100%}.zp-nvt{flex:1;min-width:200px}.zp-nvb{display:flex;gap:6px}.zp-nvb .btn{padding:4px 10px;font-size:12.5px}
@@ -577,7 +583,8 @@ tr.zp-new td{animation:zpflash 1.6s}
 #zp-write summary{cursor:pointer;list-style:none}#zp-write summary::-webkit-details-marker{display:none}#zp-write[open] summary{margin-bottom:8px}
 .zp-af{display:flex;flex-wrap:wrap;gap:8px}.zp-af label{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--muted)}.zp-af select,.zp-af input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 7px}
 .zp-ano{min-width:52px;font-size:15px}
-@media (max-width:1000px){.zp-entry{grid-template-columns:1fr 1fr}.zp-etext{grid-column:1/-1}}
+@media (max-width:900px){.zp-egrid{grid-template-columns:1fr}.zp-etools .hcap{margin-left:0;width:100%}}
+@media (max-width:1100px){#zp-big{font-size:16px}.zp-bar .btn{padding:7px 10px}#zp-fs{display:none}}
 .zp-hd{padding:10px 14px}.zp-hd summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 .zp-hd summary::-webkit-details-marker{display:none}.zp-hd #zp-hsum{color:var(--muted);font-size:13.5px}
 .zp-hopen{margin-left:auto;font-size:12.5px;color:var(--muted)}.zp-hd[open] .zp-hopen{display:none}.zp-hd[open] summary{margin-bottom:10px}
@@ -777,7 +784,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 <div id="porada" hidden role="dialog" aria-label="Zápis z porady">
   <div class="zp-bar">
     <b id="zp-big">Zápis z porady</b>
-    <button type="button" class="btn primary zp-newbtn" id="zp-newtask">Nový úkol z porady</button>
+    <button type="button" class="btn primary zp-newbtn" id="zp-newmeet" title="Začít zápis nové porady: převezme nesplněné úkoly z minulé">Nová porada</button>
     <select id="zp-list" aria-label="Uložené zápisy"></select>
     <button type="button" class="btn" id="zp-arch">Archiv zápisů</button>
     <span class="zp-sp"></span>
@@ -786,12 +793,6 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     <button type="button" class="btn" id="zp-close">Zavřít</button>
   </div>
   <div class="zp-skript" id="zp-skript" hidden>Pro PDF zápisu a návrhy textu od Clauda je potřeba nová verze skriptu na Googlu (verze 10). <button type="button" class="btn" id="zp-skript-btn">Aktualizovat skript…</button></div>
-  <div class="zp-entry" id="zp-entry">
-    <div class="zp-etext"><textarea id="zp-e-text" rows="1" placeholder="Nový úkol z porady: napište, co se má udělat…" aria-label="Text nového úkolu"></textarea><div class="zp-navrh" id="zp-e-navrh" hidden></div></div>
-    <select id="zp-e-owner" class="miss" aria-label="Kdo to udělá"></select>
-    <div class="zp-edate"><input id="zp-e-end" type="date" aria-label="Termín"><div class="zp-q"><button type="button" data-eq="zitra">Zítra</button><button type="button" data-eq="patek">Pátek</button><button type="button" data-eq="tyden">Týden</button><button type="button" data-eq="dva">14 dní</button></div></div>
-    <div class="zp-ebtns"><button type="button" class="btn primary zp-create" id="zp-e-add">Vytvořit úkol</button><button type="button" class="btn" id="zp-e-note" title="Bod bez osoby a termínu, přidá se do Ostatních bodů">Jen poznámka</button></div>
-  </div>
   <div class="zp-body">
     <div class="zp-main">
       <details class="card zp-hd" id="zp-hd">
@@ -809,9 +810,24 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
           </div>
         </div>
       </details>
+      <div class="card zp-entry" id="zp-entry">
+        <div class="zp-eh"><h3>Nový úkol z porady</h3><span class="hcap">napište úkol, vyberte osobu a termín a klikněte Vytvořit úkol</span></div>
+        <div class="zp-egrid">
+          <div class="zp-etext">
+            <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = vytvořit úkol</span></div>
+            <textarea id="zp-e-text" rows="4" placeholder="Napište, co se má udělat…" aria-label="Text nového úkolu"></textarea><div class="zp-navrh" id="zp-e-navrh" hidden></div>
+          </div>
+          <div class="zp-eside">
+            <select id="zp-e-owner" class="miss" aria-label="Kdo to udělá"></select>
+            <div class="zp-edate"><input id="zp-e-end" type="date" aria-label="Termín"><div class="zp-q"><button type="button" data-eq="zitra">Zítra</button><button type="button" data-eq="patek">Pátek</button><button type="button" data-eq="tyden">Týden</button><button type="button" data-eq="dva">14 dní</button></div></div>
+            <button type="button" class="btn primary zp-create" id="zp-e-add">Vytvořit úkol</button>
+            <button type="button" class="btn zp-enote" id="zp-e-note" title="Bod bez osoby a termínu, přidá se do Ostatních bodů">Jen poznámka (bez osoby)</button>
+          </div>
+        </div>
+      </div>
       <div id="zp-edit">
         <div class="card">
-          <div class="zp-eh"><h3>Úkoly z porady</h3><span class="hcap" id="zp-n"></span><span class="zp-sp"></span><div class="zp-vw" id="zp-vw" role="group" aria-label="Řazení úkolů"><button type="button" data-zv="cislo">Podle čísla</button><button type="button" data-zv="osoby">Podle osob</button></div><select id="zp-fo" aria-label="Jen úkoly osoby"></select></div>
+          <div class="zp-eh"><h3>Úkoly z porady</h3><span class="hcap" id="zp-n"></span><span class="zp-sp"></span><div class="zp-vw" id="zp-vw" role="group" aria-label="Řazení úkolů"><button type="button" data-zv="cislo">Podle čísla</button><button type="button" data-zv="osoby">Podle osob</button></div><select id="zp-fo" aria-label="Jen úkoly osoby"></select><button type="button" class="btn" id="zp-sd" aria-pressed="false">Zobrazit splněné</button></div>
           <p class="zp-sum" id="zp-sum"></p>
           <div id="zp-groups"></div>
         </div>
@@ -3875,8 +3891,8 @@ ${tydenniHtml.toString()}
     zOznac421();
     let dr = null; try { dr = JSON.parse(store.get(ZDRAFT) || 'null'); } catch (e) {}
     if (id === undefined && dr && dr.kind === 'porada') { ZC = dr; zDirty = true; toast('Pokračujete v rozepsaném zápisu'); }
-    else { const rec = id && id !== '__blank' ? D.diary.find(e => e.id === id) : null; ZC = rec ? clone(rec) : zNew(id === '__blank'); zDirty = false;
-      if (!rec && ZC.from) toast(`Nový zápis č. ${ZC.no} vychází ze zápisu č. ${ZC.fromNo || '?'}${ZC.fromDone ? `, ${ZC.fromDone} ${zN(ZC.fromDone, 'splněný bod vynechán', 'splněné body vynechány', 'splněných bodů vynecháno')}` : ''}. Dole připište nové body.`); }
+    else { const rec = id === undefined ? zLatest() : id && id !== '__blank' ? D.diary.find(e => e.id === id) : null; ZC = rec ? clone(rec) : zNew(id === '__blank'); zDirty = false;
+      if (!rec && ZC.from) toast(`Nový zápis č. ${ZC.no} vychází ze zápisu č. ${ZC.fromNo || '?'}${ZC.fromDone ? `, ${ZC.fromDone} ${zN(ZC.fromDone, 'splněný bod vynechán', 'splněné body vynechány', 'splněných bodů vynecháno')}` : ''}. Zaškrtněte přítomné a zapisujte nové úkoly.`); }
     ['added', 'sent'].forEach(k => { if (!ZC[k] || typeof ZC[k] !== 'object') ZC[k] = {}; });
     if (!Array.isArray(ZC.present)) ZC.present = [];
     if (!Array.isArray(ZC.rows)) ZC.rows = [];
@@ -3887,8 +3903,8 @@ ${tydenniHtml.toString()}
     zFill();
     // starší zápis (text nahoře, tabulka zvlášť): text se jednou propíše do rámečků a ostatních bodů
     if (!ZC.v2) { ZC.v2 = true; if (zHasText()) { const d = zDirty; zPropsat(true); zDirty = d; zState(); } }
-    zEntryFill(); zRender(); zSkriptCheck(); $('#zp-del').hidden = !ZC.id; $('.zp-body').scrollTop = 0;
-    setTimeout(() => $('#zp-e-text').focus(), 50);
+    zEntryFill(); zRender(); zSkriptCheck(); $('#zp-del').hidden = !ZC.id; $('#zp-hd').open = !ZC.id; $('.zp-body').scrollTop = 0;
+    setTimeout(() => $('#zp-e-text').focus({preventScroll: true}), 50);
   }
   function zFill() {
     const set = (i, v) => { $('#zp-' + i).value = v || ''; };
@@ -3954,7 +3970,7 @@ ${tydenniHtml.toString()}
         <td class="d">${r.perm ? `<div class="zp-perm">Trvalý úkol</div><div class="zp-q"><button type="button" data-noperm>Zadat termín</button></div>` : `<input data-f="end" type="date" value="${esc(r.end || '')}" class="${r.end ? (late ? 'late' : '') : 'miss'}" aria-label="Termín" title="Klikněte a vyberte termín">${zOsa(r)}<div class="zp-q">${[['zitra', 'Zítra'], ['patek', 'Pátek'], ['tyden', 'Týden'], ['dva', '14 dní']].map(([k, l]) => `<button type="button" data-qd="${k}">${l}</button>`).join('')}</div><div class="zp-q"><button type="button" data-perm title="Úkol bez data, plní se po celou stavbu nebo delší dobu">Trvalý úkol</button></div>`}${!r.end && !r.perm && r.note ? `<div class="hcap">${esc(r.note)}</div>` : ''}</td>
         <td class="x"><button type="button" class="zp-ok" data-done title="Úkol je hotový: zmizí ze zápisu a v Úkolech se označí jako splněný">Splněno</button><button type="button" class="zp-rm" data-del title="Odebrat úkol z tabulky i z Úkolů (jde vrátit v Ostatních bodech)">Odstranit</button></td></tr>`; };
     const head = `<thead><tr><th class="c">Č.</th><th>Úkol</th><th class="o">Osoba</th><th class="d">Termín a časová osa</th><th class="x"></th></tr></thead>`;
-    $('#zp-groups').innerHTML = !act.length ? `<div class="zp-empty">${zFo ? `${esc(zFo)} v tomto zápisu nemá žádný úkol.` : 'Zatím žádný úkol. Nahoře v řádku <b>Nový úkol z porady</b> napište, co se má udělat, vyberte osobu a termín a klikněte <b>Vytvořit úkol</b>.'}</div>`
+    $('#zp-groups').innerHTML = !act.length ? `<div class="zp-empty">${zFo ? `${esc(zFo)} v tomto zápisu nemá žádný úkol.` : 'Zatím žádný úkol. V rámečku <b>Nový úkol z porady</b> napište, co se má udělat, vyberte osobu a termín a klikněte <b>Vytvořit úkol</b>.'}</div>`
       : zVw === 'cislo' ? `<div class="zp-g"><table class="zp-t">${head}<tbody>${act.map(tr).join('')}</tbody></table></div>`
       : names.map(n => {
         const p = n ? personOf(n) : {}, rs = groups[n];
@@ -3963,13 +3979,17 @@ ${tydenniHtml.toString()}
           <span class="zp-sp"></span>${n && !p.email ? `<button type="button" class="btn" data-pe="${esc(n)}">Doplnit e-mail</button>` : ''}<button type="button" class="btn" data-add="${esc(n)}">+ Úkol${n ? ' pro ' + esc(n) : ''}</button></div>
         <table class="zp-t">${head}<tbody>${rs.map(tr).join('')}</tbody></table></div>`;
       }).join('');
-    const off = (ZC.rows || []).filter(r => r.off), notes = ZC.notes || [], fin = (ZC.rows || []).filter(r => r.doneAt && !r.off);
+    const dn = zDoneAll(), sd = $('#zp-sd');
+    sd.textContent = zShowDone ? 'Skrýt splněné' : `Zobrazit splněné${dn.length ? ' (' + dn.length + ')' : ''}`; sd.setAttribute('aria-pressed', zShowDone);
+    if (zShowDone) $('#zp-groups').insertAdjacentHTML('beforeend', `<div class="zp-sdone"><h3 style="margin:4px 0 6px">Splněné úkoly (${dn.length})</h3>${dn.length ? dn.map((x, j) => `<div class="zp-il"><span>✓ ${x.r.n ? x.r.n + '. ' : ''}${esc(x.r.title + (x.r.owner ? ' – ' + x.r.owner : ''))}${x.at ? ` · splněno ${esc(fmtD(String(x.at).slice(0, 10)))}` : ''}</span><button type="button" class="btn" data-ud="${j}">Vrátit, není hotové</button></div>`).join('') : '<p class="hcap">Zatím žádný splněný úkol.</p>'}</div>`);
+    const off = (ZC.rows || []).filter(r => r.off), notes = ZC.notes || [], fin = [];
     $('#zp-info').innerHTML = (!notes.length && !off.length ? (fin.length ? '' : '<p class="hcap">Žádné další body.</p>') :
       notes.map((x, j) => `<div class="zp-note"><div style="flex:1;min-width:0"><textarea data-note="${j}" rows="1" aria-label="Bod porady">${esc(x.text)}</textarea><div class="zp-navrh" data-nn="${j}"${x.navrh ? '' : ' hidden'}>${x.navrh ? zNavrhHtml(x.navrh) : ''}</div></div><button type="button" class="btn" data-mk="${j}">Udělat úkol</button><button type="button" class="btn" data-nd="${j}" title="Odstranit bod">Odstranit</button></div>`).join('') +
       (off.length ? `<p class="hcap" style="margin:10px 0 0">Odebrané z úkolů:</p>` + off.map(r => `<div class="zp-il"><span>${r.n ? r.n + '. ' : ''}${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-back="${ZC.rows.indexOf(r)}">Vrátit do úkolů</button><button type="button" class="btn" data-rmoff="${ZC.rows.indexOf(r)}" title="Smazat bod ze zápisu úplně">Odstranit</button></div>`).join('') : '')) +
       (fin.length ? `<p class="hcap" style="margin:10px 0 0">Splněné na této poradě:</p>` + fin.map(r => `<div class="zp-il"><span>✓ ${r.n ? r.n + '. ' : ''}${esc(r.title + (r.owner ? ' – ' + r.owner : ''))}</span><button type="button" class="btn" data-undone="${ZC.rows.indexOf(r)}">Vrátit, není hotové</button></div>`).join('') : '');
     const box = $('#zp-edit'), row = el => ZC.rows[Number(el.closest('tr').dataset.i)];
-    box.querySelectorAll('textarea[data-f]').forEach(el => { const fit = () => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }; fit();
+    box.querySelectorAll('[data-ud]').forEach(b => b.onclick = () => zUndone(dn[Number(b.dataset.ud)]));
+    box.querySelectorAll('textarea[data-f]').forEach(el => { const fit = () => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }; fit(); el.onkeydown = zListKey;
       el.oninput = () => { const r = row(el); r.title = el.value; fit(); zTouch(); zPush(r); zNavrhLater(el, r, $(`#zp-groups [data-nv="${ZC.rows.indexOf(r)}"]`)); }; });
     box.querySelectorAll('select[data-f=owner]').forEach(el => el.onchange = () => {
       const r = row(el);
@@ -4059,16 +4079,23 @@ ${tydenniHtml.toString()}
     const add = plan.filter(p => !p.t), upd = plan.filter(p => p.t && zTaskSig(p.t) !== zRowSig(p.r));
     const mail = zMailPlan(rows), names = Object.keys(mail), noMail = names.filter(n => !personOf(n).email);
     const nob = rows.filter(r => !r.owner).length, noe = rows.filter(r => !r.end && !r.perm).length, auto = !ZAPIS_TEST && SY;
+    const cands = [...names, ...zPeopleAll().filter(n => !names.includes(n))], komu = new Set(names);
     confirmModal('Uzavřít zápis a odeslat', `
       ${nob || noe ? `<p style="margin-top:0;color:var(--bad)">${nob ? `${nob} ${zN(nob, 'úkol nemá', 'úkoly nemají', 'úkolů nemá')} osobu` : ''}${nob && noe ? ' a ' : ''}${noe ? `${noe} ${zN(noe, 'úkol nemá', 'úkoly nemají', 'úkolů nemá')} termín` : ''}. Můžete se vrátit a doplnit to, nebo pokračovat.</p>` : ''}
       <ol class="steps" style="margin-top:0">
         <li>Zápis se uloží jako uzavřený${auto ? ' a uvidí ho celý tým' : ''}.</li>
         <li>${add.length ? `Do záložky <b>Úkoly</b> se přidá <b>${add.length}</b> ${zN(add.length, 'úkol', 'úkoly', 'úkolů')}` : 'Všechny úkoly už v aplikaci jsou'}${upd.length ? `, ${upd.length} se upraví` : ''}.</li>
-        <li>${names.length ? `${auto ? 'Tento zápis e-mailem dostanou' : 'Připraví se e-mail se zápisem pro'}: ${names.map(n => `<b>${esc(n)}</b>${mail[n].length ? ` (${mail[n].length} ${zN(mail[n].length, 'úkol', 'úkoly', 'úkolů')})` : ''}`).join(', ')}. Každý má nahoře své úkoly, pod nimi celý zápis.` : 'Zápis nemá komu odejít (nikdo nemá úkol ani není označen jako přítomný).'}</li>
+        <li>Vytvoří se zápis v PDF s hlavičkou${auto ? ' a uloží se do Archivu zápisů' : ''}.</li>
+        <li>${auto ? 'Zápis e-mailem dostanou' : 'Připraví se e-mail pro'} tito lidé (každý má nahoře své úkoly, pod nimi celý zápis):</li>
       </ol>
+      <div class="zp-q" style="margin:0"><button type="button" data-ka="1">Vybrat všechny</button><button type="button" data-ka="0">Zrušit výběr</button></div>
+      <div class="zp-komu">${cands.map((n, i) => `<label><input type="checkbox" data-kn="${i}"${names.includes(n) ? ' checked' : ''}><b>${esc(n)}</b><span class="hcap">${(mail[n] || []).length ? `${mail[n].length} ${zN(mail[n].length, 'úkol', 'úkoly', 'úkolů')}` : 'bez úkolu'}${personOf(n).email ? '' : ' · chybí e-mail'}</span></label>`).join('')}</div>
       ${noMail.length ? `<p style="color:var(--bad)">Bez e-mailu: <b>${noMail.map(esc).join(', ')}</b>. Ti e-mail nedostanou, dokud jim ho nedoplníte (v tabulce tlačítko Doplnit e-mail).</p>` : ''}
       ${ZAPIS_TEST ? '<p class="hcap">Zkušební verze: e-maily neodejdou samy. Další okno vám je připraví a odešlete je ze svého e-mailu jedním kliknutím.</p>' : ''}`,
-      'Uzavřít a odeslat', () => { ZC.closedAt = new Date().toISOString(); ZC.snap = zSnap(ZC); zApply(plan); const m = zMailPlan(rows); setTimeout(() => zSend(m), 0); });
+      'Uzavřít a odeslat', () => { ZC.closedAt = new Date().toISOString(); ZC.snap = zSnap(ZC); zApply(plan); const m = zMailPlan(rows), m2 = {}; cands.filter(n => komu.has(n)).forEach(n => { m2[n] = m[n] || []; }); setTimeout(() => m2 && Object.keys(m2).length ? zSend(m2) : toast('Zápis uzavřen, e-mail se nikomu neposílá.'), 0); });
+    const ov = $('#overlay');
+    ov.querySelectorAll('[data-kn]').forEach(c => c.onchange = () => { const n = cands[Number(c.dataset.kn)]; if (c.checked) komu.add(n); else komu.delete(n); });
+    ov.querySelectorAll('[data-ka]').forEach(b => b.onclick = () => ov.querySelectorAll('[data-kn]').forEach(c => { c.checked = b.dataset.ka === '1'; c.onchange(); }));
   }
   // komu poslat: jen úkoly, které ještě neodešly, nebo se od odeslání změnily
   function zMailPlan(rows) {
@@ -4230,6 +4257,7 @@ ${tydenniHtml.toString()}
     const names = Object.keys(mail), foot = '\n\nCelý zápis najdete v Constructu (Zápis z porady). Úkoly jsou v záložce Úkoly, až bude hotový, klikněte Splněno.\n' + (me() || ZC.by || '');
     confirmModal(ZAPIS_TEST ? 'Odeslání zápisu (zkouška)' : 'Odeslání zápisu', `
       <p style="margin-top:0">${ZAPIS_TEST ? 'Ve zkušební verzi se e-maily neposílají samy. ' : ''}Tlačítkem <b>Náhled</b> uvidíte e-mail tak, jak ho člověk dostane (jeho úkoly a pod nimi celý zápis). <b>Otevřít e-mail</b> otevře váš e-mail se zprávou, stačí kliknout Odeslat.</p>
+      <p><button type="button" class="btn primary" id="zm-pdf">Zobrazit zápis v PDF</button></p>
       ${names.map((n, i) => { const em = personOf(n).email;
         return `<div class="zp-mail"><b style="min-width:110px">${esc(n)}</b><span class="hcap">${mail[n].length ? mail[n].length + ' ' + zN(mail[n].length, 'úkol', 'úkoly', 'úkolů') : 'bez úkolu'}${em ? ' · ' + esc(em) : ' · chybí e-mail'}</span><span class="zp-sp"></span>
           <button type="button" class="btn" data-view="${i}">Náhled</button><button type="button" class="btn" data-copy="${i}">Kopírovat text</button>${em ? `<a class="btn primary" data-mt="${i}" href="mailto:${esc(em)}?subject=${encodeURIComponent(zSubject())}&body=${encodeURIComponent(zMailText(n, mail[n]) + foot)}">Otevřít e-mail</a>` : `<button type="button" class="btn" data-pe="${i}">Doplnit e-mail</button>`}</div>`; }).join('')}
@@ -4240,6 +4268,7 @@ ${tydenniHtml.toString()}
       try { await navigator.clipboard.writeText(zMailText(n, mail[n]) + foot); b.textContent = 'Zkopírováno ✓'; } catch (e) { toast('Kopírování se nepovedlo.'); } });
     ov.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => personDialog(names[Number(b.dataset.pe)]));
     ov.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { const n = names[Number(b.dataset.view)]; zView('E-mail pro ' + n + ': ' + zSubject(), zMailHtml(n, mail[n])); });
+    const pb = $('#zm-pdf'); if (pb) pb.onclick = () => zView(`Zápis z porady č. ${ZC.no || ''} · ${fmtDY(ZC.date)}`, zDocHtml(ZC, false));
   }
 
   /* hotový zápis: tisk, PDF a Word */
@@ -4261,7 +4290,7 @@ ${tydenniHtml.toString()}
       if (ch.nov || ch.title != null || ch.owner != null || ch.end != null) nCh++;
       const pozn = [(r.with || []).length ? 'spolu s ' + esc(r.with.join(', ')) : '', ch.owner != null ? `<span style="color:#1f5fa8">dříve: ${esc(ch.owner || 'bez osoby')}</span>` : ''].filter(Boolean).join(' · ');
       return `<tr style="${late ? 'background:#fdecea;' : ch.nov ? 'background:#eef7f0;' : ''}"><td style="${td}color:#6b7279;font-weight:700">${r.n || ''}</td>
-        <td style="${td}${ch.title != null ? 'border-left:3px solid #7b4bb7;' : ''}">${ch.nov ? tag('#d7eedd', '#2f7d4f', 'NOVÝ') : ''}${ch.title != null ? tag('#efe6f8', '#7b4bb7', 'UPRAVENO') : ''}${ch.owner != null ? tag('#e3eefb', '#1f5fa8', 'JINÁ OSOBA') : ''}${ch.end != null ? tag('#fff1d6', '#9a5b00', 'NOVÝ TERMÍN') : ''}${esc(r.title)}
+        <td style="${td}${ch.title != null ? 'border-left:3px solid #7b4bb7;' : ''}">${ch.nov ? tag('#d7eedd', '#2f7d4f', 'NOVÝ') : ''}${ch.title != null ? tag('#efe6f8', '#7b4bb7', 'UPRAVENO') : ''}${ch.owner != null ? tag('#e3eefb', '#1f5fa8', 'JINÁ OSOBA') : ''}${ch.end != null ? tag('#fff1d6', '#9a5b00', 'NOVÝ TERMÍN') : ''}<span style="white-space:pre-line">${esc(r.title)}</span>
           ${ch.title != null ? `<div style="font-size:12px;color:#7b4bb7;margin-top:2px">původně: <s>${esc(ch.title)}</s></div>` : ''}${pozn ? `<div style="font-size:12px;color:#6b7279;margin-top:2px">${pozn}</div>` : ''}</td>
         <td style="${td}white-space:nowrap;font-weight:700;${late ? 'color:#b3261e;' : ''}">${ch.end != null ? `<s style="color:#9a5b00;font-weight:400">${esc(ch.end ? fmtDY(ch.end) : 'bez termínu')}</s><br>` : ''}${r.perm ? '<span style="font-weight:400">trvalý úkol</span>' : r.end ? `<span style="${ch.end != null ? 'background:#fff1d6;color:#9a5b00;padding:0 4px;border-radius:3px' : ''}">${esc(fmtDY(r.end))}</span>` : `<span style="color:#9a5b00;font-weight:400">${esc(r.note || 'bez termínu')}</span>`}${zOsaDoc(r)}</td></tr>`; }).join('')}</tbody></table>`;
     const grp = n => { const p = n ? personOf(n) : {}, me_ = mine && n === mine;
@@ -4411,10 +4440,48 @@ ${tydenniHtml.toString()}
   function zEntryFocus(owner) {
     if (owner) { zEntryFill(); $('#zp-e-owner').value = owner; $('#zp-e-owner').classList.remove('miss'); }
     const e = $('#zp-entry'); e.classList.remove('flash'); void e.offsetWidth; e.classList.add('flash');
-    $('#zp-e-text').focus();
+    e.scrollIntoView({block: 'start', behavior: 'smooth'}); $('#zp-e-text').focus({preventScroll: true});
+  }
+  // odrážky a číslování v textu úkolu: Enter pokračuje dalším bodem, Enter na prázdném bodu seznam ukončí
+  function zListKey(e) {
+    if (e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+    const el = e.target, v = el.value, st = el.selectionStart, ls = v.lastIndexOf('\n', st - 1) + 1, line = v.slice(ls, st), m = line.match(/^(\s*)(•|-|\d+\.)\s+/);
+    if (!m) return;
+    e.preventDefault();
+    if (!line.slice(m[0].length).trim()) el.setRangeText('', ls, st, 'end');
+    else el.setRangeText('\n' + m[1] + (/\d/.test(m[2]) ? (parseInt(m[2], 10) + 1) + '.' : m[2]) + ' ', st, el.selectionEnd, 'end');
+    el.dispatchEvent(new Event('input'));
+  }
+  function zListToggle(el, kind) {
+    const v = el.value, a = v.lastIndexOf('\n', el.selectionStart - 1) + 1; let b = v.indexOf('\n', el.selectionEnd); if (b < 0) b = v.length;
+    const lines = v.slice(a, b).split('\n'), re = /^(•|-|\d+\.)\s+/, has = kind === 'ul' ? /^[•-]\s+/ : /^\d+\.\s+/, on = lines.every(l => has.test(l));
+    el.setRangeText(lines.map((l, i) => { const t = l.replace(re, ''); return on ? t : (kind === 'ul' ? '• ' : (i + 1) + '. ') + t; }).join('\n'), a, b, 'end');
+    el.focus(); el.dispatchEvent(new Event('input'));
+  }
+  // poslední zápis (otevře se tlačítkem Zápis z porady)
+  const zLatest = () => PORADY().sort((a, b) => (Number(b.no) || 0) - (Number(a.no) || 0) || (b.date || '').localeCompare(a.date || ''))[0] || null;
+  // splněné úkoly: z tohoto zápisu i z dřívějších porad (každý úkol jednou)
+  let zShowDone = false;
+  function zDoneAll() {
+    const out = [], seen = new Set(Object.values(ZC.added || {}));
+    (ZC.rows || []).filter(r => !r.off && r.doneAt && String(r.title || '').trim()).forEach(r => out.push({r, t: zTaskOf(ZC, r), at: r.doneAt}));
+    PORADY().filter(p => p.id !== ZC.id).sort((a, b) => (Number(b.no) || 0) - (Number(a.no) || 0)).forEach(p => (p.rows || []).forEach(r => {
+      const id = (p.added || {})[r.key]; if (!id || seen.has(id)) return;
+      const t = D.tasks.find(x => x.id === id); if (!zDone(t)) return;
+      seen.add(id); out.push({r, t, at: t.doneAt || t.updatedAt || r.doneAt || '', other: true}); }));
+    return out.sort((a, b) => (a.r.n || 0) - (b.r.n || 0));
+  }
+  function zUndone(x) {
+    const now = new Date().toISOString(), t = x.t;
+    let r = x.r;
+    if (x.other) { r = ZC.rows.find(y => y.key === x.r.key) || (ZC.rows.push(Object.assign(clone(x.r), {carried: true})), ZC.rows[ZC.rows.length - 1]); delete r.off; if (t) ZC.added[r.key] = t.id; }
+    delete r.doneAt;
+    if (t && zDone(t)) { Object.assign(t, r.wasTask && !zDone(r.wasTask) ? r.wasTask : {done: 0, status: 'todo'}, {updatedAt: now, updatedBy: me()}); delete t.doneAt;
+      D.log.push({id: uid(), taskId: t.id, at: now, by: me(), done: t.done, status: t.status, comment: 'Vráceno, není hotové', title: t.title}); commit(); }
+    delete r.wasTask; zTouch(); zRender(); toast('Úkol č. ' + (r.n || '') + ' je zase mezi nesplněnými');
   }
   function zEntryAdd(note) {
-    const ta = $('#zp-e-text'), text = ta.value.trim().replace(/\s+/g, ' ');
+    const ta = $('#zp-e-text'), text = ta.value.split('\n').map(l => l.replace(/[ \t]+/g, ' ').trimEnd()).filter((l, i, a) => l || (i && a[i - 1])).join('\n').trim();
     if (!text) { toast(note ? 'Napište text bodu.' : 'Napište, co se má udělat.'); ta.focus(); return; }
     if (note) { ZC.notes = [...(ZC.notes || []), {id: uid(), text}]; zTouch(); zRender(); toast('Přidáno do Ostatních bodů porady'); }
     else zCreate({key: 'm:' + uid(), manual: 'new', carried: true, with: [], title: text, owner: $('#zp-e-owner').value, end: $('#zp-e-end').value});
@@ -4503,10 +4570,13 @@ ${tydenniHtml.toString()}
     $('#zp-arch').onclick = zArchive;
     $('#zp-vzor').hidden = !ZAPIS_VZOR;
     $('#zp-vzor').onclick = () => { const ed = $('#zp-text'); ed.innerHTML = ZAPIS_VZOR.split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join(''); zPropsat(); };
-    $('#zp-newtask').onclick = () => zEntryFocus();
+    $('#zp-newmeet').onclick = () => { const go = () => { store.set(ZDRAFT, ''); poradaOpen(null); };
+      if (!zDirty) go(); else confirmModal('Nová porada', '<p>V otevřeném zápisu jsou neuložené změny.</p>', 'Uložit a začít novou', () => { zSave(); go(); }, [['Zahodit změny', go]]); };
     $('#zp-e-add').onclick = () => zEntryAdd(false);
     $('#zp-e-note').onclick = () => zEntryAdd(true);
-    $('#zp-e-text').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); zEntryAdd(false); } });
+    $('#zp-e-text').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); zEntryAdd(false); } else zListKey(e); });
+    document.querySelectorAll('#zp-entry [data-el]').forEach(b => b.onclick = () => zListToggle($('#zp-e-text'), b.dataset.el));
+    $('#zp-sd').onclick = () => { zShowDone = !zShowDone; zRender(); };
     $('#zp-e-text').addEventListener('input', () => zNavrhLater($('#zp-e-text'), ZE, $('#zp-e-navrh')));
     $('#zp-e-owner').onchange = () => $('#zp-e-owner').classList.toggle('miss', !$('#zp-e-owner').value);
     $('#zp-e-end').onclick = () => { try { $('#zp-e-end').showPicker(); } catch (e) {} };
