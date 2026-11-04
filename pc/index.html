@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-HTTU8Y00KoKZxAdMuIvpjI0YGm+9vQU5paColQ/rAS0=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-Z0XMtmy2HCrBTpzZ92PDIWiJw/IrmZ90Ga16bz6fENo=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -566,7 +566,11 @@ body.ro #btn-person,body.ro #p-new,body.ro .top-actions .me,body.ro #btn-menu,bo
 .zp-sdone{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px}.zp-sdone .zp-il span{color:#2f7d4f}
 .zp-komu{display:flex;flex-direction:column;gap:4px;margin:8px 0;max-height:40vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 10px}.zp-komu label{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:14px}.zp-komu input{width:18px;height:18px}
 .zp-entry textarea,.zp-entry select,.zp-entry input{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--bg);color:var(--ink)}
-.zp-entry textarea{resize:vertical;min-height:120px;line-height:1.45;field-sizing:content;font-size:16px}
+.zp-entry textarea{resize:vertical;min-height:170px;line-height:1.45;field-sizing:content;font-size:16px}
+.zp-epro{margin-top:8px;border:1px solid #d9c9f0;background:#f6f1fc;border-radius:10px;padding:8px 10px;min-height:95px}
+.zp-eproh{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:#7b4bb7}.zp-eproh .btn{padding:4px 10px;font-size:13px}
+.zp-eprot{margin-top:6px;font-size:15px;line-height:1.45;white-space:pre-line;color:var(--ink)}.zp-eprot.ph{color:var(--muted);font-size:13.5px}
+#zp-write{display:none!important}
 .zp-entry .miss{background:#FFF4BF;border-color:#e0b100}
 .zp-create{font-size:15px!important;padding:10px 16px!important;font-weight:800;white-space:nowrap}
 .zp-entry.flash{animation:zpflash .7s}@keyframes zpflash{0%{background:var(--accent-soft)}100%{background:var(--panel)}}
@@ -815,7 +819,8 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
         <div class="zp-egrid">
           <div class="zp-etext">
             <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = vytvořit úkol</span></div>
-            <textarea id="zp-e-text" rows="4" placeholder="Napište, co se má udělat…" aria-label="Text nového úkolu"></textarea><div class="zp-navrh" id="zp-e-navrh" hidden></div>
+            <textarea id="zp-e-text" rows="5" placeholder="Napište úkol svými slovy, klidně rychle a zkratkami…" aria-label="Text nového úkolu"></textarea>
+            <div class="zp-epro"><div class="zp-eproh"><b>✨ Odborný text (návrh od Clauda)</b><span class="zp-sp"></span><button type="button" class="btn" id="zp-e-prep">Přepsat odborně</button><button type="button" class="btn primary" id="zp-e-use" disabled>Použít návrh</button></div><div class="zp-eprot" id="zp-e-navrh"></div></div>
           </div>
           <div class="zp-eside">
             <select id="zp-e-owner" class="miss" aria-label="Kdo to udělá"></select>
@@ -3234,8 +3239,8 @@ function formulace_(b) {
   if (!klic) return json_({error: 'klic'});
   const text = String(b.text || '').slice(0, 1500);
   if (!text.trim()) return json_({text: ''});
-  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele a píšeš zápis z kontrolního dne stavby ' + String(b.stavba || '').slice(0, 80) + '. Dostaneš jeden bod porady, který někdo rychle napsal během jednání (zkratky, překlepy, chybějící slova). ' +
-    'Přepiš ho na jednu nebo dvě věty spisovnou češtinou se správnou stavební terminologií, věcně a jednoznačně, jak se píše do zápisu. Zachovej smysl a přesně zachovej jména, firmy, čísla, místa a termíny; nic nepřidávej a nevymýšlej. ' +
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele a píšeš zápis z kontrolního dne stavby ' + String(b.stavba || '').slice(0, 80) + '. Dostaneš jeden bod porady, který někdo rychle napsal během jednání svými slovy (zkratky, překlepy, chybějící slova). Nejdřív pochop, o co jde a co je předmětem bodu. ' +
+    'Přepiš ho jako profesionální stavbyvedoucí do zápisu z kontrolního dne: spisovná čeština, správná stavební terminologie, věcně, stručně a jednoznačně (kdo, co, kde, do kdy). Odrážky a číslování zachovej. Zachovej smysl a přesně zachovej jména, firmy, čísla, místa a termíny; nic nepřidávej a nevymýšlej. ' +
     'Zkratky, kterým nerozumíš, nech beze změny. Odpověz jen přepsaným textem bez uvozovek a bez komentáře.';
   const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
     headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
@@ -4403,8 +4408,8 @@ ${tydenniHtml.toString()}
   let zNvOff = false;
   const zNavrhHtml = v => `<span class="zp-nvl">✨ Návrh od Clauda</span><span class="zp-nvt">${esc(v)}</span><span class="zp-nvb"><button type="button" class="btn primary" data-nvu>Použít</button><button type="button" class="btn" data-nvk>Nechat můj text</button></span>`;
   async function zNavrhGet(t) {
-    t = String(t || '').trim().replace(/\s+/g, ' ');
-    if (t.split(' ').length < 3) return '';
+    t = String(t || '').split('\n').map(l => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n');
+    if (t.split(/\s+/).length < 3) return '';
     if (ZNV[t] !== undefined) return ZNV[t];
     let v = '';
     if (ZAPIS_TEST) v = ZAPIS_NAVRHY[zf(t).replace(/[^a-z0-9]+/g, ' ').trim()] || '';
@@ -4439,6 +4444,7 @@ ${tydenniHtml.toString()}
   function zEntryFill() {
     const sel = $('#zp-e-owner'), v = sel.value;
     sel.innerHTML = `<option value="">— kdo to udělá —</option>${zPeopleAll().map(n => `<option${n === v ? ' selected' : ''}>${esc(n)}</option>`).join('')}`;
+    if (!$('#zp-e-text').value.trim()) zEntryProReset();
     sel.classList.toggle('miss', !sel.value);
   }
   function zEntryFocus(owner) {
@@ -4477,6 +4483,25 @@ ${tydenniHtml.toString()}
     list.forEach(({r, id}) => { const nr = Object.assign(clone(r), {carried: true}); delete nr.navrh; delete nr.navrhNe; delete nr.wasTask; rec.rows.push(nr); if (id) rec.added[nr.key] = id; });
     return list.length;
   }
+  // spodní část pole Nový úkol: odborný text od Clauda (sám po chvilce, nebo tlačítkem Přepsat odborně)
+  const ZE_PH = 'Napište úkol svými slovy. Za chvilku se tu objeví návrh, jak ho napsat odborně, nebo klikněte Přepsat odborně.';
+  function zEntryProReset() { const b = $('#zp-e-navrh'); b.textContent = ZE_PH; b.classList.add('ph'); $('#zp-e-use').disabled = true; }
+  function zEntryProLater() { clearTimeout(ZE.t); delete ZE.navrh; $('#zp-e-use').disabled = true; ZE.t = setTimeout(() => zEntryPro(false), 1400); }
+  async function zEntryPro(force) {
+    clearTimeout(ZE.t);
+    const ta = $('#zp-e-text'), box = $('#zp-e-navrh'), use = $('#zp-e-use'), t = ta.value.trim();
+    if (!t) { zEntryProReset(); return; }
+    if (!force && t === ZE.navrhNe) return;
+    if (t.split(/\s+/).length < 3) { box.textContent = 'Napište aspoň pár slov, pak navrhnu odborný text.'; box.classList.add('ph'); return; }
+    if (force) { zNvOff = false; delete ZNV[t.split('\n').map(l => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n')]; }
+    box.textContent = 'Claude píše návrh…'; box.classList.add('ph');
+    const v = await zNavrhGet(t);
+    if (ta.value.trim() !== t) return;
+    if (v) { ZE.navrh = v; box.textContent = v; box.classList.remove('ph'); use.disabled = false; return; }
+    delete ZE.navrh; use.disabled = true; box.classList.add('ph');
+    box.textContent = ZAPIS_TEST ? 'Ve zkušební verzi umí návrh jen připravené ukázky, zkuste napsat: kubu zajistit revizi el. 3np do patku. V ostré verzi napíše návrh Claude ke každému textu.'
+      : zNvOff ? 'Návrh teď nejde: na Googlu ještě chybí klíč pro Clauda (CLAUDE_KLIC). Bez něj Claude psát neumí.' : 'Návrh se nepodařil. Zkuste znovu Přepsat odborně.';
+  }
   // poslední zápis (otevře se tlačítkem Zápis z porady)
   const zLatest = () => PORADY().sort((a, b) => (Number(b.no) || 0) - (Number(a.no) || 0) || (b.date || '').localeCompare(a.date || ''))[0] || null;
   // splněné úkoly: z tohoto zápisu i z dřívějších porad (každý úkol jednou)
@@ -4505,7 +4530,7 @@ ${tydenniHtml.toString()}
     if (note) { ZC.notes = [...(ZC.notes || []), {id: uid(), text}]; zTouch(); zRender(); toast('Přidáno do Ostatních bodů porady'); }
     else zCreate({key: 'm:' + uid(), manual: 'new', carried: true, with: [], title: text, owner: $('#zp-e-owner').value, end: $('#zp-e-end').value});
     ta.value = ''; ta.style.height = ''; $('#zp-e-end').value = ''; $('#zp-e-owner').value = ''; $('#zp-e-owner').classList.add('miss');
-    delete ZE.navrh; delete ZE.navrhNe; $('#zp-e-navrh').hidden = true; ta.focus();
+    delete ZE.navrh; delete ZE.navrhNe; zEntryProReset(); ta.focus();
   }
   // úkol se hned propíše do zápisu (k osobě) i do záložky Úkoly, stejně jako všude jinde
   function zCreate(r) {
@@ -4596,7 +4621,9 @@ ${tydenniHtml.toString()}
     $('#zp-e-text').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); zEntryAdd(false); } else zListKey(e); });
     document.querySelectorAll('#zp-entry [data-el]').forEach(b => b.onclick = () => zListToggle($('#zp-e-text'), b.dataset.el));
     $('#zp-sd').onclick = () => { zShowDone = !zShowDone; zRender(); };
-    $('#zp-e-text').addEventListener('input', () => zNavrhLater($('#zp-e-text'), ZE, $('#zp-e-navrh')));
+    $('#zp-e-text').addEventListener('input', () => zEntryProLater());
+    $('#zp-e-prep').onclick = () => zEntryPro(true);
+    $('#zp-e-use').onclick = () => { if (!ZE.navrh) return; const ta = $('#zp-e-text'); ta.value = ZE.navrh; ZE.navrhNe = ZE.navrh; delete ZE.navrh; $('#zp-e-use').disabled = true; $('#zp-e-navrh').textContent = 'Návrh použit ✓ Můžete ho ještě upravit, pak vyberte osobu a termín.'; ta.focus(); };
     $('#zp-e-owner').onchange = () => $('#zp-e-owner').classList.toggle('miss', !$('#zp-e-owner').value);
     $('#zp-e-end').onclick = () => { try { $('#zp-e-end').showPicker(); } catch (e) {} };
     document.querySelectorAll('#zp-entry [data-eq]').forEach(b => b.onclick = () => { const md = (ZC && ZC.date) || today;
