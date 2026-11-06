@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-PZWmTFRNS+J4EktZWCxFqt+ugLhYPNI07Cl9lCaOAJw=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-vj8FH2mxXf89mRUXm5r+rtCyAmPc3FKo0GDaBD4sgE8=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -233,7 +233,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script>
 (() => {
-  const VERSION = '1.9';
+  const VERSION = '1.10';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -364,9 +364,11 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       document.querySelectorAll('.nav [data-v]').forEach(b => b.onclick = () => go(b.dataset.v, b.dataset.v === 'hlaseni'));
       setInterval(() => { if (document.visibilityState === 'visible') { refresh(); pump(); } }, 30000);
       document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refresh(); pump(); } });
-      addEventListener('online', () => { online = true; pump(); refresh(); render(); });
-      addEventListener('offline', () => { online = false; render(); });
-      addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; render(); });
+      addEventListener('online', () => { online = true; pump(); refresh(); renderBg(); });
+      addEventListener('offline', () => { online = false; renderBg(); });
+      addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; renderBg(); });
+      // když člověk dopíše (klávesnice zmizí), dokreslí se odložené změny ze sítě
+      document.addEventListener('focusout', () => setTimeout(() => { if (bgPending && !pise()) { bgPending = false; render(); } }, 400));
     }
     loadQ().then(() => { render(); pump(); refresh(); });
   }
@@ -374,9 +376,14 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 
   async function refresh(first) {
     if (!conn) return false;
-    try { const r = await CXQ.get(conn); if (r.data) { D = r.data; dataAt = Date.now(); fixMe(); } online = true; lastErr = ''; if (!first) render(); return true; }
-    catch (e) { lastErr = e.message; if (e.message === 'OFFLINE') online = false; if (!first) render(); return false; }
+    try { const r = await CXQ.get(conn); if (r.data) { D = r.data; dataAt = Date.now(); fixMe(); } online = true; lastErr = ''; if (!first) renderBg(); return true; }
+    catch (e) { lastErr = e.message; if (e.message === 'OFFLINE') online = false; if (!first) renderBg(); return false; }
   }
+  // Překreslení z pozadí (načtení dat každých 30 s, fronta, signál) by smazalo rozepsané pole a na iPhonu
+  // zavřelo klávesnici. Dokud člověk píše, počká se, a překreslí se, až pole opustí.
+  let bgPending = false;
+  function pise() { const a = document.activeElement; return !!a && a !== document.body && (a.tagName === 'TEXTAREA' || a.isContentEditable || (a.tagName === 'INPUT' && !/^(button|submit|checkbox|radio|file|range|color|reset|image)$/.test(a.type)) || a.tagName === 'SELECT'); }
+  function renderBg() { if (pise()) { bgPending = true; return; } bgPending = false; render(); }
   async function loadQ() { try { Q = await CXQ.all(); } catch (e) { Q = []; } }
   let pumping = false;
   async function pump() {
@@ -388,7 +395,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     await loadQ();
     if (r && r.err && r.err !== 'OFFLINE') lastErr = r.err;
     if (r && r.sent && F.result && F.result.cid && Q.some(x => x.cid === F.result.cid && x.state === 'sent')) F.result.sent = true;
-    render();
+    renderBg();
   }
   function kick() {
     if (navigator.serviceWorker && navigator.serviceWorker.ready && 'SyncManager' in window) navigator.serviceWorker.ready.then(r => r.sync.register('cx-odeslat')).catch(() => {});
@@ -413,6 +420,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     $('#cnt-q').hidden = !waiting; $('#cnt-q').textContent = waiting;
     if (ro && (view === 'hlaseni' || view === 'odeslane')) view = 'prehled';
     const V = {prehled: vPrehled, ukoly: vUkoly, hlaseni: vHlaseni, vedomi: vVedomi, odeslane: vOdeslane}[view] || vPrehled;
+    bgPending = false;
     $('#view').innerHTML = V();
     bind();
   }
@@ -1459,7 +1467,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       Z.formal = odborne(); Z.question = '';
       toast((!r || (!r.error && !r.text) ? 'Skript na Googlu je starý, Claude umí až verze 7.' : r.error === 'klic' ? 'Na Googlu ještě není vložený klíč pro Claude.' : r.error === 'heslo' ? 'Aplikace není správně připojená ke stavbě.' : r.error) + ' Zprávu zatím napsala šablona.');
     }
-    if (view === 'hlaseni') render();
+    if (view === 'hlaseni') renderBg();
   }
   function zDetail(id) {
     const e = zHist().find(x => x.id === id); if (!e) return;
