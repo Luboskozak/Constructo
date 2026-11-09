@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lPXKQTdI6IoABY8c59r4ipef8YZwJiqGjRqUXR/17gQ=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-q/3wUZB6jYBJk+7GvqNllcFZloStoFxxfjw0u0Z7YnA=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -696,6 +696,68 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .zv-uz textarea{min-height:60px;font-size:13.5px}
 .zv-row .zv-odp b{display:inline}
 .zv-top select{max-width:175px}
+/* 4.25 denní zápisy = interní stavební deník */
+.dform{gap:14px}
+.dform.drop{outline:3px dashed var(--accent);outline-offset:-6px}
+.dwho{display:flex;align-items:center;gap:8px;font-size:14px}.dwho .av{width:28px;height:28px;font-size:11px}
+.dwho .del,.dmisto .del{border:0;background:none;color:var(--muted);font-size:12.5px;text-decoration:underline;cursor:pointer;padding:0}
+.drow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.drow input{flex:1 1 150px}
+.chips,.dfil{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 11px;font:600 13px var(--f-body);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--c,var(--k));border-color:var(--c,var(--k));color:#fff}
+.chip b{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#e0442c;color:#fff;font-size:11px;line-height:18px;text-align:center}
+.dseg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.dseg button{border:0;background:var(--panel);padding:9px 6px;font:600 13px var(--f-body);cursor:pointer}
+.dseg button+button{border-left:1px solid var(--line)}.dseg button:nth-child(3){border-left:0}.dseg button:nth-child(n+3){border-top:1px solid var(--line)}
+.dseg button[aria-pressed="true"]{background:var(--k);color:#fff}
+.dsub{display:flex;flex-direction:column;gap:8px;background:var(--soft);border-radius:10px;padding:10px 12px}
+.dmisto{display:flex;gap:12px;align-items:center}.dmisto b{font-size:13.5px}.dmisto .drow{margin-top:6px}
+.pmini{display:inline-block;flex:none;position:relative;border:1px solid var(--line);border-radius:8px;background-color:#fff;background-repeat:no-repeat;overflow:hidden}
+.pmini i{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#d63b24;border:2px solid #fff;box-shadow:0 0 0 3px rgba(214,59,36,.35)}
+.dphotos{display:flex;flex-wrap:wrap;gap:8px}
+.dph{position:relative;width:76px;height:76px;border-radius:8px;overflow:hidden;border:1px solid var(--line);flex:none}
+.dph img{width:100%;height:100%;object-fit:cover;display:block}
+.dph button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:12px;cursor:pointer;line-height:22px;padding:0}
+.dph.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-style:dashed;cursor:pointer;font-size:12px;color:var(--muted);background:var(--bg)}.dph.add span:first-child{font-size:22px}
+.dfil{margin-bottom:12px}
+.dup{margin-bottom:12px}.dup .uprow{display:grid;grid-template-columns:150px 1fr;gap:10px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer}
+.dup .uprow:hover{background:var(--soft)}.dup .uprow .num{font-weight:700;font-family:var(--f-body)}.dup .uprow .late{color:var(--bad)}
+.entry.dz{grid-template-columns:auto minmax(0,1fr);gap:0 12px}
+.entry.dz .av{grid-row:auto}
+.entry.dz .eb{display:flex;flex-direction:column;gap:6px;min-width:0}
+.entry.dz .eh .ea{margin-left:auto;display:flex;gap:10px}
+.entry.dz.new{box-shadow:inset 4px 0 0 var(--accent)}
+.entry.dz.prob{background:#fdf1ef}
+.entry.dz.flash{background:var(--accent-soft)}
+.entry .nw{background:var(--accent);color:var(--accent-ink);border-radius:999px;font:700 10.5px var(--f-body);padding:2px 7px;text-transform:uppercase;letter-spacing:.04em}
+.dtyp{border:1px solid var(--c);color:var(--c);border-radius:999px;font:700 11px var(--f-body);padding:2px 8px}
+.dline{font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;text-align:left;border:0;background:none;padding:0;font-family:inherit;color:var(--ink)}
+button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.dline:disabled{cursor:default;text-decoration:none;color:var(--muted)}
+.dline.term{background:var(--soft);border-radius:8px;padding:6px 10px;align-self:flex-start}
+.dline.okk{color:var(--good, #2f7d4f);font-weight:600}
+.dpin{align-self:flex-start}
+.entry .att{margin:0}
+.drep{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.drep .rp{display:flex;gap:8px;font-size:13.5px;background:var(--soft);border-radius:10px;padding:7px 10px}
+.drep .rp .av{width:22px;height:22px;font-size:9px;grid-row:auto}.drep .rp .tm{color:var(--muted);font-size:11.5px}.drep .rp .txt{margin-top:1px}
+.rform{display:flex;gap:6px}.rform input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:inherit;font-size:13.5px;background:var(--bg)}.rform .btn{padding:6px 12px;font-size:12.5px}
+#v-diary .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:#e0442c;color:#fff;font-size:11px;line-height:18px;text-align:center;float:right;margin-top:1px}
+.pv{position:fixed;inset:0;z-index:90;background:#fff;display:flex;flex-direction:column}
+.pv-top{background:var(--k,#131518);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:16px}
+.pv-top [data-pv="x"]{margin-left:auto;background:#2a2e33;color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer}
+.pv-floors{display:flex;gap:6px;flex-wrap:wrap}
+.pv-floors button{border:0;border-radius:8px;padding:7px 11px;background:#2a2e33;color:#fff;font-weight:700;cursor:pointer}
+.pv-floors button[aria-pressed="true"]{background:#F4D23C;color:#131518}
+.pv-stage{flex:1;position:relative;overflow:hidden;touch-action:none;background:#f1f1ec;user-select:none;cursor:crosshair}
+.pv-in{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff}
+.pv-in img{display:block;width:100%;height:100%;pointer-events:none;-webkit-user-drag:none}
+.pv-pin{position:absolute;width:0;height:0;pointer-events:none}
+.pv-pin svg{position:absolute;left:-19px;top:-48px;width:38px;height:48px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+.pv-zoom{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:8px}
+.pv-zoom button{width:44px;height:44px;border-radius:12px;border:0;background:#131518;color:#fff;font-size:24px;font-weight:800;cursor:pointer}
+.pv-load{position:absolute;left:50%;top:40%;transform:translateX(-50%);background:#131518;color:#fff;border-radius:12px;padding:10px 16px;font-weight:700}
+.pv-bot{background:var(--panel);padding:12px 16px;display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.pv-room{font-size:15px;flex:1 1 300px}
 </style>
 </head>
 <body>
@@ -933,7 +995,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.24';
+  const APP_VERSION = '4.25';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -1235,11 +1297,11 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   function renderPeople() {
     const box = $('#people');
     if (!D.tasks.length) { box.innerHTML = `<div class="empty" style="grid-column:1/-1">Zatím tu nikdo není. Lidé se objeví, jakmile jim přiřadíte první úkol.</div>`; return; }
-    const diary = D.diary.filter(e => e.kind !== 'porada' && e.kind !== 'plan').sort((a,b) => (b.date + (b.at||'')).localeCompare(a.date + (a.at||'')));
+    const diary = D.diary.filter(isZapis).sort((a,b) => (b.date + (b.at||'')).localeCompare(a.date + (a.at||'')));
     box.innerHTML = owners().map(n => {
       const ts = TRK().filter(t => hasPerson(t, n)), ss = UKOLY().filter(t => hasPerson(t, n) && eff(t) !== 'done');
       const late = ts.filter(t => eff(t) === 'late').length, open = ts.filter(t => eff(t) !== 'done').length, a = avg(ts);
-      const lastE = diary.find(e => e.owner === n);
+      const lastE = diary.find(e => e.owner === n || e.by === n);
       const lastTxt = lastE ? `Poslední zápis ${lastE.date === today ? 'dnes' : fmtD(lastE.date)}` : 'Bez denního zápisu';
       const old = !lastE || dayDiff(lastE.date, today) > 1;
       return `<button type="button" class="person${S.owner === n ? ' on' : ''}" data-o="${esc(n)}" aria-pressed="${S.owner === n}">
@@ -1524,100 +1586,416 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     v.querySelectorAll('.g-row[data-id]').forEach(r => { r.onclick = () => quickDone(r.dataset.id, r); r.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); quickDone(r.dataset.id, r); } }; });
   }
 
-  /* ---------- denní zápisy ---------- */
-  let diaryDraft = null;
-  const filteredDiary = () => D.diary.filter(e => e.kind !== 'porada' && e.kind !== 'plan' && (!S.owner || e.owner === S.owner) && (!S.q || `${e.text} ${e.owner} ${e.taskTitle||''}`.toLowerCase().includes(S.q.toLowerCase())));
+  /* ---------- denní zápisy = interní stavební deník a komunikace mezi kolegy (4.25) ---------- */
+  // Zápis je záznam v D.diary bez kind (staré zápisy fungují dál). Odpovědi kolegů jsou samostatné záznamy kind 'odpoved'
+  // (parent = id zápisu), aby se při současném psaní dvou lidí nic nepřepsalo. Úkol ze zápisu je běžný drobný úkol (kind 'simple', zapis = id zápisu).
+  // Oficiální stavební deník se dál vede v Buildary – tlačítko „Zkopírovat den“ připraví text dne k vložení.
+  const isZapis = e => !e.kind;
+  const DTYPY = [{k: 'prace', l: 'Práce', c: '#16191c'}, {k: 'problem', l: 'Problém', c: '#c0332b'}, {k: 'dodavka', l: 'Dodávka', c: '#1f6fd1'}, {k: 'kontrola', l: 'Kontrola / TDS', c: '#7c3fd6'}, {k: 'info', l: 'Informace', c: '#0f9d74'}];
+  const dTyp = k => DTYPY.find(x => x.k === k) || DTYPY[0];
+  const DAKCE = [['zapis', 'Jen zápis'], ['ukol', 'Úkol pro kolegu'], ['termin', 'Termín prací'], ['posun', 'Posun úkolu']];
+  const PLAN_ROOT = '../';   // půdorysy jsou na webu v /pudorysy (stejné jako v mobilu)
+  let diaryDraft = null, dSeen0 = null, dSeenFor = null;
+  const dRepl = id => D.diary.filter(e => e.kind === 'odpoved' && e.parent === id).sort((a, b) => (a.at || '').localeCompare(b.at || ''));
+  const dSeenKey = () => 'hyb-denik-seen|' + (me() || '');
+  const dLast = e => [e, ...dRepl(e.id)].filter(x => x.by !== me()).map(x => x.at || '').sort().pop() || '';
+  const dIsNew = (e, s) => !!s && !!me() && dLast(e) > s;
+  const dForMe = e => { const m = me(); return !!m && e.by !== m && ((e.komu || []).includes(m) || e.ukKomu === m); };
+  const dWhen = a => a ? new Date(a).toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
+  const mistoTxt = m => m ? [m.room ? 'místnost ' + m.room : '', m.fname || '', /^[A-G]/.test(m.room || '') ? 'objekt ' + m.room[0] : ''].filter(Boolean).join(' · ') : '';
+  const mistoMini = (m, W, H, k) => `<span class="pmini" style="width:${W}px;height:${H}px;background-image:url('${esc(PLAN_ROOT + m.img)}');background-size:${Math.round(m.w * k)}px ${Math.round(m.h * k)}px;background-position:${Math.round(W / 2 - m.x * m.w * k)}px ${Math.round(H / 2 - m.y * m.h * k)}px"><i></i></span>`;
+  const terminTxt = e => e.tStart ? (e.tEnd && e.tEnd !== e.tStart ? `${fmtD(e.tStart)} – ${fmtDY(e.tEnd)}` : fmtDY(e.tStart)) : '';
+  function dDraft() {
+    if (!diaryDraft) diaryDraft = {date: today, typ: 'prace', text: '', komu: [], akce: 'zapis', ukKomu: '', ukEnd: addD(today, 7), tStart: '', tEnd: '', task: '', done: '', misto: null, att: []};
+    return diaryDraft;
+  }
+  // přečte rozepsaný formulář do konceptu (před překreslením, aby se nic neztratilo)
+  function dGrab() {
+    if (!$('#j-text') || !diaryDraft) return;
+    const d = diaryDraft, v = id => $('#' + id) ? $('#' + id).value : undefined;
+    d.date = v('j-date') || d.date; d.text = v('j-text');
+    if (v('j-ukkomu') !== undefined) d.ukKomu = v('j-ukkomu'); if (v('j-ukend') !== undefined) d.ukEnd = v('j-ukend');
+    if (v('j-ts') !== undefined) d.tStart = v('j-ts'); if (v('j-te') !== undefined) d.tEnd = v('j-te');
+    if (v('j-task') !== undefined) d.task = v('j-task'); if (v('j-done-n') !== undefined) d.done = v('j-done-n');
+  }
+  const filteredDiary = () => {
+    const s = dSeen0 || '', q = (S.q || '').toLowerCase();
+    return D.diary.filter(e => isZapis(e)
+      && (!S.owner || e.owner === S.owner || e.by === S.owner || (e.komu || []).includes(S.owner) || e.ukKomu === S.owner)
+      && (!S.obj || (e.obj && objHit(e.obj, S.obj)))
+      && (S.dFil !== 'me' || dForMe(e)) && (S.dFil !== 'problem' || (e.typ === 'problem' && !e.vyreseno)) && (S.dFil !== 'term' || e.akce === 'termin' || e.akce === 'ukol')
+      && (S.dFil !== 'new' || dIsNew(e, s))
+      && (!q || `${e.text} ${e.owner} ${e.by || ''} ${e.taskTitle || ''} ${mistoTxt(e.misto)} ${dRepl(e.id).map(r => r.text + ' ' + r.by).join(' ')}`.toLowerCase().includes(q)));
+  };
+  function entryHtml(e, seen) {
+    const t = dTyp(e.typ), rs = dRepl(e.id), nw = dIsNew(e, seen), who = e.by || e.owner || '?';
+    const uk = e.ukolId && D.tasks.find(x => x.id === e.ukolId), pt = e.taskId && D.tasks.find(x => x.id === e.taskId);
+    const ukDone = uk && eff(uk) === 'done', ukLate = uk && !ukDone && uk.end && uk.end < today;
+    const komu = (e.komu || []).length ? 'pro ' + e.komu.join(', ') : '';
+    return `<div class="entry dz${nw ? ' new' : ''}${e.typ === 'problem' && !e.vyreseno ? ' prob' : ''}${e.id === (diaryDraft && diaryDraft.edit) ? ' editing' : ''}" data-e="${esc(e.id)}">
+      <span class="av" style="background:${pcol(who)}">${esc(initials(who))}</span>
+      <div class="eb">
+        <div class="eh"><b>${esc(who)}</b>${e.typ ? `<span class="dtyp" style="--c:${t.c}">${esc(t.l)}</span>` : ''}${komu ? `<span class="by">${esc(komu)}</span>` : e.by && e.owner && e.by !== e.owner ? `<span class="by">za ${esc(e.owner)}</span>` : ''}<span class="tm num">${e.at ? new Date(e.at).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}) : ''}</span>${nw ? '<span class="nw">nové</span>' : ''}
+          <span class="ea no-print"><button type="button" class="del" data-edit="${esc(e.id)}">Upravit</button><button type="button" class="del" data-del="${esc(e.id)}">Smazat</button></span></div>
+        ${e.text ? `<div class="txt">${esc(e.text)}</div>` : ''}
+        ${e.akce === 'termin' && e.tStart ? `<div class="dline term">📅 Termín prací: <b>${terminTxt(e)}</b>${(e.tEnd || e.tStart) < today ? ' <span class="hcap">· proběhlo</span>' : e.tStart <= today ? ' <span class="hcap">· právě probíhá</span>' : ''}</div>` : ''}
+        ${e.ukolId ? `<button type="button" class="dline dtask" data-task="${esc(e.ukolId)}" ${uk ? '' : 'disabled'}>✔ Úkol pro <b>${esc((uk && uk.owner) || e.ukKomu || '')}</b>${(uk ? uk.end : e.ukEnd) ? ' do ' + fmtDY(uk ? uk.end : e.ukEnd) : ''} <span class="pill ${ukDone ? 's-done' : 's-miss'}">${uk ? (ukDone ? 'Splněno' : ukLate ? 'Po termínu' : 'Nesplněno') : 'smazaný úkol'}</span></button>` : ''}
+        ${e.taskId ? `<button type="button" class="dline dtask" data-task="${esc(e.taskId)}" ${pt ? '' : 'disabled'}>Úkol: ${esc(pt ? pt.title : e.taskTitle || 'smazaný úkol')} → <span class="num">${Number(e.done) || 0} %</span></button>` : ''}
+        ${e.misto && e.misto.img ? `<button type="button" class="dline dpin" data-pinv="${esc(e.id)}" title="Ukázat na půdorysu">${mistoMini(e.misto, 132, 86, .11)}<span>📍 ${esc(mistoTxt(e.misto))}</span></button>` : ''}
+        ${attHtml(e)}
+        ${e.typ === 'problem' ? (e.vyreseno ? `<div class="dline okk">✓ Vyřešeno ${dWhen(e.vyreseno.at)}${e.vyreseno.by ? ' · ' + esc(e.vyreseno.by) : ''} <button type="button" class="del no-print" data-unsolve="${esc(e.id)}">vrátit</button></div>` : `<div class="no-print"><button type="button" class="btn" data-solve="${esc(e.id)}">✓ Vyřešeno</button></div>`) : ''}
+        ${e.editedAt ? `<div class="tk">upraveno ${dWhen(e.editedAt)}${e.editedBy ? ' · ' + esc(e.editedBy) : ''}</div>` : ''}
+        <div class="drep">${rs.map(r => `<div class="rp"><span class="av" style="background:${pcol(r.by || '?')}">${esc(initials(r.by || '?'))}</span><div><b>${esc(r.by || '')}</b> <span class="tm">${dWhen(r.at)}</span>${dIsNew(r, seen) ? ' <span class="nw">nové</span>' : ''}${r.by === me() ? ` <button type="button" class="del no-print" data-rdel="${esc(r.id)}">smazat</button>` : ''}<div class="txt">${esc(r.text)}</div></div></div>`).join('')}
+          <form class="rform no-print" data-rf="${esc(e.id)}"><input placeholder="${rs.length ? 'Odpovědět…' : 'Odpovědět nebo doplnit…'}" aria-label="Odpověď na zápis"><button class="btn" type="submit">Odeslat</button></form></div>
+      </div></div>`;
+  }
   function renderDiary() {
     const v = $('#view');
-    const keep = $('#j-text') ? {date: $('#j-date').value, owner: $('#j-owner').value, task: $('#j-task').value, done: $('#j-done-n').value, text: $('#j-text').value, edit: S.editEntry || null, focus: document.activeElement && document.activeElement.id} : diaryDraft;
-    const ed = S.editEntry ? D.diary.find(e => e.id === S.editEntry) : null;
-    if (S.editEntry && !ed) S.editEntry = null;
-    const kv = (k, def) => keep && (keep.edit || null) === (S.editEntry || null) && keep[k] != null && keep[k] !== '' ? keep[k] : def;
-    const own = owners().filter(n => n !== 'Bez přiřazení');
-    const defOwner = kv('owner', ed ? ed.owner : (S.owner || store.get('hyb-me-owner')));
+    // nové od minula: co kolegové napsali od mé poslední návštěvy (zvýraznění drží, dokud stránku neobnovím)
+    if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
+    if (me()) store.set(dSeenKey(), new Date().toISOString());
+    const seen = dSeen0;
+    dGrab();
+    const d = dDraft(), ed = d.edit ? D.diary.find(e => e.id === d.edit) : null;
+    if (d.edit && !ed) { diaryDraft = null; return renderDiary(); }
+    const m = me(), team = owners().filter(n => n !== 'Bez přiřazení');
+    const fri = (() => { const x = pd(today), w = x.getDay(); return addD(today, w <= 5 ? 5 - w : 6); })();
     const form = `
-      <form class="card" id="j-form" autocomplete="off">
-        <h3>${ed ? 'Upravit zápis' : 'Nový denní zápis'}</h3>
-        <div class="two">
-          <div class="fld"><label for="j-date">Den</label><input id="j-date" type="date" value="${esc(kv('date', ed ? ed.date : today))}" max="${today}"></div>
-          <div class="fld"><label for="j-owner">Za koho / úsek</label><input id="j-owner" list="j-owners" value="${esc(defOwner)}" placeholder="Jméno"><datalist id="j-owners">${own.map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
+      <form class="card dform" id="j-form" autocomplete="off">
+        <h3>${ed ? 'Upravit zápis' : 'Nový zápis'}</h3>
+        <div class="dwho">${m ? `<span class="av" style="background:${pcol(m)}">${esc(initials(m))}</span><span>Píše <b>${esc(m)}</b></span><button type="button" class="del" id="j-who">nejsem to já</button>` : `<button type="button" class="btn primary" id="j-who">Kdo píše? Vyberte své jméno</button>`}</div>
+        <div class="fld"><label for="j-date">Den</label><div class="drow"><input id="j-date" type="date" value="${esc(d.date)}" max="${today}"><button type="button" class="chip" data-dd="0" aria-pressed="${d.date === today}">Dnes</button><button type="button" class="chip" data-dd="-1" aria-pressed="${d.date === addD(today, -1)}">Včera</button></div></div>
+        <div class="fld"><label>Druh</label><div class="chips" id="j-typ">${DTYPY.map(t => `<button type="button" class="chip" data-typ="${t.k}" style="--c:${t.c}" aria-pressed="${d.typ === t.k}">${esc(t.l)}</button>`).join('')}</div></div>
+        <div class="fld"><label for="j-text">Co se dnes dělo</label><textarea id="j-text" placeholder="Např. Akant dokončil štuky 4. NP dvorní fasáda, zítra lešení 3. NP. Chybí 2 lidi.">${esc(d.text)}</textarea></div>
+        <div class="fld"><label>Pro koho</label><div class="chips" id="j-komu"><button type="button" class="chip" data-komu="" aria-pressed="${!d.komu.length}">Všem</button>${team.filter(n => n !== m).map(n => `<button type="button" class="chip" data-komu="${esc(n)}" aria-pressed="${d.komu.includes(n)}">${esc(n)}</button>`).join('')}</div><span class="hcap">Vybraní to uvidí jako „Pro mě“ a svítí jim to jako nové.</span></div>
+        ${ed ? '' : `<div class="fld"><label>Co dál?</label><div class="seg dseg" id="j-akce">${DAKCE.map(([k, l]) => `<button type="button" data-ak="${k}" aria-pressed="${d.akce === k}">${l}</button>`).join('')}</div></div>`}
+        <div class="dsub" data-for="ukol" ${!ed && d.akce === 'ukol' ? '' : 'hidden'}>
+          <div class="two"><div class="fld"><label for="j-ukkomu">Komu</label><select id="j-ukkomu"><option value="">— vyberte —</option>${team.map(n => `<option value="${esc(n)}"${d.ukKomu === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
+          <div class="fld"><label for="j-ukend">Do kdy</label><input id="j-ukend" type="date" value="${esc(d.ukEnd || '')}"></div></div>
+          <div class="quick" id="j-ukq"><button type="button" data-d="${addD(today, 1)}">Zítra</button><button type="button" data-d="${fri}">Do pátku</button><button type="button" data-d="${addD(today, 7)}">Za týden</button><button type="button" data-d="${addD(today, 14)}">Za 14 dní</button></div>
+          <span class="hcap">Text zápisu se stane úkolem. Kolega ho uvidí v záložce Úkoly a potvrdí splnění.</span>
         </div>
-        <div class="fld"><label for="j-text">Co se dnes dělo</label><textarea id="j-text" placeholder="Např. Akant dokončil štuky 4. NP dvorní fasáda, zítra lešení 3. NP. Chybí 2 lidi.">${esc(kv('text', ed ? ed.text : ''))}</textarea></div>
-        <div class="fld" ${ed ? 'hidden' : ''}><label for="j-task">Posunout úkol (nepovinné)</label><select id="j-task"></select></div>${ed && ed.taskId ? `<p class="share">Posun úkolu u tohoto zápisu (${esc(ed.taskTitle || '')} → ${Number(ed.done)||0} %) se úpravou nemění. Procenta upravíte přímo v úkolu.</p>` : ''}
-        <div class="fld" id="j-done-w" hidden><label for="j-done">Nově hotovo</label><div class="rng"><input id="j-done" type="range" min="0" max="100" step="5"><label class="pin"><input id="j-done-n" type="number" min="0" max="100" step="1" inputmode="numeric" value="" aria-label="Hotovo v procentech"> %</label></div><div class="quick" id="j-quick">${[5,15,30,50,75,100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}</div></div>
+        <div class="dsub" data-for="termin" ${d.akce === 'termin' && (!ed || ed.akce === 'termin') ? '' : 'hidden'}>
+          <div class="two"><div class="fld"><label for="j-ts">Kdy</label><input id="j-ts" type="date" value="${esc(d.tStart || '')}"></div><div class="fld"><label for="j-te">Do (nepovinné)</label><input id="j-te" type="date" value="${esc(d.tEnd || '')}"></div></div>
+          <span class="hcap">Např. montáž lešení, betonáž, přistavení jeřábu, kontrolní den. Ukáže se nahoře v „Co nás čeká“.</span>
+        </div>
+        <div class="dsub" data-for="posun" ${!ed && d.akce === 'posun' ? '' : 'hidden'}>
+          <div class="fld"><label for="j-task">Který úkol</label><select id="j-task"></select></div>
+          <div class="fld" id="j-done-w" hidden><label for="j-done">Nově hotovo</label><div class="rng"><input id="j-done" type="range" min="0" max="100" step="5"><label class="pin"><input id="j-done-n" type="number" min="0" max="100" step="1" inputmode="numeric" value="" aria-label="Hotovo v procentech"> %</label></div><div class="quick" id="j-quick">${[5, 15, 30, 50, 75, 100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}</div></div>
+        </div>
+        ${ed && ed.ukolId ? '<p class="share" style="margin:0">Úkol z tohoto zápisu upravíte kliknutím na něj v zápisu.</p>' : ''}
+        <div class="fld"><label>Místo na stavbě</label>${d.misto && d.misto.img ? `<div class="dmisto">${mistoMini(d.misto, 150, 100, .12)}<div><b>${esc(mistoTxt(d.misto))}</b><div class="drow"><button type="button" class="btn" id="j-pin">Změnit</button><button type="button" class="del" id="j-pin-x">odebrat</button></div></div></div>` : '<button type="button" class="btn" id="j-pin">📍 Označit místo na půdorysu</button>'}</div>
+        <div class="fld"><label>Fotky</label><div class="dphotos" id="j-drop">${d.att.map((a, i) => `<span class="dph"><img src="${esc(attThumb(a))}" alt="Fotka"><button type="button" data-phx="${i}" aria-label="Odebrat fotku">✕</button></span>`).join('')}<label class="dph add"><span>📷</span><span>Přidat fotky</span><input type="file" id="j-file" accept="image/*" multiple hidden></label></div><span class="hcap">Fotku můžete i vložit (Ctrl+V) nebo přetáhnout sem.</span></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit" id="j-save">${ed ? 'Uložit změny' : 'Uložit zápis'}</button>${ed ? '<button class="btn" type="button" id="j-cancel">Zrušit úpravu</button>' : ''}</div>
-        <p class="share">${ed ? 'Upravit může kdokoli z týmu, uloží se, kdo a kdy zápis změnil.' : 'Zápis se uloží s datem a jménem z pole „Zapisuje“ nahoře.'}</p>
       </form>`;
+    // co nás čeká: termíny prací a úkoly ze zápisů na nejbližší 3 týdny
+    const lim = addD(today, 21);
+    const up = D.diary.filter(e => isZapis(e) && e.akce === 'termin' && e.tStart && (e.tEnd || e.tStart) >= today && e.tStart <= lim).map(e => ({d: e.tStart, e, h: `📅 ${esc(e.text.split('\n')[0].slice(0, 90))}`, w: terminTxt(e)}))
+      .concat(D.diary.filter(e => isZapis(e) && e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
+        .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today})))
+      .sort((a, b) => a.d.localeCompare(b.d)).slice(0, 8);
+    const upHtml = up.length ? `<div class="day dup"><div class="day-h">Co nás čeká<span class="cnt">termíny a úkoly na 3 týdny</span></div>${up.map(x => `<button type="button" class="uprow" data-go="${esc(x.e.id)}"><span class="num${x.late ? ' late' : ''}">${esc(x.w)}</span><span>${x.h}</span></button>`).join('')}</div>` : '';
+    const all = D.diary.filter(isZapis), nMe = all.filter(e => dForMe(e) && (!e.ukolId || eff(D.tasks.find(x => x.id === e.ukolId) || {}) !== 'done')).length, nProb = all.filter(e => e.typ === 'problem' && !e.vyreseno).length, nNew = all.filter(e => dIsNew(e, seen)).length;
+    const fil = `<div class="dfil no-print">${[['', 'Vše', 0], ['new', 'Nové od minula', nNew], ['me', 'Pro mě', nMe], ['problem', 'Problémy', nProb], ['term', 'Úkoly a termíny', 0]].map(([k, l, n]) => `<button type="button" class="chip" data-fil="${k}" aria-pressed="${(S.dFil || '') === k}">${l}${n ? ` <b>${n}</b>` : ''}</button>`).join('')}</div>`;
     const list = filteredDiary();
     let feed = '';
-    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${D.diary.some(e => e.kind !== 'porada' && e.kind !== 'plan') ? 'Filtru neodpovídá žádný zápis.' : 'Zatím žádné denní zápisy.'}</strong>${D.diary.some(e => e.kind !== 'porada' && e.kind !== 'plan') ? 'Zrušte filtr.' : 'První zápis přidáte formulářem vlevo.'}</div></div>`;
+    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${all.length ? 'Filtru neodpovídá žádný zápis.' : 'Zatím žádné zápisy.'}</strong>${all.length ? 'Zvolte „Vše“ nebo zrušte filtr.' : 'První zápis přidáte formulářem vlevo.'}</div></div>`;
     else {
       const days = {}; list.forEach(e => (days[e.date] ||= []).push(e));
       feed = Object.keys(days).sort().reverse().map(dte => {
-        const es = days[dte].sort((a,b) => (b.at||'').localeCompare(a.at||''));
-        const label = pd(dte).toLocaleDateString('cs-CZ', {weekday:'long', day:'numeric', month:'numeric', year:'numeric'});
-        return `<div class="day"><div class="day-h">${esc(label)}${dte === today ? ' · dnes' : ''}<span class="cnt">${es.length} zápisů</span></div>
-          ${es.map(e => { const t = e.taskId && D.tasks.find(x => x.id === e.taskId);
-            return `<div class="entry${e.id === S.editEntry ? ' editing' : ''}"><span class="av" style="background:${pcol(e.owner || '?')}">${esc(initials(e.owner || '?'))}</span>
-              <div class="eh"><b>${esc(e.owner || 'Bez přiřazení')}</b><span class="by">${e.by ? 'zapsal(a) ' + esc(e.by) : ''}</span><span class="tm num">${e.at ? new Date(e.at).toLocaleTimeString('cs-CZ', {hour:'2-digit', minute:'2-digit'}) : ''}</span><button type="button" class="del" data-edit="${esc(e.id)}">Upravit</button><button type="button" class="del" style="margin-left:8px" data-del="${esc(e.id)}">Smazat</button></div>
-              <div class="txt">${esc(e.text)}</div>${e.editedAt ? `<div class="tk">upraveno ${new Date(e.editedAt).toLocaleString('cs-CZ', {day:'numeric', month:'numeric', hour:'2-digit', minute:'2-digit'})}${e.editedBy ? ' · ' + esc(e.editedBy) : ''}</div>` : ''}
-              ${e.taskId ? `<div class="tk">Úkol: ${esc(t ? t.title : e.taskTitle || 'smazaný úkol')} → <span class="num">${Number(e.done)||0} %</span></div>` : ''}
-            </div>`; }).join('')}
-        </div>`;
+        const es = days[dte].sort((a, b) => (b.at || '').localeCompare(a.at || ''));
+        const label = pd(dte).toLocaleDateString('cs-CZ', {weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric'});
+        return `<div class="day"><div class="day-h">${esc(label)}${dte === today ? ' · dnes' : ''}<span class="cnt">${es.length} ${es.length === 1 ? 'zápis' : es.length < 5 ? 'zápisy' : 'zápisů'}</span><button type="button" class="btn no-print" data-copy="${dte}" title="Text dne k vložení do Buildary">Zkopírovat den</button></div>${es.map(e => entryHtml(e, seen)).join('')}</div>`;
       }).join('');
     }
-    v.innerHTML = `<div class="diary">${form}<div>${feed}</div></div>`;
+    v.innerHTML = `<div class="diary">${form}<div>${upHtml}${fil}${feed}</div></div>`;
+    bindDiary(v, d, ed);
+  }
+  function bindDiary(v, d, ed) {
+    const re = () => { dGrab(); renderDiary(); };
+    $('#j-who').onclick = () => { if (me()) { $('#me').value = ''; store.set('hyb-me', ''); } whoDialog(); };
+    v.querySelectorAll('[data-dd]').forEach(b => b.onclick = () => { $('#j-date').value = addD(today, +b.dataset.dd); re(); });
+    $('#j-date').onchange = re;
+    v.querySelectorAll('[data-typ]').forEach(b => b.onclick = () => { d.typ = b.dataset.typ; v.querySelectorAll('[data-typ]').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+    v.querySelectorAll('[data-komu]').forEach(b => b.onclick = () => {
+      const n = b.dataset.komu;
+      d.komu = !n ? [] : d.komu.includes(n) ? d.komu.filter(x => x !== n) : [...d.komu, n];
+      v.querySelectorAll('[data-komu]').forEach(x => x.setAttribute('aria-pressed', x.dataset.komu ? d.komu.includes(x.dataset.komu) : !d.komu.length));
+    });
+    v.querySelectorAll('[data-ak]').forEach(b => b.onclick = () => {
+      d.akce = b.dataset.ak;
+      v.querySelectorAll('[data-ak]').forEach(x => x.setAttribute('aria-pressed', x === b));
+      v.querySelectorAll('.dsub').forEach(x => { x.hidden = x.dataset.for !== d.akce; });
+      if (d.akce === 'termin' && !$('#j-ts').value) $('#j-ts').value = addD(today, 1);
+      if (d.akce === 'ukol' && !$('#j-ukkomu').value && d.komu.length === 1) $('#j-ukkomu').value = d.komu[0];
+    });
+    v.querySelectorAll('#j-ukq [data-d]').forEach(b => b.onclick = () => { $('#j-ukend').value = b.dataset.d; });
+    // posun existujícího úkolu (jako dřív)
+    const ts = TR().filter(t => eff(t) !== 'done').sort((a, b) => a.title.localeCompare(b.title, 'cs'));
+    $('#j-task').innerHTML = '<option value="">— vyberte úkol —</option>' + ts.map(t => `<option value="${esc(t.id)}">${esc(t.title)}${t.obj ? ' (' + esc(t.obj) + ')' : ''} · ${Number(t.done) || 0} %</option>`).join('');
+    $('#j-task').value = ts.some(t => t.id === d.task) ? d.task : '';
+    const syncTask = keep => { const t = D.tasks.find(x => x.id === $('#j-task').value); $('#j-done-w').hidden = !t; if (t) { const val = keep && d.done !== '' ? d.done : (Number(t.done) || 0); $('#j-done').value = val; $('#j-done-n').value = val; } };
+    $('#j-task').onchange = () => syncTask(false); syncTask(true);
+    linkPct($('#j-done'), $('#j-done-n'));
+    v.querySelectorAll('#j-quick button').forEach(b => b.onclick = () => { $('#j-done').value = $('#j-done-n').value = b.dataset.q; });
+    // místo na půdorysu
+    $('#j-pin').onclick = async () => { dGrab(); const r = await planViewer(d.misto, false); if (r) { d.misto = r; renderDiary(); } };
+    if ($('#j-pin-x')) $('#j-pin-x').onclick = () => { d.misto = null; re(); };
+    // fotky: výběr, vložení ze schránky, přetažení
+    $('#j-file').onchange = e => addPhotos(e.target.files);
+    v.querySelectorAll('[data-phx]').forEach(b => b.onclick = () => { d.att.splice(+b.dataset.phx, 1); re(); });
+    const form = $('#j-form');
+    form.onpaste = e => { const fs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type)); if (fs.length) { e.preventDefault(); addPhotos(fs); } };
+    form.ondragover = e => { e.preventDefault(); form.classList.add('drop'); };
+    form.ondragleave = () => form.classList.remove('drop');
+    form.ondrop = e => { e.preventDefault(); form.classList.remove('drop'); addPhotos(e.dataTransfer.files); };
+    if ($('#j-cancel')) $('#j-cancel').onclick = () => { diaryDraft = null; renderDiary(); };
+    form.onsubmit = e => { e.preventDefault(); saveEntry(); };
+    $('#j-text').onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEntry(); } };
+    // přehled
+    v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; re(); });
+    v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const el = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (!el) { S.dFil = ''; S.q = ''; S.owner = ''; S.obj = ''; render(); } const x = v.ownerDocument.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
+    v.querySelectorAll('[data-task]').forEach(b => b.onclick = () => quickDone(b.dataset.task, b));
+    v.querySelectorAll('[data-pinv]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.pinv); if (e && e.misto) planViewer(e.misto, true); });
+    v.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyDay(b.dataset.copy));
+    v.querySelectorAll('[data-solve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.solve); if (!e) return; if (!me()) { whoDialog(); return; } e.vyreseno = {at: new Date().toISOString(), by: me()}; dGrab(); commit(); toast('Označeno jako vyřešené'); });
+    v.querySelectorAll('[data-unsolve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.unsolve); if (!e) return; delete e.vyreseno; dGrab(); commit(); });
+    v.querySelectorAll('[data-rf]').forEach(f => f.onsubmit = e => {
+      e.preventDefault(); const inp = f.querySelector('input'), text = inp.value.trim(); if (!text) return;
+      if (!me()) { whoDialog(); toast('Nejdřív vyberte, kdo píše.'); return; }
+      D.diary.push({id: uid(), kind: 'odpoved', parent: f.dataset.rf, date: today, at: new Date().toISOString(), by: me(), text});
+      dGrab(); commit(); toast('Odpověď odeslána');
+    });
+    v.querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmModal('Smazat odpověď?', '', 'Smazat', () => { D.diary = D.diary.filter(x => x.id !== b.dataset.rdel); dGrab(); commit(); }));
     v.querySelectorAll('[data-del]').forEach(b => { let armed = null; b.onclick = () => {
       if (!armed) { b.classList.add('armed'); b.textContent = 'Opravdu smazat?'; armed = setTimeout(() => { armed = null; b.classList.remove('armed'); b.textContent = 'Smazat'; }, 4000); return; }
-      clearTimeout(armed); D.diary = D.diary.filter(e => e.id !== b.dataset.del); if (S.editEntry === b.dataset.del) S.editEntry = null; commit(); toast('Zápis smazán');
+      clearTimeout(armed); const id = b.dataset.del;
+      D.diary = D.diary.filter(e => e.id !== id && !(e.kind === 'odpoved' && e.parent === id)); if (d.edit === id) diaryDraft = null; dGrab(); commit(); toast('Zápis smazán');
     }; });
-    v.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { S.editEntry = b.dataset.edit; diaryDraft = null; if ($('#j-text')) $('#j-text').value = ''; renderDiary(); $('#j-text').focus(); window.scrollTo({top: $('#j-form').getBoundingClientRect().top + scrollY - 20, behavior: 'smooth'}); });
-    if ($('#j-cancel')) $('#j-cancel').onclick = () => { S.editEntry = null; diaryDraft = null; $('#j-text').value = ''; renderDiary(); };
-    const fillTasks = () => {
-      const o = $('#j-owner').value.trim(), cur = $('#j-task').value || (keep && keep.task) || '';
-      const ts = TR().filter(t => eff(t) !== 'done' && (!o || hasPerson(t, o))).sort((a,b) => a.title.localeCompare(b.title,'cs'));
-      $('#j-task').innerHTML = '<option value="">— bez změny úkolu —</option>' + ts.map(t => `<option value="${esc(t.id)}">${esc(t.title)}${t.obj ? ' (' + esc(t.obj) + ')' : ''} · ${Number(t.done)||0} %</option>`).join('');
-      $('#j-task').value = ts.some(t => t.id === cur) ? cur : '';
-      syncTask(true);
-    };
-    const syncTask = (fromKeep) => {
-      const t = D.tasks.find(x => x.id === $('#j-task').value);
-      $('#j-done-w').hidden = !t;
-      if (t) { const val = fromKeep && keep && keep.task === t.id && keep.done ? keep.done : (Number(t.done)||0); $('#j-done').value = val; $('#j-done-n').value = val; }
-    };
-    $('#j-owner').oninput = fillTasks;
-    $('#j-task').onchange = () => syncTask(false);
-    linkPct($('#j-done'), $('#j-done-n'));
-    document.querySelectorAll('#j-quick button').forEach(b => b.onclick = () => { $('#j-done').value = $('#j-done-n').value = b.dataset.q; });
-    fillTasks();
-    if (keep && keep.focus && $('#' + keep.focus)) $('#' + keep.focus).focus();
-    $('#j-form').onsubmit = e => { e.preventDefault(); saveEntry(); };
+    v.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+      const e = D.diary.find(x => x.id === b.dataset.edit); if (!e) return;
+      diaryDraft = {edit: e.id, date: e.date, typ: e.typ || 'prace', text: e.text || '', komu: (e.komu || []).slice(), akce: e.akce || 'zapis', tStart: e.tStart || '', tEnd: e.tEnd || '', misto: e.misto || null, att: (e.att || []).slice(), ukEnd: '', ukKomu: '', task: '', done: ''};
+      renderDiary(); $('#j-text').focus(); window.scrollTo({top: $('#j-form').getBoundingClientRect().top + scrollY - 20, behavior: 'smooth'});
+    });
   }
-
-  function saveEntry() {
-    const text = $('#j-text').value.trim(), owner = canonOwner($('#j-owner').value), date = $('#j-date').value || today;
-    if (!text) { $('#j-text').focus(); toast('Napište, co se dělo.'); return; }
-    if (S.editEntry) {
-      const e = D.diary.find(x => x.id === S.editEntry);
-      if (e) Object.assign(e, {date, owner, text, editedAt: new Date().toISOString(), editedBy: me()});
-      S.editEntry = null; diaryDraft = null; $('#j-text').value = '';
-      commit(); toast(e ? 'Zápis upraven' : 'Zápis mezitím někdo smazal'); return;
+  // fotky se zmenší (rychlé nahrávání), při sdílení se nahrají na Disk Google stejně jako fotky z mobilu
+  function shrinkImg(file, max, q) {
+    return new Promise((res, rej) => { const u = URL.createObjectURL(file), i = new Image();
+      i.onload = () => { const k = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas'); c.width = Math.round(i.width * k); c.height = Math.round(i.height * k); c.getContext('2d').drawImage(i, 0, 0, c.width, c.height); URL.revokeObjectURL(u); res(c.toDataURL('image/jpeg', q)); };
+      i.onerror = () => { URL.revokeObjectURL(u); rej(new Error('foto')); }; i.src = u; });
+  }
+  async function addPhotos(files) {
+    dGrab(); const d = dDraft(), fs = [...(files || [])].filter(f => /^image\//.test(f.type) || /\.(jpe?g|png|heic|webp)$/i.test(f.name || ''));
+    if (!fs.length) return;
+    let bad = 0;
+    for (const f of fs.slice(0, 12)) { try { d.att.push({thumb: await shrinkImg(f, 640, .62), big: SY ? await shrinkImg(f, 1800, .82) : ''}); } catch (e) { bad++; } }
+    if (bad) toast(bad === 1 ? 'Jednu fotku se nepodařilo načíst (formát HEIC z iPhonu převeďte na JPG).' : `${bad} fotek se nepodařilo načíst.`);
+    renderDiary();
+  }
+  async function saveEntry() {
+    if (roBlock()) return;
+    dGrab(); const d = dDraft(), m = me(), text = (d.text || '').trim();
+    if (!m) { whoDialog(); toast('Nejdřív vyberte, kdo píše.'); return; }
+    if (!text && !d.att.length) { $('#j-text').focus(); toast('Napište, co se dělo.'); return; }
+    if (!d.edit && d.akce === 'ukol' && !d.ukKomu) { $('#j-ukkomu').focus(); toast('Vyberte, komu je úkol.'); return; }
+    if (!d.edit && d.akce === 'ukol' && !text) { $('#j-text').focus(); toast('Napište, co je potřeba udělat.'); return; }
+    if (d.akce === 'termin' && !d.tStart && (!d.edit || (D.diary.find(x => x.id === d.edit) || {}).akce === 'termin')) { $('#j-ts').focus(); toast('Vyberte datum termínu.'); return; }
+    if (!d.edit && d.akce === 'posun' && !d.task) { $('#j-task').focus(); toast('Vyberte úkol, který se posunul.'); return; }
+    const btn = $('#j-save');
+    if (SY && d.att.some(a => !a.id && a.big)) {
+      btn.disabled = true; btn.textContent = 'Nahrávám fotky…'; let bad = 0;
+      for (const a of d.att) if (!a.id && a.big) {
+        try { const r = await call('POST', {key: SY.key, akce: 'foto', den: d.date || today, name: `denik-${d.date || today}-${uid()}.jpg`, mime: 'image/jpeg', data: a.big.split(',')[1]}); if (r && r.id) Object.assign(a, {id: r.id, url: r.url, thumb: r.thumb}); else bad++; }
+        catch (e) { bad++; }
+      }
+      if (bad) toast('Některé fotky se na Disk nenahrály, uloží se zmenšené.');
     }
-    const t = D.tasks.find(x => x.id === $('#j-task').value);
+    const att = d.att.map(a => a.id ? {id: a.id, url: a.url, thumb: a.thumb} : {thumb: a.thumb});
+    const misto = d.misto || null, obj = misto && /^[A-G]/.test(misto.room || '') ? misto.room[0] : '';
+    const base = {date: d.date || today, typ: d.typ, text, komu: d.komu.slice(), misto, obj, att};
     const at = new Date().toISOString();
-    const entry = {id: uid(), date, at, by: me(), owner, text};
-    if (t) {
-      const done = pct($('#j-done-n').value);
-      let status = t.status || 'todo';
-      if (done >= 100) status = 'done'; else if (done > 0 && (status === 'todo' || status === 'done')) status = 'doing';
-      Object.assign(entry, {taskId: t.id, taskTitle: t.title, done});
-      if (done !== (Number(t.done)||0) || status !== t.status) Object.assign(t, {done, status, updatedAt: at, updatedBy: me()});
-      D.log.push({id: uid(), taskId: t.id, at, by: me(), done, status, comment: text, title: t.title});
+    if (d.edit) {
+      const e = D.diary.find(x => x.id === d.edit);
+      if (e) { Object.assign(e, base, {editedAt: at, editedBy: m}); if (e.akce === 'termin') Object.assign(e, {tStart: d.tStart, tEnd: d.tEnd && d.tEnd > d.tStart ? d.tEnd : ''}); }
+      diaryDraft = null; commit(); toast(e ? 'Zápis upraven' : 'Zápis mezitím někdo smazal'); return;
+    }
+    const entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce}, base);
+    if (d.akce === 'termin') Object.assign(entry, {tStart: d.tStart, tEnd: d.tEnd && d.tEnd > d.tStart ? d.tEnd : ''});
+    if (d.akce === 'ukol') {
+      const id = uid();
+      D.tasks.push({id, kind: 'simple', title: text, owner: d.ukKomu, team: [], start: today, end: d.ukEnd || '', done: 0, status: 'todo', note: '', obj, supplier: '', hmg: [], att, zapis: entry.id, createdAt: at, createdBy: m, updatedAt: at, updatedBy: m});
+      D.log.push({id: uid(), taskId: id, at, by: m, done: 0, status: 'todo', comment: 'Zadán úkol z denního zápisu' + (d.ukEnd ? ' do ' + fmtDY(d.ukEnd) : ''), title: text});
+      Object.assign(entry, {ukolId: id, ukKomu: d.ukKomu, ukEnd: d.ukEnd || ''});
+      if (!entry.komu.includes(d.ukKomu) && d.ukKomu !== m) entry.komu.push(d.ukKomu);
+    }
+    if (d.akce === 'posun') {
+      const t = D.tasks.find(x => x.id === d.task);
+      if (t) {
+        const done = pct(d.done); let status = t.status || 'todo';
+        if (done >= 100) status = 'done'; else if (done > 0 && (status === 'todo' || status === 'done')) status = 'doing';
+        Object.assign(entry, {taskId: t.id, taskTitle: t.title, done});
+        if (done !== (Number(t.done) || 0) || status !== t.status) Object.assign(t, {done, status, updatedAt: at, updatedBy: m});
+        D.log.push({id: uid(), taskId: t.id, at, by: m, done, status, comment: text, title: t.title});
+      }
     }
     D.diary.push(entry);
-    store.set('hyb-me-owner', owner);
-    diaryDraft = null; $('#j-text').value = ''; $('#j-task').value = '';
-    commit(); toast('Zápis uložen');
+    store.set('hyb-me-owner', m);
+    diaryDraft = null; commit();
+    toast(d.akce === 'ukol' ? 'Zápis uložen, úkol zadán: ' + d.ukKomu : 'Zápis uložen');
+  }
+  // text dne pro oficiální stavební deník (Buildary)
+  function copyDay(dte) {
+    const es = D.diary.filter(e => isZapis(e) && e.date === dte).sort((a, b) => (a.at || '').localeCompare(b.at || ''));
+    const txt = `${pd(dte).toLocaleDateString('cs-CZ', {weekday: 'long', day: 'numeric', month: 'numeric', year: 'numeric'})}\n\n` + es.map(e => {
+      const x = [`• ${e.typ && e.typ !== 'prace' ? dTyp(e.typ).l + ': ' : ''}${(e.text || '').trim()}`];
+      if (e.misto) x.push(`  Místo: ${mistoTxt(e.misto)}`);
+      if (e.akce === 'termin' && e.tStart) x.push(`  Termín: ${terminTxt(e)}`);
+      if (e.ukolId) { const t = D.tasks.find(y => y.id === e.ukolId); x.push(`  Úkol: ${(t && t.owner) || e.ukKomu}${(t ? t.end : e.ukEnd) ? ' do ' + fmtDY(t ? t.end : e.ukEnd) : ''}`); }
+      if (e.taskId) x.push(`  Úkol ${e.taskTitle || ''}: hotovo ${Number(e.done) || 0} %`);
+      x.push(`  (${e.by || e.owner || ''}${(e.att || []).length ? ', ' + e.att.length + ' foto' : ''})`);
+      return x.join('\n');
+    }).join('\n');
+    const show = () => { confirmModal('Text dne pro stavební deník', `<p style="margin-top:0">Označte text (Ctrl+A), zkopírujte (Ctrl+C) a vložte do Buildary.</p><textarea id="cd-t" style="width:100%;min-height:260px">${esc(txt)}</textarea>`, null, null); $('#cd-t').select(); };
+    try { navigator.clipboard.writeText(txt).then(() => toast('Text dne zkopírován. Vložte ho do Buildary (Ctrl+V).'), show); } catch (e) { show(); }
+  }
+
+  /* ---------- půdorys se špendlíkem (stejné půdorysy a čísla místností jako v mobilu) ---------- */
+  let PL = null; const PIMG = {};
+  async function plany() { if (!PL) { if (typeof DEMO_PLANY !== 'undefined') PL = DEMO_PLANY; else { const r = await fetch(PLAN_ROOT + 'pudorysy/plany.json'); if (!r.ok) throw new Error('plány'); PL = await r.json(); } } return PL; }
+  function planImg(p) {
+    if (!PIMG[p.id]) PIMG[p.id] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => { delete PIMG[p.id]; rej(new Error('obrázek')); }; i.src = PLAN_ROOT + p.img; });
+    return PIMG[p.id];
+  }
+  function nearRooms(p, x, y) {
+    const seen = new Set(), out = [];
+    p.rooms.map(r => ({n: r.n, d: Math.hypot(r.x * p.w - x, r.y * p.h - y)})).sort((a, b) => a.d - b.d)
+      .forEach(r => { if (!seen.has(r.n) && out.length < 4 && r.d < 650) { seen.add(r.n); out.push(r.n); } });
+    return out;
+  }
+  function roomsByFill(p, im, x, y) {
+    try {
+      const R = 900, sc = .5, x0 = Math.max(0, x - R), y0 = Math.max(0, y - R), x1 = Math.min(p.w, x + R), y1 = Math.min(p.h, y + R);
+      const cw = Math.round((x1 - x0) * sc), ch = Math.round((y1 - y0) * sc);
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const g = c.getContext('2d', {willReadFrequently: true}); g.fillStyle = '#fff'; g.fillRect(0, 0, cw, ch);
+      g.drawImage(im, x0, y0, x1 - x0, y1 - y0, 0, 0, cw, ch);
+      const px = g.getImageData(0, 0, cw, ch).data, wall = new Uint8Array(cw * ch);
+      for (let i = 0; i < cw * ch; i++) wall[i] = (px[i * 4] + px[i * 4 + 1] + px[i * 4 + 2]) < 600 ? 1 : 0;
+      // stěny zesílit, aby se zavřely dveřní otvory a čárkované čáry (jinak výplň proteče do vedlejší místnosti)
+      const DIL = 6, tmp = new Uint8Array(cw * ch);
+      for (let y = 0; y < ch; y++) { let n = 0; for (let x = -DIL; x < cw; x++) { if (x + DIL < cw) n += wall[y * cw + x + DIL]; if (x - DIL - 1 >= 0) n -= wall[y * cw + x - DIL - 1]; if (x >= 0) tmp[y * cw + x] = n > 0 ? 1 : 0; } }
+      for (let x = 0; x < cw; x++) { let n = 0; for (let y = -DIL; y < ch; y++) { if (y + DIL < ch) n += tmp[(y + DIL) * cw + x]; if (y - DIL - 1 >= 0) n -= tmp[(y - DIL - 1) * cw + x]; if (y >= 0) wall[y * cw + x] = n > 0 ? 1 : 0; } }
+      let sx = Math.round((x - x0) * sc), sy = Math.round((y - y0) * sc), st = -1;
+      for (let r = 0; r < 12 && st < 0; r++) for (let dy = -r; dy <= r && st < 0; dy++) for (let dx = -r; dx <= r; dx++) { const qx = sx + dx, qy = sy + dy; if (qx >= 0 && qy >= 0 && qx < cw && qy < ch && !wall[qy * cw + qx]) { st = qy * cw + qx; break; } }
+      if (st < 0) return null;
+      const fill = new Uint8Array(cw * ch), q = new Int32Array(cw * ch); let h = 0, t = 0; q[t++] = st; fill[st] = 1;
+      while (h < t) {
+        const i = q[h++], qx = i % cw, qy = (i - qx) / cw;
+        if (qx === 0 || qy === 0 || qx === cw - 1 || qy === ch - 1) return null;
+        for (const j of [i - 1, i + 1, i - cw, i + cw]) if (!fill[j] && !wall[j]) { fill[j] = 1; q[t++] = j; }
+      }
+      const inside = [];
+      p.rooms.forEach(r => {
+        const lx = Math.round((r.x * p.w - x0) * sc), ly = Math.round((r.y * p.h - y0) * sc);
+        if (lx < 0 || ly < 0 || lx >= cw || ly >= ch) return;
+        // číslo je samo „zeď“: rozhodne nejbližší volné místo kolem něj
+        let fr = 0, fi = 0, r0 = -1;
+        for (let r = 0; r < 34 && (r0 < 0 || r <= r0 + 5); r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const qx = lx + dx, qy = ly + dy; if (qx < 0 || qy < 0 || qx >= cw || qy >= ch) continue;
+          const j = qy * cw + qx; if (!wall[j]) { if (r0 < 0) r0 = r; fr++; if (fill[j]) fi++; }
+        }
+        const hit = fr > 0 && fi / fr > .5;
+        if (hit) inside.push({n: r.n, q: Math.round(fi / fr * 5), d: Math.hypot(r.x * p.w - x, r.y * p.h - y)});
+      });
+      return inside.sort((a, b) => b.q - a.q || a.d - b.d).map(r => r.n);
+    } catch (e) { return null; }
+  }
+  function planViewer(start, ro) {
+    return new Promise(async done => {
+      let pl; try { pl = await plany(); } catch (e) { toast('Půdorysy se nenačetly. Zkontrolujte připojení.'); done(null); return; }
+      let p = pl.find(x => x.id === (start && start.floor)) || pl.find(x => x.id === store.get('hyb-patro')) || pl[0];
+      let pin = start ? {floor: start.floor, x: start.x, y: start.y} : null, names = start && start.room ? [start.room] : [], room = start ? start.room || '' : '';
+      let s = 1, tx = 0, ty = 0;
+      const o = document.createElement('div'); o.className = 'pv'; document.body.appendChild(o);
+      o.innerHTML = `<div class="pv-top"><b>${ro ? '📍 ' + esc(mistoTxt(start)) : 'Klikněte na místo na půdorysu'}</b>${ro ? '' : `<div class="pv-floors">${pl.map(f => `<button type="button" data-f="${esc(f.id)}">${esc(f.name)}</button>`).join('')}</div>`}<button type="button" data-pv="x">${ro ? 'Zavřít' : 'Zrušit'}</button></div>
+        <div class="pv-stage"><div class="pv-in"><img alt="Půdorys patra" draggable="false"></div>
+          <div class="pv-pin" hidden><svg viewBox="0 0 38 48"><path d="M19 47C17 38 2 30 2 18a17 17 0 0 1 34 0c0 12-15 20-17 29z" fill="#d63b24" stroke="#fff" stroke-width="2"/><circle cx="19" cy="18" r="6.5" fill="#fff"/></svg></div>
+          <div class="pv-zoom"><button type="button" data-pv="+" aria-label="Přiblížit">+</button><button type="button" data-pv="-" aria-label="Oddálit">−</button></div>
+          <div class="pv-load">Načítám půdorys…</div></div>
+        ${ro ? '' : '<div class="pv-bot"><div class="pv-room"></div><select id="pv-alt" hidden aria-label="Číslo místnosti"></select><button type="button" class="btn primary" data-pv="ok" disabled>Hotovo</button></div>'}`;
+      const st = o.querySelector('.pv-stage'), inn = o.querySelector('.pv-in'), img = inn.querySelector('img'), pinEl = o.querySelector('.pv-pin'), roomEl = o.querySelector('.pv-room'), okB = o.querySelector('[data-pv="ok"]'), alt = o.querySelector('#pv-alt'), load = o.querySelector('.pv-load');
+      const close = r => { document.removeEventListener('keydown', key); o.remove(); done(r || null); };
+      const key = e => { if (e.key === 'Escape') close(null); };
+      document.addEventListener('keydown', key);
+      const fit = () => Math.min(st.clientWidth / p.w, st.clientHeight / p.h);
+      const clampS = v => Math.max(fit() * .9, Math.min(2.5, v));
+      function apply() {
+        inn.style.width = p.w + 'px'; inn.style.height = p.h + 'px'; inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+        pinEl.hidden = !pin || pin.floor !== p.id;
+        if (pin) { pinEl.style.left = (tx + pin.x * p.w * s) + 'px'; pinEl.style.top = (ty + pin.y * p.h * s) + 'px'; }
+      }
+      function zoomAt(ns, cx, cy) { ns = clampS(ns); const ix = (cx - tx) / s, iy = (cy - ty) / s; s = ns; tx = cx - ix * s; ty = cy - iy * s; apply(); }
+      async function info() {
+        if (ro) return;
+        if (!pin) { roomEl.innerHTML = 'Kolečkem myši přibližte, tažením posunete. Pak klikněte přesně na místo.'; okB.disabled = true; alt.hidden = true; return; }
+        const my = pin, near = nearRooms(p, pin.x * p.w, pin.y * p.h);
+        let inRoom = null; try { inRoom = roomsByFill(p, await planImg(p), pin.x * p.w, pin.y * p.h); } catch (e) {}
+        if (my !== pin) return;
+        names = [...new Set([...(inRoom || []), ...near])].slice(0, 4); room = names[0] || '';
+        roomEl.innerHTML = names.length ? `Místnost <b>${esc(room)}</b> · ${esc(p.name)}` : `${esc(p.name)} · číslo místnosti tu není`;
+        alt.hidden = names.length < 2; alt.innerHTML = names.map(n => `<option>${esc(n)}</option>`).join('');
+        okB.disabled = false;
+      }
+      if (alt) alt.onchange = () => { room = alt.value; roomEl.innerHTML = `Místnost <b>${esc(room)}</b> · ${esc(p.name)}`; };
+      function showFloor(id) {
+        p = pl.find(x => x.id === id) || p; if (!ro) store.set('hyb-patro', p.id);
+        o.querySelectorAll('[data-f]').forEach(b => b.setAttribute('aria-pressed', b.dataset.f === p.id));
+        if (pin && pin.floor !== p.id) pin = null;
+        load.hidden = false; img.onload = () => { load.hidden = true; }; img.onerror = () => { load.textContent = 'Půdorys se nenačetl.'; }; img.src = PLAN_ROOT + p.img;
+        if (pin) { s = clampS(.35); tx = st.clientWidth / 2 - pin.x * p.w * s; ty = st.clientHeight / 2 - pin.y * p.h * s; }
+        else { s = fit(); tx = (st.clientWidth - p.w * s) / 2; ty = (st.clientHeight - p.h * s) / 2; }
+        apply(); info();
+      }
+      function tap(x, y) {
+        if (ro) return;
+        if (s < .2) { zoomAt(.4, x, y); toast('Přiblíženo. Teď klikněte přesně na místo.'); return; }
+        const ix = (x - tx) / s, iy = (y - ty) / s;
+        if (ix < 0 || iy < 0 || ix > p.w || iy > p.h) return;
+        pin = {floor: p.id, x: ix / p.w, y: iy / p.h}; apply(); info();
+      }
+      const pts = new Map(); let one = null, two = null, moved = false;
+      const dist = a => Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+      const mid = (a, r) => ({x: (a[0].x + a[1].x) / 2 - r.left, y: (a[0].y + a[1].y) / 2 - r.top});
+      function begin() {
+        const a = [...pts.values()], r = st.getBoundingClientRect();
+        if (a.length === 1) { one = {x: a[0].x, y: a[0].y, tx, ty, t: Date.now()}; two = null; }
+        else if (a.length >= 2) { const mm = mid(a, r); two = {d: dist(a) || 1, mx: mm.x, my: mm.y, s, tx, ty}; one = null; moved = true; }
+      }
+      st.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; e.preventDefault(); try { st.setPointerCapture(e.pointerId); } catch (x) {} pts.set(e.pointerId, {x: e.clientX, y: e.clientY}); begin(); });
+      st.addEventListener('pointermove', e => {
+        if (!pts.has(e.pointerId)) return;
+        pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+        const a = [...pts.values()], r = st.getBoundingClientRect();
+        if (one && a.length === 1) { const dx = a[0].x - one.x, dy = a[0].y - one.y; if (Math.hypot(dx, dy) > 6) moved = true; if (moved) { tx = one.tx + dx; ty = one.ty + dy; apply(); } }
+        else if (two && a.length >= 2) { const mm = mid(a, r), ix = (two.mx - two.tx) / two.s, iy = (two.my - two.ty) / two.s; s = clampS(two.s * dist(a) / two.d); tx = mm.x - ix * s; ty = mm.y - iy * s; apply(); }
+      });
+      const up = e => {
+        if (!pts.has(e.pointerId)) return;
+        const r = st.getBoundingClientRect();
+        if (e.type === 'pointerup' && one && pts.size === 1 && !moved && Date.now() - one.t < 900) tap(e.clientX - r.left, e.clientY - r.top);
+        pts.delete(e.pointerId);
+        if (pts.size) { begin(); moved = true; } else { one = two = null; moved = false; }
+      };
+      st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+      st.addEventListener('wheel', e => { e.preventDefault(); const r = st.getBoundingClientRect(); zoomAt(s * Math.exp(-e.deltaY * .0015), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+      o.querySelectorAll('[data-f]').forEach(b => b.onclick = () => showFloor(b.dataset.f));
+      o.querySelector('[data-pv="x"]').onclick = () => close(null);
+      o.querySelector('[data-pv="+"]').onclick = () => zoomAt(s * 1.7, st.clientWidth / 2, st.clientHeight / 2);
+      o.querySelector('[data-pv="-"]').onclick = () => zoomAt(s / 1.7, st.clientWidth / 2, st.clientHeight / 2);
+      if (okB) okB.onclick = () => { if (pin) close({floor: p.id, x: +pin.x.toFixed(5), y: +pin.y.toFixed(5), room, fname: p.name, img: p.img, w: p.w, h: p.h}); };
+      showFloor(p.id);
+    });
   }
 
   /* ---------- HMG ---------- */
@@ -1821,6 +2199,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
+    { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
     $('#uk-src').hidden = $('#f-osoba').hidden = S.view !== 'list';
     { const fo = $('#f-osoba'), ppl = [...new Set([...owners(), ...D.tasks.filter(t => !t.info).flatMap(taskPeople)])].filter(n => n !== 'Bez přiřazení').sort((a, b) => a.localeCompare(b, 'cs'));
       const opts = '<option value="">Všechny osoby</option>' + ppl.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + '<option value="Bez přiřazení">Bez přiřazení</option>';
@@ -1831,7 +2210,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     if (fs.dataset.kind !== want) { fs.dataset.kind = want; fs.innerHTML = hv ? HSTAT.map(([k, l]) => `<option value="${k}">${l}</option>`).join('') : '<option value="">Všechny stavy</option>' + ['todo', 'doing', 'late', 'hold', 'done'].map(k => `<option value="${k}">${STATUS[k]}</option>`).join(''); }
     fs.value = hv ? S.hstat : S.fstat;
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
-    if (S.view !== 'diary' && $('#j-text')) diaryDraft = {date: $('#j-date').value, owner: $('#j-owner').value, task: $('#j-task').value, done: $('#j-done-n').value, text: $('#j-text').value};
+    if (S.view !== 'diary' && $('#j-text')) dGrab();
     S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
@@ -3613,7 +3992,7 @@ ${tydenniHtml.toString()}
       <div class="whobtns">${ns.map(n => `<button type="button" class="btn" data-who="${esc(n)}">${esc(n)}</button>`).join('')}</div>
       <div class="fld" style="margin-top:12px"><label for="who-x">Jiné jméno</label><input id="who-x" placeholder="Příjmení"></div>`, 'Uložit', () => {
         const n = canonOwner($('#who-x').value); if (!n) { $('#who-x').focus(); return 'keep'; } setMe(n); });
-    const setMe = n => { $('#me').value = n; store.set('hyb-me', n); $('#me').classList.remove('need'); toast('Zapisuje: ' + n); };
+    const setMe = n => { $('#me').value = n; store.set('hyb-me', n); $('#me').classList.remove('need'); toast('Zapisuje: ' + n); setTimeout(render, 0); };
     $('#overlay').querySelectorAll('[data-who]').forEach(b => b.onclick = () => { setMe(b.dataset.who); $('#m-cancel').click(); });
   }
   function buildCopy(who) {
