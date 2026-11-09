@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-LZHw64QbAglncX+d1HsJQUKbtt3+Ev/MWZYguXWqT2I=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-t0SQrT/Dt3X/+WMneb2BpBc3xaW5DDubgatn4IeJ/zs=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -308,7 +308,7 @@ img{max-width:100%}
 .hconv{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);background:var(--warn-soft);color:var(--warn);font-size:13px}
 .hconv .btn{padding:4px 10px;font-size:12.5px}
 .hsimple{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);font-size:13px}
-#v-simple .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;line-height:18px;text-align:center}
+#v-list .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;line-height:18px;text-align:center}
 .qp{max-height:calc(100vh - 24px);overflow:auto}.qsec{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:8px}.qsec .qk{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.qrow{display:flex;gap:6px}.qrow input{flex:1;min-width:0;border:1px solid var(--line);border-radius:var(--r);padding:5px 8px;background:var(--bg);color:inherit}.qrow .btn{padding:4px 10px;font-size:12.5px}.qp .objchk label{padding:3px 8px;font-size:12px}
 .qp h4{margin:0;font:600 13.5px var(--f-body);line-height:1.3}
 .qp .quick button{font-size:13px;padding:8px 4px;flex:1;white-space:nowrap}
@@ -369,10 +369,9 @@ body{padding:0 0 48px 236px;font-size:14.5px}
 .side .topnav .seg button[aria-pressed="true"]{background:var(--accent);color:var(--k)}
 .side .topnav .seg button::before{content:"";position:absolute;left:13px;top:50%;width:19px;height:19px;margin-top:-9.5px;background:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
 #v-hmg{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M4 6h9M7 12h13M4 18h7'/%3E%3C/svg%3E")}
-#v-list{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M4 19V5M4 19h16M8 15l4-4 3 3 5-6'/%3E%3C/svg%3E")}
-#v-simple{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 11l3 3 8-8'/%3E%3Cpath d='M20 12v7H4V5h11'/%3E%3C/svg%3E")}
+#v-list{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 11l3 3 8-8'/%3E%3Cpath d='M20 12v7H4V5h11'/%3E%3C/svg%3E")}
 #v-diary{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='4' y='4' width='16' height='17' rx='2'/%3E%3Cpath d='M8 2v4M16 2v4M8 11h8M8 15h5'/%3E%3C/svg%3E")}
-#v-simple .cnt{background:#e0442c;color:#fff;float:right;margin-top:1px}
+#v-list .cnt{background:#e0442c;color:#fff;float:right;margin-top:1px}
 /* hlavička */
 header.top{border-bottom:0;padding-top:26px;padding-bottom:4px;align-items:flex-end}
 .eyebrow{font:600 11.5px/1 var(--f-mono);letter-spacing:.06em;color:var(--muted)}
@@ -445,7 +444,7 @@ h2{font:800 22px/1.2 var(--f-display);font-stretch:normal;text-transform:none;le
   .side .topnav .seg{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:4px}
   .side .topnav .seg button{padding:8px 12px 8px 36px;font-size:13.5px}
   .side .topnav .seg button::before{left:11px;width:17px;height:17px;margin-top:-8.5px}
-  #v-simple .cnt{float:none}
+  #v-list .cnt{float:none}
   header.top{padding-top:14px}
 }
 @media print{body{padding:0}.side{display:none!important}}
@@ -653,6 +652,10 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 #v-firmy{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E%3C/svg%3E")}
 .zv-det .btn.primary::before{content:"↗"}
 #v-odeslane{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'/%3E%3Cpath d='M14 3v6h6M9 14l2 2 4-4'/%3E%3C/svg%3E")}
+/* 4.24: sloučené Úkoly – přepínač Úkoly z porady / Všechny úkoly */
+.uk-src{flex:none}.uk-src[hidden]{display:none}.uk-src button{padding:8px 14px;font-weight:600;font-size:13.5px;white-space:nowrap}
+.uk-src button+button{border-left:1px solid var(--line)}
+.trow .t-miss{display:block;color:var(--warn);font-size:12px;margin-top:2px}
 /* 4.23: Odeslané zprávy */
 .od-pop{margin:0;padding:8px 14px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line)}
 .od-hd,.od-row{display:grid;grid-template-columns:84px minmax(0,1fr) 200px 130px 290px;gap:6px 12px;border-bottom:1px solid var(--line);align-items:center}
@@ -704,8 +707,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   <nav class="topnav no-print" aria-label="Zobrazení">
     <div class="seg" role="group">
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
-      <button type="button" id="v-list" aria-pressed="true">Sledované úkoly</button>
-      <button type="button" id="v-simple" aria-pressed="false">Úkoly</button>
+      <button type="button" id="v-list" aria-pressed="true">Úkoly</button>
       <button type="button" id="v-diary" aria-pressed="false">Denní zápisy</button>
       <button type="button" id="v-zavady" aria-pressed="false">Zprávy pro firmy</button>
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
@@ -784,6 +786,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   <section style="display:flex;flex-direction:column;gap:10px">
     <div class="section-h"><h2 id="view-title">Úkoly</h2></div>
     <div class="toolbar">
+      <div class="seg uk-src no-print" id="uk-src" role="group" aria-label="Které úkoly"><button type="button" data-uk="porada" aria-pressed="true">Úkoly z porady</button><button type="button" data-uk="all" aria-pressed="false">Všechny úkoly</button></div>
       <input id="q" type="search" placeholder="Hledat činnost, dodavatele…" aria-label="Hledat">
       <select id="f-objekt" aria-label="Objekt"><option value="">Všechny objekty</option></select>
       <select id="f-stav" aria-label="Stav">
@@ -929,7 +932,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.23';
+  const APP_VERSION = '4.24';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -1033,7 +1036,9 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = store.get('hyb-view'); if (['list','simple','diary','hmg','zavady','odeslane','firmy'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg';
+  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
+  S.ukSrc = store.get('hyb-uksrc') === 'all' ? 'all' : 'porada';
   S.gZoom = store.get('hyb-gzoom') === 'week' ? 'week' : 'all';
   const me = () => $('#me').value.trim();
   $('#me').value = store.get('hyb-me');
@@ -1073,7 +1078,10 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   const zOrigin = () => { const m = {}; D.diary.forEach(e => { if (e.kind === 'porada') Object.values(e.added || {}).forEach(id => { if (!m[id] || (Number(e.no) || 0) < (Number(m[id].no) || 0)) m[id] = e; }); }); return m; };
   // sledované úkoly = úkoly do harmonogramu + úkoly ze zápisů z porad; z nich počítá dlaždice nahoře, karty lidí, seznam i graf
   const TRK = () => { const zo = zOrigin(); return D.tasks.filter(t => !isSimple(t) || (zo[t.id] && !t.info)); };
-  const filtered = () => TRK().filter(t => {
+  // 4.24 sloučená záložka Úkoly: z porady = zadané v zápisu nebo načtené z tabulky porady; všechny = každý úkol (bez „Na vědomí“)
+  const ukPorada = (t, zo) => !!(zo[t.id] || t.src);
+  const UKALL = () => { const zo = zOrigin(); return D.tasks.filter(t => !t.info && (S.ukSrc === 'all' || ukPorada(t, zo))); };
+  const filtered = (base) => (base || TRK()).filter(t => {
     if (S.hideDone && S.fstat !== 'done' && eff(t) === 'done') return false;
     if (S.owner && !hasPerson(t, S.owner)) return false;
     if (S.obj && !objHit(t.obj, S.obj)) return false;
@@ -1319,10 +1327,12 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 
   function renderList() {
     const v = $('#view');
-    const zo = zOrigin();
-    if (!TR().length && !Object.keys(zo).length) { v.innerHTML = `<div class="list"><div class="empty"><strong>Zatím žádné úkoly.</strong>Přidejte první tlačítkem „+ Úkol do harmonogramu“ nebo v pohledu Harmonogram z jeho činnosti.</div></div>`; return; }
-    const rows = filtered();
-    if (!rows.length) { v.innerHTML = `<div class="list"><div class="empty"><strong>${S.hideDone && !S.fstat && !S.q && !S.obj ? 'Všechny úkoly jsou splněné.' : 'Filtru neodpovídá žádný úkol.'}</strong>${S.hideDone ? 'Splněné úkoly jsou skryté (políčko „Skrýt splněné“ nahoře).' : 'Zkuste jiný stav nebo zrušte filtr.'}</div></div>`; return; }
+    const zo = zOrigin(), base = UKALL(), uall = S.ukSrc === 'all';
+    const infos = uall ? D.tasks.filter(t => t.info && (t.start || '') >= addD(today, -14) && (!S.owner || hasPerson(t, S.owner))).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
+    const infoHtml = infos.length ? `<div class="sl" style="margin-top:12px"><div class="sl-h">Na vědomí · posledních 14 dní (${infos.length})</div>${infos.map(simpleRow).join('')}</div>` : '';
+    if (!base.length) { v.innerHTML = `<div class="list"><div class="empty"><strong>${uall ? 'Zatím žádné úkoly.' : 'Zatím žádné úkoly z porad.'}</strong>${uall ? 'Zadejte úkol tlačítkem „Zadat úkol“ nebo „+ Úkol do harmonogramu“.' : 'Úkoly se sem dostanou ze Zápisu z porady. Ostatní úkoly najdete pod „Všechny úkoly“.'}</div></div>` + infoHtml; bindSimple(v); return; }
+    const rows = filtered(base);
+    if (!rows.length) { v.innerHTML = `<div class="list"><div class="empty"><strong>${S.hideDone && !S.fstat && !S.q && !S.obj ? 'Všechny úkoly jsou splněné.' : 'Filtru neodpovídá žádný úkol.'}</strong>${S.hideDone ? 'Splněné úkoly jsou skryté (políčko „Skrýt splněné“ nahoře).' : 'Zkuste jiný stav nebo zrušte filtr.'}</div></div>` + infoHtml; bindSimple(v); return; }
     const groups = {};
     rows.forEach(t => (groups[S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení'] ||= []).push(t));
     const order = {late:0, doing:1, todo:2, hold:3, done:4};
@@ -1335,7 +1345,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
         const st = eff(t), done = Number(t.done)||0;
         const stale = t.updatedAt && (Date.now() - Date.parse(t.updatedAt)) > 7*864e5 && st !== 'done';
         html += `<button type="button" class="trow" data-id="${esc(t.id)}">
-          <span class="t-title"><span class="tchk no-print${st === 'done' ? ' on' : ''}" role="checkbox" aria-checked="${st === 'done'}" tabindex="-1" title="${st === 'done' ? 'Splněno (klikněte pro vrácení)' : 'Označit jako splněné'}">${st === 'done' ? '✓' : ''}</span>${esc(t.title)}${taskPeople(t).length > 1 ? `<span class="tags">${esc(taskPeople(t).filter(x => x !== (S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení')).map(x => x === t.owner ? x + ' (hlavní)' : x).join(', '))}</span>` : ''}${(t.hmg||[]).length ? `<span class="tags">HMG ${t.hmg.map(esc).join(' · ')}</span>` : ''}${zo[t.id] ? `<span class="tags zt">z porady${zo[t.id].no ? ' č. ' + esc(zo[t.id].no) : ''}${t.perm ? ' · trvalý' : ''}</span>` : ''}<small>${esc(t.supplier || '—')}${t.note ? ' · ' + esc(t.note) : ''}</small></span>
+          <span class="t-title"><span class="tchk no-print${st === 'done' ? ' on' : ''}" role="checkbox" aria-checked="${st === 'done'}" tabindex="-1" title="${st === 'done' ? 'Splněno (klikněte pro vrácení)' : 'Označit jako splněné'}">${st === 'done' ? '✓' : ''}</span>${esc(t.title)}${taskPeople(t).length > 1 ? `<span class="tags">${esc(taskPeople(t).filter(x => x !== (S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení')).map(x => x === t.owner ? x + ' (hlavní)' : x).join(', '))}</span>` : ''}${(t.hmg||[]).length ? `<span class="tags">HMG ${t.hmg.map(esc).join(' · ')}</span>` : ''}${zo[t.id] ? `<span class="tags zt">z porady${zo[t.id].no ? ' č. ' + esc(zo[t.id].no) : ''}${t.perm ? ' · trvalý' : ''}</span>` : t.src ? '<span class="tags zt">z porady (tabulka)</span>' : ''}<small>${esc(t.supplier || (isSimple(t) && t.createdBy ? 'zadal ' + t.createdBy : '—'))}${t.note ? ' · ' + esc(t.note) : ''}</small>${t.missed && st !== 'done' ? `<span class="t-miss">Důvod nesplnění: ${esc(t.missed)}</span>` : ''}</span>
           <span class="t-obj">${esc(t.obj || '–')}</span>
           <span class="t-date${st === 'late' ? ' late' : ''}">${fmtD(t.start)} – ${fmtD(t.end)}</span>
           <span class="prog" title="Klikněte a posuňte hotovo"><span class="meter"><i style="width:${done}%;background:${st==='late'?'var(--bad)':st==='done'?'var(--good)':'var(--accent)'}"></i></span><span class="num">${done} %</span><span class="rem">zbývá ${100-done} %</span></span>
@@ -1344,7 +1354,8 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
         </button>`;
       });
     });
-    v.innerHTML = html + '</div>';
+    v.innerHTML = html + '</div>' + infoHtml;
+    bindSimple(v);
     v.querySelectorAll('.trow[data-id]').forEach(b => b.onclick = e => { if (e.target.closest('.tchk')) { trackDone(b.dataset.id); return; } quickDone(b.dataset.id, e.target.closest('.prog') || b.querySelector('.t-title')); });
   }
 
@@ -1384,7 +1395,8 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   function quickKey(e) { if (e.key === 'Escape') closeQuick(); }
   function quickDone(id, anchor) {
     const t = D.tasks.find(x => x.id === id); if (!t) return;
-    quickPct({key: id, title: t.title, v0: Number(t.done) || 0, apply: v => setDone(t, v), more: 'Upravit celý úkol', onMore: () => openEditor(id), extra: box => quickTaskExtra(box, t)}, anchor);
+    quickPct({key: id, title: t.title, v0: Number(t.done) || 0, apply: v => setDone(t, v), more: 'Upravit celý úkol', onMore: () => openEditor(id), extra: box => { quickTaskExtra(box, t);
+      if (isUkol(t) && eff(t) !== 'done' && !RO()) { const w = document.createElement('div'); w.className = 'qsec'; w.innerHTML = `<button type="button" class="btn" id="q-miss" style="padding:5px 10px;font-size:12.5px">Důvod nesplnění…</button>${t.missed ? `<span class="rng-hint">${esc(t.missed)}</span>` : ''}`; box.after(w); w.querySelector('#q-miss').onclick = () => { closeQuick(); simpleMiss(t); }; } }}, anchor);
   }
   function quickHmg(h, anchor) {
     quickPct({key: 'h' + h.hid, title: `${h.hid} · ${h.name}`, sub: 'Hotovo podle HMG (činnost zatím nemá propojený úkol)', v0: Number(h.pct) || 0,
@@ -1735,7 +1747,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     html += `<div class="hsimple no-print"><b>Úkoly</b><span>${so.length ? `${so.length} k vyřízení${so.filter(t => eff(t) === 'late').length ? ` · <b style="color:var(--bad)">${so.filter(t => eff(t) === 'late').length} po termínu</b>` : ''}` : 'nic k vyřízení'}</span><button type="button" class="btn" id="h-simple" style="padding:4px 10px;font-size:12.5px">Otevřít záložku Úkoly</button></div>`;
     v.innerHTML = html + `</div><p class="hcap" style="margin-top:8px">Plán dnes = kolik by mělo být hotovo, když práce běží rovnoměrně od zahájení do dokončení v HMG. Hotovo = průměr propojených úkolů, jinak stav z HMG. Odchylka záporná = pozadu. Pozor: dlaždice „Ve skluzu“ nahoře počítá sledované úkoly (po termínu dokončení nebo nezahájené po termínu zahájení), kdežto tady jde o činnosti hlavního harmonogramu.</p>`;
     if ($('#h-conv')) $('#h-conv').onclick = convertToHmg;
-    $('#h-simple').onclick = () => { S.view = 'simple'; store.set('hyb-view', 'simple'); render(); };
+    $('#h-simple').onclick = () => { S.view = 'list'; store.set('hyb-view', 'list'); S.ukSrc = 'all'; store.set('hyb-uksrc', 'all'); render(); };
     if ($('#h-behind')) $('#h-behind').onclick = () => { S.hstat = S.hstat === 'b10' ? '' : 'b10'; render(); };
     $('#h-all').onchange = e => { S.hmgHideDone = e.target.checked; renderHmg(); };
     v.querySelectorAll('[data-hr]').forEach(b => b.onclick = () => { S.hmgRange = b.dataset.hr; S.hmgFrom = null; store.set('hyb-hmgrange', S.hmgRange); renderHmg(); });
@@ -1803,19 +1815,20 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
     if (peopleV2()) toast('Lidé sjednoceni na tým projektu');
     document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
-    ['list','simple','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
+    ['list','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy'].includes(S.view);
-    $('#view-title').textContent = {list:'Sledované úkoly', simple:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy'}[S.view];
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
-    $('#v-simple').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
-    $('#f-stav').hidden = $('#f-objekt').hidden = S.view === 'simple';
+    $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
+    $('#uk-src').hidden = S.view !== 'list';
+    $('#uk-src').querySelectorAll('[data-uk]').forEach(b => b.setAttribute('aria-pressed', S.ukSrc === b.dataset.uk));
     $('#hide-done-w').hidden = !['list', 'gantt'].includes(S.view);
     const fs = $('#f-stav'), hv = S.view === 'hmg', want = hv ? 'hmg' : 'task';
     if (fs.dataset.kind !== want) { fs.dataset.kind = want; fs.innerHTML = hv ? HSTAT.map(([k, l]) => `<option value="${k}">${l}</option>`).join('') : '<option value="">Všechny stavy</option>' + ['todo', 'doing', 'late', 'hold', 'done'].map(k => `<option value="${k}">${STATUS[k]}</option>`).join(''); }
     fs.value = hv ? S.hstat : S.fstat;
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
     if (S.view !== 'diary' && $('#j-text')) diaryDraft = {date: $('#j-date').value, owner: $('#j-owner').value, task: $('#j-task').value, done: $('#j-done-n').value, text: $('#j-text').value};
-    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : S.view === 'simple' ? renderSimple() : renderList();
+    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
   renderList = (f => function () { f(); personSimpleBox(); })(renderList);
@@ -1875,40 +1888,21 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
   // po výběru osoby: její drobné úkoly v rámečku nad sledovanými úkoly / harmonogramem
   function personSimpleBox() {
     const v = $('#view');
-    if (!S.owner || S.view === 'simple' || S.view === 'diary') return;
+    if (!S.owner || S.view !== 'hmg') return;
     // ve Sledovaných úkolech už úkoly ze zápisů z porad jsou – v rámečku jen ostatní úkoly, aby nebyly dvakrát
     const zo = S.view === 'list' ? zOrigin() : {}, mineS = UKOLY().filter(t => hasPerson(t, S.owner) && !zo[t.id] && !(S.view === 'list' && !isSimple(t)));
     const ts = mineS.filter(t => eff(t) !== 'done').sort((a, b) => (a.end || '9999').localeCompare(b.end || '9999'));
     const nDone = mineS.filter(t => eff(t) === 'done').length, late = ts.filter(t => eff(t) === 'late').length;
     const box = document.createElement('div');
     box.className = 'sl pbox'; box.id = 'p-simple';
-    box.innerHTML = `<div class="sl-top"><b>${S.view === 'list' ? 'Další úkoly (mimo zápisy z porad)' : 'Úkoly'} · ${esc(S.owner)}</b><span>${ts.length} k vyřízení${late ? ` · <b style="color:var(--bad);font-size:inherit">${late} po termínu</b>` : ''}${nDone ? ` · ${nDone} splněno` : ''}</span><span class="sp"></span><button type="button" class="btn no-print" id="ps-all">Všechny úkoly</button><button type="button" class="btn primary no-print" id="ps-add">Zadat úkol</button></div>`
+    box.innerHTML = `<div class="sl-top"><b>${S.view === 'list' ? 'Další úkoly (mimo zápisy z porad)' : 'Úkoly'} · ${esc(S.owner)}</b><span>${ts.length} k vyřízení${late ? ` · <b style="color:var(--bad);font-size:inherit">${late} po termínu</b>` : ''}${nDone ? ` · ${nDone} splněno` : ''}</span><span class="sp"></span><button type="button" class="btn no-print" id="ps-all">Otevřít záložku Úkoly</button><button type="button" class="btn primary no-print" id="ps-add">Zadat úkol</button></div>`
       + (ts.length ? `<div class="sl-hd"><span>Pověřená osoba</span><span>Úkol</span><span>Stav</span><span></span></div>` + ts.map(simpleRow).join('') : `<div class="empty" style="padding:14px">${esc(S.owner)} nemá žádný nesplněný úkol.</div>`);
     v.prepend(box);
-    const lbl = document.createElement('div'); lbl.className = 'pbox-lbl'; lbl.textContent = S.view === 'hmg' ? 'Harmonogram' : 'Sledované úkoly';
+    const lbl = document.createElement('div'); lbl.className = 'pbox-lbl'; lbl.textContent = 'Harmonogram';
     box.after(lbl);
     bindSimple(box);
     $('#ps-add').onclick = () => simpleDialog(null, {owner: S.owner !== 'Bez přiřazení' ? S.owner : ''});
-    $('#ps-all').onclick = () => { S.view = 'simple'; store.set('hyb-view', 'simple'); render(); };
-  }
-  function renderSimple() {
-    const v = $('#view'), q = S.q.toLowerCase();
-    const all = UKOLY().filter(t => (!S.owner || hasPerson(t, S.owner)) && (!q || `${t.title} ${ownerTxt(t)} ${t.missed || ''}`.toLowerCase().includes(q)));
-    const infos = all.filter(t => t.info && (t.start || '') >= addD(today, -14)).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
-    const open = all.filter(t => !t.info && eff(t) !== 'done').sort((a, b) => (a.end || '9999').localeCompare(b.end || '9999') || (a.createdAt || '').localeCompare(b.createdAt || ''));
-    const done = all.filter(t => !t.info && eff(t) === 'done').sort((a, b) => (b.doneAt || b.updatedAt || '').localeCompare(a.doneAt || a.updatedAt || ''));
-    const late = open.filter(t => eff(t) === 'late').length;
-    const row = simpleRow;
-    let html = `<div class="sl"><div class="sl-top"><b>Úkoly${S.owner ? ' · ' + esc(S.owner) : ''}</b><span>${open.length} k vyřízení${late ? ` · <b style="color:var(--bad);font-size:inherit">${late} po termínu</b>` : ''} · ${done.length} splněno</span><span class="sp"></span><button type="button" class="btn primary no-print" id="s-add">Zadat úkol</button></div>`;
-    if (!all.length) html += `<div class="empty"><strong>${UKOLY().length ? 'Filtru neodpovídá žádný úkol.' : 'Zatím žádné úkoly.'}</strong>Sem patří drobné úkoly nad rámec sledovaných, třeba „zajistit osazení plynoměru“. Zadáte je tlačítkem „Zadat úkol“.</div>`;
-    if (all.length) html += `<div class="sl-hd"><span>Pověřená osoba</span><span>Úkol</span><span>Stav</span><span></span></div>`;
-    html += open.map(row).join('');
-    if (infos.length) html += `<div class="sl-h">Na vědomí · posledních 14 dní (${infos.length})</div>` + infos.map(row).join('');
-    if (done.length) html += `<button type="button" class="sl-h linkish no-print" id="s-done" style="width:100%;text-align:left;text-decoration:none;border-radius:0">${S.simpleDone ? '▾' : '▸'} Splněné (${done.length})</button>` + (S.simpleDone ? done.map(row).join('') : '');
-    v.innerHTML = html + '</div>';
-    bindSimple(v);
-    $('#s-add').onclick = () => simpleDialog(null, {owner: S.owner && S.owner !== 'Bez přiřazení' ? S.owner : ''});
-    if ($('#s-done')) $('#s-done').onclick = () => { S.simpleDone = !S.simpleDone; renderSimple(); };
+    $('#ps-all').onclick = () => { S.view = 'list'; store.set('hyb-view', 'list'); S.ukSrc = 'all'; store.set('hyb-uksrc', 'all'); render(); };
   }
   function simpleLog(t, comment) { const now = new Date().toISOString(); Object.assign(t, {updatedAt: now, updatedBy: me()}); D.log.push({id: uid(), taskId: t.id, at: now, by: me(), done: t.done, status: t.status, comment, title: t.title}); return now; }
   const isMe = n => !!me() && foldName(canonOwner(me())) === foldName(n);
@@ -1965,7 +1959,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
           D.tasks.push({id, kind: 'simple', title, owner, team: [], start: today, end, done: 0, status: 'todo', note: '', obj: '', supplier: '', hmg: [], createdAt: now, createdBy: me(), updatedAt: now, updatedBy: me()});
           D.log.push({id: uid(), taskId: id, at: now, by: me(), done: 0, status: 'todo', comment: 'Zadán úkol' + (end ? ' do ' + fmtDY(end) : ''), title});
           if (S.owner && owner !== S.owner) S.owner = '';
-          S.view = 'simple'; store.set('hyb-view', 'simple');
+          S.view = 'list'; store.set('hyb-view', 'list'); S.ukSrc = 'all'; store.set('hyb-uksrc', 'all');
           toast('Úkol zadán' + (owner ? ': ' + owner : ''));
         }
         commit();
@@ -2196,7 +2190,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
       // nový hlavní úkol bez vybrané činnosti HMG se rovnou založí i v harmonogramu
       if (!data.hmg.length) { newHid = Math.max(0, ...D.hmg.map(h => h.hid)) + 1; hmgFromTask(D.tasks.find(x => x.id === id), newHid, now, 'Zapsáno do harmonogramu'); } }
     S.closeEditor();
-    if (!t) { if (S.view !== 'list') { S.view = 'list'; store.set('hyb-view', 'list'); } if (S.fstat || S.q || (S.obj && !objHit(data.obj, S.obj)) || (S.owner && !hasPerson({owner: data.owner, team: data.team}, S.owner))) { S.fstat = ''; S.q = ''; S.obj = ''; S.owner = ''; $('#q').value = ''; } }
+    if (!t) { if (S.view !== 'list') { S.view = 'list'; store.set('hyb-view', 'list'); } S.ukSrc = 'all'; store.set('hyb-uksrc', 'all'); if (S.fstat || S.q || (S.obj && !objHit(data.obj, S.obj)) || (S.owner && !hasPerson({owner: data.owner, team: data.team}, S.owner))) { S.fstat = ''; S.q = ''; S.obj = ''; S.owner = ''; $('#q').value = ''; } }
     commit(); toast(t ? 'Uloženo' : newHid ? `Úkol přidán i do harmonogramu (činnost ${newHid})` : 'Úkol přidán');
     if (t && (was.start !== (t.start || '') || was.end !== (t.end || ''))) askHmgDates(t);
     if (!t) setTimeout(() => { const r = document.querySelector(`.trow[data-id="${id}"]`); if (r) { r.scrollIntoView({block: 'center', behavior: 'smooth'}); r.classList.add('flash'); setTimeout(() => r.classList.remove('flash'), 2500); } }, 50);
@@ -4926,9 +4920,10 @@ ${tydenniHtml.toString()}
   const setView = v => { S.view = v; store.set('hyb-view', v); render();
     const sec = $('#view-title').closest('section'), r = sec.getBoundingClientRect();
     if (r.top > innerHeight * .55 || r.top < 0) window.scrollTo({top: scrollY + r.top - (innerWidth > 900 ? 0 : $('.side').offsetHeight) - 8, behavior: 'smooth'}); };
-  ['list','simple','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).onclick = () => setView(k));
+  ['list','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).onclick = () => setView(k));
   zavadyGo = (o) => { Object.assign(ZF, o || {}); setView('zavady'); };
   firmyGo = () => setView('firmy');
+  $('#uk-src').querySelectorAll('[data-uk]').forEach(b => b.onclick = () => { S.ukSrc = b.dataset.uk; store.set('hyb-uksrc', S.ukSrc); render(); });
   $('#clear').onclick = () => { S.owner = ''; S.fstat = ''; S.hstat = ''; S.q = ''; S.obj = ''; $('#q').value = ''; $('#f-stav').value = ''; $('#f-objekt').value = ''; render(); };
   window.addEventListener('storage', e => { if (e.key === KEY && e.newValue) { try { D = normalize(JSON.parse(e.newValue)); snap = takeSnap(D); softRender(); } catch(err) {} } });
   if (!store.get(KEY)) { D.lastBackup = new Date().toISOString(); persist(); }
