@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-dRgHQ4L9i3LL8km8b14CVkzC6nAr6UlocjLM3+BGvgM=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-/OjGVnC8NrRuicxQBuWlP5LpZHltH6JTYBdW9LpFESg=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -652,6 +652,35 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 #v-firmy{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E%3C/svg%3E")}
 .zv-det .btn.primary::before{content:"↗"}
 #v-odeslane{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'/%3E%3Cpath d='M14 3v6h6M9 14l2 2 4-4'/%3E%3C/svg%3E")}
+/* 4.28: Kalendář úkolů (jen k nahlédnutí) */
+#v-kal{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
+.kl-top select,.kl-top input{font-size:13px;padding:6px 8px}.kl-top input[type=date]{width:140px}
+.kl-top .seg button{padding:6px 11px;font-size:13px;font-weight:600}.kl-top .seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+.kl-nav{display:flex;gap:4px;align-items:center}.kl-nav .btn{padding:5px 10px;font-size:13px}
+.kl-rng{font-weight:700;color:var(--ink);font-size:14px;min-width:150px}
+.kl-dow,.kl-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.kl-dow span{padding:8px 8px;font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.kl-day{min-height:150px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 7px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kl-day:nth-child(7n){border-right:0}.kl-day.out{background:var(--soft);opacity:.55}.kl-day.we{background:color-mix(in srgb,var(--soft) 45%,transparent)}
+.kl-day.dnes{box-shadow:inset 0 0 0 2px var(--accent)}
+.kl-dn{font:600 14px var(--f-mono);color:var(--muted);display:flex;gap:6px;align-items:baseline}.kl-day.dnes .kl-dn{color:var(--accent)}
+.kl-it{display:block;width:100%;text-align:left;border:1px solid var(--line);border-left:4px solid var(--info);background:var(--panel);border-radius:8px;padding:7px 9px;font:inherit;font-size:14px;line-height:1.35;cursor:pointer;color:var(--ink);min-width:0}
+.kl-it:hover{border-color:var(--accent);border-left-color:inherit}
+.kl-it .kl-t{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;font-weight:600}
+.kl-it small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kl-it.st-late{border-left-color:var(--bad);background:var(--bad-soft)}.kl-it.st-done{border-left-color:var(--good);opacity:.7}.kl-it.st-done .kl-t{text-decoration:line-through}
+.kl-it.st-todo{border-left-color:var(--muted)}.kl-it.st-hold{border-left-color:var(--hold)}
+.kl-it .kl-sub{font-weight:500;color:var(--muted)}
+.kl-one .kl-day{min-height:0}.kl-one .kl-it{font-size:15.5px;padding:10px 12px}.kl-one .kl-it .kl-t{-webkit-line-clamp:4}
+.kl-late{padding:8px 14px 10px;border-bottom:1px solid var(--line);background:var(--bad-soft)}.kl-late>b{display:block;font-size:13px;margin-bottom:6px;color:var(--bad)}
+.kl-late .kl-row{display:flex;flex-wrap:wrap;gap:6px}.kl-late .kl-it{width:auto;max-width:400px}
+.kl-os{display:grid;grid-template-columns:200px minmax(0,1fr);border-bottom:1px solid var(--line)}
+.kl-os>div:first-child{padding:12px 14px;font-weight:700;font-size:16px;border-right:1px solid var(--line)}.kl-os>div:first-child small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.kl-os .kl-ag{padding:10px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.kl-it b.kl-d{font:600 13px var(--f-mono);color:var(--muted);margin-right:4px}
+.kl-pop{margin:0;padding:8px 14px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line)}
+@media (max-width:760px){.kl-dow{display:none}.kl-grid{grid-template-columns:1fr}.kl-day{border-right:0;min-height:0}.kl-day.out{display:none}.kl-os{grid-template-columns:1fr}.kl-os>div:first-child{border-right:0}}
+@media print{.kl-top .seg,.kl-nav,.kl-top input,.kl-top select{display:none!important}}
 /* 4.24: sloučené Úkoly – přepínač Úkoly z porady / Všechny úkoly */
 .uk-src{flex:none}.uk-src[hidden]{display:none}.uk-src button{padding:8px 14px;font-weight:600;font-size:13.5px;white-space:nowrap}
 .uk-src button+button{border-left:1px solid var(--line)}
@@ -806,6 +835,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <button type="button" id="v-zavady" aria-pressed="false">Zprávy pro firmy</button>
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
+      <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
     </div>
   </nav>
   <div class="grow"></div>
@@ -1027,7 +1057,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.27';
+  const APP_VERSION = '4.28';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -1131,7 +1161,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy','kal'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   S.ukSrc = store.get('hyb-uksrc') === 'all' ? 'all' : 'porada';
   S.gZoom = store.get('hyb-gzoom') === 'week' ? 'week' : 'all';
@@ -2199,9 +2229,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (peopleV2()) toast('Lidé sjednoceni na tým projektu');
     document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
-    ['list','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
-    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy'].includes(S.view);
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy'}[S.view];
+    ['list','diary','hmg','zavady','odeslane','firmy','kal'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
+    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal'].includes(S.view);
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
@@ -2216,7 +2246,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     fs.value = hv ? S.hstat : S.fstat;
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
     if (S.view !== 'diary' && $('#j-text')) dGrab();
-    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
+    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
   renderList = (f => function () { f(); personSimpleBox(); })(renderList);
@@ -2766,6 +2796,90 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 
   // Firmy (subdodavatelé) pro závady z mobilu: adresy, kam telefon pošle e-mail nebo WhatsApp. Nejsou to osoby, do Lidí ani do týmu se nepřidávají.
   // Ukládají se do dat stavby (D.project.firmy), takže je všechny telefony převezmou při synchronizaci.
+  /* ---------- 4.28 záložka Kalendář: úkoly a dílčí úkoly podle termínu (do kdy), jen k nahlédnutí ---------- */
+  const KL = (() => { let o = {}; try { o = JSON.parse(store.get('hyb-kal') || '{}') || {}; } catch(e) {} return Object.assign({p: 'week', od: '', do: '', osoba: '', mode: 'cal', done: false, at: ''}, o); })();
+  const klSave = () => store.set('hyb-kal', JSON.stringify(KL));
+  const klAdd = (s, n) => { const d = pd(s); d.setDate(d.getDate() + n); return iso(d); };
+  const klMon = s => { const d = pd(s); return klAdd(s, -((d.getDay() + 6) % 7)); };
+  const KL_DOW = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'], KL_MES = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
+  function klRange() {
+    const a = KL.at || today;
+    if (KL.p === 'day') return [a, a];
+    if (KL.p === 'week') { const m = klMon(a); return [m, klAdd(m, 6)]; }
+    if (KL.p === 'd14') { const m = klMon(a); return [m, klAdd(m, 13)]; }
+    if (KL.p === 'month') { const d = pd(a), f = iso(new Date(d.getFullYear(), d.getMonth(), 1)); return [f, iso(new Date(d.getFullYear(), d.getMonth() + 1, 0))]; }
+    let od = KL.od || today, dd = KL.do || od; if (dd < od) [od, dd] = [dd, od]; if (dayDiff(od, dd) > 92) dd = klAdd(od, 92); return [od, dd];
+  }
+  function klShift(dir) {
+    const a = KL.at || today;
+    if (KL.p === 'day') KL.at = klAdd(a, dir); else if (KL.p === 'week') KL.at = klAdd(a, 7 * dir); else if (KL.p === 'd14') KL.at = klAdd(a, 14 * dir);
+    else if (KL.p === 'month') { const d = pd(a); KL.at = iso(new Date(d.getFullYear(), d.getMonth() + dir, 1)); }
+    else { const [od, dd] = klRange(), n = dayDiff(od, dd) + 1; KL.od = klAdd(od, n * dir); KL.do = klAdd(dd, n * dir); }
+    klSave(); renderKal();
+  }
+  // položky kalendáře: úkol v den svého termínu, dílčí úkol v den svého termínu (bez „Na vědomí“)
+  function klItems() {
+    const out = [];
+    D.tasks.filter(t => !t.info).forEach(t => {
+      const st = eff(t);
+      if (t.end) out.push({t, end: t.end, st, who: t.owner || 'Bez přiřazení', ppl: taskPeople(t), text: t.title || '(bez názvu)'});
+      (t.sub || []).forEach(u => { if (!u.end || !String(u.text || '').trim()) return;
+        const sst = u.done || st === 'done' ? 'done' : u.end < today ? 'late' : 'todo';
+        out.push({t, u, end: u.end, st: sst, who: u.owner || t.owner || 'Bez přiřazení', ppl: [u.owner || t.owner || 'Bez přiřazení'], text: u.text}); });
+    });
+    return out.filter(x => (KL.done || x.st !== 'done') && (!KL.osoba || x.ppl.includes(KL.osoba)))
+      .sort((a, b) => a.end.localeCompare(b.end) || a.who.localeCompare(b.who, 'cs') || a.text.localeCompare(b.text, 'cs'));
+  }
+  const klChip = (x, withDate) => `<button type="button" class="kl-it st-${x.st}" data-kt="${esc(x.t.id)}" title="${esc((x.u ? 'Dílčí úkol: ' + x.u.text + '\nÚkol: ' + x.t.title : x.t.title) + '\nKdo: ' + (x.u ? x.who : ownerTxt(x.t) || 'Bez přiřazení') + '\nDo kdy: ' + fmtDY(x.end))}">
+      <span class="kl-t">${withDate ? `<b class="kl-d">${fmtD(x.end)}</b>` : ''}${x.u ? '<span class="kl-sub">dílčí: </span>' : ''}${esc(x.text)}</span>
+      <small>${esc(x.u ? (KL.mode === 'os' ? '' : x.who + ' · ') + (x.t.title || '') : (KL.mode === 'os' ? (x.t.obj ? 'objekt ' + x.t.obj : (x.t.supplier || '')) : ownerTxt(x.t) || 'Bez přiřazení'))}</small></button>`;
+  function renderKal() {
+    const v = $('#view'), [od, dd] = klRange(), all = klItems(), its = all.filter(x => x.end >= od && x.end <= dd);
+    const late = od <= today && dd >= today ? all.filter(x => x.st === 'late' && x.end < od) : [];
+    const ppl = owners();
+    const nm = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů';
+    const rngTxt = KL.p === 'day' ? `${KL_DOW[(pd(od).getDay() + 6) % 7]} ${fmtDY(od)}` : KL.p === 'month' ? `${KL_MES[pd(od).getMonth()]} ${pd(od).getFullYear()}` : `${fmtD(od)} – ${fmtDY(dd)}`;
+    let html = `<div class="sl"><div class="sl-top kl-top"><b>Kalendář úkolů</b><span>jen k nahlédnutí · klik na úkol ho otevře v Úkolech</span><span class="sp"></span>
+      <div class="seg" role="group">${[['day', 'Den'], ['week', 'Týden'], ['d14', '14 dní'], ['month', 'Měsíc'], ['own', 'Vlastní']].map(([k, l]) => `<button type="button" data-kp="${k}" aria-pressed="${KL.p === k}">${l}</button>`).join('')}</div>
+      ${KL.p === 'own' ? `<label class="hcap">od <input type="date" id="kl-od" value="${esc(od)}"></label><label class="hcap">do <input type="date" id="kl-do" value="${esc(dd)}"></label>` : ''}
+      <select id="kl-osoba" aria-label="Osoba"><option value="">Všechny osoby</option>${ppl.map(n => `<option value="${esc(n)}"${KL.osoba === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>
+      <div class="seg" role="group"><button type="button" data-km="cal" aria-pressed="${KL.mode === 'cal'}">Podle dnů</button><button type="button" data-km="os" aria-pressed="${KL.mode === 'os'}">Podle osob</button></div>
+      <label class="hcap" style="display:flex;gap:5px;align-items:center"><input type="checkbox" id="kl-done"${KL.done ? ' checked' : ''}> i splněné</label></div>
+      <div class="sl-top kl-top"><div class="kl-nav"><button type="button" class="btn" id="kl-prev" title="Předchozí">◀</button><button type="button" class="btn" id="kl-dnes">Dnes</button><button type="button" class="btn" id="kl-next" title="Další">▶</button></div>
+      <span class="kl-rng">${rngTxt}</span><span>${its.length} ${nm(its.length)} s termínem v tomto období${KL.osoba ? ' · ' + esc(KL.osoba) : ''}</span></div>`;
+    if (late.length) html += `<div class="kl-late"><b>Po termínu a nesplněno (${late.length})</b><div class="kl-row">${late.map(x => klChip(x, true)).join('')}</div></div>`;
+    if (KL.mode === 'os') {
+      const g = new Map(); its.forEach(x => { const k = ppl.includes(x.who) ? x.who : 'Bez přiřazení'; if (!g.has(k)) g.set(k, []); g.get(k).push(x); });
+      const keys = [...ppl.filter(n => g.has(n)), ...(g.has('Bez přiřazení') ? ['Bez přiřazení'] : [])];
+      html += keys.length ? keys.map(k => `<div class="kl-os"><div>${esc(k)}<small>${g.get(k).length} ${nm(g.get(k).length)}</small></div><div class="kl-ag">${g.get(k).map(x => klChip(x, true)).join('')}</div></div>`).join('')
+        : '<div class="empty"><strong>V tomto období nejsou žádné úkoly s termínem.</strong>Zkuste delší období nebo jinou osobu.</div>';
+    } else {
+      const one = KL.p === 'day', from = one ? od : klMon(od), to = one ? dd : klAdd(klMon(dd), 6), days = [];
+      for (let d = from; d <= to; d = klAdd(d, 1)) days.push(d);
+      html += `${one ? '' : `<div class="kl-dow">${KL_DOW.map(x => `<span>${x}</span>`).join('')}</div>`}<div class="kl-grid${one ? ' kl-one' : ''}"${one ? ' style="grid-template-columns:1fr"' : ''}>` + days.map(d => {
+        const wd = (pd(d).getDay() + 6) % 7, ds = its.filter(x => x.end === d), out = d < od || d > dd;
+        return `<div class="kl-day${out ? ' out' : ''}${wd > 4 ? ' we' : ''}${d === today ? ' dnes' : ''}"><div class="kl-dn"><span>${pd(d).getDate()}.${pd(d).getDate() === 1 || d === from ? ' ' + (pd(d).getMonth() + 1) + '.' : ''}</span>${d === today ? '<span>dnes</span>' : ''}${one ? `<span>${KL_DOW[wd]}</span>` : ''}</div>${out ? '' : ds.map(x => klChip(x)).join('')}${one && !ds.length ? '<span class="hcap">Žádný úkol s termínem v tento den.</span>' : ''}</div>`;
+      }).join('') + '</div>';
+    }
+    v.innerHTML = html + '<p class="kl-pop">Úkol je v kalendáři v den svého termínu (do kdy), dílčí úkol v den svého termínu. Červeně = po termínu. Tady se nic nezapisuje – klik na úkol otevře jeho okno v záložce Úkoly.</p></div>';
+    v.querySelectorAll('[data-kp]').forEach(b => b.onclick = () => { if (b.dataset.kp === 'own' && KL.p !== 'own') { const [a, z] = klRange(); KL.od = a; KL.do = z; } KL.p = b.dataset.kp; if (KL.p !== 'own') KL.at = today; klSave(); renderKal(); });
+    v.querySelectorAll('[data-km]').forEach(b => b.onclick = () => { KL.mode = b.dataset.km; klSave(); renderKal(); });
+    $('#kl-osoba').onchange = e => { KL.osoba = e.target.value; klSave(); renderKal(); };
+    $('#kl-done').onchange = e => { KL.done = e.target.checked; klSave(); renderKal(); };
+    if ($('#kl-od')) { $('#kl-od').onchange = e => { if (e.target.value) { KL.od = e.target.value; klSave(); renderKal(); } }; $('#kl-do').onchange = e => { if (e.target.value) { KL.do = e.target.value; klSave(); renderKal(); } }; }
+    $('#kl-prev').onclick = () => klShift(-1); $('#kl-next').onclick = () => klShift(1);
+    $('#kl-dnes').onclick = () => { KL.at = today; if (KL.p === 'own') { const n = dayDiff(...klRange()); KL.od = today; KL.do = klAdd(today, n); } klSave(); renderKal(); };
+    v.querySelectorAll('[data-kt]').forEach(b => b.onclick = () => klOpen(b.dataset.kt));
+  }
+  // klik v kalendáři: přepnout do Úkolů (všechny úkoly, bez filtrů, aby byl úkol vidět) a otevřít stejné okno Úkol jako všude jinde
+  function klOpen(id) {
+    const t = D.tasks.find(x => x.id === id); if (!t) return;
+    S.view = 'list'; store.set('hyb-view', 'list'); S.ukSrc = 'all'; store.set('hyb-uksrc', 'all');
+    S.fstat = ''; S.q = ''; S.obj = ''; S.owner = ''; if ($('#q')) $('#q').value = '';
+    if (eff(t) === 'done' && S.hideDone) { S.hideDone = false; store.set('hyb-hidedone', ''); $('#hide-done').checked = false; }
+    render(); window.scrollTo({top: 0}); openEditor(id);
+  }
+
   /* ---------- záložka Firmy: subdodavatelé, kterým se z mobilu posílají zprávy (D.project.firmy) ---------- */
   let zavadyGo = () => {}, firmyGo = () => {};
   const firmyList = () => (Array.isArray(D.project.firmy) ? D.project.firmy : []).slice().sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs'));
@@ -5350,7 +5464,7 @@ ${tydenniHtml.toString()}
   const setView = v => { S.view = v; store.set('hyb-view', v); render();
     const sec = $('#view-title').closest('section'), r = sec.getBoundingClientRect();
     if (r.top > innerHeight * .55 || r.top < 0) window.scrollTo({top: scrollY + r.top - (innerWidth > 900 ? 0 : $('.side').offsetHeight) - 8, behavior: 'smooth'}); };
-  ['list','diary','hmg','zavady','odeslane','firmy'].forEach(k => $('#v-' + k).onclick = () => setView(k));
+  ['list','diary','hmg','zavady','odeslane','firmy','kal'].forEach(k => $('#v-' + k).onclick = () => setView(k));
   zavadyGo = (o) => { Object.assign(ZF, o || {}); setView('zavady'); };
   firmyGo = () => setView('firmy');
   $('#uk-src').querySelectorAll('[data-uk]').forEach(b => b.onclick = () => { S.ukSrc = b.dataset.uk; store.set('hyb-uksrc', S.ukSrc); render(); });
