@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8G3vfPvoSnfefS9AhpZxS+hEmN/geVNVgeOobFcvBOc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-1sIktIHtZLYXOWvviRdnqL7ZBXnuDGVEF0SKg4t+dEI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -696,6 +696,23 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .zv-uz textarea{min-height:60px;font-size:13.5px}
 .zv-row .zv-odp b{display:inline}
 .zv-top select{max-width:175px}
+/* 4.26 dílčí úkoly v okně Úkol */
+.esub .lbl{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#e-subs{display:flex;flex-direction:column;gap:8px}
+.esub-it{display:flex;flex-direction:column;gap:7px;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.esub-it.ok{opacity:.7}.esub-it.ok textarea{text-decoration:line-through}
+.esub-it.late{border-color:var(--bad)}
+.esub-h{display:flex;gap:8px;align-items:flex-start}
+.esub-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--k);color:#fff;display:grid;place-items:center;font:700 13px var(--f-mono);margin-top:6px}
+.esub-h textarea{flex:1;min-height:44px}
+.esub-x{flex:none;border:0;background:none;color:var(--muted);font-size:20px;line-height:1;padding:6px 4px;cursor:pointer}.esub-x:hover{color:var(--bad)}
+.esub-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.esub-r select{flex:1 1 180px;min-height:40px}.esub-r select:not(.on){background:#FFF4BF}
+.esub-r input[type=date]{flex:0 1 160px;width:auto}
+.fld .esub-ok{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font:600 13px var(--f-body);color:var(--ink);text-transform:none;letter-spacing:0;cursor:pointer}
+.esub-ok input{width:18px;height:18px;margin:0}
+.esub-add{align-self:flex-start;border:1px dashed var(--ink);font-weight:600}
+.tags.subtag{background:var(--info-soft);color:var(--info)}.tags.subtag.late{background:var(--bad-soft);color:var(--bad)}
 /* 4.25 denní zápisy = interní stavební deník */
 .dform{gap:14px}
 .dform.drop{outline:3px dashed var(--accent);outline-offset:-6px}
@@ -1010,7 +1027,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.25';
+  const APP_VERSION = '4.26';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -1142,6 +1159,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   // úkol může mít hlavní odpovědnou osobu (owner) a další osoby (team)
   const taskPeople = t => [t.owner || 'Bez přiřazení', ...(t.team || []).filter(x => x && x !== t.owner)];
   const hasPerson = (t, n) => taskPeople(t).includes(n);
+  const subOpen = t => (t.sub || []).filter(u => !u.done);
+  const subHas = (t, n) => subOpen(t).some(u => u.owner === n);
   const ownerTxt = t => [t.owner, ...(t.team || []).filter(x => x && x !== t.owner)].filter(Boolean).join(' / ');
   // jednoduché úkoly (záložka Úkoly) leží v D.tasks s kind:'simple', aby je synchronizace přenesla i se starším skriptem
   const isSimple = t => !!t && t.kind === 'simple';
@@ -1161,7 +1180,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const UKALL = () => { const zo = zOrigin(); return D.tasks.filter(t => !t.info && (S.ukSrc === 'all' || ukPorada(t, zo))); };
   const filtered = (base) => (base || TRK()).filter(t => {
     if (S.hideDone && S.fstat !== 'done' && eff(t) === 'done') return false;
-    if (S.owner && !hasPerson(t, S.owner)) return false;
+    if (S.owner && !hasPerson(t, S.owner) && !subHas(t, S.owner)) return false;
     if (S.obj && !objHit(t.obj, S.obj)) return false;
     if (S.fstat && eff(t) !== S.fstat) return false;
     if (S.q) { const h = `${t.title} ${t.supplier} ${ownerTxt(t)} ${t.obj} ${t.note}`.toLowerCase(); if (!h.includes(S.q.toLowerCase())) return false; }
@@ -1412,7 +1431,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const rows = filtered(base);
     if (!rows.length) { v.innerHTML = `<div class="list"><div class="empty"><strong>${S.hideDone && !S.fstat && !S.q && !S.obj ? 'Všechny úkoly jsou splněné.' : 'Filtru neodpovídá žádný úkol.'}</strong>${S.hideDone ? 'Splněné úkoly jsou skryté (políčko „Skrýt splněné“ nahoře).' : 'Zkuste jiný stav nebo zrušte filtr.'}</div></div>` + infoHtml; bindSimple(v); return; }
     const groups = {};
-    rows.forEach(t => (groups[S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení'] ||= []).push(t));
+    rows.forEach(t => (groups[S.owner && (hasPerson(t, S.owner) || subHas(t, S.owner)) ? S.owner : t.owner || 'Bez přiřazení'] ||= []).push(t));
     const order = {late:0, doing:1, todo:2, hold:3, done:4};
     let html = `<div class="list"><div class="trow thead" role="row"><span>Činnost · dodavatel</span><span>Objekt</span><span>Termín</span><span>Hotovo</span><span>Stav</span><span>Aktualizace</span></div>`;
     Object.keys(groups).sort((a,b) => (a === 'Bez přiřazení') - (b === 'Bez přiřazení') || a.localeCompare(b,'cs')).forEach(n => {
@@ -1423,7 +1442,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const st = eff(t), done = Number(t.done)||0;
         const stale = t.updatedAt && (Date.now() - Date.parse(t.updatedAt)) > 7*864e5 && st !== 'done';
         html += `<button type="button" class="trow" data-id="${esc(t.id)}">
-          <span class="t-title"><span class="tchk no-print${st === 'done' ? ' on' : ''}" role="checkbox" aria-checked="${st === 'done'}" tabindex="-1" title="${st === 'done' ? 'Splněno (klikněte pro vrácení)' : 'Označit jako splněné'}">${st === 'done' ? '✓' : ''}</span>${esc(t.title)}${taskPeople(t).length > 1 ? `<span class="tags">${esc(taskPeople(t).filter(x => x !== (S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení')).map(x => x === t.owner ? x + ' (hlavní)' : x).join(', '))}</span>` : ''}${(t.hmg||[]).length ? `<span class="tags">HMG ${t.hmg.map(esc).join(' · ')}</span>` : ''}${zo[t.id] ? `<span class="tags zt">z porady${zo[t.id].no ? ' č. ' + esc(zo[t.id].no) : ''}${t.perm ? ' · trvalý' : ''}</span>` : t.src ? '<span class="tags zt">z porady (tabulka)</span>' : ''}<small>${esc(t.supplier || (isSimple(t) && t.createdBy ? 'zadal ' + t.createdBy : '—'))}${t.note ? ' · ' + esc(t.note) : ''}</small>${t.missed && st !== 'done' ? `<span class="t-miss">Důvod nesplnění: ${esc(t.missed)}</span>` : ''}</span>
+          <span class="t-title"><span class="tchk no-print${st === 'done' ? ' on' : ''}" role="checkbox" aria-checked="${st === 'done'}" tabindex="-1" title="${st === 'done' ? 'Splněno (klikněte pro vrácení)' : 'Označit jako splněné'}">${st === 'done' ? '✓' : ''}</span>${esc(t.title)}${taskPeople(t).length > 1 ? `<span class="tags">${esc(taskPeople(t).filter(x => x !== (S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení')).map(x => x === t.owner ? x + ' (hlavní)' : x).join(', '))}</span>` : ''}${(t.sub || []).length ? `<span class="tags subtag${subOpen(t).some(u => u.end && u.end < today) ? ' late' : ''}">dílčí úkoly ${t.sub.length - subOpen(t).length}/${t.sub.length} splněno${S.owner && subHas(t, S.owner) ? ' · ' + esc(S.owner) + ': ' + subOpen(t).filter(u => u.owner === S.owner).length : ''}</span>` : ''}${(t.hmg||[]).length ? `<span class="tags">HMG ${t.hmg.map(esc).join(' · ')}</span>` : ''}${zo[t.id] ? `<span class="tags zt">z porady${zo[t.id].no ? ' č. ' + esc(zo[t.id].no) : ''}${t.perm ? ' · trvalý' : ''}</span>` : t.src ? '<span class="tags zt">z porady (tabulka)</span>' : ''}<small>${esc(t.supplier || (isSimple(t) && t.createdBy ? 'zadal ' + t.createdBy : '—'))}${t.note ? ' · ' + esc(t.note) : ''}</small>${t.missed && st !== 'done' ? `<span class="t-miss">Důvod nesplnění: ${esc(t.missed)}</span>` : ''}</span>
           <span class="t-obj">${esc(t.obj || '–')}</span>
           <span class="t-date${st === 'late' ? ' late' : ''}">${fmtD(t.start)} – ${fmtD(t.end)}</span>
           <span class="prog" title="Klikněte a posuňte hotovo"><span class="meter"><i style="width:${done}%;background:${st==='late'?'var(--bad)':st==='done'?'var(--good)':'var(--accent)'}"></i></span><span class="num">${done} %</span><span class="rem">zbývá ${100-done} %</span></span>
@@ -1471,7 +1490,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
   function quickOutside(e) { if (!e.target.closest('#qp')) { e.preventDefault(); e.stopPropagation(); closeQuick(); } }
   function quickKey(e) { if (e.key === 'Escape') closeQuick(); }
-  function quickDone(id, anchor) {
+  // 4.26: klik na úkol kdekoli rovnou otevře okno Úkol (Luboš 10. 11. 2026); rychlé okénko zůstává jen pro činnost HMG bez úkolu
+  function quickDone(id) { if (D.tasks.some(x => x.id === id)) openEditor(id); }
+  function quickDoneOld(id, anchor) {
     const t = D.tasks.find(x => x.id === id); if (!t) return;
     quickPct({key: id, title: t.title, v0: Number(t.done) || 0, apply: v => setDone(t, v), more: 'Upravit celý úkol', onMore: () => openEditor(id), extra: box => { quickTaskExtra(box, t);
       if (isUkol(t) && eff(t) !== 'done' && !RO()) { const w = document.createElement('div'); w.className = 'qsec'; w.innerHTML = `<button type="button" class="btn" id="q-miss" style="padding:5px 10px;font-size:12.5px">Důvod nesplnění…</button>${t.missed ? `<span class="rng-hint">${esc(t.missed)}</span>` : ''}`; box.after(w); w.querySelector('#q-miss').onclick = () => { closeQuick(); simpleMiss(t); }; } }}, anchor);
@@ -2377,6 +2398,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const d = t || Object.assign({title:'', obj:'', supplier:'', owner:S.owner || '', start:today, end:'', done:0, status:'todo', note:'', hmg:[]}, preset || {});
     S.editHmg = [...(d.hmg || [])];
     S.editTeam = [...new Set(d.team || [])].filter(x => x && x !== d.owner);
+    S.editSub = clone(d.sub || []);
     const own = owners().filter(n => n !== 'Bez přiřazení');
     const ov = $('#overlay');
     ov.innerHTML = `<div class="scrim" id="scrim"></div>
@@ -2404,9 +2426,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           <span class="rng-hint" id="e-rem">zbývá ${100-(Number(d.done)||0)} %</span>
           <div class="quick">${[5,15,30,50,75,100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}</div>
         </div>
-        <div class="fld"><label for="e-status">Stav</label><select id="e-status">
-          ${['todo','doing','hold','done'].map(s => `<option value="${s}" ${(d.status||'todo')===s?'selected':''}>${STATUS[s]}</option>`).join('')}
-        </select><span class="rng-hint">„Ve skluzu“ se ukáže samo, když uplyne termín dokončení a úkol není hotový, nebo když uplyne termín zahájení a úkol ještě nezačal.</span></div>
+        <div class="fld"><span class="rng-hint" id="e-stav">Stav se určí sám: 0 % = nezahájeno, víc = probíhá, 100 % = hotovo. Po termínu se ukáže „Ve skluzu“.</span></div>
+        <div class="fld esub"><span class="lbl">Dílčí úkoly</span>
+          <div id="e-subs"></div>
+          <button type="button" class="btn esub-add" id="e-sub-add">+ Přiřadit dílčí úkol</button></div>
         <div class="fld"><label for="e-hmg">Činnost v HMG</label>
           <div class="chips" id="e-hmg-chips"></div>
           <select id="e-hmg"><option value="">+ přiřadit činnost z HMG…</option>${hmgOptions()}</select>
@@ -2425,8 +2448,32 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     S.closeEditor = close;
     $('#scrim').onclick = close; $('#d-close').onclick = close; $('#d-cancel').onclick = close;
     const rng = $('#e-done'), num = $('#e-done-n'), rem = $('#e-rem');
-    const sync = v => { rem.textContent = 'zbývá ' + (100 - v) + ' %'; const s = $('#e-status'); if (v === 100) s.value = 'done'; else if (v > 0 && s.value === 'todo') s.value = 'doing'; else if (v < 100 && s.value === 'done') s.value = 'doing'; };
+    const sync = v => { rem.textContent = 'zbývá ' + (100 - v) + ' %'; };
     linkPct(rng, num, sync);
+    // dílčí úkoly 1, 2, 3… – text, komu (jen lidé z týmu), do kdy, splněno
+    const fri = (() => { const x = pd(today), w = x.getDay(); return addD(today, w <= 5 ? 5 - w : 6); })();
+    const drawSub = () => {
+      const box = $('#e-subs');
+      box.innerHTML = S.editSub.length ? S.editSub.map((u, i) => `<div class="esub-it${u.done ? ' ok' : ''}${u.end && u.end < today && !u.done ? ' late' : ''}" data-si="${i}">
+          <div class="esub-h"><span class="esub-n">${i + 1}</span><textarea rows="2" data-sf="text" placeholder="Co je potřeba udělat…" aria-label="Dílčí úkol ${i + 1}">${esc(u.text || '')}</textarea><button type="button" class="esub-x" data-sx="${i}" title="Odebrat dílčí úkol" aria-label="Odebrat dílčí úkol ${i + 1}">×</button></div>
+          <div class="esub-r"><select data-sf="owner" class="${u.owner ? 'on' : ''}" aria-label="Komu"><option value="">— komu —</option>${own.map(n => `<option value="${esc(n)}"${u.owner === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>
+            <input type="date" data-sf="end" value="${esc(u.end || '')}" aria-label="Do kdy"></div>
+          <div class="esub-r"><span class="quick">${[['Zítra', addD(today, 1)], ['Pátek', fri], ['Týden', addD(today, 7)], ['14 dní', addD(today, 14)]].map(([l, v]) => `<button type="button" data-sd="${v}">${l}</button>`).join('')}</span>
+            <label class="esub-ok"><input type="checkbox" data-sf="done"${u.done ? ' checked' : ''}> splněno</label></div>
+          ${u.done && u.doneBy ? `<span class="rng-hint">Splnil(a) ${esc(u.doneBy)} ${fmtDY((u.doneAt || '').slice(0, 10))}</span>` : ''}</div>`).join('')
+        : '<span class="rng-hint">Zatím žádné. Tlačítkem níže rozdělíte úkol na menší kroky a přiřadíte je kolegům.</span>';
+      box.querySelectorAll('[data-si]').forEach(el => {
+        const u = S.editSub[+el.dataset.si];
+        el.querySelector('[data-sf="text"]').oninput = e => { u.text = e.target.value; };
+        el.querySelector('[data-sf="owner"]').onchange = e => { u.owner = e.target.value; e.target.classList.toggle('on', !!u.owner); };
+        el.querySelector('[data-sf="end"]').onchange = e => { u.end = e.target.value; };
+        el.querySelector('[data-sf="done"]').onchange = e => { u.done = e.target.checked; if (u.done) Object.assign(u, {doneAt: new Date().toISOString(), doneBy: me()}); else Object.assign(u, {doneAt: '', doneBy: ''}); drawSub(); };
+        el.querySelectorAll('[data-sd]').forEach(b => b.onclick = () => { u.end = b.dataset.sd; el.querySelector('[data-sf="end"]').value = u.end; });
+        el.querySelector('[data-sx]').onclick = () => { S.editSub.splice(+el.dataset.si, 1); drawSub(); };
+      });
+    };
+    $('#e-sub-add').onclick = () => { S.editSub.push({id: uid(), text: '', owner: '', end: '', done: false, by: me(), at: new Date().toISOString()}); drawSub(); const ts = document.querySelectorAll('#e-subs textarea'); ts.length && ts[ts.length - 1].focus(); };
+    drawSub();
     const syncAll = () => { const bs = [...document.querySelectorAll('#e-objs [data-ol]')]; $('#e-obj-all').checked = bs.every(b => b.checked); };
     document.querySelectorAll('#e-objs [data-ol]').forEach(b => b.onchange = syncAll);
     $('#e-obj-all').onchange = e => { document.querySelectorAll('#e-objs [data-ol]').forEach(b => b.checked = e.target.checked); };
@@ -2536,13 +2583,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function save(t) {
     let newHid = 0;
     const done = pct($('#e-done-n').value);
-    let status = $('#e-status').value;
-    if (done >= 100) status = 'done';
+    // 4.26: pole Stav zrušeno – stav podle procent; dřívější „Pozastaveno“ vydrží, dokud se procenta nezmění
+    const status = done >= 100 ? 'done' : t && t.status === 'hold' && (Number(t.done) || 0) === done ? 'hold' : done > 0 ? 'doing' : 'todo';
+    const sub = (S.editSub || []).map(u => Object.assign({}, u, {text: String(u.text || '').trim(), owner: u.owner ? canonOwner(u.owner) : ''})).filter(u => u.text);
     const now = new Date().toISOString();
     const data = {
       title: $('#e-title').value.trim(), owner: canonOwner($('#e-owner').value), obj: readObj(),
       supplier: $('#e-sup').value.trim(), start: $('#e-start').value, end: $('#e-end').value,
-      done, status, note: $('#e-note').value.trim(), updatedAt: now, updatedBy: me(), hmg: [...S.editHmg]
+      done, status, note: $('#e-note').value.trim(), updatedAt: now, updatedBy: me(), hmg: [...S.editHmg], sub
     };
     if ($('#e-team-in').value.trim()) { const n = canonOwner($('#e-team-in').value.trim()); if (!S.editTeam.includes(n)) S.editTeam.push(n); }
     data.team = [...new Set(S.editTeam.map(canonOwner))].filter(x => x && x !== data.owner);
@@ -2550,6 +2598,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (data.start && data.end && data.end < data.start) { toast('Dokončení je dřív než zahájení.'); $('#e-end').focus(); return; }
     let comment = $('#e-cm').value.trim();
     if (t && ownerTxt(t) !== ownerTxt(data)) comment = [comment, `Odpovídá: ${ownerTxt(t) || 'nikdo'} → ${ownerTxt(data) || 'nikdo'}`].filter(Boolean).join(' · ');
+    { const old = new Map(((t && t.sub) || []).map(u => [u.id, u])), ch = [];
+      sub.forEach((u, i) => { const o = old.get(u.id), w = `dílčí ${i + 1}`;
+        if (!o) ch.push(`${w} přiřazen: ${u.text.slice(0, 60)}${u.owner ? ' → ' + u.owner : ''}${u.end ? ' do ' + fmtDY(u.end) : ''}`);
+        else { if (!o.done && u.done) ch.push(`${w} splněn`); else if (o.done && !u.done) ch.push(`${w} vrácen`);
+          if ((o.owner || '') !== u.owner) ch.push(`${w} komu: ${o.owner || 'nikdo'} → ${u.owner || 'nikdo'}`);
+          if ((o.end || '') !== (u.end || '')) ch.push(`${w} do ${u.end ? fmtDY(u.end) : 'bez termínu'}`); } });
+      const nDel = [...old.keys()].filter(k => !sub.some(u => u.id === k)).length; if (nDel) ch.push(`odebráno dílčích úkolů: ${nDel}`);
+      if (ch.length) comment = [comment, ch.join(', ')].filter(Boolean).join(' · '); }
     let id;
     const was = t ? {start: t.start || '', end: t.end || ''} : null;
     if (t) { id = t.id; if (t.done !== done || t.status !== status || comment) D.log.push({id: uid(), taskId: id, at: now, by: me(), done, status, comment, title: data.title}); Object.assign(t, data); }
