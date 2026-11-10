@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-/OjGVnC8NrRuicxQBuWlP5LpZHltH6JTYBdW9LpFESg=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-DATVMKpGhvON894fo6p1lU1OPsclMYtcthX/Qa9YccI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -652,6 +652,25 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 #v-firmy{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E%3C/svg%3E")}
 .zv-det .btn.primary::before{content:"↗"}
 #v-odeslane{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'/%3E%3Cpath d='M14 3v6h6M9 14l2 2 4-4'/%3E%3C/svg%3E")}
+/* 4.29: Vytvořit hromadně */
+.zp-bulk{font-size:14px!important;font-weight:700;border:2px dashed var(--line)!important;white-space:normal;line-height:1.25}
+.zp-bulk.on{border:2px solid #7b4bb7!important;background:#f1ebfa!important;color:#4d2a80!important}
+.zp-bulk .zh-n{display:block;font-size:12px;font-weight:600}
+.zh-modal{width:min(1120px,calc(100% - 32px))!important;max-height:calc(100% - 30px)!important}
+.zh-top{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:8px 10px;border:1px solid #d9c9f0;background:#f6f1fc;border-radius:10px;font-size:13.5px}
+.zh-ai{display:flex;gap:6px;align-items:center;font-weight:700;color:#7b4bb7;cursor:pointer}.zh-ai input{width:18px;height:18px}
+.zh-all{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.zh-all input{font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:4px 8px;background:var(--panel)}.zh-all .zp-q{margin:0;min-width:220px}
+.zh-list{display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:calc(100vh - 290px);padding-right:4px}
+.zh-row{display:grid;grid-template-columns:30px minmax(0,1fr) 230px 34px;gap:10px;align-items:start;border:1px solid var(--line);border-radius:10px;padding:8px 8px 8px 10px;background:var(--panel)}
+.zh-row.noown{border-color:#e0b100;background:#fffbea}
+.zh-no{font-size:15px;padding-top:8px}
+.zh-tx textarea{width:100%;font:inherit;font-size:15px;line-height:1.4;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--bg);color:var(--ink);resize:vertical;min-height:40px}
+.zh-meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin-top:3px;font-size:12px}
+.zh-or{color:var(--muted);flex:1;min-width:200px}.zh-run{color:#7b4bb7}.zh-ok{color:#7b4bb7;font-weight:600}
+.zh-lnk{border:0;background:none;padding:0;font:inherit;font-size:12px;color:#7b4bb7;text-decoration:underline;cursor:pointer}
+.zh-side{display:flex;flex-direction:column;gap:5px}.zh-side select,.zh-side input{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:var(--bg);color:var(--ink)}
+.zh-side .miss{background:#FFF4BF;border-color:#e0b100}.zh-warn{font-size:12px;color:#a35a00;font-weight:600}
+@media (max-width:760px){.zh-row{grid-template-columns:24px minmax(0,1fr) 30px}.zh-side{grid-column:2}}
 /* 4.28: Kalendář úkolů (jen k nahlédnutí) */
 #v-kal{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
 .kl-top select,.kl-top input{font-size:13px;padding:6px 8px}.kl-top input[type=date]{width:140px}
@@ -960,7 +979,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         <div class="zp-eh"><h3>Nový úkol z porady</h3><span class="hcap">napište úkol, vyberte osobu a termín a klikněte Vytvořit úkol</span></div>
         <div class="zp-egrid">
           <div class="zp-etext">
-            <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = vytvořit úkol</span></div>
+            <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><button type="button" id="zp-e-file" title="Načíst úkoly ze souboru: text (.txt), Word (.docx) nebo Excel (.xlsx). Soubor můžete i přetáhnout do pole.">📄 Načíst soubor</button><input type="file" id="zp-e-fin" accept=".txt,.docx,.xlsx,.csv,text/plain" hidden><span class="hcap">Enter = nový řádek · Ctrl+Enter = vytvořit úkol</span></div>
             <textarea id="zp-e-text" rows="5" placeholder="Napište úkol svými slovy, klidně rychle a zkratkami…" aria-label="Text nového úkolu"></textarea>
             <div class="zp-epro"><div class="zp-eproh"><b>✨ Odborný text (návrh od Clauda)</b><span class="zp-sp"></span><button type="button" class="btn" id="zp-e-prep">Přepsat odborně</button><button type="button" class="btn primary" id="zp-e-use" disabled>Použít návrh</button></div><div class="zp-eprot" id="zp-e-navrh"></div></div>
           </div>
@@ -968,6 +987,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
             <select id="zp-e-owner" class="miss" aria-label="Kdo to udělá"></select>
             <div class="zp-edate"><input id="zp-e-end" type="date" aria-label="Termín"><div class="zp-q"><button type="button" data-eq="zitra">Zítra</button><button type="button" data-eq="patek">Pátek</button><button type="button" data-eq="tyden">Týden</button><button type="button" data-eq="dva">14 dní</button></div></div>
             <button type="button" class="btn primary zp-create" id="zp-e-add">Vytvořit úkol</button>
+            <button type="button" class="btn zp-bulk" id="zp-e-bulk" title="Více úkolů najednou: každý úkol na nový řádek. Rozdělím je, přiřadím osoby z týmu a Claude je přepíše odborně. Pak zkontrolujete a potvrdíte.">⇶ Vytvořit hromadně</button>
             <button type="button" class="btn zp-enote" id="zp-e-note" title="Bod bez osoby a termínu, přidá se do Ostatních bodů">Jen poznámka (bez osoby)</button>
           </div>
         </div>
@@ -1057,7 +1077,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.28';
+  const APP_VERSION = '4.29';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -5098,8 +5118,10 @@ ${tydenniHtml.toString()}
   }
   // spodní část pole Nový úkol: odborný text od Clauda (sám po chvilce, nebo tlačítkem Přepsat odborně)
   const ZE_PH = 'Napište úkol svými slovy. Za chvilku se tu objeví návrh, jak ho napsat odborně, nebo klikněte Přepsat odborně.';
-  function zEntryProReset() { const b = $('#zp-e-navrh'); b.textContent = ZE_PH; b.classList.add('ph'); $('#zp-e-use').disabled = true; }
-  function zEntryProLater() { clearTimeout(ZE.t); delete ZE.navrh; $('#zp-e-use').disabled = true; ZE.t = setTimeout(() => zEntryPro(false), 1400); }
+  function zEntryProReset() { const b = $('#zp-e-navrh'); b.textContent = ZE_PH; b.classList.add('ph'); $('#zp-e-use').disabled = true; if ($('#zp-e-bulk')) zhHint(); }
+  function zEntryProLater() { clearTimeout(ZE.t); delete ZE.navrh; $('#zp-e-use').disabled = true;
+    const n = zhHint(); if (n >= 2) { const b = $('#zp-e-navrh'); b.innerHTML = `V poli je <b>${n} ${zN(n, 'úkol', 'úkoly', 'úkolů')}</b>. Klikněte vpravo <b>⇶ Vytvořit hromadně</b> – rozdělím je na samostatné úkoly, přiřadím osoby a každý přepíšu odborně. Pak jen zkontrolujete a potvrdíte.`; b.classList.add('ph'); return; }
+    ZE.t = setTimeout(() => zEntryPro(false), 1400); }
   async function zEntryPro(force) {
     clearTimeout(ZE.t);
     const ta = $('#zp-e-text'), box = $('#zp-e-navrh'), use = $('#zp-e-use'), t = ta.value.trim();
@@ -5152,6 +5174,149 @@ ${tydenniHtml.toString()}
     if (!RO()) zApply([{r, t: null}], true); else { zTouch(); zRender(); }
     toast(`Úkol č. ${r.n} vytvořen${r.owner ? ' · ' + r.owner : ' · čeká na osobu'}`);
     setTimeout(() => { const el = $('#zp-r-' + ZC.rows.indexOf(r)); if (el) { el.scrollIntoView({block: 'center', behavior: 'smooth'}); el.classList.add('zp-new'); } }, 60);
+  }
+
+  /* ---------- 4.29 Vytvořit hromadně: delší text (nebo soubor) s více úkoly → rozdělit na úkoly, osoby z týmu, termíny, odborný text od Clauda → náhled → Potvrdit a uložit ---------- */
+  // Rozdělení a osoby dělá aplikace sama (hned, bez internetu); Claude (stávající akce skriptu 'formulace') jen přepíše každý úkol odborně. Skript Google beze změny.
+  const ZH_ZKR = new Set('arch el zl np pp tds tzb zti vzt chl penb sdk hmg ok tz dps dsps rds pd bozp ks ws kd gd ps so'.split(' '));
+  const ZH_PREZ = {'jan zalud': ['honza', 'honzik', 'jenda'], 'jaroslav hovorka': ['jarda'], 'lubos kozak': [], 'petr kubu': ['kubu'], 'helena tomkova': ['helca'], 'ivan homonai': [], 'adam klenha': [], 'martin heran': []};
+  // kdo je v týmu: klíče = křestní jméno, příjmení, přezdívky (bez diakritiky, malými)
+  function zhKeys() {
+    return owners().filter(n => n !== 'Bez přiřazení').map(n => {
+      const f = zf(n).split(/\s+/).filter(Boolean), extra = ZH_PREZ[f.join(' ')] || [];
+      return {n, k: [...new Set([...f, ...extra])].filter(k => k.length >= 3)};
+    });
+  }
+  const zhHit = (w, k) => { if (w === k) return true; const st = /[aeiouy]$/.test(k) ? k.slice(0, -1) : k; return st.length >= 4 && w.length <= k.length + 3 && w.startsWith(st); };
+  // text → seznam bodů: nový bod = řádek začínající pomlčkou, odrážkou nebo číslem; ostatní řádky pokračují předchozím bodem.
+  // Když v textu není žádná odrážka, je bodem každý řádek.
+  function zhSplit(text) {
+    const lines = String(text || '').replace(/\r/g, '').split('\n').map(l => l.replace(/[ \t ]+/g, ' ').trim()).filter(Boolean);
+    const re = /^(?:[-–—•*·▪●○]|\d{1,3}[.)])\s*/, any = lines.some((l, i) => i && re.test(l)), out = [];
+    lines.forEach((l, i) => { const t = l.replace(re, '').replace(/^[-–—]\s*/, '').trim(); if (!t) return;
+      if (!out.length || !any || re.test(l)) out.push(t); else out[out.length - 1] += ' ' + t; });
+    return out;
+  }
+  // termín v textu: „do 15. 11.“, „15.11.2026“, „zítra“, „do pátku“, „do týdne“, „do 14 dní“
+  function zhDate(t, md) {
+    const z = zf(t);
+    let m = z.match(/(?:^|[^\da-z.])(\d{1,2})\.\s?(\d{1,2})\.(?:\s?(\d{4}|\d{2})(?!\d))?/);
+    if (m) { const d = +m[1], mo = +m[2]; let y = m[3] ? +m[3] : +md.slice(0, 4); if (y < 100) y += 2000;
+      if (d >= 1 && d <= 31 && mo >= 1 && mo <= 12) { let s = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`; if (!m[3] && s < md) s = (y + 1) + s.slice(4); return s; } }
+    if (/\bzitra\b/.test(z)) return addD(md, 1);
+    const dny = ['nedel', 'pondel', 'uter', 'stred', 'ctvrt', 'pat', 'sobot'];
+    m = z.match(/\bdo (pondel|uter|stred|ctvrt|pat|sobot|nedel)\w*/); if (m) { const k = dny.indexOf(m[1]); return addD(md, (k - pd(md).getDay() + 7) % 7 || 7); }
+    if (/\bdo (konce )?tydne\b/.test(z)) return addD(md, 7);
+    m = z.match(/\bdo (\d{1,2}) dn/); if (m) return addD(md, +m[1]);
+    return '';
+  }
+  // jeden bod: osoba z týmu (poslední zmíněná), další zmínění z týmu = spolu s; neznámé jméno velkými (DAVID) = nepřiřazeno
+  function zhParse(t, keys, md) {
+    const words = [...zf(t).matchAll(/[a-z0-9]+/g)].map(m => ({w: m[0], i: m.index, e: m.index + m[0].length}));
+    const hits = [];
+    words.forEach((x, wi) => keys.forEach(p => { if (p.k.some(k => zhHit(x.w, k))) hits.push({n: p.n, wi, i: x.i, e: x.e}); }));
+    const names = [...new Set(hits.map(h => h.n))];
+    let owner = '', withs = [], title = t, asked = '';
+    if (names.length) {
+      owner = hits[hits.length - 1].n; withs = names.filter(n => n !== owner);
+      // jméno na konci bodu (", HELENA", "-Petr Kubů") z textu ubrat – je v políčku Kdo
+      let wi = words.length - 1; const ownHits = new Set(hits.filter(h => h.n === owner).map(h => h.wi));
+      let cut = -1; while (wi >= 0 && ownHits.has(wi)) { cut = words[wi].i; wi--; }
+      if (cut >= 0 && !/[a-z0-9]/i.test(zf(t).slice(words[words.length - 1].e))) title = t.slice(0, cut).replace(/[\s,;:\-–—+/]+$/, '').trim() || t;
+    } else {
+      const m = t.match(/(?:^|[\s,\-–—])([A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]{3,})[\s.,!…]*$/);
+      if (m && !ZH_ZKR.has(zf(m[1]))) asked = m[1].charAt(0) + m[1].slice(1).toLowerCase();
+    }
+    return {orig: t, title, text: title, owner, with: withs, end: zhDate(t, md), asked, ai: ''};
+  }
+  // soubor s úkoly: .txt, Word .docx, Excel .xlsx (každý řádek tabulky = jeden bod)
+  async function zhFile(file) {
+    const nm = (file.name || '').toLowerCase(), buf = await file.arrayBuffer();
+    if (nm.endsWith('.docx')) { const read = await unzip(buf), x = await read('word/document.xml'); if (!x) throw new Error('V souboru Word není text.');
+      const doc = new DOMParser().parseFromString(x, 'application/xml');
+      return [...doc.getElementsByTagName('w:p')].map(p => { const num = p.getElementsByTagName('w:numPr').length; const s = [...p.getElementsByTagName('w:t')].map(t => t.textContent).join('').trim(); return s ? (num ? '- ' : '') + s : ''; }).filter(Boolean).join('\n'); }
+    if (nm.endsWith('.xlsx')) return (await xlsxRows(buf)).map(r => r.map(c => String(c || '').trim()).filter(Boolean).join(' – ')).filter(Boolean).map(l => '- ' + l).join('\n');
+    if (nm.endsWith('.doc') || nm.endsWith('.pdf')) throw new Error('Tento soubor neumím přečíst. Uložte ho jako Word (.docx) nebo text (.txt), nebo text zkopírujte a vložte.');
+    return new TextDecoder().decode(buf);
+  }
+  function zhCount() { const t = $('#zp-e-text').value; return zhSplit(t).length; }
+  function zhHint() {
+    const n = zhCount(), b = $('#zp-e-bulk'); if (!b) return n;
+    b.innerHTML = n >= 2 ? `⇶ Vytvořit hromadně <span class="zh-n">${n} ${zN(n, 'úkol', 'úkoly', 'úkolů')}</span>` : '⇶ Vytvořit hromadně';
+    b.classList.toggle('on', n >= 2);
+    return n;
+  }
+  const ZH = {rows: [], gen: 0};
+  function zBulk() {
+    const text = $('#zp-e-text').value, items = zhSplit(text);
+    if (!items.length) { toast('Napište nebo vložte text s úkoly (každý úkol na nový řádek), nebo načtěte soubor.'); $('#zp-e-text').focus(); return; }
+    const md = (ZC && ZC.date) || today, keys = zhKeys(), team = keys.map(p => p.n);
+    ZH.rows = items.map(t => zhParse(t, keys, md)); ZH.ai = !ZAPIS_TEST || Object.keys(ZAPIS_NAVRHY).length > 0; ZH.gen++;
+    const opt = v => `<option value="">— nepřiřazeno —</option>${team.map(n => `<option${n === v ? ' selected' : ''}>${esc(n)}</option>`).join('')}`;
+    confirmModal('Vytvořit hromadně', `
+      <p class="hcap" style="margin:0">Rozdělil jsem text na <b id="zh-cnt"></b>. Zkontrolujte text, osobu a termín, cokoli můžete přepsat. Řádek, který nechcete, smažte křížkem ✕.</p>
+      <div class="zh-top"><label class="zh-ai"><input type="checkbox" id="zh-ai"${ZH.ai ? ' checked' : ''}> ✨ Odborný text od Clauda</label><span id="zh-st" class="hcap"></span><span class="zp-sp"></span>
+        <span class="zh-all">Termín pro úkoly bez termínu <input type="date" id="zh-end"><span class="zp-q"><button type="button" data-hq="zitra">Zítra</button><button type="button" data-hq="patek">Pátek</button><button type="button" data-hq="tyden">Týden</button><button type="button" data-hq="dva">14 dní</button></span></span></div>
+      <div class="zh-list" id="zh-list"></div>
+      <p class="hcap" style="margin:4px 0 0">Úkol bez osoby se uloží jako <b>čeká na osobu</b> – osobu doplníte později. Nové osoby se nezakládají.</p>`, 'Potvrdit a uložit', () => zhSave(), []);
+    const mo = $('#overlay .modal'); mo.classList.add('zh-modal');
+    const gen = ZH.gen;
+    const draw = () => {
+      $('#zh-cnt').textContent = `${ZH.rows.length} ${zN(ZH.rows.length, 'úkol', 'úkoly', 'úkolů')}`;
+      $('#m-ok').textContent = ZH.rows.length ? `Potvrdit a uložit (${ZH.rows.length})` : 'Potvrdit a uložit';
+      $('#zh-list').innerHTML = ZH.rows.map((r, i) => `<div class="zh-row${r.owner ? '' : ' noown'}" data-i="${i}">
+        <b class="zh-no">${i + 1}.</b>
+        <div class="zh-tx"><textarea data-f="text" rows="2" aria-label="Text úkolu ${i + 1}">${esc(r.text)}</textarea>
+          <div class="zh-meta">${r.aiSt === 'run' ? '<span class="zh-run">✨ Claude přepisuje…</span>' : r.ai && r.text === r.ai ? `<span class="zh-ok">✨ přepsáno odborně</span> <button type="button" class="zh-lnk" data-orig>vrátit můj text</button>` : r.ai ? `<button type="button" class="zh-lnk" data-useai>✨ použít odborný text</button>` : ''}
+            <span class="zh-or" title="Původní text">původně: ${esc(r.orig)}</span></div></div>
+        <div class="zh-side"><select data-f="owner" class="${r.owner ? '' : 'miss'}" aria-label="Kdo to udělá">${opt(r.owner)}</select>
+          ${r.asked && !r.owner ? `<span class="zh-warn">„${esc(r.asked)}“ není v týmu</span>` : ''}${r.with.length ? `<span class="hcap">spolu s ${esc(r.with.join(', '))}</span>` : ''}
+          <input type="date" data-f="end" value="${esc(r.end)}" aria-label="Termín"></div>
+        <button type="button" class="zp-x" data-del title="Tento řádek neukládat">✕</button></div>`).join('') || '<p>Žádný úkol k uložení.</p>';
+      $('#zh-list').querySelectorAll('.zh-row').forEach(el => { const r = ZH.rows[+el.dataset.i], ta = el.querySelector('textarea');
+        const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 2 + 'px'; }; fit();
+        ta.oninput = () => { r.text = ta.value; r.edited = true; fit(); };
+        el.querySelector('[data-f="owner"]').onchange = e => { r.owner = e.target.value; r.with = r.with.filter(n => n !== r.owner); el.classList.toggle('noown', !r.owner); e.target.classList.toggle('miss', !r.owner); };
+        el.querySelector('[data-f="end"]').onchange = e => { r.end = e.target.value; };
+        el.querySelector('[data-del]').onclick = () => { ZH.rows.splice(+el.dataset.i, 1); draw(); };
+        const o = el.querySelector('[data-orig]'); if (o) o.onclick = () => { r.text = r.title; r.edited = true; draw(); };
+        const u = el.querySelector('[data-useai]'); if (u) u.onclick = () => { r.text = r.ai; draw(); };
+      });
+    };
+    ZH.draw = draw; draw();
+    $('#zh-ai').onchange = e => { ZH.ai = e.target.checked; ZH.rows.forEach(r => { if (!r.edited) r.text = ZH.ai && r.ai ? r.ai : r.title; }); draw(); if (ZH.ai) zhAi(gen); else $('#zh-st').textContent = ''; };
+    $('#zh-end').onchange = e => { const v = e.target.value; if (!v) return; let n = 0; ZH.rows.forEach(r => { if (!r.end || r.endAll) { r.end = v; r.endAll = true; n++; } }); draw(); toast(n ? `Termín doplněn u ${n} ${zN(n, 'úkolu', 'úkolů', 'úkolů')}` : 'Všechny úkoly už termín mají'); };
+    mo.querySelectorAll('[data-hq]').forEach(b => b.onclick = () => { const md2 = (ZC && ZC.date) || today; const el = $('#zh-end');
+      el.value = {zitra: addD(md2, 1), patek: addD(md2, (5 - pd(md2).getDay() + 7) % 7 || 7), tyden: addD(md2, 7), dva: addD(md2, 14)}[b.dataset.hq]; el.dispatchEvent(new Event('change')); });
+    if (ZH.ai) zhAi(gen);
+  }
+  // Claude přepíše každý úkol odborně (po čtyřech najednou); co uživatel mezitím upravil, nepřepisuje
+  async function zhAi(gen) {
+    const st = () => { const el = $('#zh-st'); if (!el || gen !== ZH.gen) return; const run = ZH.rows.filter(r => r.aiSt === 'run').length, ok = ZH.rows.filter(r => r.ai).length;
+      el.textContent = run ? `Claude přepisuje… ${ok} z ${ZH.rows.length}` : zNvOff ? 'Claude teď nejde (na Googlu chybí klíč) – zůstává váš text.' : ok ? `Hotovo, přepsáno ${ok} z ${ZH.rows.length}` : ''; };
+    const todo = ZH.rows.filter(r => !r.ai && r.aiSt !== 'run' && r.title.split(/\s+/).length >= 3);
+    todo.forEach(r => { r.aiSt = 'run'; }); ZH.draw(); st();
+    const one = async r => {
+      const v = await zNavrhGet(r.title);
+      r.aiSt = ''; if (gen !== ZH.gen) return;
+      if (v) { r.ai = v; if (ZH.ai && !r.edited) r.text = v; }
+      if (!$('#zh-list')) return; ZH.draw(); st();
+    };
+    const q = todo.slice(); await Promise.all([0, 1, 2, 3].map(async () => { while (q.length) await one(q.shift()); }));
+    st();
+  }
+  function zhSave() {
+    const rows = ZH.rows.filter(r => String(r.text || '').trim());
+    if (!rows.length) { toast('Není co uložit.'); return 'keep'; }
+    if (rows.some(r => r.aiSt === 'run') && !ZH.wait) { ZH.wait = true; toast('Claude ještě přepisuje – klikněte znovu, uloží se to, co je teď vidět.'); setTimeout(() => { ZH.wait = false; }, 6000); return 'keep'; }
+    ZH.gen++; ZH.wait = false;
+    const md = ZC.date || today, plan = rows.map(x => ({r: {key: 'm:' + uid(), manual: 'new', carried: true, bulk: true, with: x.owner ? x.with : [], title: x.text.trim(), owner: x.owner, end: x.end, asked: x.owner ? '' : x.asked, od: md}, t: null}));
+    plan.forEach(p => ZC.rows.push(p.r)); zNumber(ZC);
+    if (!RO()) zApply(plan, true); else { zTouch(); zRender(); }
+    const bez = plan.filter(p => !p.r.owner).length;
+    toast(`Vytvořeno ${plan.length} ${zN(plan.length, 'úkol', 'úkoly', 'úkolů')}${bez ? ` · ${bez} čeká na osobu` : ''}`);
+    const ta = $('#zp-e-text'); ta.value = ''; ta.style.height = ''; delete ZE.navrh; delete ZE.navrhNe; zEntryProReset(); zhHint();
+    setTimeout(() => { const el = $('#zp-r-' + ZC.rows.indexOf(plan[0].r)); if (el) el.scrollIntoView({block: 'center', behavior: 'smooth'}); plan.forEach(p => { const e2 = $('#zp-r-' + ZC.rows.indexOf(p.r)); if (e2) e2.classList.add('zp-new'); }); }, 60);
   }
 
   // 4.21: dosavadní zápis se označí jako zápis z porady z 3. 11. 2026 (den, kdy to Luboš zadal), všechny zápisy dostanou pořadové číslo
@@ -5230,6 +5395,14 @@ ${tydenniHtml.toString()}
     $('#zp-newmeet').onclick = () => { const go = () => { store.set(ZDRAFT, ''); poradaOpen(null); };
       if (!zDirty) go(); else confirmModal('Nová porada', '<p>V otevřeném zápisu jsou neuložené změny.</p>', 'Uložit a začít novou', () => { zSave(); go(); }, [['Zahodit změny', go]]); };
     $('#zp-e-add').onclick = () => zEntryAdd(false);
+    $('#zp-e-bulk').onclick = () => zBulk();
+    const zhLoad = async f => { if (!f) return; try { const t = (await zhFile(f)).trim(); if (!t) { toast('V souboru jsem nenašel žádný text.'); return; }
+        const ta = $('#zp-e-text'); ta.value = (ta.value.trim() ? ta.value.trimEnd() + '\n' : '') + t; ta.dispatchEvent(new Event('input'));
+        toast(`Načteno ze souboru ${f.name}`); if (zhCount() >= 2) zBulk(); } catch (e) { toast(e.message || 'Soubor se nepodařilo načíst.'); } };
+    $('#zp-e-file').onclick = () => $('#zp-e-fin').click();
+    $('#zp-e-fin').onchange = e => { const f = e.target.files[0]; e.target.value = ''; zhLoad(f); };
+    $('#zp-e-text').addEventListener('dragover', e => { if ([...(e.dataTransfer.types || [])].includes('Files')) e.preventDefault(); });
+    $('#zp-e-text').addEventListener('drop', e => { const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) { e.preventDefault(); zhLoad(f); } });
     $('#zp-e-note').onclick = () => zEntryAdd(true);
     $('#zp-e-text').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); zEntryAdd(false); } else zListKey(e); });
     document.querySelectorAll('#zp-entry [data-el]').forEach(b => b.onclick = () => zListToggle($('#zp-e-text'), b.dataset.el));
