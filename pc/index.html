@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-1sIktIHtZLYXOWvviRdnqL7ZBXnuDGVEF0SKg4t+dEI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-dRgHQ4L9i3LL8km8b14CVkzC6nAr6UlocjLM3+BGvgM=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -1027,7 +1027,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.26';
+  const APP_VERSION = '4.27';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -2247,7 +2247,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       const a = b.dataset.sa;
       if (a === 'done') simpleSet(t, 'done'); else if (a === 'undo') simpleSet(t, 'undo'); else if (a === 'miss') simpleMiss(t); else openEditor(t.id);
     });
-    v.querySelectorAll('.srow[data-s]').forEach(r => r.onclick = e => { if (e.target.closest('button,a')) return; simpleDetail(r.dataset.s); });
+    v.querySelectorAll('.srow[data-s]').forEach(r => r.onclick = e => { if (e.target.closest('button,a')) return; openEditor(r.dataset.s); });
   }
   // rozkliknutý drobný úkol: přehled, historie a všechny akce na jednom místě
   function simpleDetail(id) {
@@ -2393,7 +2393,6 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function openEditor(id, preset) {
     const t = id ? D.tasks.find(x => x.id === id) : null;
     if (id && !t) return;
-    if (isSimple(t)) { simpleDialog(t); return; }
     S.editing = id || null;
     const d = t || Object.assign({title:'', obj:'', supplier:'', owner:S.owner || '', start:today, end:'', done:0, status:'todo', note:'', hmg:[]}, preset || {});
     S.editHmg = [...(d.hmg || [])];
@@ -2403,9 +2402,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const ov = $('#overlay');
     ov.innerHTML = `<div class="scrim" id="scrim"></div>
     <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title">
-      <div class="d-head"><h3 id="d-title">${t ? 'Úkol' : 'Úkol do harmonogramu'}</h3><button class="btn" type="button" id="d-close" aria-label="Zavřít">Zavřít</button></div>
+      <div class="d-head"><h3 id="d-title">${t ? 'Úkol' : 'Úkol do harmonogramu'}</h3>${t && isSimple(t) ? `<span class="hcap" style="margin-right:auto;margin-left:10px">zadáno ${fmtDY(t.start)}${t.createdBy ? ' · ' + esc(t.createdBy) : ''}</span>` : ''}<button class="btn" type="button" id="d-close" aria-label="Zavřít">Zavřít</button></div>
       <form class="d-body" id="d-form" autocomplete="off">
-        <div class="fld"><label for="e-title">Činnost</label><input id="e-title" required value="${esc(d.title)}" placeholder="např. Zednické práce – 3. NP"></div>
+        <div class="fld"><label for="e-title">Činnost</label><textarea id="e-title" required rows="${String(d.title || '').length > 60 || /\n/.test(d.title || '') ? 3 : 1}" style="min-height:0" placeholder="např. Zednické práce – 3. NP">${esc(d.title)}</textarea></div>
         <div class="two">
           <div class="fld"><label for="e-owner">Odpovídá</label><input id="e-owner" list="owners-dl" value="${esc(d.owner)}" placeholder="Jméno"><datalist id="owners-dl">${own.map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
           <div class="fld"><label for="e-sup">Dodavatel</label><input id="e-sup" value="${esc(d.supplier)}" placeholder="Firma"></div>
@@ -2426,6 +2425,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           <span class="rng-hint" id="e-rem">zbývá ${100-(Number(d.done)||0)} %</span>
           <div class="quick">${[5,15,30,50,75,100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}</div>
         </div>
+        ${t && isUkol(t) && eff(t) !== 'done' && !RO() ? `<div class="fld"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="e-miss" style="padding:5px 10px;font-size:12.5px">Důvod nesplnění…</button>${t.missed ? `<span class="rng-hint">${esc(t.missed)}</span>` : ''}</div></div>` : ''}
         <div class="fld"><span class="rng-hint" id="e-stav">Stav se určí sám: 0 % = nezahájeno, víc = probíhá, 100 % = hotovo. Po termínu se ukáže „Ve skluzu“.</span></div>
         <div class="fld esub"><span class="lbl">Dílčí úkoly</span>
           <div id="e-subs"></div>
@@ -2472,6 +2472,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         el.querySelector('[data-sx]').onclick = () => { S.editSub.splice(+el.dataset.si, 1); drawSub(); };
       });
     };
+    if ($('#e-miss')) $('#e-miss').onclick = () => { close(); simpleMiss(t); };
     $('#e-sub-add').onclick = () => { S.editSub.push({id: uid(), text: '', owner: '', end: '', done: false, by: me(), at: new Date().toISOString()}); drawSub(); const ts = document.querySelectorAll('#e-subs textarea'); ts.length && ts[ts.length - 1].focus(); };
     drawSub();
     const syncAll = () => { const bs = [...document.querySelectorAll('#e-objs [data-ol]')]; $('#e-obj-all').checked = bs.every(b => b.checked); };
@@ -2508,6 +2509,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       toast('Termín převzat z HMG');
     };
     document.querySelectorAll('#d-form .quick button').forEach(b => b.onclick = () => { rng.value = num.value = b.dataset.q; sync(+b.dataset.q); });
+    $('#e-title').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey && !String(d.title || '').includes('\n')) { e.preventDefault(); $('#d-form').requestSubmit(); } };
     $('#e-title').focus();
     $('#d-form').onsubmit = e => { e.preventDefault(); save(t); };
     const del = $('#d-del');
@@ -2595,6 +2597,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if ($('#e-team-in').value.trim()) { const n = canonOwner($('#e-team-in').value.trim()); if (!S.editTeam.includes(n)) S.editTeam.push(n); }
     data.team = [...new Set(S.editTeam.map(canonOwner))].filter(x => x && x !== data.owner);
     if (!data.title) { $('#e-title').focus(); return; }
+    if (t && isSimple(t)) {
+      if (done >= 100 && (Number(t.done) || 0) < 100 && !isAssignee(t) && !isAdmin()) { toast(`Splnění potvrzuje ${ownerTxt(t)}.`); return; }
+      if (done >= 100 && !t.doneAt) Object.assign(data, {doneAt: now, doneBy: me()}); if (done < 100) Object.assign(data, {doneAt: '', doneBy: ''});
+    }
     if (data.start && data.end && data.end < data.start) { toast('Dokončení je dřív než zahájení.'); $('#e-end').focus(); return; }
     let comment = $('#e-cm').value.trim();
     if (t && ownerTxt(t) !== ownerTxt(data)) comment = [comment, `Odpovídá: ${ownerTxt(t) || 'nikdo'} → ${ownerTxt(data) || 'nikdo'}`].filter(Boolean).join(' · ');
