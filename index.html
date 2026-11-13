@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-lfcF3hbe040A4qrqLfHfDlqygtTpogFvXi+X1uSw1Qk='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-ViXgTc4SMkCJx0Ha8fQ/On6Bovkv6ZZsSsNUhU+IK0k='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -267,7 +267,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/qr.js"></script>
 <script>
 (() => {
-  const VERSION = '1.14';
+  const VERSION = '1.15';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1774,13 +1774,53 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const sh = sheet(`<h3>Pozvat do Constructa</h3>
       <p style="margin:0;color:var(--mut)">Koho zvete? Klepněte na jméno.</p>
       <div class="iv-who">${names.map(n => `<button type="button" data-iv="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+      ${isAdmin() ? '<button type="button" class="big" id="iv-new">+ Nový kolega (přidat do Lidí)</button>' : ''}
       <p style="margin:6px 0 0;color:var(--mut)">Nebo jen na prohlížení (TDS, investor…). Nikde se v aplikaci neukáže:</p>
       <input id="iv-ro" class="date" placeholder="Jméno, např. Jan Novák – TDS" autocomplete="off">
       <button type="button" class="big" id="iv-rogo">Pozvat jen na prohlížení</button>
       <button type="button" class="big" data-close>Zavřít</button>`);
     sh.querySelector('[data-close]').onclick = closeSheet;
     sh.querySelectorAll('[data-iv]').forEach(b => b.onclick = () => makeInvite(b.dataset.iv, false));
+    if (sh.querySelector('#iv-new')) sh.querySelector('#iv-new').onclick = () => newPersonSheet();
     sh.querySelector('#iv-rogo').onclick = () => { const n = sh.querySelector('#iv-ro').value.trim().replace(/\s+/g, ' '); if (!n) { toast('Napište jméno.'); return; } makeInvite(n, true); };
+  }
+  // 1.15: správce může nového kolegu přidat do Lidí rovnou z telefonu a hned ho pozvat (Luboš 13. 11.)
+  const ADMINS = () => (D && D.project && Array.isArray(D.project.admins) && D.project.admins.length) ? D.project.admins : ['Luboš Kozák'];
+  const isAdmin = () => !ro && !!me && ADMINS().some(a => fold(a) === fold(me));
+  const ROLES = ['Mistr', 'Stavbyvedoucí', 'Přípravář', 'Rozpočtář', 'Manažer projektu'];
+  function newPersonSheet() {
+    const sh = sheet(`<h3>Nový kolega</h3>
+      <p style="margin:0;color:var(--mut)">Přidá se do Lidí (uvidíte ho i na počítači) a hned dostane pozvánku.</p>
+      <input id="np-name" class="date" placeholder="Jméno a příjmení" autocomplete="off" autocapitalize="words">
+      <select id="np-role" class="date"><option value="">Pozice (nepovinné)</option>${ROLES.map(r => `<option>${esc(r)}</option>`).join('')}</select>
+      <input id="np-tel" class="date" type="tel" placeholder="Telefon (nepovinné, pro SMS)" autocomplete="off">
+      <input id="np-mail" class="date" type="email" placeholder="E-mail (nepovinné)" autocomplete="off">
+      <button type="button" class="big pri" id="np-ok">Přidat a pozvat</button>
+      <button type="button" class="big" data-close>Zpět</button>`);
+    sh.querySelector('[data-close]').onclick = () => inviteSheet();
+    sh.querySelector('#np-name').focus();
+    const ok = sh.querySelector('#np-ok');
+    ok.onclick = async () => {
+      const name = sh.querySelector('#np-name').value.trim().replace(/\s+/g, ' '), role = sh.querySelector('#np-role').value;
+      const phone = sh.querySelector('#np-tel').value.trim(), mail = sh.querySelector('#np-mail').value.trim();
+      if (name.split(' ').length < 2) { toast('Napište jméno i příjmení.'); return; }
+      if (mail && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(mail)) { toast('E-mail nevypadá správně.'); return; }
+      const have = team().find(n => fold(n) === fold(name));
+      if (have) { toast(have + ' už v Lidech je.'); return makeInvite(have, false); }
+      ok.disabled = true; ok.textContent = 'Ukládám…';
+      try {
+        const g = await CXQ.get(conn), cur = (g && g.data) || D || {};
+        const pr = Object.assign({}, cur.project || {}), pp = Object.assign({}, pr.people || {});
+        const emails = mail ? [{a: mail, rep: true}] : [];
+        pp[name] = Object.assign({}, pp[name] || {}, {emails, email: mail, role, phone, access: 'zapisuje', company: ''});
+        pr.people = pp; pr.team = [...new Set([...(Array.isArray(pr.team) ? pr.team : []), name])]; pr._ts = Date.now();
+        const r = await CXQ.post(conn, {key: conn.key, rev: 0, data: {project: pr}});
+        if (!r || r.error) throw new Error(r && r.error === 'heslo' ? 'Telefon nemá oprávnění měnit Lidi.' : String((r && r.error) || 'Uložení se nepovedlo.'));
+        if (r.data) { D = r.data; dataAt = Date.now(); await CXQ.kvSet('data', {rev: r.rev, data: r.data, at: dataAt}); }
+        toast('Přidáno do Lidí: ' + name);
+        makeInvite(name, false);
+      } catch (e) { ok.disabled = false; ok.textContent = 'Přidat a pozvat'; toast(e.message === 'OFFLINE' ? 'Telefon je bez internetu.' : e.message); }
+    };
   }
   async function makeInvite(who, view) {
     const sh = sheet(`<h3>Vytvářím pozvánku…</h3><p style="margin:0;color:var(--mut)">${esc(who)}</p>`);
