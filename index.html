@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-TBFFslCRABjJJhjs95y065I2bBqFFbMIX6AnFZO8nsQ=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-US1WIGP07INMb1K0hIuP+PIdB602C8bhQcPjU2h5oMc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -608,6 +608,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'plan') planViewer();
     else if (a === 'firmy') firmyDlg();
     else if (a === 'prijemci') prijemciDlg();
+    else if (a === 'prtoggle') { Z.prOpen = !Z.prOpen; render(); }
     else if (a === 'znew') { zReset(); F.photos = []; render(); scrollTo(0, 0); }
     else if (a === 'zcam') { zCam = true; $('#in-cam').click(); }
     else if (a === 'zans') { if (!Z.answer.trim()) { toast('Napište nebo nadiktujte odpověď.'); return; } Z.qa.push({otazka: Z.question, odpoved: Z.answer.trim()}); Z.question = ''; Z.answer = ''; zPriprav(); }
@@ -918,9 +919,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       <div class="chips"><button type="button" class="chip all" data-act="firmy">${fs.length ? 'Upravit firmy' : '+ Přidat firmu'}</button></div>
       ${f && !f.jenPrijemci ? (f.kontakty.length ? `<p class="hint" style="margin:6px 0 2px">Komu z firmy zprávu poslat:</p><div class="zks">${f.kontakty.map(k => `<button type="button" class="zk" data-zk="${esc(k.id)}" aria-pressed="${Z.komu.includes(k.id)}"><i>${Z.komu.includes(k.id) ? '✓' : ''}</i><span><b>${esc(k.jmeno || k.email || k.tel)}</b>${k.funkce ? ' · ' + esc(k.funkce) : ''}<small>${esc([k.email, k.tel].filter(Boolean).join(' · ') || 'bez e-mailu a telefonu')}</small></span></button>`).join('')}</div>`
         : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je v programu na počítači v záložce Firmy.</p>`) : ''}
-      <p class="hint" style="margin:8px 0 2px">Další příjemci <em>(TDS, investor… v kopii, nebo jen jim bez firmy)</em>:</p>
-      <div class="zks zpr">${prijemci().map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b><small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>
-      <div class="chips"><button type="button" class="chip all" data-act="prijemci">+ Přidat příjemce</button></div>
+      ${(() => { const pr = prijemci(), vis = Z.prOpen ? pr : pr.filter(r => Z.dalsi.includes(r.id));
+        return `${vis.length ? `<p class="hint" style="margin:8px 0 2px">${Z.prOpen ? 'Zaškrtněte, kdo zprávu dostane (TDS, investor…):' : 'Další příjemci:'}</p>
+        <div class="zks zpr">${vis.map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b><small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>` : ''}
+        <div class="chips">${Z.prOpen ? `<button type="button" class="chip all" data-act="prijemci">+ Nový příjemce</button><button type="button" class="chip all" data-act="prtoggle">Hotovo</button>` : `<button type="button" class="chip all" data-act="prtoggle">+ Přidat příjemce</button>`}</div>`; })()}
       <p class="lbl">6 · ${Z.typ === 'dotaz' ? 'Odpověď do' : 'Odstranit do'}</p>
       <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
       <p class="lbl">Podpis <em>(doplní se sám)</em></p>
