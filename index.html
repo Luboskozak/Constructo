@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-owMpoc7pfFR72Pzfwhw7MXRABdDordQqFmYtb58BoWM=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-tZpETVJZDoOcwDOfqeAr70UZ4qOLuzo9CiKvWmPxyw8=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -34,6 +34,8 @@ button{cursor:pointer}
 :focus-visible{outline:3px solid var(--blu);outline-offset:2px}
 .app{min-height:100%;display:flex;flex-direction:column;padding-bottom:calc(84px + var(--sb))}
 /* hlavička */
+/* 1.12: pevný černý pruh nahoře pod hodinami a baterií – obsah pod ním při posouvání neprosvítá rozmazaně */
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:calc(var(--st) + 8px);background:var(--k);z-index:30;pointer-events:none}
 .head{background:var(--k);color:#fff;padding:calc(12px + var(--st)) 18px 18px;border-radius:0 0 26px 26px;display:flex;flex-direction:column;gap:14px}
 .head .r{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .logo{display:flex;align-items:center;gap:9px}
@@ -128,6 +130,10 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .mic.pz{background:#2f6fd6;border-color:#2f6fd6;color:#fff}
 @keyframes pulse{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.mic.on .mst i{animation:none}}
+.micend{width:100%;margin-top:6px;min-height:48px;border:2px solid var(--red);border-radius:14px;background:var(--card);color:var(--red);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.micend i{width:14px;height:14px;border-radius:3px;background:var(--red);display:inline-block}
+.micend small{font-weight:600;color:var(--mut);font-size:12.5px}
+.mic{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .fsel{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font-size:17px;font-weight:700;background:var(--card);color:var(--ink);min-height:52px}
 .zpr{display:flex;flex-direction:column;gap:6px}
 .zpr .zk small{word-break:break-all}
@@ -243,7 +249,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script>
 (() => {
-  const VERSION = '1.11';
+  const VERSION = '1.12';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -649,30 +655,64 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const m = MIC.id && document.getElementById(MIC.id); if (!m) return;
     m.classList.toggle('on', MIC.st === 'rec'); m.classList.toggle('pz', MIC.st === 'pauza');
     const b = m.querySelector('.mst b'); if (b) b.textContent = MIC.st === 'pauza' ? 'Pauza' : 'Nahrávám';
-    m.setAttribute('aria-label', MIC.st === 'rec' ? 'Nahrávám – klepnutím pauza' : MIC.st === 'pauza' ? 'Pauza – klepnutím vypnout' : 'Nadiktovat');
+    m.setAttribute('aria-label', MIC.st === 'rec' ? 'Nahrávám – klepnutím pauza' : MIC.st === 'pauza' ? 'Pauza – klepnutím pokračovat' : 'Nadiktovat');
+    // pod políčkem tlačítko Ukončit (nebo mikrofon podržet); jinak je mikrofon jen spustit / pauza / pokračovat
+    const box = m.parentElement; let end = box.nextElementSibling && box.nextElementSibling.classList.contains('micend') ? box.nextElementSibling : null;
+    if (MIC.st === 'off') { if (end) end.remove(); return; }
+    if (!end) { end = document.createElement('button'); end.type = 'button'; end.className = 'micend'; box.after(end); end.onclick = micKonec; }
+    end.innerHTML = `<i></i>Ukončit nahrávání${MIC.st === 'pauza' ? '<small style="width:100%">klepnutím na mikrofon pokračujete</small>' : ''}`;
   }
+  function micKonec() { if (MIC.st === 'off') return; MIC.st = 'off'; micStop(); micUi(); if (!recog && MIC.onEnd) MIC.onEnd(); }
   function micStart() {
     const R = window.SpeechRecognition || window.webkitSpeechRecognition;
     const tx = document.getElementById(MIC.tx) || null; if (!tx) { MIC.st = 'off'; return; }
     MIC.base = tx.value ? tx.value.replace(/\s*$/, ' ') : '';
-    const r = new R(); recog = r; MIC.stopping = false;
+    const r = new R(), t0 = Date.now(); let got = false, err = ''; recog = r; MIC.stopping = false;
     r.lang = ls.get('cx-jazyk') === 'uk' ? 'uk-UA' : 'cs-CZ'; r.interimResults = true; r.continuous = true;
-    r.onresult = e => { const t = document.getElementById(MIC.tx); if (!t) return; let x = ''; for (let i = 0; i < e.results.length; i++) x += e.results[i][0].transcript; t.value = MIC.base + x; MIC.onText && MIC.onText(t.value); };
-    r.onerror = e => { if (e.error === 'no-speech' || e.error === 'aborted') return; MIC.st = 'off'; toast(e.error === 'not-allowed' ? 'Telefon nepovolil mikrofon. Použijte mikrofon na klávesnici.' : e.error === 'network' ? 'Diktování teď potřebuje signál. Použijte mikrofon na klávesnici.' : 'Diktování se přerušilo.'); };
-    // iPhone občas nahrávání sám ukončí (ticho): když má mikrofon dál nahrávat, rozjede se znovu
-    r.onend = () => { if (recog === r) recog = null; if (MIC.st === 'rec' && !MIC.stopping) { try { micStart(); return; } catch (x) { MIC.st = 'off'; } } micUi(); if (MIC.st === 'off' && MIC.onEnd) MIC.onEnd(); };
-    try { r.start(); } catch (e) { recog = null; MIC.st = 'off'; }
+    r.onresult = e => { got = true; const t = document.getElementById(MIC.tx); if (!t) return; let x = ''; for (let i = 0; i < e.results.length; i++) x += e.results[i][0].transcript; t.value = MIC.base + x; MIC.onText && MIC.onText(t.value); };
+    r.onerror = e => { err = e.error || ''; if (err === 'no-speech' || err === 'aborted') return; MIC.st = 'off';
+      // zakázaný mikrofon: hned vypnout a ukázat návod (iPhone někdy onend už nepošle a ikona by zůstala „Nahrávám“)
+      if (err === 'not-allowed' || err === 'service-not-allowed') { if (recog === r) recog = null; micUi(); if (!r._zk) { r._zk = 1; micZakazan(); } return; }
+      toast(err === 'network' ? 'Diktování teď potřebuje signál. Použijte mikrofon na klávesnici.' : 'Diktování se přerušilo.'); };
+    // iPhone občas nahrávání sám ukončí (ticho): když má mikrofon dál nahrávat, rozjede se znovu.
+    // Když ale skončí hned a nic nezachytí (mikrofon zakázaný), nesmí se točit dokola – aplikace by zamrzla.
+    r.onend = () => { if (recog === r) recog = null;
+      const zakaz = err === 'not-allowed' || err === 'service-not-allowed' || (!got && Date.now() - t0 < 1500 && MIC.st === 'rec' && !MIC.stopping);
+      if (zakaz) { MIC.st = 'off'; micUi(); if (!r._zk) { r._zk = 1; micZakazan(); } return; }
+      if (MIC.st === 'rec' && !MIC.stopping) { try { micStart(); return; } catch (x) { MIC.st = 'off'; } }
+      micUi(); if (MIC.st === 'off' && MIC.onEnd) MIC.onEnd(); };
+    try { r.start(); } catch (e) { recog = null; MIC.st = 'off'; micUi(); micZakazan(); }
     micUi();
   }
+  // mikrofon zakázaný (třeba omylem „Nepovolit“): nic se nezablokuje, nabídne se znovu a náhradní diktování z klávesnice
+  function micZakazan() {
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /macintosh/i.test(navigator.userAgent));
+    const s = sheet(`<h3>Mikrofon není povolený</h3>
+      <p>Nevadí, nic se nezablokovalo. Stačí jedno z tohohle:</p>
+      <button type="button" class="big pri" id="mz-znovu">🎤 Zkusit mikrofon znovu</button>
+      <button type="button" class="big" id="mz-klav">⌨️ Diktovat přes klávesnici</button>
+      ${ios ? `<p class="hint" style="margin-top:6px"><b>Když se telefon už neptá:</b><br>1. Zavřete Constructo úplně (přejeďte prstem zespodu nahoru a aplikaci odsuňte nahoru).<br>2. Otevřete Constructo znovu a klepněte na mikrofon. Telefon se zeptá znovu, dejte <b>Povolit</b>.</p>
+        <p class="hint"><b>Aby se už nikdy neptal:</b> Nastavení → Aplikace → Safari → Mikrofon → <b>Povolit</b> (a stejně Kamera → <b>Povolit</b>).</p>`
+        : '<p class="hint">Když se telefon už neptá: klepněte na zámek vedle adresy stránky → Oprávnění → Mikrofon → Povolit.</p>'}
+      <button type="button" class="big" data-close>Zavřít</button>`);
+    s.querySelector('[data-close]').onclick = closeSheet;
+    s.querySelector('#mz-znovu').onclick = () => { closeSheet(); const m = MIC.id && document.getElementById(MIC.id); if (m) m.click(); };
+    s.querySelector('#mz-klav').onclick = () => { closeSheet(); const t = MIC.tx && document.getElementById(MIC.tx); if (t) { t.focus(); toast('Teď klepněte na mikrofon dole na klávesnici a mluvte.', 5000); } };
+  }
+  // podržet mikrofon déle (0,7 s) = ukončit nahrávání
+  let micDrz = false, micT = null;
+  document.addEventListener('pointerdown', e => { const m = e.target.closest && e.target.closest('.mic'); if (!m || MIC.st === 'off' || m.id !== MIC.id) return;
+    clearTimeout(micT); micT = setTimeout(() => { micDrz = true; micKonec(); if (navigator.vibrate) navigator.vibrate(40); toast('Nahrávání ukončeno'); setTimeout(() => { micDrz = false; }, 800); }, 700); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => document.addEventListener(t, () => clearTimeout(micT), true));
   function micStop() { MIC.stopping = true; if (recog) { try { recog.stop(); } catch (e) {} } }
   function dictate(tx, mic, onText, onEnd) {
     const R = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!R) { tx.focus(); toast('Klepněte na mikrofon na klávesnici a mluvte.'); return; }
     if (MIC.id && MIC.id !== mic.id && MIC.st !== 'off') { micStop(); MIC.st = 'off'; micUi(); }
     MIC.id = mic.id; MIC.tx = tx.id; MIC.onText = onText; MIC.onEnd = onEnd;
-    if (MIC.st === 'off') { MIC.st = 'rec'; micStart(); }
-    else if (MIC.st === 'rec') { MIC.st = 'pauza'; micStop(); micUi(); }
-    else { MIC.st = 'off'; micStop(); micUi(); if (!recog && onEnd) onEnd(); }
+    if (micDrz) { micDrz = false; return; }  // dlouhé podržení už mikrofon vypnulo
+    if (MIC.st === 'rec') { MIC.st = 'pauza'; micStop(); micUi(); }
+    else { MIC.st = 'rec'; micStart(); }   // vypnuto nebo pauza → nahrávat (pokračuje za dosavadním textem)
   }
   async function send() {
     if (!F.to.size) { toast('Vyberte, komu hlášení patří.'); return; }
