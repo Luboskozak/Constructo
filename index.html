@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-39O7K/g2EOz+EGcXYG//VXwC5pWiPKXteCRKGGKiJTg=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-uRjYI9L5pLXvJJrhIdI98LIZiSU5vTCtOtr975XGiwg=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -84,11 +84,11 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .banner.info{background:var(--blu2);color:var(--blu)}
 .banner button{margin-left:auto;border:0;background:rgba(0,0,0,.08);border-radius:10px;padding:8px 12px;font-weight:700;color:inherit}
 /* spodní lišta */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(5,1fr);background:var(--k);padding:10px max(6px,env(safe-area-inset-left,0px)) calc(12px + var(--sb));border-radius:24px 24px 0 0}
-.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#8d959c;padding:2px 0;position:relative}
-.nav svg{width:24px;height:24px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(3,1fr);background:var(--k);padding:10px max(6px,env(safe-area-inset-left,0px)) calc(12px + var(--sb));border-radius:24px 24px 0 0}
+.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:#8d959c;padding:2px 0;position:relative}
+.nav svg{width:28px;height:28px}
 .nav button[aria-current="true"]{color:var(--y)}
-.nav .cam span{width:58px;height:58px;border-radius:20px;background:var(--y);color:var(--k);display:grid;place-items:center;margin-top:-30px;box-shadow:0 8px 20px -6px rgba(244,210,60,.75)}
+.nav .cam span{width:66px;height:66px;border-radius:20px;background:var(--y);color:var(--k);display:grid;place-items:center;margin-top:-30px;box-shadow:0 8px 20px -6px rgba(244,210,60,.75)}
 .nav .cam svg{width:28px;height:28px}
 .nav .cnt{position:absolute;top:-4px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;line-height:18px;padding:0 5px}
 /* formulář hlášení */
@@ -231,11 +231,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <div id="app" class="app" hidden>
   <div id="view"></div>
   <nav class="nav" aria-label="Hlavní nabídka">
-    <button type="button" data-v="archiv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/></svg>Archiv</button>
     <button type="button" data-v="ukoly"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7H4V5h11"/></svg>Úkoly<span class="cnt" id="cnt-ukoly" hidden></span></button>
-    <button type="button" data-v="hlaseni" class="cam"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Hlášení</button>
-    <button type="button" data-v="vedomi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21h4"/></svg>Na vědomí</button>
-    <button type="button" data-v="odeslane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Odeslané<span class="cnt" id="cnt-q" hidden></span></button>
+    <button type="button" data-v="hlaseni" class="cam"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Nové hlášení</button>
+    <button type="button" data-v="archiv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/></svg>Archiv<span class="cnt" id="cnt-q" hidden></span></button>
   </nav>
 </div>
 <input type="file" id="in-cam" class="fileinp" accept="image/*" capture="environment">
@@ -264,7 +262,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   const LOGO = '<div class="logo"><svg viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span>Constructo</span></div>';
 
   let conn = null, me = '', D = null, dataAt = 0, online = navigator.onLine, lastErr = '', Q = [];
-  let view = ({prehled: 'hlaseni', '': 'hlaseni'})[ls.get('cx-view')] || ls.get('cx-view'), ufilter = ls.get('cx-uf') || 'moje';
+  let view = ({prehled: 'hlaseni', '': 'hlaseni', vedomi: 'ukoly', odeslane: 'archiv'})[ls.get('cx-view')] || ls.get('cx-view'), ufilter = ({zadal: 'moje'})[ls.get('cx-uf')] || ls.get('cx-uf') || 'moje';
   // pozvaný „jen nahlíží“: vidí stavbu, nic neposílá ani nemění (server mu změny stejně nepřijme)
   let ro = ls.get('cx-ro') === '1';
   const setRo = v => { ro = !!v; ls.set('cx-ro', ro ? '1' : ''); document.body.classList.toggle('ro', ro); if (ro) { view = 'archiv'; ufilter = 'vse'; } };
@@ -431,8 +429,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     $('#cnt-ukoly').hidden = !myOpen; $('#cnt-ukoly').textContent = myOpen;
     const waiting = Q.filter(x => x.state !== 'sent').length;
     $('#cnt-q').hidden = !waiting; $('#cnt-q').textContent = waiting;
-    if (ro && (view === 'hlaseni' || view === 'odeslane')) view = 'archiv';
-    const V = {archiv: vArchiv, ukoly: vUkoly, hlaseni: vHlaseni, vedomi: vVedomi, odeslane: vOdeslane}[view] || vHlaseni;
+    if (view === 'vedomi') { view = 'ukoly'; ufilter = 'info'; } if (view === 'odeslane') view = 'archiv';
+    if (ro && view === 'hlaseni') view = 'archiv';
+    const V = {archiv: vArchiv, ukoly: vUkoly, hlaseni: vHlaseni}[view] || vHlaseni;
     bgPending = false;
     $('#view').innerHTML = V();
     bind(); micUi();
@@ -444,7 +443,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   const headSmall = title => `<header class="head small"><div class="r">${LOGO}<button type="button" class="me" data-act="settings" aria-label="Nastavení">${esc(initials(me))}</button></div><div class="r"><h2>${esc(title)}</h2>${netline()}</div></header>`;
   function taskCard(t, opts) {
     const st = eff(t), late = st === 'late', who = people(t).join(', ') || 'Bez přiřazení', att = t.att || [];
-    const canDone = !ro && !t.info && t.kind === 'simple' && st !== 'done' && (mine(t) || !t.owner);
+    const canDone = false;  // v telefonu se úkoly jen prohlížejí, plní se na počítači
     return `<div class="card task" data-t="${esc(t.id)}">
       <div class="t1"><span class="av">${esc(initials(t.owner || '–'))}</span><div class="tx"><h4>${esc(t.title)}</h4>
         <div class="m"><span>${esc(who)}</span>${t.info ? '' : st === 'done' ? '<span>splněno</span>' : t.end ? `<span class="${late ? 'late' : ''}">do ${fmtD(t.end)}${late ? ' · po termínu' : ''}</span>` : ''}${t.createdBy ? `<span>zadal ${esc(t.createdBy)}</span>` : ''}${t.obj ? `<span>objekt ${esc(t.obj)}</span>` : ''}</div></div>
@@ -484,12 +483,23 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       ${!standalone && ios ? '<div class="banner info">Přidejte si Constructo na plochu: dole klepněte na Sdílet a zvolte Přidat na plochu.</div>' : ''}
       ${!standalone && installEvt ? '<div class="banner info">Constructo jde nainstalovat jako aplikaci.<button type="button" data-act="install">Nainstalovat</button></div>' : ''}
       ${!D ? '<div class="banner">Data se ještě nenačetla. Připojte se k internetu.</div>' : ''}
+      ${cekaHtml()}
       <div class="seg">${[['firma', 'Podle firmy'], ['autor', 'Kdo zapsal'], ['datum', 'Podle data']].map(([k, l]) => `<button type="button" data-arby="${k}" aria-pressed="${AR.by === k}">${l}</button>`).join('')}</div>
       <div class="arch-f"><select id="ar-firma" aria-label="Firma"><option value="">Všechny firmy</option>${firmyA.map(f => `<option${f === AR.firma ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select>
         <select id="ar-autor" aria-label="Kdo zapsal"><option value="">Všichni autoři</option>${autori.map(f => `<option${f === AR.autor ? ' selected' : ''}>${esc(f)}</option>`).join('')}</select></div>
       ${list.length ? order.map(k => `<div class="grp"><span>${esc(AR.by === 'datum' ? fmtDY(k) : k)}</span><span>${grps.get(k).length}</span></div>${grps.get(k).map(card).join('')}`).join('')
         : `<div class="card empty"><b>${all.length ? 'Nic neodpovídá výběru' : 'Zatím žádné záznamy'}</b>${all.length ? 'Zkuste jinou firmu nebo autora.' : 'Hlášení a zprávy pro firmy z telefonu se objeví tady.'}</div>`}
     </main>`;
+  }
+  // co telefon ještě neodeslal (bez signálu): nahoře v Archivu, odejde samo
+  function cekaHtml() {
+    const w = Q.filter(x => x.state !== 'sent').sort((a, b) => b.at.localeCompare(a.at));
+    if (!w.length && !(lastErr && lastErr !== 'OFFLINE')) return '';
+    return `${w.length ? `<div class="banner">${w.length === 1 ? '1 záznam čeká' : w.length + ' záznamy čekají'} na odeslání${online ? '' : ', odejdou samy, až bude signál'}.<button type="button" data-act="pump">Odeslat</button></div>` : ''}
+      ${lastErr && lastErr !== 'OFFLINE' ? `<div class="banner">${esc(lastErr)}</div>` : ''}
+      ${w.map(it => { const ph = (it.photos || [])[0], r = it.rec || {};
+        return `<div class="card task"><div class="t1">${ph && ph.thumb ? `<img src="${ph.thumb}" alt="" style="width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none">` : ''}<div class="tx"><h4>${esc(it.kind === 'zavada' ? (r.typ || 'Zpráva pro firmu') + (r.firma ? ' · ' + r.firma : '') : it.kind === 'upd' ? 'Změna úkolu' : it.text || 'Foto bez popisu')}</h4>
+          <div class="m"><span>${fmtT(it.at)}</span>${it.err ? `<span style="color:var(--red)">${esc(it.err)}</span>` : ''}</div></div><span class="pill ${it.err ? 'p-bad' : 'p-wait'}">${it.err ? 'Chyba' : 'Čeká'}</span></div></div>`; }).join('')}`;
   }
   function arDetail(k, id) {
     if (k === 't') return detail(id);
@@ -506,38 +516,24 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       <button type="button" class="big" data-close>Zavřít</button>`);
     s.querySelector('[data-close]').onclick = closeSheet;
   }
+  // Úkoly jen k nahlédnutí: Moje / Všechny / Na vědomí (plní a upravují se na počítači)
   function vUkoly() {
+    const seg = `<div class="seg">${[['moje', 'Moje'], ['vse', 'Všechny'], ['info', 'Na vědomí']].map(([k, l]) => `<button type="button" data-uf="${k}" aria-pressed="${ufilter === k}">${l}</button>`).join('')}</div>`;
+    if (ufilter === 'info') {
+      const lim = addD(todayS(), -30);
+      const info = simple().filter(t => t.info && (t.start || '') >= lim).sort((x, y) => (y.createdAt || '').localeCompare(x.createdAt || ''));
+      return `${headSmall('Úkoly')}<main>${seg}${info.length ? info.map(t => taskCard(t)).join('') : '<div class="card empty"><b>Za poslední měsíc nic</b>Informace pro tým se objeví tady.</div>'}</main>`;
+    }
     const all = tasks().filter(t => !t.info);
-    const f = {moje: t => mine(t), zadal: t => isMe(t.createdBy), vse: () => true}[ufilter] || (() => true);
+    const f = ufilter === 'moje' && !ro ? t => mine(t) : () => true;
     const open = all.filter(t => f(t) && eff(t) !== 'done').sort((x, y) => (x.end || '9999').localeCompare(y.end || '9999'));
+    const late = open.filter(t => eff(t) === 'late');
     const done = all.filter(t => f(t) && eff(t) === 'done').sort((x, y) => (y.doneAt || '').localeCompare(x.doneAt || '')).slice(0, 10);
-    return `${headSmall('Úkoly')}<main>
-      <div class="seg"${ro ? ' hidden' : ''}>${[['moje', 'Moje'], ['zadal', 'Zadal jsem'], ['vse', 'Všechny']].map(([k, l]) => `<button type="button" data-uf="${k}" aria-pressed="${ufilter === k}">${l}</button>`).join('')}</div>
+    return `${headSmall('Úkoly')}<main>${seg}
+      <div class="kp"><div><b>${open.length}</b><small>Otevřené</small></div><div class="${late.length ? 'bad' : ''}"><b>${late.length}</b><small>Po termínu</small></div><div><b>${done.length}</b><small>Nedávno splněné</small></div></div>
       ${open.length ? open.map(t => taskCard(t)).join('') : `<div class="card empty"><b>Žádné nesplněné úkoly</b>${ufilter === 'moje' ? 'Nemáte nic k vyřízení.' : ''}</div>`}
       ${done.length ? `<div class="sec"><h3>Nedávno splněné</h3></div>${done.map(t => taskCard(t, 'nobtn')).join('')}` : ''}
-    </main>`;
-  }
-  function vVedomi() {
-    const lim = addD(todayS(), -30);
-    const info = simple().filter(t => t.info && (t.start || '') >= lim).sort((x, y) => (y.createdAt || '').localeCompare(x.createdAt || ''));
-    return `${headSmall('Na vědomí')}<main>${info.length ? info.map(t => taskCard(t)).join('') : '<div class="card empty"><b>Za poslední měsíc nic</b>Informace pro tým, třeba nepořádek na stavbě, se objeví tady.</div>'}</main>`;
-  }
-  function vOdeslane() {
-    // odeslané hlášení se tu ukáže jen, dokud je ve stavbě (smazané na počítači zmizí); celý archiv je v záložce Archiv
-    const naServeru = x => !D || x.state !== 'sent' || tasks().some(t => t.grp === x.cid || String(t.id).startsWith('m' + x.cid + '-'));
-    const items = Q.filter(x => x.kind === 'report' && naServeru(x) && (x.state !== 'sent' || (x.sentAt || x.at) >= addD(todayS(), -7))).sort((a, b) => b.at.localeCompare(a.at));
-    const waiting = Q.filter(x => x.state !== 'sent').length;
-    return `${headSmall('Odeslané')}<main>
-      ${waiting ? `<div class="banner">${waiting === 1 ? '1 položka čeká' : waiting + ' položky čekají'} na odeslání${online ? '' : ', odejdou samy, až bude signál'}.<button type="button" data-act="pump">Odeslat</button></div>` : ''}
-      ${lastErr && lastErr !== 'OFFLINE' ? `<div class="banner">${esc(lastErr)}</div>` : ''}
-      ${items.length ? items.map(it => {
-        const ph = (it.photos || [])[0], mail = it.mail || {};
-        const st = it.state === 'sent' ? '<span class="pill p-ok">Odesláno</span>' : it.err ? '<span class="pill p-bad">Chyba</span>' : '<span class="pill p-wait">Čeká</span>';
-        const miss = mail.missing && mail.missing.length ? `<div class="m">E-mail nedostal: ${esc(mail.missing.join(', '))} (v programu chybí e-mail)</div>` : mail.error ? `<div class="m">E-mail se neodeslal: ${esc(mail.error)}</div>` : '';
-        return `<div class="card task"><div class="t1">${ph && ph.thumb ? `<img src="${ph.thumb}" alt="" style="width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none">` : ''}<div class="tx"><h4>${esc(((tasks().find(t => t.grp === it.cid) || {}).title) || it.text || 'Foto bez popisu')}</h4>
-          <div class="m"><span>${it.info ? 'Na vědomí' : 'Úkol'} · ${esc(it.to.join(', ') || 'bez osoby')}</span><span>${fmtT(it.at)}</span>${(it.photos || []).length ? `<span>${it.photos.length} foto</span>` : ''}</div>${miss}${it.err ? `<div class="m" style="color:var(--red)">${esc(it.err)}</div>` : ''}</div>${st}</div></div>`;
-      }).join('') : conn ? '<div class="card empty"><b>Zatím nic</b>Hlášení, která pošlete, uvidíte tady i se stavem odeslání.</div>' : ''}
-      ${D ? '<button type="button" class="big" data-go="archiv">Všechny záznamy najdete v Archivu →</button>' : ''}
+      <p class="hint" style="text-align:center;margin:6px 0 0">Úkoly se plní a upravují v programu na počítači.</p>
     </main>`;
   }
   function vHlaseni() {
@@ -743,11 +739,16 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   };
   // další příjemci kopie (TDS, investor…): pamatuje si je telefon, e-mail stačí doplnit jednou
   const PRIJ0 = [{id: 'tds', jmeno: 'TDS (technický dozor)', email: ''}, {id: 'inv', jmeno: 'Investor', email: ''}];
-  const prijemci = () => { try { const a = JSON.parse(ls.get('cx-prijemci') || 'null'); return Array.isArray(a) ? a : PRIJ0; } catch (e) { return PRIJ0; } };
+  // společný seznam se spravuje na počítači (Firmy → Další příjemci zpráv, D.project.prijemci); v telefonu jde přidat jen vlastní doplněk
+  const prijSpol = () => ((D && D.project && Array.isArray(D.project.prijemci)) ? D.project.prijemci : []).filter(x => x && x.id).map(x => ({id: 's-' + x.id, jmeno: [x.kdo, x.jmeno].filter(Boolean).join(' – ') || x.email, email: x.email || '', spol: true}));
+  const prijMistni = () => { try { const a = JSON.parse(ls.get('cx-prijemci') || 'null'); return Array.isArray(a) ? a : prijSpol().length ? [] : PRIJ0; } catch (e) { return PRIJ0; } };
+  const prijemci = () => { const sp = prijSpol(), em = new Set(sp.map(x => fold(x.email)).filter(Boolean)); return sp.concat(prijMistni().filter(x => !x.email || !em.has(fold(x.email)))); };
   function prijemciDlg(focusId) {
-    const a = prijemci();
+    const a = prijMistni(), sp = prijSpol();
     const s = sheet(`<h3>Další příjemci</h3>
-      <p class="hint">Třeba TDS nebo investor. Zaškrtnutí dostanou zprávu pro firmu v kopii. Telefon si je zapamatuje.</p>
+      <p class="hint">Třeba TDS nebo investor. Zaškrtnutí dostanou zprávu pro firmu v kopii. Společný seznam pro všechny se upravuje na počítači v záložce Firmy.</p>
+      ${sp.map(x => `<div class="card"><b>${esc(x.jmeno)}</b><span class="hint">${esc(x.email || 'bez e-mailu')} · z počítače</span></div>`).join('')}
+      ${a.length ? '<p class="hint" style="margin:6px 0 0">Jen v tomto telefonu:</p>' : ''}
       ${a.map(r => `<div class="card fform" data-pr="${esc(r.id)}"><input class="date" data-pn placeholder="Kdo (např. TDS)" value="${esc(r.jmeno)}">
         <input class="date" data-pe type="email" inputmode="email" autocapitalize="off" autocomplete="off" placeholder="E-mail" value="${esc(r.email)}">
         <button type="button" class="big" data-prd style="color:var(--red)">Odebrat</button></div>`).join('')}
@@ -951,7 +952,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     });
     const zfs = $('#z-firma'); if (zfs) zfs.onchange = () => { Z.firma = zfs.value; ls.set('cx-firma', Z.firma); zFm = null; zfs.blur(); render(); };
     v.querySelectorAll('[data-zp]').forEach(b => b.onclick = () => { const id = b.dataset.zp, r = prijemci().find(x => x.id === id); if (!r) return;
-      if (!r.email) return prijemciDlg(id);
+      if (!r.email) { if (r.spol) { toast('Příjemci chybí e-mail. Doplňte ho na počítači v záložce Firmy.'); return; } return prijemciDlg(id); }
       Z.dalsi = Z.dalsi.includes(id) ? Z.dalsi.filter(x => x !== id) : Z.dalsi.concat(id); zFm = null; render(); });
     v.querySelectorAll('[data-jz]').forEach(b => b.onclick = () => { ls.set('cx-jazyk', b.dataset.jz); render(); });
     v.querySelectorAll('[data-zk]').forEach(b => b.onclick = () => { const k = b.dataset.zk; Z.komu = Z.komu.includes(k) ? Z.komu.filter(x => x !== k) : Z.komu.concat(k); zFm = null; render(); });
@@ -1598,7 +1599,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
   function closeSheet() { const o = $('#overlay'); o.hidden = true; o.innerHTML = ''; }
   function detail(id) {
     const t = tasks().find(x => x.id === id); if (!t) return;
-    const st = eff(t), att = t.att || [], canDone = !ro && !t.info && t.kind === 'simple' && st !== 'done' && (mine(t) || !t.owner);
+    const st = eff(t), att = t.att || [], canDone = false;
     const s = sheet(`<h3>${esc(t.title)}</h3>
       ${att.length ? `<div class="big-ph" style="display:flex;flex-direction:column;gap:8px">${att.map(a => `<a href="${esc(a.url || thumbOf(a))}" target="_blank" rel="noopener"><img src="${esc(thumbOf(a))}" alt="Fotka ze stavby"></a>`).join('')}</div>` : ''}
       <div class="kv"><span>${t.info ? 'Pro' : 'Komu'}</span><b>${esc(people(t).join(', ') || 'Bez přiřazení')}</b>
@@ -1608,7 +1609,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
         <span>Stav</span><span style="color:var(--ink)">${t.info ? 'Na vědomí' : st === 'done' ? `Splněno ${t.doneBy ? '· ' + esc(t.doneBy) : ''}` : st === 'late' ? 'Po termínu' : 'Nesplněno'}</span></div>
       ${t.missed && st !== 'done' ? `<div class="banner">Důvod nesplnění: ${esc(t.missed)}</div>` : ''}
       <div class="acts">${canDone ? `<button type="button" class="done-btn" data-done="${esc(t.id)}">✓ Splněno</button>` : ''}<button type="button" class="big" data-close>Zavřít</button></div>
-      ${!t.info && st !== 'done' && !canDone ? `<p class="hint">Splnění potvrzuje ${esc(people(t).join(', '))}.</p>` : ''}`);
+`);
     s.querySelectorAll('[data-done]').forEach(b => b.onclick = () => markDone(b.dataset.done));
     s.querySelector('[data-close]').onclick = closeSheet;
   }

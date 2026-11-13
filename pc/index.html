@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-DATVMKpGhvON894fo6p1lU1OPsclMYtcthX/Qa9YccI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-DJS7BryGELgm5Q6pxuP20gCmzRfNujsHZowMGm64Em8=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
@@ -1077,7 +1077,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.29';
+  const APP_VERSION = '4.30';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -2922,7 +2922,20 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         <div>${n ? `<button type="button" class="linkish" data-fz="${esc(x.firma)}">${n} ${n === 1 ? 'zpráva' : n < 5 ? 'zprávy' : 'zpráv'} →</button>` : '<span class="hcap" style="margin:0">0</span>'}</div>
         <div class="fm-a no-print">${ro ? '' : `<button type="button" class="btn" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="btn" data-fd="${esc(x.id)}">Smazat</button>`}</div></div>`;
     }).join('');
+    // 4.30: příjemci kopií (TDS, investor…) – jen dostávají PDF zpráv z mobilu, v programu nepracují (nejsou v Lidech ani v týmu)
+    const pr = prijemciList();
+    html += `</div><div class="sl" style="margin-top:18px"><div class="sl-top"><b>Další příjemci zpráv</b><span>TDS, investor… dostávají PDF zpráv pro firmy v kopii · v programu nepracují · telefony si seznam převezmou samy</span><span class="sp"></span>${ro ? '' : '<button type="button" class="btn primary no-print" id="pr-add">Přidat příjemce</button>'}</div>`;
+    html += pr.length ? pr.map(x => `<div class="fm-row" data-pr="${esc(x.id)}"><div><b>${esc(x.kdo || x.jmeno || 'Příjemce')}</b>${x.kdo && x.jmeno ? `<small>${esc(x.jmeno)}</small>` : ''}</div>
+        <div class="fm-ks"><div>${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<small>bez e-mailu – doplňte</small>'}</div></div><div></div>
+        <div class="fm-a no-print">${ro ? '' : `<button type="button" class="btn" data-pe="${esc(x.id)}">Upravit</button><button type="button" class="btn" data-pd="${esc(x.id)}">Smazat</button>`}</div></div>`).join('')
+      : '<div class="empty"><strong>Zatím nikdo.</strong>Přidejte třeba TDS nebo investora s e-mailem. V mobilu je pak u zprávy pro firmu stačí zaškrtnout a dostanou PDF v kopii.</div>';
     v.innerHTML = html + '</div>';
+    const pa = $('#pr-add'); if (pa) pa.onclick = () => prijemceEdit();
+    v.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => prijemceEdit(b.dataset.pe));
+    v.querySelectorAll('[data-pd]').forEach(b => b.onclick = () => {
+      if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
+      D.project.prijemci = prijemciList().filter(y => y.id !== b.dataset.pd); commit(); toast('Příjemce smazán');
+    });
     const add = $('#fm-add'); if (add) add.onclick = () => firmaEdit();
     v.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => firmaEdit(b.dataset.fe));
     v.querySelectorAll('[data-fz]').forEach(b => b.onclick = () => zavadyGo({firma: b.dataset.fz, osoba: ''}));
@@ -2930,6 +2943,22 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
       const x = firmyList().find(y => y.id === b.dataset.fd);
       D.project.firmy = firmyList().filter(y => y.id !== b.dataset.fd); commit(); toast('Smazáno: ' + (x ? x.firma : 'firma'));
+    });
+  }
+  const prijemciList = () => (Array.isArray(D.project.prijemci) ? D.project.prijemci : []).filter(x => x && x.id);
+  function prijemceEdit(id) {
+    const ed = prijemciList().find(x => x.id === id) || null;
+    confirmModal(ed ? 'Upravit příjemce' : 'Přidat příjemce', `
+      <p class="hcap" style="margin-top:0">Příjemce dostává jen PDF zpráv pro firmy v kopii. Do programu se nepřihlašuje a nepřidává se do Lidí.</p>
+      <div class="fld"><label for="pr-kdo">Kdo (role)</label><input id="pr-kdo" list="pr-role" value="${esc(ed ? ed.kdo || '' : '')}" placeholder="např. TDS, Investor, Projektant"><datalist id="pr-role"><option>TDS</option><option>Investor</option><option>Projektant</option><option>Autorský dozor</option><option>BOZP koordinátor</option></datalist></div>
+      <div class="fld"><label for="pr-jm">Jméno <span class="hcap">(nepovinné)</span></label><input id="pr-jm" value="${esc(ed ? ed.jmeno || '' : '')}" placeholder="např. Ing. Jan Novák"></div>
+      <div class="fld"><label for="pr-em">E-mail</label><input id="pr-em" type="email" value="${esc(ed ? ed.email || '' : '')}" placeholder="např. tds@firma.cz"></div>`, 'Uložit', () => {
+      const kdo = $('#pr-kdo').value.trim(), jmeno = $('#pr-jm').value.trim(), email = $('#pr-em').value.trim();
+      if (!kdo && !jmeno) { toast('Napište, kdo to je (např. TDS).'); return 'keep'; }
+      if (!EMAIL_RE.test(email)) { toast('Doplňte platný e-mail.'); return 'keep'; }
+      const x = {id: ed ? ed.id : 'p' + Date.now().toString(36), kdo, jmeno, email};
+      D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x);
+      commit(); toast('Příjemce uložen');
     });
   }
   // údaje z ARES podle IČO: nejdřív přímo z prohlížeče, když to nejde, přes skript na Googlu
