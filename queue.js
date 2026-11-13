@@ -91,7 +91,18 @@ const CXQ = (() => {
           await del(it.cid); sent++; continue;
         }
         if (it.kind === 'upd') {
-          const r = await post(conn, {key: conn.key, rev: 0, data: it.data});
+          // změna úkolu z telefonu (Splněno): nejdřív aktuální stav ze stavby. Úkol smazaný na počítači se zpátky NEPOŠLE
+          // (jinak by se smazaný úkol vrátil) a ostatní úpravy z počítače zůstanou – z telefonu se mění jen splnění.
+          let data = it.data;
+          const g = await get(conn), cur = (g && g.data) || null;
+          if (cur) {
+            const byId = new Map((cur.tasks || []).map(t => [t.id, t])), ts = Date.now();
+            const KS = ['status', 'done', 'doneAt', 'doneBy', 'updatedAt', 'updatedBy'];
+            const tk = (it.data.tasks || []).filter(t => byId.has(t.id)).map(t => { const o = Object.assign({}, byId.get(t.id), {_ts: ts}); KS.forEach(k => { if (k in t) o[k] = t[k]; }); return o; });
+            if (!tk.length) { await del(it.cid); sent++; continue; }
+            data = {tasks: tk, log: (it.data.log || []).filter(l => byId.has(l.taskId)).map(l => Object.assign({}, l, {_ts: ts}))};
+          }
+          const r = await post(conn, {key: conn.key, rev: 0, data});
           if (r.error) throw new Error(errTxt(r.error));
           if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
           await del(it.cid); sent++; continue;
