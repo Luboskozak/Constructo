@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-g80y/ZWd7rjgcBCOC1h4LDkPh4bnDS/nCMlBgyLntGk='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-lfcF3hbe040A4qrqLfHfDlqygtTpogFvXi+X1uSw1Qk='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -181,6 +181,13 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .sheet .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px}
 .sheet .kv span{color:var(--mut)}
 .sheet .acts{display:flex;gap:8px;flex-wrap:wrap}
+/* 1.14: pozvánka z telefonu (QR, SMS, WhatsApp) */
+.iv-qr{align-self:center;background:#fff;padding:10px;border-radius:16px;border:2px solid var(--line);line-height:0}
+.iv-qr img{width:min(70vw,280px);height:auto;image-rendering:pixelated}
+.iv-send{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.iv-send a,.iv-send button{display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
+.iv-who{display:flex;flex-wrap:wrap;gap:8px}
+.iv-who button{border:2px solid var(--line);background:var(--card);border-radius:14px;min-height:48px;padding:0 14px;font-weight:800;font-size:15px}
 .toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translateX(-50%);background:var(--k);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;font-weight:600;max-width:calc(100% - 32px);text-align:center}
 .fileinp{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
@@ -257,6 +264,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <div id="overlay" hidden></div>
 
 <script src="queue.js"></script>
+<script src="pc/qr.js"></script>
 <script>
 (() => {
   const VERSION = '1.14';
@@ -1760,13 +1768,61 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     s.querySelectorAll('[data-done]').forEach(b => b.onclick = () => markDone(b.dataset.done));
     s.querySelector('[data-close]').onclick = closeSheet;
   }
+  // 1.14: pozvat kolegu přímo z telefonu – ukázat QR kód, nebo poslat odkaz SMS / WhatsApp / e-mailem
+  function inviteSheet() {
+    const names = team();
+    const sh = sheet(`<h3>Pozvat do Constructa</h3>
+      <p style="margin:0;color:var(--mut)">Koho zvete? Klepněte na jméno.</p>
+      <div class="iv-who">${names.map(n => `<button type="button" data-iv="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+      <p style="margin:6px 0 0;color:var(--mut)">Nebo jen na prohlížení (TDS, investor…). Nikde se v aplikaci neukáže:</p>
+      <input id="iv-ro" class="date" placeholder="Jméno, např. Jan Novák – TDS" autocomplete="off">
+      <button type="button" class="big" id="iv-rogo">Pozvat jen na prohlížení</button>
+      <button type="button" class="big" data-close>Zavřít</button>`);
+    sh.querySelector('[data-close]').onclick = closeSheet;
+    sh.querySelectorAll('[data-iv]').forEach(b => b.onclick = () => makeInvite(b.dataset.iv, false));
+    sh.querySelector('#iv-rogo').onclick = () => { const n = sh.querySelector('#iv-ro').value.trim().replace(/\s+/g, ' '); if (!n) { toast('Napište jméno.'); return; } makeInvite(n, true); };
+  }
+  async function makeInvite(who, view) {
+    const sh = sheet(`<h3>Vytvářím pozvánku…</h3><p style="margin:0;color:var(--mut)">${esc(who)}</p>`);
+    let r = null;
+    try {
+      if (view) { const v = await CXQ.post(conn, {key: conn.key, akce: 'verze'}); if (!v || !(v.verze >= 5)) { closeSheet(); toast('Pozvánka jen na prohlížení potřebuje novější skript. Vytvořte ji na počítači.'); return; } }
+      r = await CXQ.post(conn, {key: conn.key, akce: 'pozvanka', jmeno: who, role: view ? 'cteni' : ''});
+    } catch (e) { closeSheet(); toast(e.message === 'OFFLINE' ? 'Telefon je bez internetu.' : e.message); return; }
+    if (!r || !r.kod) { closeSheet(); toast(r && r.error === 'heslo' ? 'Telefon nemá oprávnění zvát. Pozvěte kolegu z počítače.' : 'Pozvánku se nepodařilo vytvořit. Zkuste to z počítače.'); return; }
+    const link = location.origin + location.pathname.replace(/[^/]*$/, '') + '?k=' + encodeURIComponent(r.kod);
+    const msg = `Ahoj, posílám ti přístup do Constructa (${projShort()})${view ? ' na prohlížení' : ''}.\n\nKlepni na odkaz, Constructo se otevře a samo připojí:\n${link}\n\n(platí 14 dní)`;
+    const p = (!view && D && D.project && D.project.people && D.project.people[who]) || {};
+    const tel = String(p.phone || '').replace(/[^+0-9]/g, ''), wa = tel.replace(/^\+/, '').replace(/^(?=[67]\d{8}$)/, '420');
+    const sep = ios() ? '&' : '?';
+    let qr = ''; try { const q = qrcode(0, 'M'); q.addData(link); q.make(); qr = q.createImgTag(6, 0, 'QR kód pozvánky'); } catch (e) {}
+    sh.innerHTML = `<span class="grab"></span><h3>Pozvánka pro ${esc(who)}</h3>
+      <p style="margin:0;color:var(--ink)"><b>Ukažte mu tento čtvereček.</b> Ať ho vyfotí fotoaparátem v telefonu a klepne na odkaz. Je hotovo.</p>
+      ${qr ? `<div class="iv-qr">${qr}</div>` : ''}
+      <p style="margin:0;color:var(--mut)">Je jinde? Pošlete mu odkaz:</p>
+      <div class="iv-send">
+        <a class="big" href="sms:${esc(tel)}${sep}body=${encodeURIComponent(msg)}">SMS</a>
+        <a class="big" href="https://wa.me/${esc(wa)}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="big" href="mailto:${esc(p.email || '')}?subject=${encodeURIComponent('Přístup do Constructa')}&body=${encodeURIComponent(msg)}">E-mail</a>
+        <button type="button" class="big" id="iv-share">${navigator.share ? 'Jinak…' : 'Zkopírovat'}</button>
+      </div>
+      <p style="margin:0;color:var(--mut);font-size:13px">Platí 14 dní${view ? ', jen na prohlížení' : ''}. Kód: <b>${esc(r.kod)}</b></p>
+      <button type="button" class="big pri" data-close>Hotovo</button>`;
+    sh.querySelector('[data-close]').onclick = closeSheet;
+    sh.querySelector('#iv-share').onclick = async () => {
+      if (navigator.share) { try { await navigator.share({title: 'Constructo', text: msg}); } catch (e) {} return; }
+      try { await navigator.clipboard.writeText(msg); toast('Zkopírováno'); } catch (e) { toast('Nepodařilo se zkopírovat.'); }
+    };
+  }
   function settings() {
     const s = sheet(`<h3>Nastavení</h3>
       <div class="kv"><span>Jméno</span><b>${esc(ro ? (ls.get('cx-ro-name') || me || '') + ' · jen prohlížení' : me)}</b><span>Stavba</span><span style="color:var(--ink)">${esc(projShort())}</span>
         <span>Spojení</span><span style="color:var(--ink)">${online && !lastErr ? 'v pořádku' : esc(lastErr === 'OFFLINE' || !online ? 'bez signálu' : lastErr)}</span><span>Verze</span><span style="color:var(--ink)">Constructo mobil ${VERSION}</span></div>
+      ${!ro && WEB_SCRIPT ? '<button type="button" class="big pri" id="st-inv">Pozvat do Constructa</button>' : ''}
       <div class="acts"><button type="button" class="big" id="st-name">Změnit jméno</button><button type="button" class="big" id="st-ref">Načíst znovu</button></div>
       <div class="acts"><button type="button" class="big" id="st-off" style="color:var(--red)">Odpojit telefon</button><button type="button" class="big pri" data-close>Hotovo</button></div>`);
     s.querySelector('[data-close]').onclick = closeSheet;
+    if ($('#st-inv')) $('#st-inv').onclick = () => inviteSheet();
     $('#st-name').hidden = ro;
     $('#st-name').onclick = () => { closeSheet(); setupName(); };
     $('#st-ref').onclick = async () => { toast('Načítám…'); const ok = await refresh(); toast(ok ? 'Načteno' : 'Bez spojení'); closeSheet(); };
