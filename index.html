@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-US1WIGP07INMb1K0hIuP+PIdB602C8bhQcPjU2h5oMc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-owMpoc7pfFR72Pzfwhw7MXRABdDordQqFmYtb58BoWM=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -745,7 +745,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   // další příjemci kopie (TDS, investor…): pamatuje si je telefon, e-mail stačí doplnit jednou
   const PRIJ0 = [{id: 'tds', jmeno: 'TDS (technický dozor)', email: ''}, {id: 'inv', jmeno: 'Investor', email: ''}];
   // společný seznam se spravuje na počítači (Firmy → Další příjemci zpráv, D.project.prijemci); v telefonu jde přidat jen vlastní doplněk
-  const prijSpol = () => ((D && D.project && Array.isArray(D.project.prijemci)) ? D.project.prijemci : []).filter(x => x && x.id).map(x => ({id: 's-' + x.id, jmeno: [x.kdo, x.jmeno].filter(Boolean).join(' – ') || x.email, email: x.email || '', spol: true}));
+  const prijSpol = () => ((D && D.project && Array.isArray(D.project.prijemci)) ? D.project.prijemci : []).filter(x => x && x.id).map(x => ({id: 's-' + x.id, jmeno: [x.kdo, x.jmeno].filter(Boolean).join(' – ') || x.email, email: x.email || '', firma: x.firma || '', spol: true}));
   const prijMistni = () => { try { const a = JSON.parse(ls.get('cx-prijemci') || 'null'); return Array.isArray(a) ? a : prijSpol().length ? [] : PRIJ0; } catch (e) { return PRIJ0; } };
   const prijemci = () => { const sp = prijSpol(), em = new Set(sp.map(x => fold(x.email)).filter(Boolean)); return sp.concat(prijMistni().filter(x => !x.email || !em.has(fold(x.email)))); };
   function prijemciDlg(focusId) {
@@ -921,7 +921,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je v programu na počítači v záložce Firmy.</p>`) : ''}
       ${(() => { const pr = prijemci(), vis = Z.prOpen ? pr : pr.filter(r => Z.dalsi.includes(r.id));
         return `${vis.length ? `<p class="hint" style="margin:8px 0 2px">${Z.prOpen ? 'Zaškrtněte, kdo zprávu dostane (TDS, investor…):' : 'Další příjemci:'}</p>
-        <div class="zks zpr">${vis.map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b><small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>` : ''}
+        <div class="zks zpr">${vis.map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b>${r.firma ? ` · ${esc(r.firma)}` : ''}<small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>` : ''}
         <div class="chips">${Z.prOpen ? `<button type="button" class="chip all" data-act="prijemci">+ Nový příjemce</button><button type="button" class="chip all" data-act="prtoggle">Hotovo</button>` : `<button type="button" class="chip all" data-act="prtoggle">+ Přidat příjemce</button>`}</div>`; })()}
       <p class="lbl">6 · ${Z.typ === 'dotaz' ? 'Odpověď do' : 'Odstranit do'}</p>
       <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
