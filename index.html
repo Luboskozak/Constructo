@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-uRjYI9L5pLXvJJrhIdI98LIZiSU5vTCtOtr975XGiwg=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-TBFFslCRABjJJhjs95y065I2bBqFFbMIX6AnFZO8nsQ=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -266,7 +266,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   // pozvaný „jen nahlíží“: vidí stavbu, nic neposílá ani nemění (server mu změny stejně nepřijme)
   let ro = ls.get('cx-ro') === '1';
   const setRo = v => { ro = !!v; ls.set('cx-ro', ro ? '1' : ''); document.body.classList.toggle('ro', ro); if (ro) { view = 'archiv'; ufilter = 'vse'; } };
-  const F = {photos: [], to: new Set(), info: false, end: addD(todayS(), 7), obj: new Set(), text: '', result: null, mode: ls.get('cx-mode') || 'tym'};
+  const F = {photos: [], to: new Set(), info: false, end: addD(todayS(), 7), obj: new Set(), text: '', result: null, mode: ls.get('cx-mode') === 'tym' ? 'tym' : 'zavada'};
 
   function toast(t, ms) { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), ms || 3200); }
 
@@ -706,6 +706,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     {k: 'poskozeni', l: 'Poškození', s: 'Poškození konstrukce', z: 'poškození konstrukce', p: 'Žádáme o vyjádření a opravu poškozeného místa'},
     {k: 'nedodelek', l: 'Nedodělek', s: 'Nedokončené práce', z: 'nedokončené práce', p: 'Žádáme o dokončení prací'},
     {k: 'bozp', l: 'BOZP', s: 'Porušení zásad BOZP', z: 'nedodržení zásad bezpečnosti práce (BOZP)', p: 'Žádáme o okamžitou nápravu'},
+    {k: 'dotaz', l: 'Dotaz', s: 'Dotaz ze stavby', z: 'skutečnost, ke které potřebujeme Vaše vyjádření', p: 'Prosíme o odpověď'},
     {k: 'jine', l: 'Jiné', s: 'Upozornění na nedostatek', z: 'nedostatek', p: 'Žádáme o nápravu'}
   ];
   // hovorová slova → odborné výrazy (popis se jinak nechává tak, jak ho člověk napsal nebo nadiktoval)
@@ -732,7 +733,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   }
   // vybraná firma: e-mail a telefon jsou ty od zaškrtnutých osob (víc e-mailů = víc adres oddělených čárkou)
   const firma = () => {
-    const f = firmy().find(x => x.id === Z.firma); if (!f) return null;
+    const f = firmy().find(x => x.id === Z.firma);
+    if (!f) { const dal = prijemci().filter(r => (Z.dalsi || []).includes(r.id) && r.email); if (!dal.length) return null;
+      // bez firmy: zpráva jen pro další příjemce (např. dotaz na TDS)
+      return {id: '', firma: dal.map(r => r.jmeno).join(', '), jenPrijemci: true, spol: true, kontakty: [], vybrani: dal.map(r => ({jmeno: r.jmeno, email: r.email})), email: [...new Set(dal.map(r => r.email))].join(', '), tel: ''}; }
     const ks = kontaktyOf(f), sel = zVybrani(f, ks);
     const dal = prijemci().filter(r => (Z.dalsi || []).includes(r.id) && r.email);
     return Object.assign({}, f, {kontakty: ks, vybrani: sel.concat(dal.map(r => ({jmeno: r.jmeno, email: r.email}))), email: [...new Set(sel.concat(dal).map(k => String(k.email || '').trim()).filter(Boolean))].join(', '), tel: (sel.find(k => k.tel) || {}).tel || ''});
@@ -871,8 +875,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   function odborne() {
     const t = zTyp(), m = zMisto(), st = stavba(), dn = fmtDY(todayS());
     const uvod = {neuklizeno: `dovolujeme si Vás upozornit na stav pracoviště na stavbě ${st}. Při kontrole dne ${dn} jsme zjistili:`, reklamace: `tímto u Vás reklamujeme vadu díla na stavbě ${st}, zjištěnou při kontrole dne ${dn}:`,
-      bozp: `důrazně Vás upozorňujeme na porušení zásad BOZP, zjištěné při kontrole stavby ${st} dne ${dn}:`}[t.k] || `při kontrole stavby ${st} dne ${dn} jsme zjistili ${t.z}:`;
-    const zaver = {neuklizeno: 'Děkujeme za spolupráci.', reklamace: 'Vyhrazujeme si uplatnit všechna práva z vadného plnění podle smlouvy o dílo.', bozp: 'Do odstranění závady nelze v práci na tomto místě pokračovat. Opakované porušení BOZP bude řešeno podle smlouvy o dílo.', poskozeni: 'Žádáme o písemné vyjádření, jak ke škodě došlo.'}[t.k] || '';
+      dotaz: `obracíme se na Vás s dotazem ke stavbě ${st} (${dn}):`, bozp: `důrazně Vás upozorňujeme na porušení zásad BOZP, zjištěné při kontrole stavby ${st} dne ${dn}:`}[t.k] || `při kontrole stavby ${st} dne ${dn} jsme zjistili ${t.z}:`;
+    const zaver = {dotaz: 'Děkujeme za odpověď.', neuklizeno: 'Děkujeme za spolupráci.', reklamace: 'Vyhrazujeme si uplatnit všechna práva z vadného plnění podle smlouvy o dílo.', bozp: 'Do odstranění závady nelze v práci na tomto místě pokračovat. Opakované porušení BOZP bude řešeno podle smlouvy o dílo.', poskozeni: 'Žádáme o písemné vyjádření, jak ke škodě došlo.'}[t.k] || '';
     return [`Předmět: ${zPredmet()}`, '', 'Dobrý den,', '',
       uvod, '', `Místo: ${m || 'viz výřez půdorysu'}`, `Popis: ${cistit(Z.text) || 'viz přiložená fotodokumentace.'}`, '',
       `${t.p} nejpozději do ${fmtDY(Z.end)}. Prosíme o potvrzení přijetí a po odstranění o zaslání fotografie.${zaver ? ' ' + zaver : ''}`, '',
@@ -883,11 +887,11 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   const ICAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
   const IGAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>';
   const IMIC = '<span class="mst"><i></i><b>Nahrávám</b></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
-  const modeSeg = () => conn ? `<div class="kind"><button type="button" data-mode="tym" aria-pressed="${F.mode !== 'zavada'}">Pro tým<small>úkol nebo informace</small></button><button type="button" data-mode="zavada" aria-pressed="${F.mode === 'zavada'}">Zpráva pro firmu<small>závada, reklamace, úklid…</small></button></div>` : '';
+  const modeSeg = () => conn ? `<div class="kind"><button type="button" data-mode="zavada" aria-pressed="${F.mode === 'zavada'}">Firmě / TDS<small>závada, dotaz, reklamace…</small></button><button type="button" data-mode="tym" aria-pressed="${F.mode !== 'zavada'}">Pro tým<small>úkol nebo informace</small></button></div>` : '';
   function vZavada() {
     const fs = firmy(), f = firma(), p = planOf(Z.pin && Z.pin.floor), ok = F.photos.length || Z.text.trim();
     const n = F.photos.length;
-    return `${headSmall('Zpráva pro firmu')}<main>
+    return `${headSmall('Nové hlášení')}<main>
       ${modeSeg()}
       ${ZK ? '<div class="banner info">Zkušební verze: nic se neukládá do stavby, posíláte jen vy přes Mail nebo WhatsApp.</div>' : ''}
       <p class="lbl">1 · Fotky ${n ? `<em>(${n})</em>` : ''}</p>
@@ -897,7 +901,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       ${MOBIL ? '' : '<p class="hint">Obrázky můžete do okna i přetáhnout myší.</p>'}
       <p class="lbl">2 · Co se stalo</p>
       <div class="chips">${ZTYPY.map(t => `<button type="button" class="chip all" data-zt="${t.k}" aria-pressed="${Z.typ === t.k}">${t.l}</button>`).join('')}</div>
-      <p class="lbl">3 · Co je špatně <em>(vlastními slovy, klidně nadiktovat)</em></p>
+      <p class="lbl">3 · ${Z.typ === 'dotaz' ? 'Na co se ptáte' : 'Co je špatně'} <em>(vlastními slovy, klidně nadiktovat)</em></p>
       <div class="zjz" role="group" aria-label="Jazyk diktování">Diktuji: <button type="button" data-jz="cs" aria-pressed="${ls.get('cx-jazyk') !== 'uk'}">Česky</button><button type="button" data-jz="uk" aria-pressed="${ls.get('cx-jazyk') === 'uk'}">Українською</button></div>
       ${ls.get('cx-jazyk') === 'uk' ? `<p class="hint" style="margin:0 0 6px">Можна говорити українською або змішано з чеською. ${conn ? 'Claude перекладе текст чеською.' : ''}</p>` : ''}
       <div class="txt"><textarea id="z-text" lang="cs" spellcheck="true" autocorrect="on" autocapitalize="sentences" placeholder="Napište nebo klepněte na mikrofon a řekněte, co je špatně.">${esc(Z.text)}</textarea><button type="button" class="mic" id="z-mic" aria-label="Nadiktovat">${IMIC}</button></div>
@@ -909,15 +913,15 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         <div class="chips">${Z.alts.map(r => `<button type="button" class="chip all" data-zr="${esc(r)}" aria-pressed="${r === Z.room}">${esc(r)}</button>`).join('')}<button type="button" class="chip all" data-zr="">Napsat jiné…</button></div>
         <button type="button" class="big" data-act="plan">Změnit místo na půdorysu</button>`
       : `<button type="button" class="big pri zpin" data-act="plan">📍 Označit místo na půdorysu</button>`}
-      <p class="lbl">5 · Firma</p>
-      ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— vyberte firmu —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
+      <p class="lbl">5 · Komu <em>(firma, TDS, investor…)</em></p>
+      ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— bez firmy (jen další příjemci) —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
       <div class="chips"><button type="button" class="chip all" data-act="firmy">${fs.length ? 'Upravit firmy' : '+ Přidat firmu'}</button></div>
-      ${f ? (f.kontakty.length ? `<p class="hint" style="margin:6px 0 2px">Komu z firmy zprávu poslat:</p><div class="zks">${f.kontakty.map(k => `<button type="button" class="zk" data-zk="${esc(k.id)}" aria-pressed="${Z.komu.includes(k.id)}"><i>${Z.komu.includes(k.id) ? '✓' : ''}</i><span><b>${esc(k.jmeno || k.email || k.tel)}</b>${k.funkce ? ' · ' + esc(k.funkce) : ''}<small>${esc([k.email, k.tel].filter(Boolean).join(' · ') || 'bez e-mailu a telefonu')}</small></span></button>`).join('')}</div>`
+      ${f && !f.jenPrijemci ? (f.kontakty.length ? `<p class="hint" style="margin:6px 0 2px">Komu z firmy zprávu poslat:</p><div class="zks">${f.kontakty.map(k => `<button type="button" class="zk" data-zk="${esc(k.id)}" aria-pressed="${Z.komu.includes(k.id)}"><i>${Z.komu.includes(k.id) ? '✓' : ''}</i><span><b>${esc(k.jmeno || k.email || k.tel)}</b>${k.funkce ? ' · ' + esc(k.funkce) : ''}<small>${esc([k.email, k.tel].filter(Boolean).join(' · ') || 'bez e-mailu a telefonu')}</small></span></button>`).join('')}</div>`
         : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je v programu na počítači v záložce Firmy.</p>`) : ''}
-      <p class="hint" style="margin:8px 0 2px">Další příjemci <em>(dostanou zprávu v kopii)</em>:</p>
+      <p class="hint" style="margin:8px 0 2px">Další příjemci <em>(TDS, investor… v kopii, nebo jen jim bez firmy)</em>:</p>
       <div class="zks zpr">${prijemci().map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b><small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>
       <div class="chips"><button type="button" class="chip all" data-act="prijemci">+ Přidat příjemce</button></div>
-      <p class="lbl">6 · Odstranit do</p>
+      <p class="lbl">6 · ${Z.typ === 'dotaz' ? 'Odpověď do' : 'Odstranit do'}</p>
       <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
       <p class="lbl">Podpis <em>(doplní se sám)</em></p>
       ${jaJmeno() ? '' : '<input class="date" id="z-jmeno" placeholder="Vaše jméno a příjmení" autocomplete="name">'}
@@ -932,7 +936,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       <textarea id="z-formal" class="formal">${esc(Z.formal)}</textarea>
       <button type="button" class="big" data-act="zredo">${Z.busy ? 'Claude píše…' : 'Napsat zprávu znovu'}</button>
       <button type="button" class="big" data-act="znahled">👁 Náhled formuláře, který firma dostane</button>
-      <div class="zkomu">${f ? `Komu: <b>${esc(f.firma)}</b>${komuTxt(f) ? ' · ' + esc(komuTxt(f)) : ''}${f.email ? ' · ' + esc(f.email) : ' · <a href="#" data-act="zemail">doplnit e-mail</a>'}` : 'Komu: <a href="#" data-act="zfirma">vyberte firmu v kroku 5</a>'}</div>
+      <div class="zkomu">${f ? `Komu: <b>${esc(f.firma)}</b>${komuTxt(f) ? ' · ' + esc(komuTxt(f)) : ''}${f.email ? ' · ' + esc(f.email) : ' · <a href="#" data-act="zemail">doplnit e-mail</a>'}` : 'Komu: <a href="#" data-act="zfirma">vyberte firmu nebo TDS v kroku 5</a>'}</div>
       <div class="sendbar zsend">
         <button type="button" class="send" id="z-mail"><i>✓</i>Schválit a poslat e-mailem</button>
         <button type="button" class="send wa" id="z-wa"><i>✓</i>Schválit a poslat přes WhatsApp</button>
@@ -1303,7 +1307,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     if (via === 'oba') { Z.oba = true; via = 'mail'; } else if (via === 'mail') Z.oba = false;
     const f = firma();
     if (via === 'mail') {
-      if (!f) { toast('Nejdřív v kroku 5 vyberte firmu, které se to posílá.'); act('zfirma'); return; }
+      if (!f) { toast('Nejdřív v kroku 5 vyberte firmu nebo zaškrtněte příjemce (např. TDS).'); act('zfirma'); return; }
       if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho v programu na počítači v záložce Firmy.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return; }
     }
     const pripraveno = zFm && zFm.key === zFmKey() && zFm.hotovo;
