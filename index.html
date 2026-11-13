@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-XRfVu4gb2anhmYiZsfxnN46TEu0V1PACrn6AjIt5u/U='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-g80y/ZWd7rjgcBCOC1h4LDkPh4bnDS/nCMlBgyLntGk='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -39,7 +39,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:calc(var(--st
 .head{background:var(--k);color:#fff;padding:calc(12px + var(--st)) 18px 18px;border-radius:0 0 26px 26px;display:flex;flex-direction:column;gap:14px}
 .head .r{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .logo{display:flex;align-items:center;gap:9px}
-.logo svg{height:21px;width:auto;fill:var(--y)}
+.logo svg{height:21px;width:auto;fill:#FAD805}
 .logo span{font-weight:300;font-size:22px;letter-spacing:.005em}
 .me{width:38px;height:38px;border-radius:50%;background:var(--y);color:var(--k);border:0;font-weight:800;font-size:13px}
 .head .ttl{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
@@ -240,7 +240,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
  <mask id="cx-cut" maskUnits="userSpaceOnUse" x="190" y="130" width="516" height="310"><rect x="190" y="130" width="516" height="310" fill="#fff"/><circle cx="348" cy="285" r="87" fill="#000"/><circle cx="548" cy="285" r="87" fill="#000"/><rect x="420" y="232" width="62" height="106" fill="#000"/></mask>
- <symbol id="cx-mark" viewBox="190 130 516 310"><g mask="url(#cx-cut)"><circle cx="348" cy="285" r="152"/><circle cx="548" cy="285" r="152"/></g><rect x="430" y="268" width="67" height="35"/></symbol>
+ <symbol id="cx-mark" viewBox="190 130 516 310"><path d="M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z"/></symbol>
 </defs></svg>
 
 <div id="setup" class="setup" hidden></div>
@@ -259,7 +259,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script>
 (() => {
-  const VERSION = '1.13';
+  const VERSION = '1.14';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1274,14 +1274,12 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   function stahnout(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
 
   /* formulář Constructo (PDF): strany se nakreslí na plátno a vloží do PDF jako obrázky, takže čeština vypadá všude stejně */
+  // logo Constructo (2026-11-13): stejný obrys jako v aplikaci (#cx-mark)
+  const LOGO_D = 'M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z';
   function logoCanvas(col, h) {
     const s = h / 310, c = document.createElement('canvas'); c.width = Math.ceil(516 * s); c.height = Math.ceil(h);
-    const g = c.getContext('2d'); g.scale(s, s); g.translate(-190, -130); g.fillStyle = col;
-    [348, 548].forEach(x => { g.beginPath(); g.arc(x, 285, 152, 0, Math.PI * 2); g.fill(); });
-    g.globalCompositeOperation = 'destination-out';
-    [348, 548].forEach(x => { g.beginPath(); g.arc(x, 285, 87, 0, Math.PI * 2); g.fill(); });
-    g.fillRect(420, 232, 62, 106);
-    g.globalCompositeOperation = 'source-over'; g.fillRect(430, 268, 67, 35);
+    const g = c.getContext('2d'); g.scale(s, s); g.translate(-190, -130); g.fillStyle = col === '#F4D23C' ? '#FAD805' : col;
+    g.fill(new Path2D(LOGO_D));
     return c;
   }
   const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
