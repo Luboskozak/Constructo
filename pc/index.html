@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-hk4SdLmBW7Tsp2vWBOtzMv0wVKaSoA3UM90vj6t4GYo='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8AF4zxhqlgtCSmdfimMQPrNz7xc3/OTnbys7fyKR0a0=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -355,7 +355,22 @@ body{padding:0 0 48px 236px;font-size:14.5px}
 .side .cx{height:26px;width:auto;fill:#FAD805;flex:none}
 .side .wm{font:300 27px/1 var(--f-display);color:#fff;letter-spacing:.005em}
 .side .claim{font:600 10px/1 var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:#8a929a;padding:0 7px 6px}
-.side .stavba{background:var(--k2);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.side .stavba{background:var(--k2);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;margin-bottom:8px;border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.side .stavba:hover{background:var(--k3)}
+.side .stavba .chev{margin-top:6px;font-size:11.5px;font-weight:600;color:#F4D23C}
+/* 4.33: přepínač Stavbyvedení / Deník */
+.appsw{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--k2);border-radius:12px;padding:4px;margin:0 0 4px}
+.appsw a{display:block;text-align:center;padding:8px 4px;border-radius:9px;font-size:13px;font-weight:700;color:#c9ced3;text-decoration:none}
+.appsw a:hover{color:#fff;background:var(--k3)}
+.appsw a.on{background:#F4D23C;color:#16191c}
+.stv-list{display:flex;flex-direction:column;gap:6px;margin:4px 0 2px}
+.stv-list button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:inherit;cursor:pointer}
+.stv-list button:hover{border-color:var(--ink)}
+.stv-list button.on{border:2px solid #F4D23C;background:#FFF4BF}
+.stv-list small{color:var(--muted);font-size:12px}
+.stv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stv-grid .full{grid-column:1/-1}
+@media (max-width:560px){.stv-grid{grid-template-columns:1fr}}
 .side .stavba small{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#7e868e}
 .side .stavba b{color:#fff;font-size:15px;font-weight:700;line-height:1.25}
 .side .stavba em{font-style:normal;font-size:12.5px;color:#9aa2a9}
@@ -856,7 +871,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <aside class="side no-print">
   <div class="brand"><svg class="cx" viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span class="wm">Constructo</span></div>
   <div class="claim">management staveb</div>
-  <div class="stavba"><small>Stavba</small><b id="side-proj">Hybernská 1000/8</b><em id="side-co"></em></div>
+  <div class="appsw" role="group" aria-label="Aplikace"><a class="on" href="/pc/" aria-current="page">Stavbyvedení</a><a href="/denik/" title="Stavební deník Constructo">Deník</a></div>
+  <button type="button" class="stavba" id="side-stavba" title="Údaje o stavbě, přepnout nebo založit stavbu"><small>Stavba</small><b id="side-proj">Hybernská 1000/8</b><em id="side-co"></em><span class="chev">Stavby a údaje ▾</span></button>
   <nav class="topnav no-print" aria-label="Zobrazení">
     <div class="seg" role="group">
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
@@ -1089,10 +1105,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.32';
+  const APP_VERSION = '4.33';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
-  const KEY = 'hybernska-rizeni-data-v1';
+  const KEY_BASE = 'hybernska-rizeni-data-v1';
   const STATUS = {todo:'Nezahájeno', doing:'Probíhá', late:'Ve skluzu', hold:'Pozastaveno', done:'Hotovo'};
   const PCOL = ['#2f5f8a','#b5541b','#2f7d4f','#7a4e9c','#a3462f','#2c7a7b','#8a6d12','#5d6b7a'];
   const $ = s => document.querySelector(s);
@@ -1129,6 +1145,20 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   /* ---------- úložiště ---------- */
   const SEED = JSON.parse(document.getElementById('seed').textContent);
   const store = { get: k => { try { return localStorage.getItem(k) || ''; } catch(e) { return ''; } }, set: (k,v) => { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } } };
+  /* 4.33: více staveb. Hybernská = původní data (sdílená přes Google). Další stavby mají vlastní data v tomto prohlížeči. */
+  const DEF_STAVBA = 'hybernska';
+  const stavbyList = () => { try { const a = JSON.parse(store.get('hyb-stavby') || '[]'); if (Array.isArray(a) && a.some(x => x && x.id === DEF_STAVBA)) return a.filter(x => x && x.id); } catch (e) {} return [{id: DEF_STAVBA, name: 'Hybernská 1000/8'}]; };
+  const saveStavby = a => store.set('hyb-stavby', JSON.stringify(a));
+  let STAVBA = store.get('hyb-stavba') || DEF_STAVBA;
+  if (!stavbyList().some(x => x.id === STAVBA)) STAVBA = DEF_STAVBA;
+  const KEY = STAVBA === DEF_STAVBA ? KEY_BASE : KEY_BASE + ':' + STAVBA;
+  function novaStavbaData() {
+    const reg = stavbyList().find(x => x.id === STAVBA) || {}, x = clone(SEED);
+    x.project = Object.assign({company: (SEED.project && SEED.project.company) || ''}, reg.project || {}, {name: reg.name || 'Nová stavba'});
+    ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady'].forEach(k => { x[k] = []; }); x.tomb = {};
+    x.hmgInfo = {source: '', date: today};
+    return x;
+  }
   let storageOk = true;
   try { localStorage.setItem('hyb-test', '1'); localStorage.removeItem('hyb-test'); } catch(e) { storageOk = false; }
   const normalize = d => {
@@ -1176,7 +1206,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     snap = takeSnap(D);
   }
   let D, snap;
-  try { const raw = store.get(KEY); D = normalize(raw ? JSON.parse(raw) : clone(SEED)); } catch(e) { D = normalize(clone(SEED)); }
+  try { const raw = store.get(KEY); D = normalize(raw ? JSON.parse(raw) : STAVBA === DEF_STAVBA ? clone(SEED) : novaStavbaData()); } catch(e) { D = normalize(STAVBA === DEF_STAVBA ? clone(SEED) : novaStavbaData()); }
   snap = takeSnap(D);
   let fileHandle = null, fileName = '';
 
@@ -1346,7 +1376,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function renderHeader() {
     $('#eyebrow').textContent = `${D.project.company || ''}`;
     { const pn = String(D.project.name || ''), sh = pn.split(',')[0].replace(/^Rekonstrukce( objektu)?\s*/i, '') || pn, rest = pn.slice(pn.split(',')[0].length).replace(/^,\s*/, '');
-      $('#app-h1').innerHTML = esc(sh).replace(/(\s[\d/]+)$/, '<span>$1</span>'); $('#side-proj').textContent = sh; $('#side-ver').textContent = 'Constructo ' + APP_VERSION; $('#side-co').textContent = rest || 'změnit v Data'; }
+      $('#app-h1').innerHTML = esc(sh).replace(/(\s[\d/]+)$/, '<span>$1</span>'); $('#side-proj').textContent = sh; $('#side-ver').textContent = 'Constructo ' + APP_VERSION; $('#side-co').textContent = [D.project.ulice, D.project.mesto].filter(Boolean).join(', ') || rest || ''; }
     $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní zápisy',hmg:'Harmonogram'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
     $('#foot').innerHTML = `<span>Constructo ${APP_VERSION} · samostatná aplikace, data jsou uložená v tomto prohlížeči${fileHandle ? ' a v souboru ' + esc(fileName) : ''}</span><span>HMG: ${esc(D.hmgInfo.source || '')}, stav ke dni ${hmgDateTxt()}</span><span>${SY ? 'Synchronizace zapnutá' : 'Bez synchronizace'}</span><span>Naposledy uloženo ${D.savedAt ? new Date(D.savedAt).toLocaleString('cs-CZ') : '–'}</span>`;
   }
@@ -1354,7 +1384,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function renderBanners() {
     const b = [];
     if (!storageOk) b.push(`<div class="banner warn">Prohlížeč nedovolí ukládat data. Změny se ztratí po zavření okna. Ukládejte zálohu (Data → Uložit zálohu) nebo soubor otevřete v Chrome, Edge či Firefoxu.</div>`);
-    const pristine = !SY && !D.diary.some(e => e.kind !== 'plan') && !D.tasks.some(t => t._ts) && !D.hmg.some(h => h._ts);
+    const pristine = STAVBA === DEF_STAVBA && !SY && !D.diary.some(e => e.kind !== 'plan') && !D.tasks.some(t => t._ts) && !D.hmg.some(h => h._ts);
     if (pristine) b.push(`<div class="banner warn no-print"><span><b>Zobrazují se výchozí data (úkoly k 10. 10. a z porady 13. 10. 2026).</b> Pokud už aplikaci používáte, vaše úkoly jsou uložené jinde: v předchozí verzi souboru nebo ve sdílení na Googlu. Načtěte je jedním z tlačítek.</span><button class="btn" type="button" id="bn-code">Mám kód připojení</button><button class="btn" type="button" id="bn-imp">Načíst zálohu</button></div>`);
     if (RO()) { const byP = !(SY && store.get('hyb-ro') === '1');
       b.push(`<div class="banner info no-print"><span><b>Jen prohlížení${byP ? ' · ' + esc(me()) : ''}.</b> Vidíte stav stavby, ale nic neměníte.</span>${byP ? '<button class="btn" type="button" id="bn-who">Nejsem ' + esc(me()) + '</button>' : ''}</div>`); $('#banners').innerHTML = b.join('');
@@ -3304,6 +3334,64 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     ov.querySelectorAll('[data-x]').forEach(b => b.onclick = () => { close(); extra[Number(b.dataset.x)][1](); });
   }
 
+  /* ---------- 4.33: Stavby – přepnout, založit, údaje o stavbě (pole převzatá ze Stavebního deníku) ---------- */
+  const STAV_STAV = {aktivni: 'Probíhá', priprava: 'V přípravě', pozastavena: 'Pozastavená', dokoncena: 'Dokončená'};
+  function stavbaVychozi() {
+    // Hybernská: předvyplnit údaje, které zatím nebyly zadané (uloží se až po kliknutí na Uložit)
+    if (STAVBA !== DEF_STAVBA) return {};
+    const st = D.hmg.map(h => h.start).filter(Boolean).sort(), en = D.hmg.map(h => h.end).filter(Boolean).sort();
+    return {ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
+  }
+  function stavbaForm(nova) {
+    const P = nova ? {stat: 'Česká republika', stav: 'priprava', company: D.project.company || ''} : Object.assign({}, stavbaVychozi(), D.project || {});
+    const f = (id, label, v, extra = '', cls = '') => `<div class="fld ${cls}"><label for="${id}">${label}</label><input id="${id}" value="${esc(v || '')}" ${extra}></div>`;
+    confirmModal(nova ? 'Nová stavba' : 'Údaje o stavbě', `
+      <div class="stv-grid">
+        ${f('sv-name', 'Název stavby', P.name, 'placeholder="např. Rekonstrukce Hybernská 1000/8"', 'full')}
+        ${f('sv-ulice', 'Ulice a číslo', P.ulice, 'placeholder="Ulice"')}
+        ${f('sv-mesto', 'Město', P.mesto, 'placeholder="Město"')}
+        ${f('sv-psc', 'PSČ', P.psc, 'placeholder="PSČ" inputmode="numeric"')}
+        ${f('sv-stat', 'Stát', P.stat, 'list="sv-staty"')}
+        <datalist id="sv-staty"><option value="Česká republika"><option value="Slovensko"><option value="Německo"><option value="Rakousko"><option value="Polsko"></datalist>
+        ${f('sv-zac', 'Odhadovaný začátek', P.zacatek, 'type="date"')}
+        ${f('sv-kon', 'Odhadovaný konec', P.konec, 'type="date"')}
+        ${f('sv-inv', 'Investor', P.investor, 'placeholder="Investor"')}
+        ${f('sv-co', 'Zhotovitel', P.company, 'placeholder="Zhotovitel"')}
+        <div class="fld"><label for="sv-stav">Stav stavby</label><select id="sv-stav">${Object.entries(STAV_STAV).map(([k, v]) => `<option value="${k}"${(P.stav || 'aktivni') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+        <div class="fld full"><label for="sv-popis">Popis</label><textarea id="sv-popis" rows="3" placeholder="Krátký popis stavby">${esc(P.popis || '')}</textarea></div>
+      </div>
+      ${nova ? '<p class="hcap">Nová stavba začne prázdná: bez úkolů, harmonogramu a zápisů. Zatím se ukládá jen v tomto počítači.</p>' : ''}`,
+      nova ? 'Založit stavbu' : 'Uložit', () => {
+        const v = id => ($('#' + id).value || '').trim();
+        const vals = {name: v('sv-name'), ulice: v('sv-ulice'), mesto: v('sv-mesto'), psc: v('sv-psc'), stat: v('sv-stat'), zacatek: v('sv-zac'), konec: v('sv-kon'), investor: v('sv-inv'), company: v('sv-co'), stav: v('sv-stav'), popis: v('sv-popis')};
+        if (!vals.name) { $('#sv-name').focus(); toast('Napište název stavby.'); return 'keep'; }
+        if (vals.zacatek && vals.konec && vals.konec < vals.zacatek) { $('#sv-kon').focus(); toast('Konec je dřív než začátek.'); return 'keep'; }
+        if (nova) {
+          const id = 's' + uid(), a = stavbyList();
+          a.push({id, name: vals.name, project: vals}); saveStavby(a); store.set('hyb-stavba', id);
+          toast('Stavba založena: ' + vals.name); setTimeout(() => location.reload(), 400); return;
+        }
+        Object.assign(D.project, vals);
+        const a = stavbyList(); const r = a.find(x => x.id === STAVBA); if (r) { r.name = vals.name; saveStavby(a); } else { a.push({id: STAVBA, name: vals.name}); saveStavby(a); }
+        commit(); toast('Údaje o stavbě uloženy');
+      });
+    setTimeout(() => { const n = $('#sv-name'); if (n && !n.value) n.focus(); }, 30);
+  }
+  function stavbyDialog() {
+    const a = stavbyList();
+    if (!a.some(x => x.id === STAVBA)) a.push({id: STAVBA, name: D.project.name || 'Stavba'});
+    const cur = a.find(x => x.id === STAVBA); if (cur && D.project.name && cur.name !== D.project.name) { cur.name = D.project.name; saveStavby(a); }
+    confirmModal('Stavby', `
+      <p>Klikněte na stavbu, se kterou chcete pracovat.</p>
+      <div class="stv-list">${a.map(x => `<button type="button" data-stv="${esc(x.id)}" class="${x.id === STAVBA ? 'on' : ''}"><span><b>${esc(x.name || 'Stavba')}</b><br><small>${x.id === DEF_STAVBA ? 'sdílená s kolegy přes Google' : 'zatím jen v tomto počítači'}</small></span><small>${x.id === STAVBA ? 'otevřená' : 'Otevřít →'}</small></button>`).join('')}</div>`,
+      'Údaje o stavbě', () => { setTimeout(() => stavbaForm(false), 0); }, [['+ Nová stavba', () => stavbaForm(true)]]);
+    document.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => {
+      const id = b.dataset.stv; if (id === STAVBA) { stavbaForm(false); return; }
+      store.set('hyb-stavba', id); toast('Otevírám stavbu…'); setTimeout(() => location.reload(), 200);
+    });
+  }
+  $('#side-stavba').onclick = stavbyDialog;
+
   /* ---------- jednoduchý generátor PDF (bez knihoven, písmo Liberation Sans vložené v souboru) ---------- */
   let PF = null;
   const pdfFonts = () => {
@@ -3538,12 +3626,13 @@ thead{display:table-header-group}tr{break-inside:avoid}
   // pozvaný „jen nahlíží“ má od skriptu klíč jen pro čtení: nic se neukládá ani neodesílá, server by změny stejně odmítl
   function RO() { try { if (SY && store.get('hyb-ro') === '1') return true; const n = $('#me') && $('#me').value.trim(), p = n && D && D.project && D.project.people && D.project.people[n]; return !!(p && p.access === 'nahlizi' && !(D.project.admins || ['Luboš Kozák']).includes(n)); } catch (e) { return false; } }
   if (!SY) { try { const c = JSON.parse(document.getElementById('sync-config').textContent || '{}'); if (c && c.url && c.key) { SY = {url: c.url, key: c.key}; store.set('hyb-sync', JSON.stringify(SY)); } } catch (e) {} }  // uložit, aby fungovaly i další verze souboru bez vloženého připojení
+  if (STAVBA !== DEF_STAVBA) SY = null;  // 4.33: další stavby zatím jen v tomto počítači – nikdy je neposílat do sdílených dat Hybernské
   const revKey = () => 'hyb-sync-rev:' + (SY ? SY.url : '');
   const sync = {rev: 0, busy: false, dirty: store.get('hyb-sync-dirty') === '1', state: 'idle', last: null, err: ''};
   sync.rev = Number(store.get(revKey())) || 0;
   let pushT = null;
   function markDirty() {
-    if (!SY || RO()) return;
+    if (!SY || RO() || STAVBA !== DEF_STAVBA) return;
     sync.dirty = true; store.set('hyb-sync-dirty', '1');
     clearTimeout(pushT); pushT = setTimeout(syncNow, 800);
   }
@@ -3572,7 +3661,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
     finally { clearTimeout(tm); }
   }
   async function syncNow() {
-    if (!SY || sync.busy) return;
+    if (!SY || sync.busy || STAVBA !== DEF_STAVBA) return;
     sync.busy = true; renderSync();
     const pushing = sync.dirty;
     try {
@@ -5664,8 +5753,9 @@ ${tydenniHtml.toString()}
   {
     // odkaz z pozvánky: …/pc/?k=K7M2QX → připojí se samo, kód z adresy zmizí
     const k = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (k && STAVBA !== DEF_STAVBA) { store.set('hyb-stavba', DEF_STAVBA); location.reload(); }  // pozvánka patří ke sdílené stavbě Hybernská
     if (k) history.replaceState(null, '', location.pathname + location.hash);
-    if (!SY && WEB_SCRIPT) setTimeout(() => webJoinDialog(k.length === 6 ? k : ''), 400);
+    if (!SY && WEB_SCRIPT && STAVBA === DEF_STAVBA) setTimeout(() => webJoinDialog(k.length === 6 ? k : ''), 400);
     else if (SY && k) setTimeout(() => toast('Tento počítač už je ke stavbě připojený.'), 600);
   }
   document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) toggleMenu(false); });
