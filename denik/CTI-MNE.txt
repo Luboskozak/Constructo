@@ -1,0 +1,3 @@
+Stavební deník Constructo (fáze 1) – sestavená webová aplikace.
+Zdrojový kód je soukromě v projektu (stavebni-denik-zdroj.zip), sem patří jen hotový build.
+Adresa: https://lovely-gumption-be0f29.netlify.app/denik/
