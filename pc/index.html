@@ -2,11 +2,13 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-DzkcFLMhNn94fa13Bt1tLFAxDgAK+9F8zCT/evjq1ww=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-q04eARD/rRbq/C1bVpFyQo4Ovcz/KTGTBMGFj8dfCFo='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%23131518%22/%3E%3Cg%20transform%3D%22translate%286%2017%29%20scale%28.1%29%22%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22516%22%20height%3D%22310%22%3E%3Crect%20width%3D%22516%22%20height%3D%22310%22%20fill%3D%22%23fff%22/%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%2287%22%20fill%3D%22%23000%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22102%22%20width%3D%2262%22%20height%3D%22106%22%20fill%3D%22%23000%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url%28%23m%29%22%20fill%3D%22%23F4D23C%22%3E%3Ccircle%20cx%3D%22158%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22155%22%20r%3D%22152%22/%3E%3C/g%3E%3Crect%20x%3D%22240%22%20y%3D%22138%22%20width%3D%2267%22%20height%3D%2235%22%20fill%3D%22%23F4D23C%22/%3E%3C/g%3E%3C/svg%3E">
 <meta name="theme-color" content="#131518">
+<link rel="manifest" href="manifest.webmanifest">
+<script src="qr.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
 <style>
 /* Layout: stavební deník jako nástroj — souhrn nahoře, lidé, pak seznam úkolů po odpovědných osobách nebo harmonogram */
@@ -360,6 +362,15 @@ body{padding:0 0 48px 236px;font-size:14.5px}
 .side .grow{flex:1}
 .side .side-mob{border:0;border-radius:12px;background:var(--accent);color:var(--k);font:800 14.5px var(--f-body);padding:12px 14px;text-align:left;cursor:pointer}
 .side .side-mob:hover{filter:brightness(1.06)}
+.side .side-inst{border:1px solid rgba(255,255,255,.25);border-radius:12px;background:transparent;color:inherit;font:700 13.5px var(--f-body);padding:10px 14px;text-align:left;cursor:pointer;margin-top:8px}
+.side .side-inst:hover{background:rgba(255,255,255,.08)}
+.iv-link{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:12px 0 4px}
+.iv-qr{background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line);line-height:0}
+.iv-qr img{width:168px;height:168px;image-rendering:pixelated}
+.iv-send{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.iv-send a,.iv-send button{flex:1 1 120px;text-align:center;text-decoration:none;font-weight:700;padding:10px 12px}
+.iv-url{font:600 13px var(--f-mono);word-break:break-all;background:var(--soft);padding:8px 10px;border-radius:6px}
+@media (max-width:560px){.iv-link{grid-template-columns:1fr}.iv-qr{justify-self:center}}
 .side .side-foot{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#5d656c;padding:0 8px}
 .side .topnav{position:static;background:none;border:0;padding:0;margin:0}
 .side .topnav .seg{display:flex;flex-direction:column;gap:3px;border:0;background:none;border-radius:0;overflow:visible}
@@ -439,7 +450,7 @@ h2{font:800 22px/1.2 var(--f-display);font-stretch:normal;text-transform:none;le
   .side{position:sticky;top:0;bottom:auto;width:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:10px 16px 8px;overflow:visible;margin-bottom:4px}
   .side .brand{padding:0}.side .cx{height:22px}.side .wm{font-size:22px}
   .side .claim{padding:0;margin-left:auto;font-size:9.5px}
-  .side .stavba,.side .grow,.side .side-foot,.side .side-mob{display:none}
+  .side .stavba,.side .grow,.side .side-foot,.side .side-mob,.side .side-inst{display:none}
   .side .topnav{flex-basis:100%}
   .side .topnav .seg{flex-direction:row;overflow-x:auto;scrollbar-width:none;gap:4px}
   .side .topnav .seg button{padding:8px 12px 8px 36px;font-size:13.5px}
@@ -859,6 +870,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   </nav>
   <div class="grow"></div>
   <button type="button" class="side-mob" id="side-mob">Pozvat kolegu</button>
+  <button type="button" class="side-inst" id="side-inst" hidden>⬇ Ikona na plochu</button>
   <div class="side-foot" id="side-ver">Constructo</div>
 </aside>
 <div class="wrap">
@@ -1077,7 +1089,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.30';
+  const APP_VERSION = '4.31';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY = 'hybernska-rizeni-data-v1';
@@ -4009,13 +4021,14 @@ ${tydenniHtml.toString()}
       <p class="hcap">Kdo má tento kód, může data číst i měnit. Neposílejte ho mimo tým.</p>`, null, null, [['Zkopírovat kód', () => copyText(c, 'Kód zkopírován, vložte ho kolegovi do zprávy')]]);
   }
   // webová verze: kolega zadá krátký zvací kód (nebo kód HYB1) a skript mu vrátí připojení i jméno
-  function webJoinDialog() {
+  function webJoinDialog(pre) {
     confirmModal('Vítejte v Constructu', `
       <p style="margin-top:0">Zadejte <b>zvací kód</b>, který vám poslal administrátor stavby. Má 6 znaků, třeba K7M2QX.</p>
       <div class="fld"><label for="wj-code">Zvací kód</label><input id="wj-code" autocomplete="off" autocapitalize="characters" spellcheck="false" style="font-size:24px;letter-spacing:.22em;text-transform:uppercase"></div>`, 'Připojit', () => 'keep');
     const ok = $('#m-ok'), inp = $('#wj-code');
     inp.focus();
     inp.onkeydown = e => { if (e.key === 'Enter') ok.click(); };
+    if (typeof pre === 'string' && pre) { inp.value = pre; setTimeout(() => ok.click(), 50); }
     ok.onclick = async () => {
       const v = inp.value;
       let c = parseCode(v), jmeno = '';
@@ -4035,18 +4048,33 @@ ${tydenniHtml.toString()}
       sync.rev = 0; sync.dirty = false; store.set('hyb-sync-dirty', '0');
       D.project._ts = -1; D.hmgInfo._ts = -1;  // název a údaje stavby převezme ze serveru
       sync.onDone = () => {
-        if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast(RO() ? 'Připojeno jen na prohlížení' : 'Připojeno' + (jmeno ? ' jako ' + jmeno : '') + ', data se sdílí'); document.body.classList.toggle('ro', RO()); renderBanners(); if (!me() && !RO()) setTimeout(whoDialog, 300); }
+        if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast(RO() ? 'Připojeno jen na prohlížení' : 'Připojeno' + (jmeno ? ' jako ' + jmeno : '') + ', data se sdílí'); document.body.classList.toggle('ro', RO()); renderBanners(); if (!me() && !RO()) setTimeout(whoDialog, 300); else if (pre) setTimeout(() => installOffer(true), 900); }
         else { SY = null; store.set('hyb-sync', ''); renderSync(); again(sync.err || 'Připojení se nepovedlo.'); }
       };
       syncNow();
     };
   }
+  // 4.31: pozvánka = odkaz se schovaným kódem (telefon otevře mobil, počítač /pc/) + QR kód na obrazovce
+  function inviteLink(kod) { const base = ((D.project && D.project.mobileUrl) || WEB_HOME).replace(/[#?].*$/, '').replace(/\/+$/, ''); return base + '/?k=' + encodeURIComponent(kod); }
+  function qrImg(text) {
+    try { const q = qrcode(0, 'M'); q.addData(text); q.make(); return q.createImgTag(5, 0, 'QR kód pozvánky'); } catch (e) { return '<p class="hcap">QR kód se nepodařilo vytvořit.</p>'; }
+  }
+  // ikona na plochu: Chrome a Edge nabídnou instalaci jedním klikem (vytvoří ikonu na ploše a v Start)
+  let installEvt = null;
+  const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  function installOffer(afterJoin) {
+    if (standalone()) return;
+    if (!installEvt) { if (!afterJoin) confirmModal('Ikona na plochu', '<p>V Chrome nebo Edge: vpravo nahoře v adresním řádku klikněte na ikonku <b>Nainstalovat</b> (monitor se šipkou), nebo v menu ⋮ zvolte <b>Odeslat, uložit a sdílet → Nainstalovat stránku jako aplikaci</b>.</p>', 'Rozumím', () => {}); return; }
+    confirmModal(afterJoin ? 'Hotovo, jste připojený' : 'Ikona na plochu', `<p style="margin-top:0">${afterJoin ? 'Chcete mít Constructo jako ikonu na ploše? ' : ''}Klikněte na <b>Nainstalovat</b> a v okně, které se objeví, ještě jednou <b>Nainstalovat</b>. Ikona se objeví na ploše a Constructo se pak otevírá jako samostatný program.</p>`, 'Nainstalovat', async () => { const e = installEvt; installEvt = null; $('#side-inst').hidden = true; try { await e.prompt(); } catch (x) {} });
+  }
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('#side-inst').hidden = standalone(); });
+  addEventListener('appinstalled', () => { installEvt = null; $('#side-inst').hidden = true; toast('Ikona Constructo je na ploše'); });
   // pozvánka: krátký kód pro kolegu (vytváří ho skript verze 3)
   function inviteDialog() {
     if (!SY) { confirmModal('Pozvat kolegu', '<p>Pozvánky fungují se zapnutou synchronizací. Nejdřív ji zapněte (Data → Automatická synchronizace).</p>', 'Zapnout synchronizaci', () => { setTimeout(syncDialog, 50); }); return; }
     const names = teamList().filter(n => n && n !== 'Bez přiřazení');
     confirmModal('Pozvat kolegu do Constructa', `
-      <p style="margin-top:0">Kolega dostane krátký kód. Otevře si Constructo v telefonu nebo v počítači, zadá kód a je připojený. Nic se nestahuje ani neinstaluje.</p>
+      <p style="margin-top:0">Kolega dostane odkaz (nebo si vyfotí QR kód). Klepne na něj a je připojený. Nic neopisuje.</p>
       <div class="fld"><label>Co bude moci dělat?</label><div class="iv-roles">
         <label><input type="radio" name="iv-r" value="work" checked><b>Pracuje v projektu</b><span>má úkoly, je v Lidech</span></label>
         <label><input type="radio" name="iv-r" value="ro"><b>Jen nahlíží</b><span>jen prohlíží, nikde se neukáže</span></label></div></div>
@@ -4076,13 +4104,26 @@ ${tydenniHtml.toString()}
         confirmModal('Nejdřív aktualizujte skript', '<p>Pozvánky umí až nová verze skriptu na Googlu. Aktualizace je stejná jako minule: zkopírovat skript, vložit ho do Googlu, uložit a pak <b>Implementovat → Spravovat implementace → tužka → Nová verze → Implementovat</b>. Adresa ani data se nezmění.</p>', null, null, [['Aktualizovat skript…', scriptUpdateDialog]]);
         return;
       }
-      const base = ((D.project && D.project.mobileUrl) || WEB_HOME).replace(/[#?].*$/, '').replace(/\/+$/, '');
       const stavba = String(D.project.name || 'stavba').split(',')[0];
-      const msg = `Ahoj, posílám ti přístup do Constructa (${stavba})${view ? ' na prohlížení' : ''}.\n\nV telefonu otevři: ${base}\nV počítači otevři: ${base}/pc/\n\nZvací kód: ${r.kod}\n(platí 14 dní)`;
+      const link = inviteLink(r.kod);
+      const msg = `Ahoj, posílám ti přístup do Constructa (${stavba})${view ? ' na prohlížení' : ''}.\n\nKlepni na odkaz, Constructo se otevře a samo připojí:\n${link}\n\n(platí 14 dní)`;
+      const p = view ? {} : personOf(who);
       document.querySelectorAll('input[name=iv-r]').forEach(x => x.disabled = true);
-      $('#iv-out').innerHTML = `<p class="code" style="font-size:32px;letter-spacing:.25em;text-align:center;margin:14px 0 6px">${esc(r.kod)}</p><p class="hcap">${view ? 'Kód jen na prohlížení. ' : ''}Zprávu níže zkopírujte a pošlete kolegovi (SMS, WhatsApp, e-mail). Kód platí 14 dní.</p><textarea rows="7" readonly style="width:100%;font:inherit">${esc(msg)}</textarea>`;
-      ok.textContent = 'Zkopírovat zprávu';
-      ok.onclick = () => copyText(msg, 'Zpráva zkopírována, vložte ji kolegovi do zprávy');
+      $('#iv-w').hidden = true; $('#iv-v').hidden = true; $('#iv-team').parentNode.hidden = true;
+      $('#iv-out').innerHTML = `<p style="margin:12px 0 0"><b>Pozvánka pro ${esc(who)} je hotová.</b>${view ? ' Jen na prohlížení.' : ''} Platí 14 dní.</p>
+        <div class="iv-link"><div class="iv-qr">${qrImg(link)}</div>
+          <div><p style="margin:0 0 6px"><b>Stojí vedle vás?</b> Ať si čtvereček vyfotí fotoaparátem v telefonu a klepne na odkaz, který se mu ukáže. Je hotovo.</p>
+          <p style="margin:0 0 6px"><b>Je jinde?</b> Pošlete mu odkaz tlačítkem níže.</p>
+          <div class="iv-url">${esc(link)}</div></div></div>
+        <div class="iv-send">
+          <a class="btn" href="sms:${esc((p.phone || '').replace(/[^+0-9]/g, ''))}?&body=${encodeURIComponent(msg)}">SMS</a>
+          <a class="btn" href="https://wa.me/${esc((p.phone || '').replace(/[^0-9]/g, '').replace(/^(?=[67]\d{8}$)/, '420'))}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn" href="mailto:${esc(p.email || '')}?subject=${encodeURIComponent('Přístup do Constructa')}&body=${encodeURIComponent(msg)}">E-mail</a>
+          <button type="button" class="btn" id="iv-copy">Zkopírovat</button></div>
+        <p class="hcap" style="margin:8px 0 0">Kolega nic neopisuje, kód je schovaný v odkazu. Kdyby se přesto ptal, kód je <b class="code" style="letter-spacing:.15em">${esc(r.kod)}</b>.</p>`;
+      $('#iv-copy').onclick = () => copyText(msg, 'Zpráva zkopírována, vložte ji kolegovi do zprávy');
+      ok.textContent = 'Hotovo';
+      ok.onclick = () => { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; };
     };
   }
   // hromadná pozvánka: kód pro každého zaškrtnutého kolegu a jedna zpráva do skupiny (WhatsApp, e-mail)
@@ -4110,10 +4151,9 @@ ${tydenniHtml.toString()}
       }
       ok.disabled = false;
       if (!res.length) { ok.textContent = 'Vytvořit kódy'; return; }
-      const base = ((D.project && D.project.mobileUrl) || WEB_HOME).replace(/[#?].*$/, '').replace(/\/+$/, '');
       const stavba = String(D.project.name || 'stavba').split(',')[0];
-      const msg = `Ahoj, posílám vám přístup do Constructa (${stavba}). Je to náš program na úkoly a hlášení ze stavby, nic se nestahuje.\n\nV telefonu otevři: ${base}\n(na iPhonu si ho nejdřív přidej na plochu: Sdílet → Přidat na plochu)\nV počítači otevři: ${base}/pc/\n\nPak zadej svůj zvací kód:\n${res.map(x => `${x.n}: ${x.kod}`).join('\n')}\n\nKódy platí 14 dní. Neposílejte je prosím mimo tým.`;
-      const one = x => `Ahoj, posílám ti přístup do Constructa (${stavba}).\n\nV telefonu otevři: ${base}\n(na iPhonu si ho nejdřív přidej na plochu: Sdílet → Přidat na plochu)\nV počítači otevři: ${base}/pc/\n\nTvůj zvací kód: ${x.kod}\n(platí 14 dní)`;
+      const msg = `Ahoj, posílám vám přístup do Constructa (${stavba}). Je to náš program na úkoly a hlášení ze stavby.\n\nKaždý klepněte na svůj odkaz, Constructo se otevře a samo připojí:\n${res.map(x => `${x.n}: ${inviteLink(x.kod)}`).join('\n')}\n\nOdkazy platí 14 dní. Neposílejte je prosím mimo tým.`;
+      const one = x => `Ahoj, posílám ti přístup do Constructa (${stavba}).\n\nKlepni na odkaz, Constructo se otevře a samo připojí:\n${inviteLink(x.kod)}\n\n(platí 14 dní)`;
       $('#tm-list').hidden = true; $('#tm-hint').hidden = true;
       $('#tm-out').innerHTML = `<p style="margin:10px 0 4px"><b>Kódy jsou hotové (${res.length}).</b> Zprávu níže zkopírujte a vložte do skupiny kolegů, nebo pošlete každému zvlášť.</p>
         <textarea rows="10" readonly style="width:100%;font:inherit">${esc(msg)}</textarea>
@@ -5620,7 +5660,14 @@ ${tydenniHtml.toString()}
   const toggleMenu = on => { menu.hidden = !on; $('#btn-menu').setAttribute('aria-expanded', on); };
   $('#btn-menu').onclick = e => { e.stopPropagation(); toggleMenu(menu.hidden); };
   $('#side-mob').onclick = () => inviteDialog();
-  if (!SY && WEB_SCRIPT) setTimeout(webJoinDialog, 400);
+  $('#side-inst').onclick = () => installOffer(false);
+  {
+    // odkaz z pozvánky: …/pc/?k=K7M2QX → připojí se samo, kód z adresy zmizí
+    const k = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (k) history.replaceState(null, '', location.pathname + location.hash);
+    if (!SY && WEB_SCRIPT) setTimeout(() => webJoinDialog(k.length === 6 ? k : ''), 400);
+    else if (SY && k) setTimeout(() => toast('Tento počítač už je ke stavbě připojený.'), 600);
+  }
   document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) toggleMenu(false); });
   menu.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     toggleMenu(false);
