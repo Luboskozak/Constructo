@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-WFVKSA4FJFFgkMC8kVVlWBPJihMimHyr2pK736PfO0k=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-YelsTLyvNZUkP80pN12LQmlScZm4p3REgeiFV4k1x5U=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -3391,7 +3391,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const inv = prijemciList().find(x => /investor/i.test(x.kdo || '')), fc = {};
     teamList().forEach(n => { const c = personOf(n).company; if (c) fc[c] = (fc[c] || 0) + 1; });
     const zhot = Object.keys(fc).sort((x, y) => fc[y] - fc[x])[0] || '';
-    return {name: 'Rekonstrukce Hybernská 1000/8', investor: inv ? (inv.firma || inv.jmeno || '') : '', company: zhot, ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
+    return {name: 'Hybernská 1000/8', investor: inv ? (inv.firma || inv.jmeno || '') : '', company: zhot, ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
   }
   function stavbaForm(nova) {
     const P = nova ? {stat: 'Česká republika', stav: 'priprava', company: D.project.company || ''} : Object.assign({}, stavbaVychozi(), D.project || {});
@@ -3417,7 +3417,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     confirmModal(nova ? 'Nová stavba' : 'Údaje o stavbě', `
       <div class="stv-sec">Základní údaje</div>
       <div class="stv-grid">
-        ${f('sv-name', 'Název stavby', P.name, 'placeholder="např. Rekonstrukce Hybernská 1000/8"', 'full')}
+        ${f('sv-name', 'Název stavby', P.name, 'placeholder="např. Hybernská 1000/8"', 'full')}
         ${f('sv-ulice', 'Ulice a číslo', P.ulice, 'placeholder="Ulice"')}
         ${f('sv-mesto', 'Město', P.mesto, 'placeholder="Město"')}
         ${f('sv-psc', 'PSČ', P.psc, 'placeholder="PSČ" inputmode="numeric"')}

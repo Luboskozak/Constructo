@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunkconstructo_web_app||=[]).push([[9972],{9972(e,s,t){t.r(s);var c=t(66685),a=t(66743),n=t(44348),o=t(80518),p=t(59017);const r=()=>{const e=(0,a.d4)(e=>e.user.ID),{filteredCompanies:s}=(0,a.d4)(e=>e.companies),t=(0,a.wA)();return(0,c.useEffect)(()=>{e&&t({type:n.A.FETCH_COMPANIES})},[e]),(0,p.jsx)(o.OE,{companies:s})};t.d(s,["default",0,r])}}]);
+//# sourceMappingURL=9972.5696fec9.chunk.js.map
