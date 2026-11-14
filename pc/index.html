@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8AF4zxhqlgtCSmdfimMQPrNz7xc3/OTnbys7fyKR0a0=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-WFVKSA4FJFFgkMC8kVVlWBPJihMimHyr2pK736PfO0k=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -358,7 +358,31 @@ body{padding:0 0 48px 236px;font-size:14.5px}
 .side .stavba{background:var(--k2);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;margin-bottom:8px;border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
 .side .stavba:hover{background:var(--k3)}
 .side .stavba .chev{margin-top:6px;font-size:11.5px;font-weight:600;color:#F4D23C}
-/* 4.33: přepínač Stavbyvedení / Deník */
+.side #side-stavba{padding:16px 16px 14px;border:1px solid rgba(244,210,60,.45);margin-bottom:0}
+.side #side-stavba small{color:#F4D23C}
+.side #side-stavba b{font-size:17px}
+.stv-pop{position:fixed;z-index:60;width:300px;max-height:70vh;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.25);padding:8px}
+.stv-pop .cap{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:6px 8px 4px}
+.stv-pop button{display:block;width:100%;text-align:left;border:0;background:none;font:inherit;color:inherit;padding:9px 10px;border-radius:8px;cursor:pointer}
+.stv-pop button:hover{background:var(--bg)}
+.stv-pop button.on{background:#FFF4BF;font-weight:700}
+.stv-pop button small{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+.stv-pop hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+.stv-pop .new{font-weight:700}
+.stv-sec{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.stv-tab{width:100%;border-collapse:collapse;font-size:13px}
+.stv-tab th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:4px 4px}
+.stv-tab td{padding:3px 4px;vertical-align:middle}
+.stv-tab input,.stv-tab select{width:100%;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--panel);color:var(--ink)}
+.stv-tab td.c{text-align:center}
+.stv-tab input[type=checkbox]{width:18px;height:18px}
+.stv-x{border:0;background:none;font-size:18px;line-height:1;color:var(--muted);cursor:pointer;padding:4px 6px}
+.stv-x:hover{color:#c0392b}
+.stv-add{margin-top:6px}
+.stv-block{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+.stv-block div{max-width:440px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
+@media (max-width:700px){.stv-tab .opt{display:none}}
+/* 4.33: přepínač Management / Deník */
 .appsw{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--k2);border-radius:12px;padding:4px;margin:0 0 4px}
 .appsw a{display:block;text-align:center;padding:8px 4px;border-radius:9px;font-size:13px;font-weight:700;color:#c9ced3;text-decoration:none}
 .appsw a:hover{color:#fff;background:var(--k3)}
@@ -871,8 +895,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <aside class="side no-print">
   <div class="brand"><svg class="cx" viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span class="wm">Constructo</span></div>
   <div class="claim">management staveb</div>
-  <div class="appsw" role="group" aria-label="Aplikace"><a class="on" href="/pc/" aria-current="page">Stavbyvedení</a><a href="/denik/" title="Stavební deník Constructo">Deník</a></div>
-  <button type="button" class="stavba" id="side-stavba" title="Údaje o stavbě, přepnout nebo založit stavbu"><small>Stavba</small><b id="side-proj">Hybernská 1000/8</b><em id="side-co"></em><span class="chev">Stavby a údaje ▾</span></button>
+  <button type="button" class="stavba" id="side-stavba" aria-haspopup="true" aria-expanded="false" title="Vybrat stavbu nebo založit novou"><small>Projekt</small><b id="side-proj">Hybernská 1000/8</b><em id="side-co"></em><span class="chev">Vybrat stavbu / nová ▾</span></button>
+  <div class="appsw" role="group" aria-label="Aplikace"><a class="on" href="/pc/" aria-current="page">Management</a><a href="/denik/" title="Stavební deník Constructo">Deník</a></div>
   <nav class="topnav no-print" aria-label="Zobrazení">
     <div class="seg" role="group">
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
@@ -1155,6 +1179,13 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function novaStavbaData() {
     const reg = stavbyList().find(x => x.id === STAVBA) || {}, x = clone(SEED);
     x.project = Object.assign({company: (SEED.project && SEED.project.company) || ''}, reg.project || {}, {name: reg.name || 'Nová stavba'});
+    if (Array.isArray(x.project.clenove)) {
+      const rr = Array.isArray(x.project.roleStavby) ? x.project.roleStavby : [];
+      x.project.team = x.project.clenove.filter(c => c.jmeno && (rr.find(r => r.id === c.role) || {}).mgmt).map(c => c.jmeno);
+      x.project.admins = x.project.clenove.filter(c => c.jmeno && c.role === 'spravce').map(c => c.jmeno);
+      x.project.people = {}; x.project.clenove.forEach(c => { if (c.jmeno && c.email) x.project.people[c.jmeno] = {email: c.email, emails: [{a: c.email, rep: true}], company: c.firma}; });
+      x.project.peopleV2 = true;
+    }
     ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady'].forEach(k => { x[k] = []; }); x.tomb = {};
     x.hmgInfo = {source: '', date: today};
     return x;
@@ -3334,18 +3365,57 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     ov.querySelectorAll('[data-x]').forEach(b => b.onclick = () => { close(); extra[Number(b.dataset.x)][1](); });
   }
 
-  /* ---------- 4.33: Stavby – přepnout, založit, údaje o stavbě (pole převzatá ze Stavebního deníku) ---------- */
+  /* ---------- 4.33: Projekt – vybrat stavbu, založit novou, údaje o stavbě, lidé a role (pole převzatá ze Stavebního deníku) ---------- */
   const STAV_STAV = {aktivni: 'Probíhá', priprava: 'V přípravě', pozastavena: 'Pozastavená', dokoncena: 'Dokončená'};
+  // role jako ve Stavebním deníku: kdo smí do Managementu (jen určení lidé) a jak smí do Deníku (subdodavatelé zapisují)
+  const DENIK_PR = {zapis: 'Zapisuje', cteni: 'Jen čte', ne: 'Bez přístupu'};
+  const ROLE_DEF = [
+    {id: 'spravce', nazev: 'Správce stavby', mgmt: true, denik: 'zapis'},
+    {id: 'vedeni', nazev: 'Vedení stavby', mgmt: true, denik: 'zapis'},
+    {id: 'subdodavatel', nazev: 'Subdodavatel (firma)', mgmt: false, denik: 'zapis'},
+    {id: 'dozor', nazev: 'TDS, investor, BOZP', mgmt: false, denik: 'cteni'}];
+  const rolesOf = P => (Array.isArray(P.roleStavby) && P.roleStavby.length ? P.roleStavby : ROLE_DEF).map(r => Object.assign({}, r));
+  function clenoveVychozi() {
+    // z dat stavby: tým (správce / vedení), příjemci TDS·Investor·BOZP, firmy (subdodavatelé)
+    const out = [], seen = new Set(), add = x => { const k = foldName((x.jmeno || '') + '|' + (x.firma || '')); if (!seen.has(k) && (x.jmeno || x.firma)) { seen.add(k); out.push(Object.assign({id: 'c' + uid()}, x)); } };
+    const zh = D.project.company || stavbaVychozi().company || '';
+    teamList().forEach(n => { const pp = personOf(n); add({jmeno: n, firma: pp.company || zh, role: ADMINS().includes(n) ? 'spravce' : 'vedeni', email: pEmails(pp).map(x => x.a)[0] || '', pozice: pp.role || ''}); });
+    prijemciList().forEach(x => add({jmeno: x.jmeno || '', firma: x.firma || '', role: 'dozor', email: x.email || '', pozice: x.kdo || ''}));
+    firmyList().forEach(f => { const k = (Array.isArray(f.kontakty) && f.kontakty.find(y => y.jmeno)) || {}; add({jmeno: k.jmeno || '', firma: f.firma, role: 'subdodavatel', email: k.email || f.email || '', pozice: k.funkce || ''}); });
+    return out;
+  }
   function stavbaVychozi() {
-    // Hybernská: předvyplnit údaje, které zatím nebyly zadané (uloží se až po kliknutí na Uložit)
+    // Hybernská: předvyplnit údaje z našich dat (uloží se až po kliknutí na Uložit)
     if (STAVBA !== DEF_STAVBA) return {};
     const st = D.hmg.map(h => h.start).filter(Boolean).sort(), en = D.hmg.map(h => h.end).filter(Boolean).sort();
-    return {ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
+    const inv = prijemciList().find(x => /investor/i.test(x.kdo || '')), fc = {};
+    teamList().forEach(n => { const c = personOf(n).company; if (c) fc[c] = (fc[c] || 0) + 1; });
+    const zhot = Object.keys(fc).sort((x, y) => fc[y] - fc[x])[0] || '';
+    return {name: 'Rekonstrukce Hybernská 1000/8', investor: inv ? (inv.firma || inv.jmeno || '') : '', company: zhot, ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
   }
   function stavbaForm(nova) {
     const P = nova ? {stat: 'Česká republika', stav: 'priprava', company: D.project.company || ''} : Object.assign({}, stavbaVychozi(), D.project || {});
+    if (!nova && STAVBA === DEF_STAVBA) { const v0 = stavbaVychozi(); ['name', 'investor', 'company', 'zacatek', 'konec'].forEach(k => { if (!P[k] || (k === 'name' && P[k] === 'Constructo')) P[k] = v0[k] || P[k] || ''; }); }
+    let roles = rolesOf(nova ? {} : P);
+    let clen = nova ? [{id: 'c' + uid(), jmeno: me() || ADMINS()[0], firma: D.project.company || '', role: 'spravce', email: '', pozice: ''}]
+      : (Array.isArray(P.clenove) && P.clenove.length ? P.clenove.map(x => Object.assign({}, x)) : clenoveVychozi());
     const f = (id, label, v, extra = '', cls = '') => `<div class="fld ${cls}"><label for="${id}">${label}</label><input id="${id}" value="${esc(v || '')}" ${extra}></div>`;
+    const roleOpts = sel => roles.map(r => `<option value="${esc(r.id)}"${r.id === sel ? ' selected' : ''}>${esc(r.nazev)}</option>`).join('');
+    const rolesHtml = () => `<table class="stv-tab"><thead><tr><th>Role</th><th class="c">Management</th><th>Deník</th><th></th></tr></thead><tbody>${roles.map((r, i) => `<tr data-ri="${i}">
+        <td><input data-k="nazev" value="${esc(r.nazev)}" aria-label="Název role"></td>
+        <td class="c"><input type="checkbox" data-k="mgmt"${r.mgmt ? ' checked' : ''}${r.id === 'spravce' ? ' disabled' : ''} aria-label="Přístup do Managementu"></td>
+        <td><select data-k="denik" aria-label="Přístup do Deníku"${r.id === 'spravce' ? ' disabled' : ''}>${Object.entries(DENIK_PR).map(([k, l]) => `<option value="${k}"${r.denik === k ? ' selected' : ''}>${l}</option>`).join('')}</select></td>
+        <td>${ROLE_DEF.some(d => d.id === r.id) ? '' : `<button type="button" class="stv-x" data-rdel="${i}" title="Smazat roli" aria-label="Smazat roli">×</button>`}</td></tr>`).join('')}</tbody></table>
+      <button type="button" class="btn stv-add" id="sv-radd">+ Nová role</button>`;
+    const clenHtml = () => `<table class="stv-tab"><thead><tr><th>Jméno</th><th>Firma</th><th>Role</th><th class="opt">E-mail</th><th></th></tr></thead><tbody>${clen.map((c, i) => `<tr data-ci="${i}">
+        <td><input data-k="jmeno" value="${esc(c.jmeno || '')}" placeholder="Jméno" aria-label="Jméno"></td>
+        <td><input data-k="firma" value="${esc(c.firma || '')}" placeholder="Firma" aria-label="Firma"></td>
+        <td><select data-k="role" aria-label="Role">${roleOpts(c.role)}</select></td>
+        <td class="opt"><input data-k="email" type="email" value="${esc(c.email || '')}" placeholder="e-mail" aria-label="E-mail"></td>
+        <td><button type="button" class="stv-x" data-cdel="${i}" title="Odebrat" aria-label="Odebrat">×</button></td></tr>`).join('')}</tbody></table>
+      <button type="button" class="btn stv-add" id="sv-cadd">+ Přidat osobu nebo firmu</button>`;
     confirmModal(nova ? 'Nová stavba' : 'Údaje o stavbě', `
+      <div class="stv-sec">Základní údaje</div>
       <div class="stv-grid">
         ${f('sv-name', 'Název stavby', P.name, 'placeholder="např. Rekonstrukce Hybernská 1000/8"', 'full')}
         ${f('sv-ulice', 'Ulice a číslo', P.ulice, 'placeholder="Ulice"')}
@@ -3353,19 +3423,33 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         ${f('sv-psc', 'PSČ', P.psc, 'placeholder="PSČ" inputmode="numeric"')}
         ${f('sv-stat', 'Stát', P.stat, 'list="sv-staty"')}
         <datalist id="sv-staty"><option value="Česká republika"><option value="Slovensko"><option value="Německo"><option value="Rakousko"><option value="Polsko"></datalist>
+        <div class="fld full"><label for="sv-popis">Popis</label><textarea id="sv-popis" rows="2" placeholder="Krátký popis stavby">${esc(P.popis || '')}</textarea></div>
+      </div>
+      <div class="stv-sec">Řízení stavby</div>
+      <div class="stv-grid">
         ${f('sv-zac', 'Odhadovaný začátek', P.zacatek, 'type="date"')}
         ${f('sv-kon', 'Odhadovaný konec', P.konec, 'type="date"')}
         ${f('sv-inv', 'Investor', P.investor, 'placeholder="Investor"')}
         ${f('sv-co', 'Zhotovitel', P.company, 'placeholder="Zhotovitel"')}
         <div class="fld"><label for="sv-stav">Stav stavby</label><select id="sv-stav">${Object.entries(STAV_STAV).map(([k, v]) => `<option value="${k}"${(P.stav || 'aktivni') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
-        <div class="fld full"><label for="sv-popis">Popis</label><textarea id="sv-popis" rows="3" placeholder="Krátký popis stavby">${esc(P.popis || '')}</textarea></div>
       </div>
+      <div class="stv-sec">Role a přístup</div>
+      <p class="hcap" style="margin:0 0 6px">Do Managementu smí jen určení lidé ze stavby. Do Deníku zapisují i subdodavatelé (firmy).</p>
+      <div id="sv-roles">${rolesHtml()}</div>
+      <div class="stv-sec">Lidé a firmy na stavbě</div>
+      <div id="sv-clen">${clenHtml()}</div>
       ${nova ? '<p class="hcap">Nová stavba začne prázdná: bez úkolů, harmonogramu a zápisů. Zatím se ukládá jen v tomto počítači.</p>' : ''}`,
       nova ? 'Založit stavbu' : 'Uložit', () => {
+        sber();
         const v = id => ($('#' + id).value || '').trim();
         const vals = {name: v('sv-name'), ulice: v('sv-ulice'), mesto: v('sv-mesto'), psc: v('sv-psc'), stat: v('sv-stat'), zacatek: v('sv-zac'), konec: v('sv-kon'), investor: v('sv-inv'), company: v('sv-co'), stav: v('sv-stav'), popis: v('sv-popis')};
         if (!vals.name) { $('#sv-name').focus(); toast('Napište název stavby.'); return 'keep'; }
         if (vals.zacatek && vals.konec && vals.konec < vals.zacatek) { $('#sv-kon').focus(); toast('Konec je dřív než začátek.'); return 'keep'; }
+        const rr = roles.map(r => Object.assign(r, {nazev: (r.nazev || '').trim() || 'Role'}));
+        const cc = clen.map(c => ({id: c.id || 'c' + uid(), jmeno: (c.jmeno || '').trim(), firma: (c.firma || '').trim(), role: c.role || 'subdodavatel', email: (c.email || '').trim(), pozice: c.pozice || ''})).filter(c => c.jmeno || c.firma);
+        const bad = cc.find(c => c.email && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(c.email)); if (bad) { toast('E-mail nevypadá správně: ' + bad.email); return 'keep'; }
+        if (!cc.some(c => c.role === 'spravce')) { toast('Aspoň jeden člověk musí mít roli Správce stavby.'); return 'keep'; }
+        vals.roleStavby = rr; vals.clenove = cc;
         if (nova) {
           const id = 's' + uid(), a = stavbyList();
           a.push({id, name: vals.name, project: vals}); saveStavby(a); store.set('hyb-stavba', id);
@@ -3375,22 +3459,65 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const a = stavbyList(); const r = a.find(x => x.id === STAVBA); if (r) { r.name = vals.name; saveStavby(a); } else { a.push({id: STAVBA, name: vals.name}); saveStavby(a); }
         commit(); toast('Údaje o stavbě uloženy');
       });
+    document.querySelector('#overlay .modal').classList.add('wide');
+    // tabulky rolí a lidí: změny se průběžně sbírají, aby se nic neztratilo při přidání řádku
+    function sber() {
+      document.querySelectorAll('#sv-roles tr[data-ri]').forEach(tr => { const r = roles[+tr.dataset.ri]; if (!r) return; r.nazev = tr.querySelector('[data-k=nazev]').value; if (r.id !== 'spravce') { r.mgmt = tr.querySelector('[data-k=mgmt]').checked; r.denik = tr.querySelector('[data-k=denik]').value; } });
+      document.querySelectorAll('#sv-clen tr[data-ci]').forEach(tr => { const c = clen[+tr.dataset.ci]; if (!c) return; ['jmeno', 'firma', 'role', 'email'].forEach(k => { c[k] = tr.querySelector(`[data-k=${k}]`).value; }); });
+    }
+    function bind() {
+      $('#sv-radd').onclick = () => { sber(); roles.push({id: 'r' + uid(), nazev: '', mgmt: false, denik: 'zapis'}); kresli(); const i = $('#sv-roles tr:last-child input'); if (i) i.focus(); };
+      $('#sv-cadd').onclick = () => { sber(); clen.push({id: 'c' + uid(), jmeno: '', firma: '', role: 'subdodavatel', email: ''}); kresli(); const i = $('#sv-clen tr:last-child input'); if (i) i.focus(); };
+      document.querySelectorAll('[data-rdel]').forEach(x => x.onclick = () => { sber(); const r = roles[+x.dataset.rdel]; roles.splice(+x.dataset.rdel, 1); clen.forEach(c => { if (c.role === r.id) c.role = 'subdodavatel'; }); kresli(); });
+      document.querySelectorAll('[data-cdel]').forEach(x => x.onclick = () => { sber(); clen.splice(+x.dataset.cdel, 1); kresli(); });
+      // přejmenovaná role se hned ukáže ve výběru u lidí
+      document.querySelectorAll('#sv-roles [data-k=nazev]').forEach(x => x.onchange = () => { sber(); $('#sv-clen').innerHTML = clenHtml(); bind(); });
+    }
+    function kresli() { $('#sv-roles').innerHTML = rolesHtml(); $('#sv-clen').innerHTML = clenHtml(); bind(); }
+    bind();
     setTimeout(() => { const n = $('#sv-name'); if (n && !n.value) n.focus(); }, 30);
   }
-  function stavbyDialog() {
+  // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou
+  function stavbyMenu() {
+    const old = document.querySelector('.stv-pop'); if (old) { old.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); return; }
     const a = stavbyList();
     if (!a.some(x => x.id === STAVBA)) a.push({id: STAVBA, name: D.project.name || 'Stavba'});
     const cur = a.find(x => x.id === STAVBA); if (cur && D.project.name && cur.name !== D.project.name) { cur.name = D.project.name; saveStavby(a); }
-    confirmModal('Stavby', `
-      <p>Klikněte na stavbu, se kterou chcete pracovat.</p>
-      <div class="stv-list">${a.map(x => `<button type="button" data-stv="${esc(x.id)}" class="${x.id === STAVBA ? 'on' : ''}"><span><b>${esc(x.name || 'Stavba')}</b><br><small>${x.id === DEF_STAVBA ? 'sdílená s kolegy přes Google' : 'zatím jen v tomto počítači'}</small></span><small>${x.id === STAVBA ? 'otevřená' : 'Otevřít →'}</small></button>`).join('')}</div>`,
-      'Údaje o stavbě', () => { setTimeout(() => stavbaForm(false), 0); }, [['+ Nová stavba', () => stavbaForm(true)]]);
-    document.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => {
-      const id = b.dataset.stv; if (id === STAVBA) { stavbaForm(false); return; }
+    const pop = document.createElement('div'); pop.className = 'stv-pop'; pop.setAttribute('role', 'menu');
+    pop.innerHTML = `<div class="cap">Stavby</div>${a.map(x => `<button type="button" role="menuitem" data-stv="${esc(x.id)}" class="${x.id === STAVBA ? 'on' : ''}">${esc(x.name || 'Stavba')}<small>${x.id === STAVBA ? 'otevřená' : x.id === DEF_STAVBA ? 'sdílená s kolegy' : 'zatím jen v tomto počítači'}</small></button>`).join('')}
+      <hr><button type="button" role="menuitem" class="new" data-act="nova">+ Nová stavba</button><button type="button" role="menuitem" data-act="udaje">Údaje o stavbě, role a lidé</button>`;
+    document.body.appendChild(pop);
+    const r = $('#side-stavba').getBoundingClientRect();
+    pop.style.left = Math.max(8, r.left) + 'px'; pop.style.top = Math.min(r.bottom + 6, window.innerHeight - 120) + 'px';
+    $('#side-stavba').setAttribute('aria-expanded', 'true');
+    const zavri = () => { pop.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); document.removeEventListener('mousedown', venku, true); document.removeEventListener('keydown', esc_); };
+    const venku = e => { if (!pop.contains(e.target) && !$('#side-stavba').contains(e.target)) zavri(); };
+    const esc_ = e => { if (e.key === 'Escape') zavri(); };
+    setTimeout(() => { document.addEventListener('mousedown', venku, true); document.addEventListener('keydown', esc_); }, 0);
+    pop.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => {
+      const id = b.dataset.stv; zavri(); if (id === STAVBA) return;
       store.set('hyb-stavba', id); toast('Otevírám stavbu…'); setTimeout(() => location.reload(), 200);
     });
+    pop.querySelector('[data-act=nova]').onclick = () => { zavri(); stavbaForm(true); };
+    pop.querySelector('[data-act=udaje]').onclick = () => { zavri(); stavbaForm(false); };
+    const f0 = pop.querySelector('button.on') || pop.querySelector('button'); if (f0) f0.focus();
   }
-  $('#side-stavba').onclick = stavbyDialog;
+  $('#side-stavba').onclick = stavbyMenu;
+  // přístup: kdo je ve stavbě zapsaný s rolí bez Managementu (subdodavatel, TDS), uvidí jen odkaz do Deníku
+  function hlidejPristup() {
+    try {
+      const P = D.project || {}, n = me(); if (!n || !Array.isArray(P.clenove) || ADMINS().includes(n)) return;
+      const c = P.clenove.find(x => x.jmeno && foldName(x.jmeno) === foldName(n)); if (!c) return;
+      const r = rolesOf(P).find(x => x.id === c.role); if (!r || r.mgmt) return;
+      if (document.querySelector('.stv-block')) return;
+      const d = document.createElement('div'); d.className = 'stv-block';
+      d.innerHTML = `<div><h2 style="margin:0 0 8px">Management je jen pro vedení stavby</h2><p>${esc(n)} má na stavbě <b>${esc(P.name || '')}</b> roli <b>${esc(r.nazev)}</b>. Zápisy pište ve Stavebním deníku.</p><p style="margin-top:18px"><a class="btn primary" href="/denik/">Otevřít Deník</a></p><p style="margin-top:14px"><button type="button" class="btn" id="stv-nejsem">Nejsem ${esc(n)}</button></p></div>`;
+      document.body.appendChild(d);
+      $('#stv-nejsem').onclick = () => { $('#me').value = ''; $('#me').dispatchEvent(new Event('input')); $('#me').dispatchEvent(new Event('change')); d.remove(); $('#me').focus(); };
+    } catch (e) {}
+  }
+  setTimeout(hlidejPristup, 0);
+  $('#me').addEventListener('change', hlidejPristup);
 
   /* ---------- jednoduchý generátor PDF (bez knihoven, písmo Liberation Sans vložené v souboru) ---------- */
   let PF = null;
