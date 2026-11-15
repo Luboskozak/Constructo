@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-YelsTLyvNZUkP80pN12LQmlScZm4p3REgeiFV4k1x5U=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-SOK1wqdEYhudUNzk/DAiSo/tiOgPGY6dxaA3OeF6CAw=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1129,7 +1129,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.33';
+  const APP_VERSION = '4.34';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1222,8 +1222,28 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       out.tomb[c] = tomb;
     });
     ['project', 'hmgInfo'].forEach(f => { out[f] = ((b[f] || {})._ts || 0) > ((a[f] || {})._ts || 0) ? b[f] : (a[f] || b[f]); });
+    // 4.34: firmy, příjemci, lidé a tým v údajích stavby se slučují po jednom (dřív vyhrála celá novější kopie a starší počítač mohl firmy smazat)
+    const pa = a.project, pb = b.project;
+    if (pa && pb && pa !== pb) {
+      const win = out.project === pb ? pb : pa, los = win === pb ? pa : pb, P = Object.assign({}, win), sm = {};
+      ['firmy', 'prijemci', 'people', 'team'].forEach(k => { sm[k] = Object.assign({}, ((los.smazane || {})[k]) || {}); const w = ((win.smazane || {})[k]) || {}; Object.keys(w).forEach(x => { if (!(sm[k][x] >= w[x])) sm[k][x] = w[x]; }); });
+      P.smazane = sm;
+      ['firmy', 'prijemci'].forEach(k => {
+        const m = new Map();
+        (Array.isArray(los[k]) ? los[k] : []).forEach(r => { if (r && r.id) m.set(r.id, {r, w: false}); });
+        (Array.isArray(win[k]) ? win[k] : []).forEach(r => { if (!r || !r.id) return; const o = m.get(r.id); if (!o || (r._ts || 0) >= (o.r._ts || 0)) m.set(r.id, {r, w: true}); });
+        P[k] = Array.from(m.values()).filter(x => x.w || !(sm[k][x.r.id] >= (x.r._ts || 0))).map(x => x.r);
+      });
+      const pw = win.people || {}, pl = los.people || {}, pp = Object.assign({}, pw);
+      Object.keys(pl).forEach(n => { if (!(n in pp) && !(sm.people[n] >= ((pl[n] || {})._ts || 0))) pp[n] = pl[n]; });
+      if (win.people || los.people) P.people = pp;
+      if (Array.isArray(win.team) || Array.isArray(los.team)) { const t = Array.isArray(win.team) ? win.team.slice() : []; (Array.isArray(los.team) ? los.team : []).forEach(n => { if (!t.includes(n) && !sm.team[n]) t.push(n); }); P.team = t; }
+      out.project = P;
+    }
     return out;
   }
+  // 4.34: smazání firmy / příjemce / osoby se zapamatuje, aby ho sloučení se starší kopií nevrátilo
+  function smazano(k, id) { const s = Object.assign({}, D.project.smazane || {}); s[k] = Object.assign({}, s[k] || {}, {[id]: Date.now()}); D.project.smazane = s; }
   const sig = r => { const x = Object.assign({}, r || {}); delete x._ts; return JSON.stringify(x); };
   function takeSnap(d) { const s = {}; Object.keys(COLLS).forEach(c => s[c] = new Map(d[c].map(r => [COLLS[c](r), sig(r)]))); s.project = sig(d.project); s.hmgInfo = sig(d.hmgInfo); return s; }
   function stampChanges(all) {
@@ -1359,7 +1379,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const exists = owners().find(o => foldName(o) === foldName(name));
         const key = n ? name : (exists || name);
         if (n && name !== n) { if (exists && exists !== n) { toast(`${exists} už v projektu je. Sloučení udělejte v Data → Přejmenovat nebo sloučit osobu.`); return 'keep'; } renameOwner(n, name); if (S.owner === n) S.owner = name; }
-        const pp = Object.assign({}, D.project.people || {}); if (n && n !== key) delete pp[n];
+        const pp = Object.assign({}, D.project.people || {}); if (n && n !== key) { delete pp[n]; smazano('people', n); smazano('team', n); }
         pp[key] = Object.assign({}, pp[key] || {}, {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role, phone, access, company});
         D.project.people = pp;
         if (!teamList().includes(key)) D.project.team = [...teamList(), key];
@@ -1472,7 +1492,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     box.querySelectorAll('[data-card]').forEach(c => { const go = e => { e.stopPropagation(); e.preventDefault(); personDialog(c.dataset.card); }; c.onclick = go; c.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') go(e); }; });
     if ($('#p-add')) { $('#p-add').onclick = () => addTaskFor(S.owner); $('#p-off').onclick = () => { S.owner = ''; render(); }; }
     if ($('#p-edit')) $('#p-edit').onclick = () => personDialog(S.owner);
-    if ($('#p-del')) $('#p-del').onclick = () => { const n = S.owner; confirmModal('Odebrat z týmu', `<p>Osoba <b>${esc(n)}</b> nemá žádný úkol. Odebrat ji ze seznamu lidí?</p>`, 'Odebrat', () => { D.project.team = teamList().filter(x => x !== n); S.owner = ''; commit(); toast('Odebráno: ' + n); }); };
+    if ($('#p-del')) $('#p-del').onclick = () => { const n = S.owner; confirmModal('Odebrat z týmu', `<p>Osoba <b>${esc(n)}</b> nemá žádný úkol. Odebrat ji ze seznamu lidí?</p>`, 'Odebrat', () => { smazano('team', n); D.project.team = teamList().filter(x => x !== n); S.owner = ''; commit(); toast('Odebráno: ' + n); }); };
   }
 
   /* ---------- přidání úkolu vybrané osobě (nový nebo z harmonogramu) ---------- */
@@ -2669,7 +2689,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         if ((e.present || []).includes(from)) e.present = [...new Set(e.present.map(m => m === from ? to : m))]; } });
     D.hmg.forEach(h => { const ps = String(h.owner || '').split(/\s*\/\s*/); if (ps.includes(from)) { h.owner = [...new Set(ps.map(m => m === from ? to : m))].join(' / '); n++; } });
     if (teamList().includes(from)) { D.project.team = [...new Set(teamList().map(m => m === from ? to : m))]; n++; }
-    if (D.project.people && D.project.people[from]) { const pp = Object.assign({}, D.project.people); pp[to] = Object.assign({}, pp[from], pp[to] || {}); delete pp[from]; D.project.people = pp; }
+    smazano('team', from); if (D.project.people && D.project.people[from]) { smazano('people', from); const pp = Object.assign({}, D.project.people); pp[to] = Object.assign({}, pp[from], pp[to] || {}); delete pp[from]; D.project.people = pp; }
     return n;
   }
   function canonOwner(n) {
@@ -3007,7 +3027,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     v.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => prijemceEdit(b.dataset.pe));
     v.querySelectorAll('[data-pd]').forEach(b => b.onclick = () => {
       if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
-      D.project.prijemci = prijemciList().filter(y => y.id !== b.dataset.pd); commit(); toast('Příjemce smazán');
+      smazano('prijemci', b.dataset.pd); D.project.prijemci = prijemciList().filter(y => y.id !== b.dataset.pd); commit(); toast('Příjemce smazán');
     });
     const add = $('#fm-add'); if (add) add.onclick = () => firmaEdit();
     v.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => firmaEdit(b.dataset.fe));
@@ -3015,7 +3035,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     v.querySelectorAll('[data-fd]').forEach(b => b.onclick = () => {
       if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
       const x = firmyList().find(y => y.id === b.dataset.fd);
-      D.project.firmy = firmyList().filter(y => y.id !== b.dataset.fd); commit(); toast('Smazáno: ' + (x ? x.firma : 'firma'));
+      smazano('firmy', b.dataset.fd); D.project.firmy = firmyList().filter(y => y.id !== b.dataset.fd); commit(); toast('Smazáno: ' + (x ? x.firma : 'firma'));
     });
   }
   const prijemciList = () => (Array.isArray(D.project.prijemci) ? D.project.prijemci : []).filter(x => x && x.id);
@@ -3032,7 +3052,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       if (!kdo) { toast('Vyberte pozici, nebo napište vlastní.'); return 'keep'; }
       if (!EMAIL_RE.test(email)) { toast('Doplňte platný e-mail.'); return 'keep'; }
       const x = {id: ed ? ed.id : 'p' + Date.now().toString(36), kdo, jmeno, firma, email};
-      D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x);
+      x._ts = Date.now(); D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x);
       commit(); toast('Příjemce uložen');
     });
     const sel = $('#pr-sel'), vl = $('#pr-kdo'); sel.onchange = () => { vl.hidden = !!sel.value; if (!sel.value) vl.focus(); };
@@ -3091,7 +3111,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         kontakty: kk, email: hl.email || '', tel: hl.tel || '', kontakt: [hl.jmeno, hl.funkce].filter(Boolean).join(', ')});
       // přejmenování firmy: starší zprávy zůstanou pod novým názvem
       if (ed && foldName(ed.firma) !== foldName(n)) ZAV().forEach(z => { if (zFirmaKey(z.firma) === foldName(ed.firma)) z.firma = n; });
-      D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x);
+      x._ts = Date.now(); D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x);
       commit(); toast(ed ? 'Uloženo' : 'Firma přidána: ' + n);
     });
     document.querySelector('#overlay .modal').classList.add('wide');
@@ -3351,7 +3371,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (RO() || store.get('cx-uklid-zkouska') === '1') return;
     const a = firmyList(), b = a.filter(x => !/^zkou[sš]ka$/i.test(String(x.firma).trim()));
     store.set('cx-uklid-zkouska', '1');
-    if (b.length !== a.length) { D.project.firmy = b; commit(); }
+    if (b.length !== a.length) { a.filter(x => !b.includes(x)).forEach(x => smazano('firmy', x.id)); D.project.firmy = b; commit(); }
   }
   function confirmModal(title, body, okLabel, onOk, extra) {
     const ov = $('#overlay');
@@ -3793,6 +3813,13 @@ thead{display:table-header-group}tr{break-inside:avoid}
     const pushing = sync.dirty;
     try {
       if (pushing) { sync.dirty = false; store.set('hyb-sync-dirty', '0'); }
+      if (pushing) {
+        // 4.34: před odesláním stáhnout novější data a sloučit (jinak by starší kopie údajů stavby přepsala novější)
+        const g = await call('GET');
+        if (g && g.error) throw new Error(g.error === 'heslo' ? 'Heslo synchronizace nesedí se skriptem na Googlu.' : String(g.error));
+        if (g && g.data) { const m = normalize(mergeData(D, g.data)); m.savedAt = D.savedAt; m.lastBackup = D.lastBackup; D = m; snap = takeSnap(D); store.set(KEY, JSON.stringify(D)); }
+        if (g && typeof g.rev !== 'undefined') sync.rev = Number(g.rev) || sync.rev;
+      }
       const res = pushing ? await call('POST', {key: SY.key, rev: sync.rev, data: D}) : await call('GET');
       if (res.error) throw new Error(res.error === 'heslo' ? 'Heslo synchronizace nesedí se skriptem na Googlu.' : String(res.error));
       if (res.data) {
@@ -3813,7 +3840,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
       if (sync.onDone) { const f = sync.onDone; sync.onDone = null; f(); }
     }
   }
-  setInterval(() => { if (SY && document.visibilityState === 'visible') syncNow(); }, 20000);
+  setInterval(() => { if (SY && document.visibilityState === 'visible') syncNow(); }, 5000);  // 4.34: kontrola změn kolegů každých 5 s (Luboš 15. 11.)
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
   window.addEventListener('online', () => syncNow());
   $('#sync-st').onclick = () => SY ? syncNow() : syncDialog();
