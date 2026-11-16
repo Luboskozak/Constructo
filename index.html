@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-Mcu6mLmnjKq4wSVJzDDsec7I2OSCqRWsxVKWMaDX1Fc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-vAsRpnSLk3VmEr1URu+wWosFh3HLME9IWXs/nBlbxSU=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -277,7 +277,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/zprava.js"></script>
 <script>
 (() => {
-  const VERSION = '1.22';
+  const VERSION = '1.23';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -502,7 +502,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       started = true;
       document.querySelectorAll('.nav [data-v]').forEach(b => b.onclick = () => go(b.dataset.v));
       setInterval(() => { if (document.visibilityState === 'visible') { refresh(); pump(); } }, 30000);
-      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refresh(); pump(); } });
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refresh(); pump(); novaVerze(); } });
+      setInterval(novaVerze, 600000);
       addEventListener('online', () => { online = true; pump(); refresh(); renderBg(); });
       addEventListener('offline', () => { online = false; renderBg(); });
       addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; renderBg(); });
@@ -524,6 +525,19 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   // Překreslení z pozadí (načtení dat každých 30 s, fronta, signál) by smazalo rozepsané pole a na iPhonu
   // zavřelo klávesnici. Dokud člověk píše, počká se, a překreslí se, až pole opustí.
   let bgPending = false;
+  // 1.23: nová verze se v telefonu načte sama (aplikace z plochy zůstává v paměti a jinak by běžela stará)
+  let verzeAt = 0;
+  async function novaVerze() {
+    if (!navigator.onLine || Date.now() - verzeAt < 60000) return; verzeAt = Date.now();
+    try {
+      const r = await fetch('index.html?v=' + Date.now(), {cache: 'no-store'}); if (!r.ok) return;
+      const m = (await r.text()).match(/const VERSION = '([0-9.]+)'/); if (!m || m[1] === VERSION) return;
+      const rozpsano = F.photos.length || F.text.trim() || (Z && (Z.text || '').trim()) || pise();
+      if (rozpsano) { toast('Je nová verze aplikace. Načte se sama, až hlášení odešlete.', 4000); return; }
+      try { const rg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (rg) await rg.update(); } catch (e) {}
+      location.reload();
+    } catch (e) {}
+  }
   function pise() { const a = document.activeElement; return !!a && a !== document.body && (a.tagName === 'TEXTAREA' || a.isContentEditable || (a.tagName === 'INPUT' && !/^(button|submit|checkbox|radio|file|range|color|reset|image)$/.test(a.type)) || a.tagName === 'SELECT'); }
   function renderBg() { if (pise()) { bgPending = true; return; } bgPending = false; render(); }
   async function loadQ() { try { Q = await CXQ.all(); } catch (e) { Q = []; } }
