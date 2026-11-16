@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-obS2T6hVVaJVw2kogvG9N8fSyfnLXvi6PH7CSkqJPB4=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-5N5GYqo/zOeIcF63MI0+tK/SDcw+tFDfefyjnK6qKm0=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -86,6 +86,7 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .banner.info{background:var(--blu2);color:var(--blu)}
 .banner button{margin-left:auto;border:0;background:rgba(0,0,0,.08);border-radius:10px;padding:8px 12px;font-weight:700;color:inherit}
 /* spodní lišta */
+body.pise .nav{display:none}
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(3,1fr);background:var(--k);padding:10px max(6px,env(safe-area-inset-left,0px)) calc(12px + var(--sb));border-radius:24px 24px 0 0}
 .nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:#8d959c;padding:2px 0;position:relative}
 .nav svg{width:28px;height:28px}
@@ -268,7 +269,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/zprava.js"></script>
 <script>
 (() => {
-  const VERSION = '1.20';
+  const VERSION = '1.21';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -499,6 +500,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; renderBg(); });
       // když člověk dopíše (klávesnice zmizí), dokreslí se odložené změny ze sítě
       document.addEventListener('focusout', () => setTimeout(() => { if (bgPending && !pise()) { bgPending = false; render(); } }, 400));
+      // 1.21: při psaní (otevřená klávesnice) schovat spodní panel – na iPhonu by jinak vyskočil doprostřed a zakryl formulář
+      const kb = () => document.body.classList.toggle('pise', pise());
+      document.addEventListener('focusin', kb); document.addEventListener('focusout', () => setTimeout(kb, 120));
     }
     loadQ().then(() => { render(); pump(); refresh(); });
   }
@@ -780,12 +784,14 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const tx = document.getElementById(MIC.tx) || null; if (!tx) { MIC.st = 'off'; return; }
     MIC.base = tx.value ? tx.value.replace(/\s*$/, ' ') : '';
     const r = new R(), t0 = Date.now(); let got = false, err = ''; recog = r; MIC.stopping = false;
-    r.lang = ls.get('cx-jazyk') === 'uk' ? 'uk-UA' : 'cs-CZ'; r.interimResults = true; r.continuous = true;
+    r.lang = ls.get('cx-jazyk') === 'uk' ? 'uk-UA' : 'cs-CZ'; r.interimResults = true; r.continuous = !ios();   // iPhone v nepřetržitém režimu zdvojuje text a zasekává se; nahrává po větách a sám navazuje
     r.onresult = e => { got = true; const t = document.getElementById(MIC.tx); if (!t) return; let x = ''; for (let i = 0; i < e.results.length; i++) x += e.results[i][0].transcript; t.value = MIC.base + x; MIC.onText && MIC.onText(t.value); };
     r.onerror = e => { err = e.error || ''; if (err === 'no-speech' || err === 'aborted') return; MIC.st = 'off';
       // zakázaný mikrofon: hned vypnout a ukázat návod (iPhone někdy onend už nepošle a ikona by zůstala „Nahrávám“)
       if (err === 'not-allowed' || err === 'service-not-allowed') { if (recog === r) recog = null; micUi(); if (!r._zk) { r._zk = 1; micZakazan(); } return; }
-      toast(err === 'network' ? 'Diktování teď potřebuje signál. Použijte mikrofon na klávesnici.' : 'Diktování se přerušilo.'); };
+      if (err === 'network') { const t = document.getElementById(MIC.tx); if (t) { t.focus(); try { t.setSelectionRange(t.value.length, t.value.length); } catch (x) {} }
+        toast('Slabý signál – diktování z aplikace teď nejde. Klepněte na mikrofon 🎤 vpravo dole na klávesnici, ten funguje i bez signálu.', 7000); return; }
+      toast('Diktování se přerušilo. Klepněte na mikrofon znovu.'); };
     // iPhone občas nahrávání sám ukončí (ticho): když má mikrofon dál nahrávat, rozjede se znovu.
     // Když ale skončí hned a nic nezachytí (mikrofon zakázaný), nesmí se točit dokola – aplikace by zamrzla.
     r.onend = () => { if (recog === r) recog = null;
@@ -836,12 +842,20 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         predmet: `Constructo · ${stavba()} – ${it.info ? 'Na vědomí' : 'Úkol'} od ${it.by || 'kolegy'}: ${o.predmet}`};
     } catch (e) { delete it.form; }
   }
+  async function dokresliForm(it) {
+    await new Promise(r => setTimeout(r, 50));   // nejdřív ať se překreslí obrazovka
+    await zpravaForm(it); delete it.formWait;
+    try { await CXQ.put(it); } catch (e) {}
+    kick();
+  }
   async function send() {
     if (!F.to.size) { toast('Vyberte, komu hlášení patří.'); return; }
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...F.to].sort((a, b) => a.localeCompare(b, 'cs')), info: F.info, end: F.info ? '' : F.end, obj: [...F.obj].sort().join(''), text: F.text.trim(), photos: F.photos, att: [], state: 'wait'};
-    toast('Připravuji PDF…'); await zpravaForm(it);
+    // 1.21: uložit hned do telefonu (bez čekání na síť i na PDF); formulář PDF se dokreslí na pozadí a fronta pak odešle sama
+    it.formWait = true;
     try { await CXQ.put(it); } catch (e) { toast('Hlášení se nepodařilo uložit do telefonu. Zkuste to znovu.'); return; }
+    dokresliForm(it);
     const n = it.to.length, all = team().length && it.to.length === team().length;
     const msg = it.info ? `${all ? 'Všichni' : it.to.join(', ')}: informace je v programu a odešel e-mail.` : n === 1 ? `${it.to[0]} má nový úkol v programu a dostal e-mail.` : `${all ? 'Všichni' : it.to.join(', ')}: každý má svůj úkol v programu a dostal e-mail.`;
     F.photos = []; F.to = new Set(); F.text = ''; F.obj = new Set(); F.info = false; F.end = addD(todayS(), 7);
@@ -1617,8 +1631,9 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...to].sort((a, b) => a.localeCompare(b, 'cs')), info: true, end: '', obj: /[A-G]/.test(Z.room[0] || '') ? Z.room[0] : '',
       text: `Závada poslaná firmě ${f ? f.firma : ''}: ${zPredmet()}\n\n${zZprava()}`, photos: ph.slice(0, 7), att: [], state: 'wait'};
-    await zpravaForm(it);
+    it.formWait = true;
     try { await CXQ.put(it); } catch (e) { toast('Sdílení se nepodařilo uložit. Zkuste to znovu.'); Z.sdileno = false; return; }
+    dokresliForm(it);
     await loadQ(); kick();
     toast(to.length === team().filter(n => !isMe(n)).length ? 'Sdíleno s celým týmem.' : 'Sdíleno: ' + to.join(', '));
   }

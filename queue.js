@@ -32,12 +32,15 @@ const CXQ = (() => {
     const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 30000);
     let txt;
     try {
-      const r = await fetch(conn.url + (conn.url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(conn.key) + '&rev=-1&t=' + Date.now(), {redirect: 'follow', signal: ctl.signal});
+      // 1.21: známé číslo verze → když se nic nezměnilo, Google vrátí jen {same: true} (pár bajtů místo celých dat; rychlé i při slabém signálu)
+      const c0 = await kvGet('data').catch(() => null), rev0 = c0 && c0.data && Number(c0.rev) > 0 ? Number(c0.rev) : -1;
+      const r = await fetch(conn.url + (conn.url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(conn.key) + '&rev=' + rev0 + '&t=' + Date.now(), {redirect: 'follow', signal: ctl.signal});
       txt = await r.text();
     } catch (e) { throw new Error('OFFLINE'); }
     finally { clearTimeout(tm); }
     let res; try { res = JSON.parse(txt); } catch (e) { throw new Error('Google místo dat vrátil stránku. Skript musí být nasazený s přístupem „Kdokoli“.'); }
     if (res.error) throw new Error(res.error === 'heslo' ? 'Kód připojení nesedí se skriptem na Googlu.' : String(res.error));
+    if (res.same) { const c = await kvGet('data').catch(() => null); if (c && c.data) { c.at = Date.now(); await kvSet('data', c); return {rev: res.rev, data: c.data, same: true}; } }
     if (res.data) await kvSet('data', {rev: res.rev, data: res.data, at: Date.now()});
     return res;
   }
@@ -113,16 +116,13 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       }
       const pdf = it.form.pdfFile || null;
       if (!komu.length) return {at: new Date().toISOString(), sent: 0, missing, error: '', pdf};
-      // každému kolegovi vlastní e-mail (odesílatel „Constructo“, ne jméno kolegy – firemní pošta jinak e-mail od cizí adresy se jménem kolegy zadrží)
+      // 1.21: jeden e-mail všem najednou (jedno nahrání PDF – při slabém signálu mnohem rychlejší), odesílatel „Constructo“, bez kopie
       const obr = {logo: it.form.logo}; (it.form.fotky || []).forEach((b, i) => { if (b) obr['f' + i] = b; });
-      it.poslano = it.poslano || {}; const chyby = [];
-      for (const n of komu) {
-        if (it.poslano[n]) continue;
-        let r; try { r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase(), komu: em(n), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
-          pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { if (e.message === 'OFFLINE') throw e; r = {error: e.message}; }
-        if (r && r.ok) { it.poslano[n] = new Date().toISOString(); await put(it); } else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
-      }
-      return {at: new Date().toISOString(), sent: Object.keys(it.poslano).length, poslano: Object.keys(it.poslano), missing, error: chyby.join('; '), pdf};
+      const adr = [...new Set(komu.map(em))];
+      const r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid, komu: adr.join(','), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
+        pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'});
+      const ok = !!(r && (r.ok || r.opakovane));
+      return {at: new Date().toISOString(), sent: ok ? komu.length : 0, poslano: ok ? komu : [], missing, error: ok ? '' : String((r && r.error) || 'neznámá chyba'), pdf};
     }
     const text = (it.text || '').trim() || 'Foto ze stavby';
     let pdf = null;
@@ -149,7 +149,8 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
   function process() { return running || (running = run().finally(() => { running = null; })); }
   async function run() {
     const conn = await kvGet('conn'); if (!conn) return {sent: 0};
-    const items = (await all()).filter(x => x.state !== 'sent').sort((a, b) => a.at.localeCompare(b.at));
+    // hlášení, kterému telefon ještě kreslí formulář PDF, počká (nejvýš 3 minuty, pak odejde i bez něj)
+    const items = (await all()).filter(x => x.state !== 'sent' && !(x.formWait && Date.now() - Date.parse(x.at) < 180000)).sort((a, b) => a.at.localeCompare(b.at));
     let sent = 0;
     for (const it of items) {
       try {
