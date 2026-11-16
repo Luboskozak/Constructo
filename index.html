@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-CdV0bkud4yVH/Vwpsy20r8V4JRE3chm3ZSsbBxz6jfs=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-x0dVHpkqDBX2AGfl3VcCaQl+/F06J+BW2CM9h7Jy/NA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -265,9 +265,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 
 <script src="queue.js"></script>
 <script src="pc/qr.js"></script>
+<script src="pc/zprava.js"></script>
 <script>
 (() => {
-  const VERSION = '1.18';
+  const VERSION = '1.19';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -825,10 +826,21 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     if (MIC.st === 'rec') { MIC.st = 'pauza'; micStop(); micUi(); }
     else { MIC.st = 'rec'; micStart(); }   // vypnuto nebo pauza → nahrávat (pokračuje za dosavadním textem)
   }
+  // zpráva v kolektivu: formulář PDF a e-mail jako u zpráv pro firmy (připraví se hned v telefonu, odešle ho fronta)
+  async function zpravaForm(it) {
+    try {
+      if (!window.CXZprava) return;
+      const o = CXZprava.udaje(it, stavba(), 'https://lovely-gumption-be0f29.netlify.app/pc/'); o.fotky = (it.photos || []).map(p => 'data:image/jpeg;base64,' + p.b64);
+      const fm = await CXZprava.formular(o);
+      it.form = {cislo: o.cislo, pdf: await b64Blob(fm.pdf), logo: fm.logo, fotky: fm.fotky, html: CXZprava.html(o, fm.fotky),
+        predmet: `Constructo · ${stavba()} – ${it.info ? 'Na vědomí' : 'Úkol'} od ${it.by || 'kolegy'}: ${o.predmet}`};
+    } catch (e) { delete it.form; }
+  }
   async function send() {
     if (!F.to.size) { toast('Vyberte, komu hlášení patří.'); return; }
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...F.to].sort((a, b) => a.localeCompare(b, 'cs')), info: F.info, end: F.info ? '' : F.end, obj: [...F.obj].sort().join(''), text: F.text.trim(), photos: F.photos, att: [], state: 'wait'};
+    toast('Připravuji PDF…'); await zpravaForm(it);
     try { await CXQ.put(it); } catch (e) { toast('Hlášení se nepodařilo uložit do telefonu. Zkuste to znovu.'); return; }
     const n = it.to.length, all = team().length && it.to.length === team().length;
     const msg = it.info ? `${all ? 'Všichni' : it.to.join(', ')}: informace je v programu a odešel e-mail.` : n === 1 ? `${it.to[0]} má nový úkol v programu a dostal e-mail.` : `${all ? 'Všichni' : it.to.join(', ')}: každý má svůj úkol v programu a dostal e-mail.`;
@@ -1605,6 +1617,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...to].sort((a, b) => a.localeCompare(b, 'cs')), info: true, end: '', obj: /[A-G]/.test(Z.room[0] || '') ? Z.room[0] : '',
       text: `Závada poslaná firmě ${f ? f.firma : ''}: ${zPredmet()}\n\n${zZprava()}`, photos: ph.slice(0, 7), att: [], state: 'wait'};
+    await zpravaForm(it);
     try { await CXQ.put(it); } catch (e) { toast('Sdílení se nepodařilo uložit. Zkuste to znovu.'); Z.sdileno = false; return; }
     await loadQ(); kick();
     toast(to.length === team().filter(n => !isMe(n)).length ? 'Sdíleno s celým týmem.' : 'Sdíleno: ' + to.join(', '));

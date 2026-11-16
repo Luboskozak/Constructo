@@ -102,6 +102,22 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
   }
   async function zpravaMail(conn, it) {
     const c = await kvGet('data').catch(() => null), stavba = (c && c.data && c.data.project && c.data.project.name) || 'Stavba';
+    if (it.form && it.form.pdf) {
+      // formulář PDF a e-mail připravil telefon (stejný vzhled jako zprávy pro firmy): PDF na Disk, e-mail s fotkami a PDF v příloze
+      const lide = (c && c.data && c.data.project && c.data.project.people) || {};
+      const em = n => String((lide[n] || {}).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
+      const komu = [...new Set((it.to || []).map(em).filter(Boolean))], missing = (it.to || []).filter(n => !em(n));
+      if (!it.form.pdfFile) {
+        const r = await post(conn, {key: conn.key, akce: 'foto', name: it.form.cislo + '.pdf', mime: 'application/pdf', den: it.day || it.at.slice(0, 10), data: it.form.pdf});
+        if (r && r.id) { it.form.pdfFile = {id: r.id, url: r.url}; await put(it); }
+      }
+      const pdf = it.form.pdfFile || null;
+      if (!komu.length) return {at: new Date().toISOString(), sent: 0, missing, error: '', pdf};
+      const obr = {logo: it.form.logo}; (it.form.fotky || []).forEach((b, i) => { if (b) obr['f' + i] = b; });
+      const r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid, komu: komu.join(','), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
+        pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: it.by || 'Constructo', odpovedet: em(it.by)});
+      return {at: new Date().toISOString(), sent: r && r.ok ? komu.length : 0, missing, error: (r && r.error) || '', pdf};
+    }
     const text = (it.text || '').trim() || 'Foto ze stavby';
     let pdf = null;
     try {
@@ -193,6 +209,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
         }
         it.state = 'sent'; it.sentAt = new Date().toISOString(); it.err = '';
         it.photos = (it.photos || []).map(p => ({thumb: p.thumb}));   // velká data pryč, náhled zůstane
+        if (it.form) it.form = {cislo: it.form.cislo, pdfFile: it.form.pdfFile || null};
         await put(it); sent++;
       } catch (e) {
         it.err = e.message === 'OFFLINE' ? '' : e.message; it.tries = (it.tries || 0) + 1; await put(it);
