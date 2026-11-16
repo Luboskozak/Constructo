@@ -66,6 +66,51 @@ const CXQ = (() => {
     return {tasks, log};
   }
 
+  // zpráva v kolektivu (úkol nebo Na vědomí z telefonu): pokaždé PDF na Disku a e-mail s PDF v příloze všem vybraným
+  const escH = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+  const fmtDen = d => String(d || '').split('-').reverse().map(Number).join('. ');
+  function zpravaHtml(it, stavba, proPdf) {
+    const text = (it.text || '').trim() || 'Foto ze stavby bez popisu', d = new Date(it.at);
+    const kdy = isNaN(d) ? fmtDen(it.day) : d.toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague'});
+    const typ = it.info ? 'Na vědomí' : 'Nový úkol';
+    const radky = [['Stavba', stavba], ['Druh zprávy', typ + ' · zpráva v kolektivu'], ['Komu', (it.to || []).join(', ') || '—'], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]
+      .concat(it.obj ? [['Objekt', it.obj]] : []).concat(!it.info && it.end ? [['Splnit do', fmtDen(it.end)]] : []);
+    const att = (it.att || []).filter(Boolean);
+    const foto = proPdf
+      ? (it.photos || []).slice(0, 12).map(p => p && p.b64 ? `<div style="margin:0 0 10px"><img src="data:image/jpeg;base64,${p.b64}" style="max-width:100%;max-height:520px"></div>` : '').join('')
+      : att.slice(0, 12).map(a => `<a href="${escH(a.url)}"><img src="${escH(a.thumb)}" alt="Fotka" style="width:180px;height:135px;object-fit:cover;border-radius:8px;margin:0 6px 6px 0"></a>`).join('');
+    return `<div style="font-family:Arial,sans-serif;font-size:14px;color:#16191c;max-width:720px">
+<div style="background:#131518;color:#fff;padding:14px 18px;border-radius:${proPdf ? 0 : 10}px"><b style="color:#F4D23C;font-size:18px">Constructo</b><span style="color:#9aa1a8"> · ${escH(typ)}</span></div>
+<h2 style="font-size:19px;margin:16px 0 10px">${escH(typ)} od ${escH(it.by || 'kolegy')}</h2>
+<table style="border-collapse:collapse;width:100%;margin:0 0 12px">${radky.map(([k, v]) => `<tr><td style="padding:5px 10px 5px 0;color:#6b7279;width:130px;vertical-align:top">${escH(k)}</td><td style="padding:5px 0;vertical-align:top"><b>${escH(v)}</b></td></tr>`).join('')}</table>
+<div style="background:#f4f4f1;border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.5;margin:0 0 14px">${escH(text)}</div>
+${foto ? `<div>${foto}</div>` : ''}
+${proPdf ? '' : `<p style="color:#555">${it.info ? 'Zprávu najdete v programu Constructo v záložce Zprávy (a v Úkolech).' : 'Úkol najdete v programu Constructo v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celá zpráva je v příloze jako PDF.</p>`}
+</div>`;
+  }
+  async function zpravaMail(conn, it) {
+    const c = await kvGet('data').catch(() => null), stavba = (c && c.data && c.data.project && c.data.project.name) || 'Stavba';
+    const text = (it.text || '').trim() || 'Foto ze stavby';
+    let pdf = null;
+    try {
+      const r = await post(conn, {key: conn.key, akce: 'zapis_pdf', jmeno: `Zprava-${it.day || it.at.slice(0, 10)}-${String(it.by || '').replace(/\s+/g, '-')}-${it.cid}.pdf`, html: zpravaHtml(it, stavba, true)});
+      if (r && r.id) pdf = {id: r.id, url: r.url};
+    } catch (e) { if (e.message === 'OFFLINE') throw e; }
+    const predmet = (it.info ? 'Na vědomí od ' : 'Nový úkol od ') + (it.by || 'kolegy') + ': ' + text.split('\n')[0].slice(0, 70);
+    let r = await post(conn, {key: conn.key, akce: 'zapis', cid: 'zpr-' + it.cid, to: it.to, predmet, html: zpravaHtml(it, stavba, false), pdfId: pdf ? pdf.id : ''});
+    if (!r || (r.ok === undefined && !r.error))   // starší skript na Googlu umí jen text bez PDF
+      r = await post(conn, {key: conn.key, akce: 'mail', cid: it.cid, by: it.by, to: it.to, info: !!it.info, text: it.text, end: it.end, obj: it.obj, fotky: (it.att || []).map(a => a.id)});
+    return {at: new Date().toISOString(), sent: Number(r && r.sent) || (r && r.opakovane ? (it.to || []).length : 0), missing: (r && r.missing) || [], error: (r && r.error) || '', pdf};
+  }
+  async function zapisVysledek(conn, it) {
+    const m = it.mail || {}, g = await get(conn), cur = (g && g.data) || null; if (!cur) return;
+    const ts = Date.now(), komu = it.to || [];
+    const tk = (cur.tasks || []).filter(t => t.grp === it.cid).map(t => Object.assign({}, t, {_ts: ts, zprava: {at: m.at || new Date().toISOString(), komu, sent: m.sent || 0, missing: m.missing || [], error: m.error || '', pdf: m.pdf || null}}));
+    if (!tk.length) return;
+    const r = await post(conn, {key: conn.key, rev: 0, data: {tasks: tk}});
+    if (r && r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+  }
+
   let running = null;
   function process() { return running || (running = run().finally(() => { running = null; })); }
   async function run() {
@@ -125,9 +170,14 @@ const CXQ = (() => {
         }
         if (!it.mailed) {
           let r;
-          try { r = await post(conn, {key: conn.key, akce: 'mail', cid: it.cid, by: it.by, to: it.to, info: !!it.info, text: it.text, end: it.end, obj: it.obj, fotky: it.att.map(a => a.id)}); }
+          try { r = await zpravaMail(conn, it); }
           catch (e) { if (e.message === 'OFFLINE') throw e; r = {error: e.message}; }
           it.mailed = true; it.mail = r; await put(it);
+        }
+        if (!it.noted) {
+          // výsledek e-mailu (komu odešel, komu chybí adresa, PDF) se zapíše k úkolům – v programu ho ukáže záložka Zprávy
+          try { await zapisVysledek(conn, it); } catch (e) { if (e.message === 'OFFLINE') throw e; }
+          it.noted = true; await put(it);
         }
         it.state = 'sent'; it.sentAt = new Date().toISOString(); it.err = '';
         it.photos = (it.photos || []).map(p => ({thumb: p.thumb}));   // velká data pryč, náhled zůstane

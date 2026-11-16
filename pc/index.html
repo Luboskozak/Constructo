@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-swMbVilDuePjHvX98eKqeV9iuE9TJtLb7UniPg2Dr7Q=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-/37IpZu/6J09zO/ba6y77ncSC0wSGr+8SgJ17xN1ugU=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -784,6 +784,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 /* 4.20: stav zprávy a odpovědi firem */
 .zv-st{margin-right:4px;vertical-align:1px;background:#e8eaed;color:#16191c}
 .zv-vedomi{background:#dfeaf6;color:#2b6cb0}.zv-opraveno{background:#FFF4BF;color:#6d5600;box-shadow:inset 0 0 0 1.5px #d9b300}
+.zv-kol{background:#e6eefc;color:#2a55b0}
 .zv-nesouhlas,.zv-vraceno{background:#fdeae6;color:#c0341f}.zv-uzavreno{background:#dcefe3;color:#2f8a52}
 .zv-odp{margin-top:5px;font-size:12.5px;background:var(--soft);border-left:3px solid #F4D23C;border-radius:4px;padding:4px 8px;line-height:1.4}
 .zv-h4{margin:6px 0 0;font-size:14px}
@@ -902,7 +903,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
       <button type="button" id="v-list" aria-pressed="true">Úkoly</button>
       <button type="button" id="v-diary" aria-pressed="false">Denní zápisy</button>
-      <button type="button" id="v-zavady" aria-pressed="false">Zprávy pro firmy</button>
+      <button type="button" id="v-zavady" aria-pressed="false">Zprávy</button>
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
@@ -1130,7 +1131,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.35';
+  const APP_VERSION = '4.36';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2345,7 +2346,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','diary','hmg','zavady','odeslane','firmy','kal'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal'].includes(S.view);
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy pro firmy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů'}[S.view];
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
@@ -3153,7 +3154,64 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
 
   /* ---------- záložka Zprávy pro firmy: všechny zprávy (závady, reklamace, úklid…) poslané firmám z mobilu (D.zavady) ---------- */
-  const ZF = {firma: '', osoba: '', stav: '', sort: ['datum', 'osoba'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
+  const ZF = {firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
+  /* 4.36: zprávy v kolektivu = úkoly a Na vědomí poslané z mobilu (úkoly se stejnou skupinou grp). Každá dostane PDF a e-mail; výsledek je v t.zprava. */
+  const KOL = 'V kolektivu';
+  function kolZpravy() {
+    const m = new Map();
+    D.tasks.forEach(t => { if (!t || t.from !== 'mobil' || !t.grp) return; const a = m.get(t.grp) || []; a.push(t); m.set(t.grp, a); });
+    return [...m.entries()].map(([grp, ts]) => {
+      const t = ts[0], z = ts.map(x => x.zprava).find(Boolean) || null;
+      const komu = z && Array.isArray(z.komu) && z.komu.length ? z.komu : [...new Set(ts.flatMap(x => t.info ? [x.owner, ...(x.team || [])] : [x.owner]).filter(Boolean))];
+      return {id: 'k:' + grp, kol: true, grp, tasks: ts, info: !!t.info, at: t.createdAt || t.start || '', by: t.createdBy || '', firma: '', typ: t.info ? 'Na vědomí' : 'Úkol', popis: t.title || '', obj: t.obj || '', att: t.att || [], komu, zprava: z, end: t.info ? '' : (t.end || '')};
+    });
+  }
+  const kolMail = z => { const m = z.zprava; if (!m) return {t: 'starší zpráva – PDF zatím není', bad: false};
+    if (m.error) return {t: 'e-mail neodešel: ' + m.error, bad: true};
+    const miss = (m.missing || []).length ? ' · chybí e-mail: ' + m.missing.join(', ') : '';
+    return m.sent ? {t: `e-mail s PDF odešel (${m.sent})${miss}`, bad: !!miss} : {t: 'e-mail neodešel' + (miss || ' – nikdo nemá e-mail'), bad: true}; };
+  const kolPdfUrl = z => z.zprava && z.zprava.pdf && (z.zprava.pdf.url || (z.zprava.pdf.id ? `https://drive.google.com/file/d/${z.zprava.pdf.id}/view` : ''));
+  function kolHtml(it, stavba, fotky) {
+    const text = (it.text || '').trim() || 'Foto ze stavby bez popisu', d = new Date(it.at), typ = it.info ? 'Na vědomí' : 'Nový úkol';
+    const kdy = isNaN(d) ? fmtDY(it.day) : d.toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+    const radky = [['Stavba', stavba], ['Druh zprávy', typ + ' · zpráva v kolektivu'], ['Komu', (it.to || []).join(', ') || '—'], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]
+      .concat(it.obj ? [['Objekt', it.obj]] : []).concat(!it.info && it.end ? [['Splnit do', fmtDY(it.end)]] : []);
+    const foto = fotky ? fotky.map(src => src ? `<div style="margin:0 0 10px"><img src="${esc(src)}" style="max-width:100%;max-height:520px"></div>` : '').join('')
+      : (it.att || []).slice(0, 12).map(a => `<a href="${esc(a.url || attThumb(a))}"><img src="${esc(attThumb(a))}" alt="Fotka" style="width:180px;height:135px;object-fit:cover;border-radius:8px;margin:0 6px 6px 0"></a>`).join('');
+    return `<div style="font-family:Arial,sans-serif;font-size:14px;color:#16191c;max-width:720px">
+<div style="background:#131518;color:#fff;padding:14px 18px;border-radius:${fotky ? 0 : 10}px"><b style="color:#F4D23C;font-size:18px">Constructo</b><span style="color:#9aa1a8"> · ${esc(typ)}</span></div>
+<h2 style="font-size:19px;margin:16px 0 10px">${esc(typ)} od ${esc(it.by || 'kolegy')}</h2>
+<table style="border-collapse:collapse;width:100%;margin:0 0 12px">${radky.map(([k, v]) => `<tr><td style="padding:5px 10px 5px 0;color:#6b7279;width:130px;vertical-align:top">${esc(k)}</td><td style="padding:5px 0;vertical-align:top"><b>${esc(v)}</b></td></tr>`).join('')}</table>
+<div style="background:#f4f4f1;border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.5;margin:0 0 14px">${esc(text)}</div>
+${foto ? `<div>${foto}</div>` : ''}
+${fotky ? '' : `<p style="color:#555">${it.info ? 'Zprávu najdete v programu Constructo v záložce Zprávy (a v Úkolech).' : 'Úkol najdete v programu Constructo v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celá zpráva je v příloze jako PDF.</p>`}
+</div>`;
+  }
+  // fotka do PDF: zkusí ji načíst jako data (Google pak PDF udělá i s fotkou); když to nejde, nechá odkaz na Disk
+  const kolFoto = a => new Promise(res => {
+    const u = a.id ? `https://drive.google.com/thumbnail?id=${a.id}&sz=w1200` : attThumb(a); if (!u) return res('');
+    const i = new Image(); i.crossOrigin = 'anonymous'; const tm = setTimeout(() => res(u), 15000);
+    i.onload = () => { clearTimeout(tm); try { const s = Math.min(1, 1200 / Math.max(i.naturalWidth, i.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(i.naturalWidth * s); c.height = Math.round(i.naturalHeight * s); c.getContext('2d').drawImage(i, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .8)); } catch (e) { res(u); } };
+    i.onerror = () => { clearTimeout(tm); res(u); }; i.src = u; });
+  async function kolPoslat(grp, btn) {
+    const z = kolZpravy().find(x => x.grp === grp); if (!z) return;
+    if (!SY) { toast('E-mail jde poslat jen s připojením ke Googlu (Data → Automatická synchronizace).'); return; }
+    const lide = z.komu.filter(n => n && n !== 'Bez přiřazení');
+    if (!lide.length) { toast('Zpráva nemá žádné příjemce.'); return; }
+    const t0 = btn.textContent; btn.disabled = true; btn.textContent = 'Připravuji PDF…';
+    try {
+      const P = D.project || {}, it = {info: z.info, text: z.popis, by: z.by, at: z.at, day: String(z.at || '').slice(0, 10), to: lide, obj: z.obj, end: z.end, att: z.att};
+      const fotky = await Promise.all(z.att.slice(0, 12).map(kolFoto));
+      let pdf = null;
+      try { const r = await call('POST', {key: SY.key, akce: 'zapis_pdf', jmeno: `Zprava-${it.day}-${String(z.by || '').replace(/\s+/g, '-')}-${grp}.pdf`, html: kolHtml(it, P.name || 'Stavba', fotky)}); if (r && r.id) pdf = {id: r.id, url: r.url}; } catch (e) {}
+      btn.textContent = 'Posílám e-mail…';
+      const predmet = (z.info ? 'Na vědomí od ' : 'Nový úkol od ') + (z.by || 'kolegy') + ': ' + (z.popis || 'Foto ze stavby').split('\n')[0].slice(0, 70);
+      const r = await call('POST', {key: SY.key, akce: 'zapis', cid: 'zpr-' + grp + '-' + Date.now().toString(36), to: lide, predmet, html: kolHtml(it, P.name || 'Stavba', null), pdfId: pdf ? pdf.id : ''});
+      const zp = {at: new Date().toISOString(), komu: lide, sent: Number(r && r.sent) || 0, missing: (r && r.missing) || lide.filter(n => !personOf(n).email), error: (r && r.error) ? String(r.error) : '', pdf: pdf || (z.zprava && z.zprava.pdf) || null, znovu: me() || ''};
+      D.tasks.forEach(t => { if (t.grp === grp) t.zprava = zp; }); commit();
+      toast(zp.sent ? `E-mail s PDF odešel ${zp.sent} ${zp.sent === 1 ? 'člověku' : 'lidem'}.${zp.missing.length ? ' Chybí e-mail u: ' + zp.missing.join(', ') + ' (doplňte v Lidech).' : ''}` : 'E-mail neodešel' + (zp.error ? ': ' + zp.error : zp.missing.length ? ' – chybí e-mail u: ' + zp.missing.join(', ') + ' (doplňte v Lidech).' : '.'), 8000);
+    } catch (e) { toast('E-mail se nepodařilo poslat: ' + ((e && e.message) || e)); btn.disabled = false; btn.textContent = t0; }
+  }
   const zMisto = z => [z.patro, z.room ? 'místnost ' + z.room : ''].filter(Boolean).join(' · ');
   const zPopis = z => String(z.popis || z.predmet || z.text || '').trim();
   const zKomu = z => String(z.komu || '').trim();
@@ -3172,16 +3230,18 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const zThumb = z => z.foto && (z.foto.thumb || (z.foto.id ? `https://drive.google.com/thumbnail?id=${z.foto.id}&sz=w400` : ''));
   function zavadyVyber() {
     const q = ZF.q.toLowerCase();
-    const a = ZAV().filter(z => (!ZF.firma || zFirmaKey(z.firma) === zFirmaKey(ZF.firma)) && (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
+    const kol = ZF.firma || ZF.stav ? [] : kolZpravy().filter(z => (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
+      && (!q || `${z.typ} ${z.popis} ${z.by} ${z.komu.join(' ')} ${z.obj} ${KOL}`.toLowerCase().includes(q)));
+    const a = (ZF.sort === 'kolektiv' ? [] : ZAV()).filter(z => (!ZF.firma || zFirmaKey(z.firma) === zFirmaKey(ZF.firma)) && (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
       && (!ZF.stav || (ZF.stav === 'otevrene' ? zStav(z) !== 'uzavreno' : zStav(z) === ZF.stav))
-      && (!q || `${z.cislo} ${z.firma} ${zKomu(z)} ${z.typ} ${zMisto(z)} ${zPopis(z)} ${z.by}`.toLowerCase().includes(q)));
+      && (!q || `${z.cislo} ${z.firma} ${zKomu(z)} ${z.typ} ${zMisto(z)} ${zPopis(z)} ${z.by}`.toLowerCase().includes(q))).concat(kol);
     const byDate = (x, y) => String(y.at || '').localeCompare(String(x.at || ''));
-    if (ZF.sort === 'datum') return a.sort(byDate);
+    if (ZF.sort === 'datum' || ZF.sort === 'kolektiv') return a.sort(byDate);
     const k = ZF.sort === 'osoba' ? 'by' : 'firma';
-    return a.sort((x, y) => String(x[k] || '~').localeCompare(String(y[k] || '~'), 'cs') || byDate(x, y));
+    return a.sort((x, y) => (ZF.sort === 'firma' ? (x.kol ? 1 : 0) - (y.kol ? 1 : 0) : 0) || String(x[k] || '~').localeCompare(String(y[k] || '~'), 'cs') || byDate(x, y));
   }
   function renderZavady() {
-    const v = $('#view'), all = ZAV(), rows = zavadyVyber(), admin = isAdmin();
+    const v = $('#view'), all = ZAV().concat(kolZpravy()), rows = zavadyVyber(), admin = isAdmin(), firmRows = rows.filter(z => !z.kol);
     const firmyN = [...new Map([...firmyList().map(f => f.firma), ...all.map(z => z.firma)].filter(Boolean).map(n => [zFirmaKey(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(z => z.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const opt = (list, val, all0) => `<option value="">${all0}</option>` + list.map(n => `<option value="${esc(n)}"${val && foldName(val) === foldName(n) ? ' selected' : ''}>${esc(n)}</option>`).join('');
@@ -3189,20 +3249,31 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <select id="zv-firma" aria-label="Firma">${opt(firmyN, ZF.firma, 'Všechny firmy')}</select>
       <select id="zv-osoba" aria-label="Kdo poslal">${opt(osoby, ZF.osoba, 'Všichni, kdo posílali')}</select>
       <select id="zv-stav" aria-label="Stav">${[['', 'Všechny stavy'], ['otevrene', 'Neuzavřené'], ...Object.entries(ZSTAV)].map(([k, l]) => `<option value="${k}"${ZF.stav === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
-      <div class="seg" role="group" aria-label="Řazení"><button type="button" data-zs="firma" aria-pressed="${ZF.sort === 'firma'}">Podle firem</button><button type="button" data-zs="osoba" aria-pressed="${ZF.sort === 'osoba'}">Podle osoby</button><button type="button" data-zs="datum" aria-pressed="${ZF.sort === 'datum'}">Podle data</button></div>
+      <div class="seg" role="group" aria-label="Řazení"><button type="button" data-zs="firma" aria-pressed="${ZF.sort === 'firma'}">Podle firem</button><button type="button" data-zs="kolektiv" aria-pressed="${ZF.sort === 'kolektiv'}">V kolektivu</button><button type="button" data-zs="osoba" aria-pressed="${ZF.sort === 'osoba'}">Podle osoby</button><button type="button" data-zs="datum" aria-pressed="${ZF.sort === 'datum'}">Podle data</button></div>
       <input id="zv-q" type="search" placeholder="Hledat…" value="${esc(ZF.q)}" aria-label="Hledat ve zprávách">
       <span class="sp"></span><span>${rows.length === all.length ? rows.length : `${rows.length} z ${all.length}`} ${rows.length === 1 ? 'zpráva' : rows.length > 1 && rows.length < 5 ? 'zprávy' : 'zpráv'}</span>
-      <button type="button" class="btn no-print" id="zv-tisk"${rows.length ? '' : ' disabled'}>Tisk</button>
-      <button type="button" class="btn primary no-print" id="zv-pdf"${rows.length ? '' : ' disabled'}>Stáhnout PDF</button></div>`;
+      <button type="button" class="btn no-print" id="zv-tisk"${firmRows.length ? '' : ' disabled'} title="Tisk zpráv pro firmy">Tisk</button>
+      <button type="button" class="btn primary no-print" id="zv-pdf"${firmRows.length ? '' : ' disabled'} title="Přehled zpráv pro firmy v PDF">Stáhnout PDF</button></div>`;
     if (SY && ZF.ver === undefined) { ZF.ver = null; call('POST', {key: SY.key, akce: 'verze'}).then(r => { ZF.ver = Number(r && r.verze) || 0; if (S.view === 'zavady') renderZavady(); }, () => { ZF.ver = undefined; }); }
     if (SY && ZF.ver !== null && ZF.ver !== undefined && ZF.ver < 9) html += `<div class="zv-old">Aby se sem zprávy z mobilů ukládaly, je potřeba aktualizovat skript na Googlu (teď je verze ${ZF.ver}, potřeba je 9). <button type="button" class="btn" id="zv-upd">Aktualizovat skript…</button></div>`;
-    if (!rows.length) html += `<div class="empty"><strong>${all.length ? 'Výběru neodpovídá žádná zpráva.' : 'Zatím žádná zpráva.'}</strong>${all.length ? 'Zkuste jinou firmu, osobu nebo stav.' : 'Sem se sama zapíše každá zpráva pro firmu (závada, reklamace, nepořádek…), kterou někdo pošle z mobilu e-mailem nebo WhatsAppem, i s formulářem PDF.'}</div>`;
+    if (!rows.length) html += `<div class="empty"><strong>${all.length ? 'Výběru neodpovídá žádná zpráva.' : 'Zatím žádná zpráva.'}</strong>${all.length ? 'Zkuste jinou firmu, osobu nebo stav.' : 'Sem se sama zapíše každá zpráva pro firmu (závada, reklamace, nepořádek…) i každá zpráva v kolektivu (úkol nebo Na vědomí z mobilu), vždy i s PDF.'}</div>`;
     else {
       html += `<div class="zv-hd"><span></span><span>Zpráva</span><span>Firma · komu</span><span>Poslal</span><span></span></div>`;
       let last = null;
       rows.forEach(z => {
-        const gk = ZF.sort === 'osoba' ? foldName(z.by || '') : zFirmaKey(z.firma);
-        if (ZF.sort !== 'datum' && gk !== last) { last = gk; const n = rows.filter(y => (ZF.sort === 'osoba' ? foldName(y.by || '') : zFirmaKey(y.firma)) === last).length; html += `<div class="sl-h">${esc(ZF.sort === 'osoba' ? (z.by || 'Neznámo kdo') : (z.firma || 'Bez firmy'))} · ${n}</div>`; }
+        const gkey = y => ZF.sort === 'osoba' ? foldName(y.by || '') : y.kol ? '~kol' : zFirmaKey(y.firma), gk = gkey(z);
+        if (ZF.sort !== 'datum' && gk !== last) { last = gk; const n = rows.filter(y => gkey(y) === last).length; html += `<div class="sl-h">${esc(ZF.sort === 'osoba' ? (z.by || 'Neznámo kdo') : z.kol ? KOL : (z.firma || 'Bez firmy'))} · ${n}</div>`; }
+        if (z.kol) {
+          const kt = (z.att[0] && attThumb(z.att[0])) || '', kp = kolPdfUrl(z), km = kolMail(z);
+          html += `<div class="zv-row" data-zv="${esc(z.id)}">
+          <div class="zv-th">${kt ? `<img src="${esc(kt)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>
+          <div><div class="zv-t"><span class="pill zv-typ">${esc(z.typ)}</span><span class="pill zv-st zv-kol">${KOL}</span> ${esc(z.popis.length > 220 ? z.popis.slice(0, 220) + '…' : z.popis || 'bez popisu')}</div>
+            <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${z.obj ? `<span>objekt ${esc(z.obj)}</span>` : ''}${z.att.length ? `<span>${z.att.length} ${z.att.length === 1 ? 'fotka' : z.att.length < 5 ? 'fotky' : 'fotek'}</span>` : ''}<span${km.bad ? ' style="color:var(--red)"' : ''}>${esc(km.t)}</span></div></div>
+          <div><b>${KOL}</b><small class="zv-komu">${esc(z.komu.join(', ') || '–')}</small></div>
+          <div>${esc(z.by || '–')}</div>
+          <div class="zv-a no-print">${kp ? `<a class="btn" href="${esc(kp)}" target="_blank" rel="noopener">PDF</a>` : ''}<button type="button" class="btn" data-zkd="${esc(z.tasks[0].id)}">Detail</button>${RO() ? '' : `<button type="button" class="btn" data-zkm="${esc(z.grp)}">${z.zprava && z.zprava.sent ? 'Poslat znovu' : 'Poslat e-mailem s PDF'}</button>`}</div></div>`;
+          return;
+        }
         const th = zThumb(z), pdf = zPdfUrl(z);
         html += `<div class="zv-row" data-zv="${esc(z.id)}">
           <div class="zv-th">${th ? `<img src="${esc(th)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>
@@ -3221,19 +3292,21 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#zv-q').oninput = e => { ZF.q = e.target.value; const p = e.target.selectionStart; renderZavady(); const i = $('#zv-q'); i.focus(); try { i.setSelectionRange(p, p); } catch (x) {} };
     v.querySelectorAll('[data-zs]').forEach(b => b.onclick = () => { ZF.sort = b.dataset.zs; store.set('hyb-zsort', ZF.sort); renderZavady(); });
     v.querySelectorAll('[data-zd]').forEach(b => b.onclick = () => zavadaDetail(b.dataset.zd));
+    v.querySelectorAll('[data-zkd]').forEach(b => b.onclick = () => openEditor(b.dataset.zkd));
+    v.querySelectorAll('[data-zkm]').forEach(b => b.onclick = () => kolPoslat(b.dataset.zkm, b));
     v.querySelectorAll('[data-zx]').forEach(b => b.onclick = () => {
       if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
       D.zavady = (D.zavady || []).filter(z => z.id !== b.dataset.zx); commit(); toast('Zpráva smazána ze seznamu (firmě už odešla).');
     });
     $('#zv-tisk').onclick = async () => {
       const b = $('#zv-tisk'); b.disabled = true; b.textContent = 'Připravuji…';
-      try { const r = await zavadyPdf(zavadyVyber()); const u = URL.createObjectURL(r.blob), w = window.open(u, '_blank'); if (!w) download(r.name, r.blob, 'application/pdf'); toast(w ? 'PDF je otevřené v nové kartě – vytiskněte ho tam (tiskárna vpravo nahoře nebo Ctrl+P).' : 'PDF je ve Stažených souborech: ' + r.name); setTimeout(() => URL.revokeObjectURL(u), 120000); }
+      try { const r = await zavadyPdf(zavadyVyber().filter(z => !z.kol)); const u = URL.createObjectURL(r.blob), w = window.open(u, '_blank'); if (!w) download(r.name, r.blob, 'application/pdf'); toast(w ? 'PDF je otevřené v nové kartě – vytiskněte ho tam (tiskárna vpravo nahoře nebo Ctrl+P).' : 'PDF je ve Stažených souborech: ' + r.name); setTimeout(() => URL.revokeObjectURL(u), 120000); }
       catch (e) { toast('Tisk se nepodařilo připravit.'); }
       finally { b.disabled = false; b.textContent = 'Tisk'; }
     };
     $('#zv-pdf').onclick = async () => {
       const b = $('#zv-pdf'); b.disabled = true; b.textContent = 'Připravuji PDF…';
-      try { const r = await zavadyPdf(zavadyVyber()); download(r.name, r.blob, 'application/pdf'); toast('PDF je ve Stažených souborech: ' + r.name); }
+      try { const r = await zavadyPdf(zavadyVyber().filter(z => !z.kol)); download(r.name, r.blob, 'application/pdf'); toast('PDF je ve Stažených souborech: ' + r.name); }
       catch (e) { toast('PDF se nepodařilo vytvořit.'); }
       finally { b.disabled = false; b.textContent = 'Stáhnout PDF'; }
     };
@@ -3384,7 +3457,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       y += h;
     });
     if (y + 30 > BOTTOM) { doc.page(); y = M; }
-    y += 16; doc.text(M, y, `Celkem ${rows.length} ${rows.length === 1 ? 'zpráva' : rows.length < 5 ? 'zprávy' : 'zpráv'}. Každá zpráva má vlastní formulář PDF s fotkami (v Constructu: Zprávy pro firmy → Formulář PDF).`, {size: 8, color: '#333333'});
+    y += 16; doc.text(M, y, `Celkem ${rows.length} ${rows.length === 1 ? 'zpráva' : rows.length < 5 ? 'zprávy' : 'zpráv'}. Každá zpráva má vlastní formulář PDF s fotkami (v Constructu: Zprávy → Formulář PDF).`, {size: 8, color: '#333333'});
     doc.pages.forEach((pg, k) => { doc.cur = pg; doc.text(M, 595 - 14, fitText(`Constructo · ${P.name || 'Stavba'} · zprávy pro firmy`, R, 7.5, 360), {size: 7.5, color: GREY}); doc.text(M + W / 2, 595 - 14, 'Developed by Luboš Kozák', {size: 7.5, color: GREY, align: 'center'}); doc.text(M + W, 595 - 14, `Strana ${k + 1} z ${doc.pages.length}`, {size: 7.5, color: GREY, align: 'right'}); });
     const nm = (ZF.firma || ZF.osoba || 'vse').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '');
     return {blob: await doc.bytes('Zprávy pro firmy'), name: `Zpravy-pro-firmy_${nm}_${today}.pdf`};
