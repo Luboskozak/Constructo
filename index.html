@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-S4A1ogWofJzvPFQ+iCt+vzy22BhK0ly3MJ2vcd2jEvU=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-CdV0bkud4yVH/Vwpsy20r8V4JRE3chm3ZSsbBxz6jfs=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -267,7 +267,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/qr.js"></script>
 <script>
 (() => {
-  const VERSION = '1.17';
+  const VERSION = '1.18';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1492,7 +1492,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const btn = $('#z-mail'); if (btn) { btn.disabled = true; btn.lastChild.textContent = `Odesílám firmě ${f.firma}…`; }
     const obr = {logo: fm.logo}; if (Z.crop) obr.vyrez = await b64Blob(Z.crop.blob);
     F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; });
-    const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: subj, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
+    const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: `Constructo · ${stavba()} – ${subj.replace(' – ' + (D ? projShort() : 'Hybernská 1000/8'), '')}`, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
     let r = null, detail = '';
     try {
       const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);

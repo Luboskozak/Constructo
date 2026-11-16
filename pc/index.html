@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-tm/5a3YdIiD/j9GLwG9IIYjxmeb5NKZ0JzfdqxQ18uo=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-YoXs54B2pmL8x4L6R6SslLELvQOgpY4C3eur/pxaVBo=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1131,7 +1131,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.37';
+  const APP_VERSION = '4.38';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3171,21 +3171,34 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const miss = (m.missing || []).length ? ' · chybí e-mail: ' + m.missing.join(', ') : '';
     return m.sent ? {t: `e-mail s PDF odešel (${m.sent})${miss}`, bad: !!miss} : {t: 'e-mail neodešel' + (miss || ' – nikdo nemá e-mail'), bad: true}; };
   const kolPdfUrl = z => z.zprava && z.zprava.pdf && (z.zprava.pdf.url || (z.zprava.pdf.id ? `https://drive.google.com/file/d/${z.zprava.pdf.id}/view` : ''));
+  // 4.38: e-mail a PDF zprávy v kolektivu – hlavička „Constructo · název projektu“, tabulky (Outlook), fotky jako odkazy (Outlook cizí obrázky blokuje)
+  function cxZpravaHtml(o) {
+    const e = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+    const F = 'font-family:Arial,Helvetica,sans-serif;', pdf = !!o.fotky, att = (o.att || []).filter(Boolean);
+    const radky = [['Komu', (o.komu || []).join(', ') || '—'], ['Zapsal', o.by || '—'], ['Datum a čas', o.kdy]].concat(o.obj ? [['Objekt', o.obj]] : []).concat(o.end ? [['Splnit do', o.end]] : []);
+    const fotkyPdf = pdf ? o.fotky.filter(s => /^data:image\//.test(s || '')) : [];
+    const foto = pdf
+      ? (fotkyPdf.length ? fotkyPdf.map(s => `<tr><td style="padding:0 30px 12px"><img src="${s}" style="max-width:100%;max-height:560px;display:block"></td></tr>`).join('')
+        : att.length ? `<tr><td style="padding:0 30px 14px;${F}font-size:13px;color:#4a5157">Fotky ze stavby (${att.length}): ${att.map((a, i) => `<a href="${e(a.url)}" style="color:#16191c">Foto ${i + 1}</a>`).join(' · ')}</td></tr>` : '')
+      : att.length ? `<tr><td style="padding:4px 30px 6px;${F}"><div style="font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#6b7279;margin:0 0 8px">Fotky ze stavby (${att.length})</div>${att.map((a, i) => `<a href="${e(a.url)}" style="display:inline-block;border:1px solid #d9d9d3;background:#fafaf8;color:#16191c;text-decoration:none;font-size:13px;font-weight:bold;padding:7px 12px;margin:0 6px 6px 0">Foto ${i + 1}</a>`).join('')}</td></tr>` : '';
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f4f1" style="background:#f4f4f1"><tr><td align="center" style="padding:${pdf ? 0 : 24}px 10px">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:640px;max-width:100%;background:#ffffff;border:1px solid #e2e2dc">
+<tr><td bgcolor="#131518" style="background:#131518;padding:20px 30px;${F}"><span style="color:#F4D23C;font-size:24px;font-weight:bold;letter-spacing:-0.5px">Constructo</span><span style="color:#ffffff;font-size:15px">&nbsp;&nbsp;·&nbsp;&nbsp;${e(o.stavba)}</span></td></tr>
+<tr><td style="padding:26px 30px 4px;${F}"><span style="display:inline-block;background:#F4D23C;color:#131518;font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:5px 10px">${e(o.typ)} · zpráva v kolektivu</span>
+<div style="font-size:23px;font-weight:bold;color:#16191c;margin:14px 0 4px;line-height:1.25">${e(o.typ)} od ${e(o.by || 'kolegy')}</div>
+<div style="font-size:13px;color:#6b7279">${e(o.kdy)}${o.obj ? ' · objekt ' + e(o.obj) : ''}${o.end ? ' · splnit do ' + e(o.end) : ''}</div></td></tr>
+<tr><td style="padding:18px 30px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#f4f4f1" style="background:#f4f4f1;border-left:4px solid #F4D23C;padding:16px 18px;${F}font-size:15px;line-height:1.6;color:#16191c">${e(o.text).replace(/\n/g, '<br>')}</td></tr></table></td></tr>
+<tr><td style="padding:8px 30px 14px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${radky.map(([k, v]) => `<tr><td width="120" style="padding:8px 12px 8px 0;border-bottom:1px solid #ececE6;${F}font-size:13px;color:#6b7279;vertical-align:top">${e(k)}</td><td style="padding:8px 0;border-bottom:1px solid #ececE6;${F}font-size:14px;color:#16191c;font-weight:bold;vertical-align:top">${e(v)}</td></tr>`).join('')}</table></td></tr>
+${foto}
+${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" style="display:inline-block;background:#131518;color:#ffffff;text-decoration:none;font-size:14px;font-weight:bold;padding:13px 22px">Otevřít v Constructu &rarr;</a>
+<div style="font-size:13px;color:#6b7279;margin:14px 0 0">${o.info ? 'Zprávu najdete v Constructu v záložce Zprávy (a v Úkolech).' : 'Úkol najdete v Constructu v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celá zpráva i s fotkami je v příloze jako PDF.</div></td></tr>`}
+<tr><td bgcolor="#131518" style="background:#131518;padding:14px 30px;${F}font-size:12px;color:#9aa1a8">Odesláno z aplikace Constructo · ${e(o.stavba)}<br><span style="color:#F4D23C">Developed by Luboš Kozák</span></td></tr>
+</table></td></tr></table>`;
+  }
   function kolHtml(it, stavba, fotky) {
-    const text = (it.text || '').trim() || 'Foto ze stavby bez popisu', d = new Date(it.at), typ = it.info ? 'Na vědomí' : 'Nový úkol';
-    const kdy = isNaN(d) ? fmtDY(it.day) : d.toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
-    const radky = [['Stavba', stavba], ['Druh zprávy', typ + ' · zpráva v kolektivu'], ['Komu', (it.to || []).join(', ') || '—'], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]
-      .concat(it.obj ? [['Objekt', it.obj]] : []).concat(!it.info && it.end ? [['Splnit do', fmtDY(it.end)]] : []);
-    const foto = fotky ? fotky.map(src => src ? `<div style="margin:0 0 10px"><img src="${esc(src)}" style="max-width:100%;max-height:520px"></div>` : '').join('')
-      : (it.att || []).slice(0, 12).map(a => `<a href="${esc(a.url || attThumb(a))}"><img src="${esc(attThumb(a))}" alt="Fotka" style="width:180px;height:135px;object-fit:cover;border-radius:8px;margin:0 6px 6px 0"></a>`).join('');
-    return `<div style="font-family:Arial,sans-serif;font-size:14px;color:#16191c;max-width:720px">
-<div style="background:#131518;color:#fff;padding:14px 18px;border-radius:${fotky ? 0 : 10}px"><b style="color:#F4D23C;font-size:18px">Constructo</b><span style="color:#9aa1a8"> · ${esc(typ)}</span></div>
-<h2 style="font-size:19px;margin:16px 0 10px">${esc(typ)} od ${esc(it.by || 'kolegy')}</h2>
-<table style="border-collapse:collapse;width:100%;margin:0 0 12px">${radky.map(([k, v]) => `<tr><td style="padding:5px 10px 5px 0;color:#6b7279;width:130px;vertical-align:top">${esc(k)}</td><td style="padding:5px 0;vertical-align:top"><b>${esc(v)}</b></td></tr>`).join('')}</table>
-<div style="background:#f4f4f1;border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.5;margin:0 0 14px">${esc(text)}</div>
-${foto ? `<div>${foto}</div>` : ''}
-${fotky ? '' : `<p style="color:#555">${it.info ? 'Zprávu najdete v programu Constructo v záložce Zprávy (a v Úkolech).' : 'Úkol najdete v programu Constructo v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celá zpráva je v příloze jako PDF.</p>`}
-</div>`;
+    const d = new Date(it.at), kdy = isNaN(d) ? fmtDY(it.day) : d.toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+    return cxZpravaHtml({stavba, typ: it.info ? 'Na vědomí' : 'Nový úkol', info: !!it.info, by: it.by, kdy, obj: it.obj, end: !it.info && it.end ? fmtDY(it.end) : '', komu: it.to,
+      text: (it.text || '').trim() || 'Foto ze stavby bez popisu', att: it.att, web: WEB_HOME + '/pc/', fotky: fotky || null});
   }
   // fotka do PDF: zkusí ji načíst jako data (Google pak PDF udělá i s fotkou); když to nejde, nechá odkaz na Disk
   const kolFoto = a => new Promise(res => {
@@ -3205,7 +3218,7 @@ ${fotky ? '' : `<p style="color:#555">${it.info ? 'Zprávu najdete v programu Co
       let pdf = null;
       try { const r = await call('POST', {key: SY.key, akce: 'zapis_pdf', jmeno: `Zprava-${it.day}-${String(z.by || '').replace(/\s+/g, '-')}-${grp}.pdf`, html: kolHtml(it, P.name || 'Stavba', fotky)}); if (r && r.id) pdf = {id: r.id, url: r.url}; } catch (e) {}
       btn.textContent = 'Posílám e-mail…';
-      const predmet = (z.info ? 'Na vědomí od ' : 'Nový úkol od ') + (z.by || 'kolegy') + ': ' + (z.popis || 'Foto ze stavby').split('\n')[0].slice(0, 70);
+      const predmet = 'Constructo · ' + (P.name || 'Stavba') + ' – ' + (z.info ? 'Na vědomí od ' : 'Nový úkol od ') + (z.by || 'kolegy') + ': ' + (z.popis || 'Foto ze stavby').split('\n')[0].slice(0, 70);
       const r = await call('POST', {key: SY.key, akce: 'zapis', cid: 'zpr-' + grp + '-' + Date.now().toString(36), to: lide, predmet, html: kolHtml(it, P.name || 'Stavba', null), pdfId: pdf ? pdf.id : ''});
       const zp = {at: new Date().toISOString(), komu: lide, sent: Number(r && r.sent) || 0, missing: (r && r.missing) || lide.filter(n => !personOf(n).email), error: (r && r.error) ? String(r.error) : '', pdf: pdf || (z.zprava && z.zprava.pdf) || null, znovu: me() || ''};
       D.tasks.forEach(t => { if (t.grp === grp) t.zprava = zp; }); commit();
@@ -3347,7 +3360,7 @@ ${fotky ? '' : `<p style="color:#555">${it.info ? 'Zprávu najdete v programu Co
         ${odkaz ? `<p><a href="${esc(odkaz)}" style="display:inline-block;background:#131518;color:#fff;padding:12px 20px;border-radius:10px;font-weight:700;text-decoration:none">Odpovědět na zprávu &rarr;</a></p>` : ''}
         <p style="color:#555">S pozdravem<br>${esc(me() || '')}<br>${esc(P.name || '')}</p></div>`;
       try {
-        const res = await call('POST', {key: SY.key, akce: 'zavada', cid: r.id + '-v' + Date.now().toString(36), komu: r.email, predmet: `Oprava nevyhovuje – ${r.cislo || ''} – ${P.name || 'stavba'}`,
+        const res = await call('POST', {key: SY.key, akce: 'zavada', cid: r.id + '-v' + Date.now().toString(36), komu: r.email, predmet: `Constructo · ${P.name || 'Stavba'} – Oprava nevyhovuje – ${r.cislo || ''}`,
           text: t + (odkaz ? '\n\nOdpovědět: ' + odkaz : ''), html, od: me() || 'Constructo', odpovedet: ((P.people || {})[me()] || {}).email || ''});
         toast(res && res.ok ? `Vráceno a odesláno firmě ${r.firma} na ${r.email}.` : 'Vráceno, ale e-mail firmě se nepodařilo odeslat: ' + ((res && res.error) || 'neznámá chyba'), 6000);
       } catch (e) { toast('Vráceno, ale e-mail firmě se nepodařilo odeslat.'); }
@@ -5179,7 +5192,7 @@ ${tydenniHtml.toString()}
     zSave(true); zRender();
     if (!quiet) toast(nA || nU ? `Uloženo do úkolů: ${nA} nových${nU ? ', ' + nU + ' upraveno' : ''}` : 'Zápis uložen');
   }
-  const zSubject = () => `Zápis z porady ${fmtDY(ZC.date)}${ZC.title ? ' – ' + ZC.title : ''}${ZC.no ? ' č. ' + ZC.no : ''}`;
+  const zSubject = () => `Constructo · ${(D.project && D.project.name) || 'Stavba'} – Zápis z porady ${fmtDY(ZC.date)}${ZC.title ? ' – ' + ZC.title : ''}${ZC.no ? ' č. ' + ZC.no : ''}`;
   const zMailText = (n, rows) => zSubject() + '\n\n' + (rows.length ? 'Vaše úkoly z této porady:\n' : 'Z této porady pro vás nejsou žádné úkoly.') + rows.map((r, i) => `${i + 1}. ${r.title.trim()} – ${r.perm ? 'trvalý úkol' : r.end ? 'termín ' + fmtDY(r.end) : r.note || 'bez termínu'}${(r.with || []).length ? ' (spolu s ' + r.with.join(', ') + ')' : ''}`).join('\n');
   const zMarkSent = (n, rows) => { rows.forEach(r => { ZC.sent[r.key + '|' + n] = zSig(r); }); };
   /* týdenní přehled úkolů e-mailem: stejná funkce běží v aplikaci (náhled) i ve skriptu na Googlu (každé pondělí) */

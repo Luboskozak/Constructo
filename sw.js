@@ -1,6 +1,6 @@
 /* Constructo mobil – service worker: aplikace se otevře i bez signálu a fronta se na Androidu odešle sama na pozadí. */
 importScripts('queue.js');
-const CACHE = 'constructo-mobil-20';
+const CACHE = 'constructo-mobil-21';
 const SHELL = ['./', 'index.html', 'queue.js', 'pc/qr.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
