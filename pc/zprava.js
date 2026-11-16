@@ -40,7 +40,7 @@ const CXZprava = (() => {
   }
   const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
   const b64 = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => res(''); r.readAsDataURL(b); });
-  const STITEK = o => o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
+  const STITEK = o => o.firma ? {l: String(o.typL || 'Zpráva').toUpperCase(), bg: '#16191c', fg: '#F4D23C', h: 'ZPRÁVA PRO FIRMU'} : o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
   // Drive: fotka přes lh3 (posílá CORS), aby šla nakreslit do PDF
   const fotoSrc = a => typeof a === 'string' ? a : a && a.id ? `https://lh3.googleusercontent.com/d/${a.id}=w1600` : (a && (a.thumb || a.url)) || '';
   async function formular(o) {
@@ -65,7 +65,7 @@ const CXZprava = (() => {
     strana();
     font(800, 22); const bw = g.measureText(st.l).width + 40;
     g.fillStyle = st.bg; rrect(g, M, y - 31, bw, 44, 22); g.fill(); g.fillStyle = st.fg; g.fillText(st.l, M + 20, y);
-    font(600, 22); g.fillStyle = '#6b7279'; g.fillText('zpráva v kolektivu', M + bw + 18, y);
+    if (!o.firma) { font(600, 22); g.fillStyle = '#6b7279'; g.fillText('zpráva v kolektivu', M + bw + 18, y); }
     y += 68; font(800, 44); g.fillStyle = '#16191c';
     wrapT(g, o.predmet, CW).slice(0, 3).forEach(l => { g.fillText(l, M, y); y += 54; });
     y += 14;
@@ -85,7 +85,7 @@ const CXZprava = (() => {
       if (ri < rows.length - 1) { g.fillStyle = '#e4e4df'; g.fillRect(M + 28, ry - 2, CW - 56, 2); }
     });
     y += boxH + 56;
-    nadpis('Zpráva');
+    nadpis(o.firma ? 'Zpráva pro firmu' : 'Zpráva');
     font(400, 26);
     wrapT(g, o.text, CW).forEach(l => { misto(40); font(400, 26); g.fillStyle = '#16191c'; if (l) g.fillText(l, M, y); y += l ? 38 : 20; });
     y += 40;
@@ -137,13 +137,15 @@ const CXZprava = (() => {
 <td align="right" style="vertical-align:middle;color:#F4D23C;font-size:15px;font-weight:800;letter-spacing:.08em">${st.h}<div style="color:#c9ced3;font-size:12px;font-weight:400;letter-spacing:0;margin-top:3px">${e(o.cislo)} · ${e(o.datum)}</div></td></tr></table></td></tr>
 <tr><td style="height:5px;background:#F4D23C;font-size:0;line-height:0">&nbsp;</td></tr>
 <tr><td style="padding:22px 26px 26px">
-<span style="display:inline-block;background:${st.bg};color:${st.fg};font-size:12px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:20px">${st.l}</span> <span style="font-size:12px;color:#6b7279;font-weight:600">zpráva v kolektivu</span>
+<span style="display:inline-block;background:${st.bg};color:${st.fg};font-size:12px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:20px">${e(st.l)}</span>${o.firma ? '' : ' <span style="font-size:12px;color:#6b7279;font-weight:600">zpráva v kolektivu</span>'}
 <div style="font-size:21px;font-weight:800;margin:10px 0 16px;line-height:1.3">${e(o.predmet)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f1;border-radius:10px">${radky.join('')}</table>
 ${sek('Zpráva')}<div style="font-size:15px;line-height:1.6">${e(o.text).replace(/\n/g, '<br>')}</div>
 ${ff ? sek('Fotodokumentace') + '<div>' + ff + '</div>' + (n > 6 ? `<p style="font-size:13px;color:#6b7279;margin:4px 0 0">Všech ${n} fotek je v PDF v příloze.</p>` : '') : ''}
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px"><tr><td style="background:#131518;border-radius:10px"><a href="${e(o.web)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none">Otevřít v Constructu &rarr;</a></td></tr></table>
-<p style="font-size:13px;color:#6b7279;margin:18px 0 0">${o.info ? 'Zprávu najdete v Constructu v záložce Zprávy.' : 'Úkol najdete v Constructu v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celý formulář je v příloze jako PDF.</p>
+${o.firma ? (o.odkaz ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px"><tr><td style="background:#131518;border-radius:10px"><a href="${e(o.odkaz)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none">Odpovědět na tuto zprávu &rarr;</a></td></tr></table><p style="font-size:13px;color:#6b7279;margin:6px 0 0">Tlačítkem potvrdíte přijetí, nahlásíte opravu (i s fotkou) nebo napíšete, proč nesouhlasíte. Nic nemusíte instalovat.</p>` : '')
+  + '<p style="font-size:13px;color:#6b7279;margin:18px 0 0">Celý formulář je v příloze jako PDF.</p>'
+  : `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px"><tr><td style="background:#131518;border-radius:10px"><a href="${e(o.web)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none">Otevřít v Constructu &rarr;</a></td></tr></table>
+<p style="font-size:13px;color:#6b7279;margin:18px 0 0">${o.info ? 'Zprávu najdete v Constructu v záložce Zprávy.' : 'Úkol najdete v Constructu v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celý formulář je v příloze jako PDF.</p>`}
 </td></tr>
 <tr><td style="background:#131518;padding:16px 26px;font-size:12px;color:#9aa1a8">Odesláno z aplikace Constructo · ${e(o.stavba)}<br><span style="color:#F4D23C">Developed by Luboš Kozák</span></td></tr>
 </table></div></body></html>`;
