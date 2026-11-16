@@ -158,7 +158,7 @@ ${o.firma ? (o.odkaz ? `<table role="presentation" cellpadding="0" cellspacing="
     const den = isNaN(d) ? String(it.day || '').replace(/-/g, '') : d.toLocaleDateString('sv-SE', {timeZone: 'Europe/Prague'}).replace(/-/g, '');
     return {stavba, info: !!it.info, web, cislo: 'K-' + den + '-' + String(it.cid || '').slice(-4).toUpperCase(), datum: isNaN(d) ? dd(it.day) : d.toLocaleDateString('cs-CZ', {timeZone: 'Europe/Prague'}),
       predmet: prvni.length > 90 ? prvni.slice(0, 88).replace(/\s+\S*$/, '') + '…' : prvni, text,
-      polozky: [['Stavba', stavba], ['Objekt', it.obj || '—'], ['Komu', (it.to || []).join(', ') || '—'], [it.info ? 'Druh' : 'Splnit do', it.info ? 'Na vědomí – jen informace' : (it.end ? dd(it.end) : '—')], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]};
+      polozky: [['Stavba', stavba], ['Objekt', it.obj || '—'], ...(it.misto ? [['Místo', it.misto]] : []), ['Komu', (it.to || []).join(', ') || '—'], [it.info ? 'Druh' : 'Splnit do', it.info ? 'Na vědomí – jen informace' : (it.end ? dd(it.end) : '—')], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]};
   }
   return {formular, html, udaje, b64};
 })();
