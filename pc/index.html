@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-SOK1wqdEYhudUNzk/DAiSo/tiOgPGY6dxaA3OeF6CAw=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-swMbVilDuePjHvX98eKqeV9iuE9TJtLb7UniPg2Dr7Q=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -948,6 +948,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           <span class="mh">Záloha a přenos</span>
           <button type="button" data-act="export">Uložit zálohu (JSON)…</button>
           <button type="button" data-act="import">Načíst zálohu (JSON)…</button>
+          <button type="button" data-act="doplnit">Doplnit chybějící firmy a lidi ze zálohy…</button>
           <button type="button" data-act="file" id="act-file">Pracovat se souborem na disku…</button>
           <hr>
           <span class="mh">Harmonogram</span>
@@ -1119,7 +1120,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   </div>
 </div>
 <div id="overlay" hidden></div>
-<input type="file" id="file-in" accept=".json,application/json" hidden>
+<input type="file" id="file-in" accept=".json,application/json" hidden><input type="file" id="file-dopl" accept=".json,application/json" hidden>
 <input type="file" id="task-in" accept=".xlsx,.csv,.txt" hidden>
 <input type="file" id="csv-in" accept=".csv,.txt,text/csv" hidden>
 
@@ -1129,7 +1130,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.34';
+  const APP_VERSION = '4.35';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2791,6 +2792,28 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     let x; try { x = JSON.parse(await f.text()); } catch (err) { toast('Soubor se nedá přečíst.'); return; }
     if (!validData(x)) { toast('Soubor nevypadá jako záloha této aplikace.'); return; }
     confirmModal('Načíst zálohu?', `<p>Soubor <b>${esc(f.name)}</b> obsahuje ${x.tasks.length} úkolů, ${x.hmg.length} činností HMG a ${(x.diary||[]).length} denních zápisů${x.savedAt ? `, uloženo ${new Date(x.savedAt).toLocaleString('cs-CZ')}` : ''}.</p><p>Současná data v tomto prohlížeči se nahradí. Pokud si nejste jistí, nejdřív uložte zálohu.</p>`, 'Načíst a nahradit', () => loadData(x, f.name));
+  };
+  // 4.35: ze zálohy jen DOPLNIT firmy, příjemce a údaje lidí, které teď chybějí – nic se nemaže ani nepřepisuje
+  $('#file-dopl').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    let x; try { x = JSON.parse(await f.text()); } catch (err) { toast('Soubor se nedá přečíst.'); return; }
+    const P = (x && x.project) || {}, fy = Array.isArray(P.firmy) ? P.firmy : [], pr = Array.isArray(P.prijemci) ? P.prijemci : [], pp = P.people || {};
+    const ted = firmyList(), tedP = prijemciList(), tedL = D.project.people || {}, tym = teamList();
+    const noveF = fy.filter(y => y && y.id && y.firma && !ted.some(z => z.id === y.id || foldName(z.firma) === foldName(y.firma)));
+    const noveP = pr.filter(y => y && y.id && !tedP.some(z => z.id === y.id));
+    const noveL = Object.keys(pp).filter(n => tym.includes(n) && !tedL[n]);
+    if (!noveF.length && !noveP.length && !noveL.length) { toast('V záloze není nic, co by teď chybělo.'); return; }
+    confirmModal('Doplnit ze zálohy?', `<p>Ze souboru <b>${esc(f.name)}</b> se doplní:</p><ul>${noveF.length ? `<li><b>${noveF.length}</b> firem: ${esc(noveF.map(y => y.firma).join(', '))}</li>` : ''}${noveP.length ? `<li><b>${noveP.length}</b> dalších příjemců zpráv</li>` : ''}${noveL.length ? `<li>kontakty (e-mail, telefon) u <b>${noveL.length}</b> lidí: ${esc(noveL.join(', '))}</li>` : ''}</ul><p>Nic se nesmaže ani nepřepíše.</p>`, 'Doplnit', () => {
+      const now = Date.now();
+      if (noveF.length) D.project.firmy = ted.concat(noveF.map(y => Object.assign({}, y, {_ts: now})));
+      if (noveP.length) D.project.prijemci = tedP.concat(noveP.map(y => Object.assign({}, y, {_ts: now})));
+      if (noveL.length) { const l = Object.assign({}, tedL); noveL.forEach(n => { l[n] = pp[n]; }); D.project.people = l; }
+      const sm = Object.assign({}, D.project.smazane || {});
+      ['firmy', 'prijemci'].forEach(k => { if (sm[k]) { sm[k] = Object.assign({}, sm[k]); (k === 'firmy' ? noveF : noveP).forEach(y => delete sm[k][y.id]); } });
+      if (sm.people) { sm.people = Object.assign({}, sm.people); noveL.forEach(n => delete sm.people[n]); }
+      D.project.smazane = sm;
+      commit(); toast('Doplněno ze zálohy'); render();
+    });
   };
   const fsOk = 'showOpenFilePicker' in window && 'showSaveFilePicker' in window;
   if (!fsOk) $('#act-file').hidden = true;
@@ -5922,6 +5945,7 @@ ${tydenniHtml.toString()}
     if (a === 'firmy') firmyGo();
     else if (a === 'export') exportJson();
     else if (a === 'import') importJson();
+    else if (a === 'doplnit') { $('#file-dopl').value = ''; $('#file-dopl').click(); }
     else if (a === 'file') linkFile();
     else if (a === 'hmgcsv') confirmModal('Načíst nový HMG z MS Project', `<p>V MS Project zvolte <b>Soubor → Uložit jako → CSV</b> (nebo zkopírujte tabulku do Excelu a uložte jako CSV). Potřebné sloupce: <b>ID, Název úkolu, Zahájení, Dokončení, % dokončení, odpovědná osoba</b>.</p><p>Řádky „objekt …“, „Dvůr …“ a „předávací řízení“ určí objekt, souhrny „dokončené práce“ a „v realizaci“ se přeskočí. Před načtením uvidíte seznam změn.</p>`, 'Vybrat soubor CSV…', importHmgCsv);
     else if (a === 'hmgdate') confirmModal('Datum stavu HMG', `<div class="fld"><label for="m-hd">Stav HMG ke dni</label><input id="m-hd" type="date" value="${esc(D.hmgInfo.date)}"></div><div class="fld"><label for="m-hs">Zdroj</label><input id="m-hs" value="${esc(D.hmgInfo.source || '')}"></div>`, 'Uložit', () => { D.hmgInfo.date = $('#m-hd').value || D.hmgInfo.date; D.hmgInfo.source = $('#m-hs').value.trim(); commit(); });
