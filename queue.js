@@ -106,17 +106,23 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       // formulář PDF a e-mail připravil telefon (stejný vzhled jako zprávy pro firmy): PDF na Disk, e-mail s fotkami a PDF v příloze
       const lide = (c && c.data && c.data.project && c.data.project.people) || {};
       const em = n => String((lide[n] || {}).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
-      const komu = [...new Set((it.to || []).map(em).filter(Boolean))], missing = (it.to || []).filter(n => !em(n));
+      const komu = (it.to || []).filter(n => em(n)), missing = (it.to || []).filter(n => !em(n));
       if (!it.form.pdfFile) {
         const r = await post(conn, {key: conn.key, akce: 'foto', name: it.form.cislo + '.pdf', mime: 'application/pdf', den: it.day || it.at.slice(0, 10), data: it.form.pdf});
         if (r && r.id) { it.form.pdfFile = {id: r.id, url: r.url}; await put(it); }
       }
       const pdf = it.form.pdfFile || null;
       if (!komu.length) return {at: new Date().toISOString(), sent: 0, missing, error: '', pdf};
+      // každému kolegovi vlastní e-mail (odesílatel „Constructo“, ne jméno kolegy – firemní pošta jinak e-mail od cizí adresy se jménem kolegy zadrží)
       const obr = {logo: it.form.logo}; (it.form.fotky || []).forEach((b, i) => { if (b) obr['f' + i] = b; });
-      const r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid, komu: komu.join(','), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
-        pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: it.by || 'Constructo', odpovedet: em(it.by)});
-      return {at: new Date().toISOString(), sent: r && r.ok ? komu.length : 0, missing, error: (r && r.error) || '', pdf};
+      it.poslano = it.poslano || {}; const chyby = [];
+      for (const n of komu) {
+        if (it.poslano[n]) continue;
+        let r; try { r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase(), komu: em(n), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
+          pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { if (e.message === 'OFFLINE') throw e; r = {error: e.message}; }
+        if (r && r.ok) { it.poslano[n] = new Date().toISOString(); await put(it); } else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
+      }
+      return {at: new Date().toISOString(), sent: Object.keys(it.poslano).length, poslano: Object.keys(it.poslano), missing, error: chyby.join('; '), pdf};
     }
     const text = (it.text || '').trim() || 'Foto ze stavby';
     let pdf = null;
