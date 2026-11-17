@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkconstructo_web_app||=[]).push([[9227],{9227(e,s,t){t.r(s);var c=t(59284),a=t(64646),n=t(53813),o=t(57028),p=t(60712);const r=()=>{const e=(0,a.d4)(e=>e.user.ID),{filteredCompanies:s}=(0,a.d4)(e=>e.companies),t=(0,a.wA)();return(0,c.useEffect)(()=>{e&&t({type:n.A.FETCH_COMPANIES})},[e]),(0,p.jsx)(o.OE,{companies:s})};t.d(s,["default",0,r])}}]);
