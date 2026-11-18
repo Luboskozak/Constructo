@@ -18,8 +18,8 @@ const CXQ = (() => {
   const put = async r => rq((await st('q', 'readwrite')).put(r));
   const del = async cid => rq((await st('q', 'readwrite')).delete(cid));
 
-  async function post(conn, body) {
-    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 60000);
+  async function post(conn, body, ms) {
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), ms || 60000);
     let txt;
     try {
       const r = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), redirect: 'follow', signal: ctl.signal});
@@ -150,7 +150,8 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
   async function run() {
     const conn = await kvGet('conn'); if (!conn) return {sent: 0};
     // hlášení, kterému telefon ještě kreslí formulář PDF, počká (nejvýš 3 minuty, pak odejde i bez něj)
-    const items = (await all()).filter(x => x.state !== 'sent' && !(x.formWait && Date.now() - Date.parse(x.at) < 180000)).sort((a, b) => a.at.localeCompare(b.at));
+    // 1.24: 'zai' = hlášení pro firmu, kterému telefon ještě připravuje text a formulář (dělá to stránka, ne fronta)
+    const items = (await all()).filter(x => x.state !== 'sent' && x.kind !== 'zai' && !(x.formWait && Date.now() - Date.parse(x.at) < 180000)).sort((a, b) => a.at.localeCompare(b.at));
     let sent = 0;
     for (const it of items) {
       try {
@@ -169,6 +170,14 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
           if (r.error) throw new Error(errTxt(r.error));
           if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
           await del(it.cid); sent++; continue;
+        }
+        if (it.kind === 'zmail') {
+          // 1.24: e-mail pro firmu připravený v telefonu. Pevné číslo (cid) → skript na Googlu ho pošle jen jednou, i když se pokus opakuje.
+          const r = await post(conn, it.body, 170000);
+          if (r && (r.ok || r.opakovane)) { await del(it.cid); sent++; continue; }
+          // chyba od skriptu (např. špatná adresa) nesmí zdržet ostatní záznamy ve frontě
+          it.err = r && r.error === 'heslo' ? errTxt('heslo') : String((r && r.error) || 'E-mail se nepodařilo odeslat.'); it.tries = (it.tries || 0) + 1; await put(it);
+          continue;
         }
         if (it.kind === 'upd') {
           // změna úkolu z telefonu (Splněno): nejdřív aktuální stav ze stavby. Úkol smazaný na počítači se zpátky NEPOŠLE
