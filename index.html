@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-OOlzOT/57wOGiaMcgdupBY2KyTK0vUdSzb471WjPUfE=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-xTBDrEInU6Q1KhGUHDn92TvoMQ09Q7FWyMfReQcJGyg=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -279,7 +279,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/zprava.js"></script>
 <script>
 (() => {
-  const VERSION = '1.24';
+  const VERSION = '1.25';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -949,7 +949,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     ['kachličky|kachlíky|kachle', 'obklad'], ['dlaždičky', 'dlažba'], ['hajzl|záchod|hajzlík', 'WC'], ['nedodělaný', 'nedokončený'],
     ['nedodělaná', 'nedokončená'], ['nedodělané', 'nedokončené'], ['zatejká', 'zatéká'], ['vokno', 'okno'], ['vokna', 'okna'], ['štuk', 'štuková omítka'], ['malovka', 'malba']];
   const zTok = () => { const a = new Uint8Array(18); crypto.getRandomValues(a); return Array.from(a, x => 'abcdefghijkmnpqrstuvwxyz23456789'[x % 32]).join(''); };
-  const zNew = () => ({id: 'z' + Date.now().toString(36), tok: zTok(), typ: 'kvalita', floor: ls.get('cx-patro') || '1NP', pin: null, room: '', alts: [], firma: ls.get('cx-firma') || '', end: addD(todayS(), 7), text: '', formal: '', crop: null, thumb: '', qa: [], question: '', answer: '', busy: false, kor: null, korFor: '', korBusy: false, sdileno: false, oba: false, dalsi: []});
+  const zNew = () => ({id: 'z' + Date.now().toString(36), tok: zTok(), typ: 'kvalita', floor: ls.get('cx-patro') || '1NP', pin: null, room: '', alts: [], firma: ls.get('cx-firma') || '', end: addD(todayS(), 7), text: '', formal: '', crop: null, thumb: '', qa: [], question: '', answer: '', busy: false, kor: null, korFor: '', korBusy: false, sdileno: false, oba: false, dalsi: [], kopie: []});
   let Z = zNew();
   function zMistoPryc() { if (Z.crop) URL.revokeObjectURL(Z.crop.url); Z.pin = null; Z.crop = null; Z.room = ''; Z.alts = []; Z.thumb = ''; }
   function zReset() { if (Z.crop) URL.revokeObjectURL(Z.crop.url); Z = zNew(); }
@@ -1156,6 +1156,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         return `${vis.length ? `<p class="hint" style="margin:8px 0 2px">${Z.prOpen ? 'Zaškrtněte, kdo zprávu dostane (TDS, investor…):' : 'Další příjemci:'}</p>
         <div class="zks zpr">${vis.map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b>${r.firma ? ` · ${esc(r.firma)}` : ''}<small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>` : ''}
         <div class="chips">${Z.prOpen ? `<button type="button" class="chip all" data-act="prijemci">+ Nový příjemce</button><button type="button" class="chip all" data-act="prtoggle">Hotovo</button>` : `<button type="button" class="chip all" data-act="prtoggle">+ Přidat příjemce</button>`}</div>`; })()}
+      ${(() => { const tm = team().filter(n => !isMe(n)); if (!tm.length || ro) return '';
+        return `<p class="hint" style="margin:10px 0 2px">Na vědomí kolegům <em>(dostanou kopii e-mailem a uvidí ji ve Zprávách)</em>:</p>
+        <div class="chips">${tm.map(n => `<button type="button" class="chip" data-zkop="${esc(n)}" aria-pressed="${Z.kopie.includes(n)}"><span class="av">${esc(initials(n))}</span>${esc(n)}</button>`).join('')}</div>`; })()}
       <p class="lbl">6 · ${Z.typ === 'dotaz' ? 'Odpověď do' : 'Odstranit do'}</p>
       <div class="row2 qd"><input type="date" class="date" id="z-end" value="${Z.end}"><button type="button" data-zend="1">Zítra</button><button type="button" data-zend="7">Týden</button><button type="button" data-zend="14">14 dní</button></div>
       <p class="lbl">Podpis <em>(doplní se sám)</em></p>
@@ -1196,6 +1199,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       if (!r.email) { if (r.spol) { toast('Příjemci chybí e-mail. Doplňte ho na počítači v záložce Firmy.'); return; } return prijemciDlg(id); }
       Z.dalsi = Z.dalsi.includes(id) ? Z.dalsi.filter(x => x !== id) : Z.dalsi.concat(id); zFm = null; render(); });
     v.querySelectorAll('[data-jz]').forEach(b => b.onclick = () => { ls.set('cx-jazyk', b.dataset.jz); render(); });
+    v.querySelectorAll('[data-zkop]').forEach(b => b.onclick = () => { const n = b.dataset.zkop; Z.kopie = Z.kopie.includes(n) ? Z.kopie.filter(x => x !== n) : Z.kopie.concat(n); render(); });
     v.querySelectorAll('[data-zk]').forEach(b => b.onclick = () => { const k = b.dataset.zk; Z.komu = Z.komu.includes(k) ? Z.komu.filter(x => x !== k) : Z.komu.concat(k); zFm = null; render(); });
     v.querySelectorAll('[data-mf]').forEach(b => b.onclick = () => { ls.set('cx-moje-firma', b.dataset.mf); render(); });
     v.querySelectorAll('[data-zend]').forEach(b => b.onclick = () => { Z.end = addD(todayS(), +b.dataset.zend); render(); });
@@ -1630,7 +1634,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     view = 'hlaseni'; ls.set('cx-view', 'hlaseni'); closeSheet(); render(); scrollTo(0, 0);
     if (msg !== '') toast(s && s.later ? `✓ Uloženo v telefonu. ${String(s.formal || '').trim() ? '' : 'Claude dopíše zprávu a '}e-mail pro ${s.firmaJm || 'firmu'} odejde sám. Kopie přijde i vám.` : msg, 6000);
     loadQ().then(() => { renderBg(); zaiPump(); kick(); });
-    if (s && !s.sdileno) setTimeout(() => zSdilet(s), 900);
+    if (s && !s.sdileno) setTimeout(() => zPoOdeslani(s), 900);
   }
   let zaiBusy = false;
   async function zaiPump() {
@@ -1790,7 +1794,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
         const s = sheet(`<h3>✓ E-mail je ${server ? 'odeslaný' : 'připravený'}</h3><p class="hint">Teď ještě WhatsApp${f && f.tel ? ' pro ' + esc(f.firma) : ''}.</p>
           <button type="button" class="big pri zwa" id="zo-wa">Poslat i přes WhatsApp</button><button type="button" class="big" id="zo-ne">Přeskočit</button>`);
         s.querySelector('#zo-wa').onclick = () => { closeSheet(); zSend('wa'); };
-        s.querySelector('#zo-ne').onclick = () => { closeSheet(); if (!Z.sdileno) zSdilet(); };
+        s.querySelector('#zo-ne').onclick = () => { closeSheet(); if (!Z.sdileno) zPoOdeslani(); };
       }, server ? 600 : 2000);
       return;
     }
@@ -1813,7 +1817,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const f = firma(), p = planOf(Z.pin && Z.pin.floor);
     return {id: Z.id, cislo: zCislo(), at: new Date().toISOString(), by: me || jaJmeno(), typ: zTyp().l, firma: f ? f.firma : '', email: f ? f.email || '' : '',
       patro: p ? p.name : '', room: Z.room || '', komu: f ? komuTxt(f) : '', predmet: zPredmet(), popis: (Z.text || '').trim(), text: (Z.formal || odborne()).trim(),
-      via: oba && via === 'mail' ? ['mail', 'wa'] : [via], server: !!server, tok: Z.tok, odEmail: mujEmail() || '', stav: 'odeslano'};
+      via: oba && via === 'mail' ? ['mail', 'wa'] : [via], server: !!server, tok: Z.tok, odEmail: mujEmail() || '', stav: 'odeslano', kopie: (Z.kopie || []).slice()};
   }
   async function zZaznamUloz(rec, fm, ft) {
     const files = [];
@@ -1822,6 +1826,13 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     await CXQ.put({cid: 'zav-' + rec.id, kind: 'zavada', at: rec.at, day: todayS(), by: rec.by, rec, files, state: 'wait'});
   }
   // po odeslání firmě: sdílet závadu s kolegy (uvidí ji v Constructu Na vědomí a přijde jim e-mail)
+  // 1.25: kolegy „na vědomí“ zaškrtnuté ve formuláři dostanou kopii hned; jinak se jako dřív zeptá „Sdílet s kolegy?“
+  function zPoOdeslani(snap) {
+    const z = snap || Z, k = (z.kopie || []).filter(n => !isMe(n));
+    if (!k.length) return zSdilet(snap);
+    if (z.sdileno || ro) return;
+    z.sdileno = true; zSdiletKomu(k, z);
+  }
   function zSdilet(snap) {
     const z = snap || Z;
     if (z.sdileno || ro || view !== 'hlaseni') return;

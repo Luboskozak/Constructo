@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-7qVP086k3kdkjr4oruzYM8MO3j/9MRqSlvQFCn8cC4w=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-VdF5A4EhQyZ6IbWQRYrJCbZ5gHR5Gedn37vcbnu187g=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1170,7 +1170,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.47';
+  const APP_VERSION = '4.48';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3370,7 +3370,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     i.onerror = e => { URL.revokeObjectURL(u); rej(e); }; i.src = u; });
   const firmaEmaily = f => { const k = (f.kontakty || []).filter(x => x && x.email && x.posilat !== false); return [...new Set((k.length ? k.map(x => x.email) : [f.email]).join(',').split(/[,;\s]+/).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x)))]; };
   const firmaKomu = f => { const k = (f.kontakty || []).filter(x => x && x.email && x.posilat !== false); return k.length ? k.map(x => x.jmeno || x.email).join(', ') : (f.kontakt || ''); };
-  const NZ = {druh: 'kol', info: true, to: new Set(), end: '', obj: new Set(), firma: '', typ: 'kvalita', misto: '', text: '', fotky: []};
+  const NZ = {druh: 'kol', info: true, to: new Set(), end: '', obj: new Set(), firma: '', typ: 'kvalita', misto: '', text: '', fotky: [], kopie: new Set()};
   function novaZprava() {
     if (RO()) { toast('Jen prohlížení: zprávy posílat nejde.'); return; }
     if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu (Data → Automatická synchronizace).'); return; }
@@ -3389,7 +3389,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         <div class="hcap" id="nz-firma-em">${(f => f ? (firmaEmaily(f).join(', ') || 'Firma nemá e-mail – doplňte ho v záložce Firmy.') : '')(firmy.find(f => f.id === NZ.firma))}</div>
         <label for="nz-typ">Druh</label><select id="nz-typ">${NZ_TYPY.map(([k, l]) => `<option value="${k}"${NZ.typ === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
         <label for="nz-misto">Místo (podlaží, místnost)</label><input id="nz-misto" value="${esc(NZ.misto)}" placeholder="např. 1. NP, místnost A1.23">
-        <label for="nz-end">Odstranit nejpozději do</label><input type="date" id="nz-end" value="${esc(NZ.end)}">`}
+        <label for="nz-end">Odstranit nejpozději do</label><input type="date" id="nz-end" value="${esc(NZ.end)}">
+        <label>Na vědomí kolegům <span class="hcap">(dostanou kopii e-mailem s PDF a uvidí ji ve Zprávách)</span></label>
+        <div class="nz-lide">${team.filter(n => n !== me()).map(n => `<label class="nz-ch"><input type="checkbox" data-nk="${esc(n)}"${NZ.kopie.has(n) ? ' checked' : ''}> ${esc(n)}</label>`).join('')}</div>`}
       <label for="nz-text">Text zprávy</label><textarea id="nz-text" rows="6" placeholder="Co se stalo, co je potřeba…">${esc(NZ.text)}</textarea>
       <label>Fotky (nejvýš 12)</label>
       <div class="nz-fotky">${NZ.fotky.map((f, i) => `<span class="nz-f"><img src="${f}" alt="Foto ${i + 1}"><button type="button" data-nx="${i}" title="Odebrat">×</button></span>`).join('')}
@@ -3402,6 +3404,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       ov.querySelectorAll('[data-nd]').forEach(b => b.onclick = () => { NZ.druh = b.dataset.nd; prekresli(); });
       ov.querySelectorAll('[data-ni]').forEach(b => b.onclick = () => { NZ.info = b.dataset.ni === '1'; prekresli(); });
       ov.querySelectorAll('[data-nt]').forEach(c => c.onchange = () => { c.checked ? NZ.to.add(c.dataset.nt) : NZ.to.delete(c.dataset.nt); });
+      ov.querySelectorAll('[data-nk]').forEach(c => c.onchange = () => { c.checked ? NZ.kopie.add(c.dataset.nk) : NZ.kopie.delete(c.dataset.nk); });
       const vs = $('#nz-vsichni'); if (vs) vs.onclick = () => { const all = team.every(n => NZ.to.has(n)); NZ.to = new Set(all ? [] : team); prekresli(); };
       ov.querySelectorAll('[data-no]').forEach(b => b.onclick = () => { NZ.obj.has(b.dataset.no) ? NZ.obj.delete(b.dataset.no) : NZ.obj.add(b.dataset.no); prekresli(); });
       const fs = $('#nz-firma'); if (fs) fs.onchange = () => { NZ.firma = fs.value; prekresli(); };
@@ -3436,6 +3439,25 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       polozky: [['Stavba', stavba], ['Místo', NZ.misto.trim() || '—'], ['Pro firmu', [f.firma, firmaKomu(f), em.join(', ')].filter(Boolean).join('\n')], ['Odstranit nejpozději do', NZ.end ? fmtDY(NZ.end) : '—'], ['Zapsal', me() || '—'], ['Datum zjištění', fmtDY(today)]], fotky: NZ.fotky.slice()};
     return {kol: false, f, em, typ, id, tok, cislo, o};
   }
+  // 4.47: zpráva v kolektivu (úkol / Na vědomí) – e-mail s PDF každému zvlášť a záznam do Zpráv; používá Nová zpráva i kopie zprávy pro firmu
+  async function nzKolegum(it, o, fotky, fm, pdfB, pdf, nahraj, krok) {
+    const att = [], P = D.project || {}, stavba = P.name || 'Stavba', obr = {logo: fm.logo}; fm.fotky.forEach((b, i) => { if (b) obr['f' + i] = b; });
+    for (let i = 0; i < fotky.length; i++) { krok(`Ukládám fotky ${i + 1}/${fotky.length}…`); const r = await nahraj(it.cid + '-' + (i + 1) + '.jpg', 'image/jpeg', fotky[i].split(',')[1]); att.push({id: r.id, url: r.url, thumb: r.thumb, name: it.cid + '-' + (i + 1) + '.jpg'}); }
+    const base = {kind: 'simple', title: it.text, start: today, note: '', obj: it.obj, supplier: '', hmg: [], createdAt: it.at, createdBy: it.by, updatedAt: it.at, updatedBy: it.by, from: 'web', grp: it.cid, att};
+    const nove = it.info ? [Object.assign({}, base, {id: 'm' + it.cid + '-0', owner: it.to[0], team: it.to.slice(1), end: '', done: 100, status: 'done', info: true, doneAt: it.at, doneBy: ''})]
+      : it.to.map((n, i) => Object.assign({}, base, {id: 'm' + it.cid + '-' + i, owner: n, team: [], end: it.end || '', done: 0, status: 'todo'}));
+    const em = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
+    const komu = it.to.filter(n => em(n)), missing = it.to.filter(n => !em(n)), poslano = [], chyby = [];
+    const html = CXZprava.html(o, fm.fotky), predmet = `Constructo · ${stavba} – ${it.info ? 'Na vědomí' : 'Úkol'} od ${it.by}: ${o.predmet}`;
+    for (const n of komu) {
+      krok(`Posílám ${poslano.length + 1}/${komu.length}…`);
+      let r; try { r = await call('POST', {key: SY.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase(), komu: em(n), predmet, html, text: it.text, pdf: pdfB, pdfJmeno: o.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { r = {error: (e && e.message) || String(e)}; }
+      if (r && r.ok) poslano.push(n); else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
+    }
+    const zp = {at: new Date().toISOString(), komu: it.to, sent: poslano.length, poslano, missing, error: chyby.join('; '), pdf};
+    nove.forEach(t => { t.zprava = zp; D.tasks.push(t); }); commit();
+    return {poslano, missing, chyby};
+  }
   let nzBezi = false;
   async function nzOdeslat() {
     if (nzBezi) return; const x = nzSestav(); if (!x) return;
@@ -3448,39 +3470,35 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       const obr = {logo: fm.logo}; fm.fotky.forEach((b, i) => { if (b) obr['f' + i] = b; });
       const P = D.project || {}, stavba = P.name || 'Stavba', mujEm = String(personOf(me()).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
       if (x.kol) {
-        const it = x.it, att = [];
-        for (let i = 0; i < NZ.fotky.length; i++) { krok(`Ukládám fotky ${i + 1}/${NZ.fotky.length}…`); const r = await nahraj(it.cid + '-' + (i + 1) + '.jpg', 'image/jpeg', NZ.fotky[i].split(',')[1]); att.push({id: r.id, url: r.url, thumb: r.thumb, name: it.cid + '-' + (i + 1) + '.jpg'}); }
-        const base = {kind: 'simple', title: it.text, start: today, note: '', obj: it.obj, supplier: '', hmg: [], createdAt: it.at, createdBy: it.by, updatedAt: it.at, updatedBy: it.by, from: 'web', grp: it.cid, att};
-        const nove = it.info ? [Object.assign({}, base, {id: 'm' + it.cid + '-0', owner: it.to[0], team: it.to.slice(1), end: '', done: 100, status: 'done', info: true, doneAt: it.at, doneBy: ''})]
-          : it.to.map((n, i) => Object.assign({}, base, {id: 'm' + it.cid + '-' + i, owner: n, team: [], end: it.end || '', done: 0, status: 'todo'}));
-        const em = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
-        const komu = it.to.filter(n => em(n)), missing = it.to.filter(n => !em(n)), poslano = [], chyby = [];
-        const html = CXZprava.html(x.o, fm.fotky), predmet = `Constructo · ${stavba} – ${it.info ? 'Na vědomí' : 'Úkol'} od ${it.by}: ${x.o.predmet}`;
-        for (const n of komu) {
-          krok(`Posílám ${poslano.length + 1}/${komu.length}…`);
-          let r; try { r = await call('POST', {key: SY.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase(), komu: em(n), predmet, html, text: it.text, pdf: pdfB, pdfJmeno: x.o.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { r = {error: (e && e.message) || String(e)}; }
-          if (r && r.ok) poslano.push(n); else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
-        }
-        const zp = {at: new Date().toISOString(), komu: it.to, sent: poslano.length, poslano, missing, error: chyby.join('; '), pdf};
-        nove.forEach(t => { t.zprava = zp; D.tasks.push(t); }); commit();
-        nzHotovo(`${it.info ? 'Zpráva' : 'Úkol'} odeslán${it.info ? 'a' : ''}: ${poslano.join(', ') || 'nikomu'}.${missing.length ? ' Chybí e-mail u: ' + missing.join(', ') + '.' : ''}${chyby.length ? ' Neodešlo: ' + chyby.join('; ') : ''}`);
+        const z = await nzKolegum(x.it, x.o, NZ.fotky, fm, pdfB, pdf, nahraj, krok), it = x.it;
+        nzHotovo(`${it.info ? 'Zpráva' : 'Úkol'} odeslán${it.info ? 'a' : ''}: ${z.poslano.join(', ') || 'nikomu'}.${z.missing.length ? ' Chybí e-mail u: ' + z.missing.join(', ') + '.' : ''}${z.chyby.length ? ' Neodešlo: ' + z.chyby.join('; ') : ''}`);
       } else {
         let foto = null;
         if (NZ.fotky[0]) { krok('Ukládám fotku…'); const r = await nahraj(x.cislo + '-foto.jpg', 'image/jpeg', NZ.fotky[0].split(',')[1]); foto = {id: r.id, url: r.url, thumb: r.thumb}; }
         const rec = {id: x.id, cislo: x.cislo, at: new Date().toISOString(), by: me() || '', typ: x.typ[1], firma: x.f.firma, email: x.em.join(', '), patro: '', room: NZ.misto.trim(), komu: firmaKomu(x.f),
           predmet: x.o.predmet, popis: NZ.text.trim(), text: x.o.text, via: ['mail'], server: true, tok: x.tok, odEmail: mujEm, stav: 'odeslano', pdf, foto, z: 'web'};
+        const kopie = [...NZ.kopie].filter(n => n !== me()).sort((a, b) => a.localeCompare(b, 'cs')); if (kopie.length) rec.kopie = kopie;
         D.zavady = (D.zavady || []).concat([rec]); commit();   // uložit dřív než e-mail: firma odpovídá přes odkaz, který hledá tuto zprávu
         krok('Posílám firmě…');
         const r = await call('POST', {key: SY.key, akce: 'zavada', cid: x.id, komu: x.em.join(','), predmet: `Constructo · ${stavba} – ${x.o.predmet}`, html: CXZprava.html(x.o, fm.fotky), text: x.o.text + '\n\nOdpovědět: ' + x.o.odkaz,
           pdf: pdfB, pdfJmeno: x.cislo + '.pdf', obr, od: me() || 'Constructo', odpovedet: mujEm});
         if (!r || !r.ok) throw new Error('Zpráva je uložená, ale e-mail firmě neodešel: ' + ((r && r.error) || 'neznámá chyba'));
-        nzHotovo(`Odesláno firmě ${x.f.firma} na ${x.em.join(', ')}${mujEm ? '. Kopie přišla i vám' : ''}.`);
+        // 4.47: kopie kolegům „na vědomí“ – stejné PDF jako firma, ale bez tlačítka pro odpověď firmy; uvidí ji i ve Zprávách
+        let kp = '';
+        if (kopie.length) {
+          const it = {cid: 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at: new Date().toISOString(), day: today, by: me() || 'Constructo', to: kopie, info: true, end: '', obj: '',
+            text: `Závada poslaná firmě ${x.f.firma}: ${x.o.predmet}\n\n${x.o.text}`};
+          try { const z = await nzKolegum(it, Object.assign({}, x.o, {odkaz: ''}), NZ.fotky, fm, pdfB, pdf, nahraj, krok);
+            kp = ` Na vědomí: ${z.poslano.join(', ') || 'nikomu'}.${z.missing.length ? ' Chybí e-mail u: ' + z.missing.join(', ') + '.' : ''}${z.chyby.length ? ' Kopie neodešla: ' + z.chyby.join('; ') : ''}`;
+          } catch (e) { kp = ' Kopie kolegům neodešla: ' + ((e && e.message) || 'neznámá chyba'); }
+        }
+        nzHotovo(`Odesláno firmě ${x.f.firma} na ${x.em.join(', ')}${mujEm ? '. Kopie přišla i vám' : ''}.${kp}`);
       }
     } catch (e) { toast((e && e.message) || 'Zprávu se nepodařilo odeslat.', 9000); if (ok) { ok.disabled = false; ok.textContent = t0; } }
     finally { nzBezi = false; }
   }
   function nzHotovo(msg) {
-    Object.assign(NZ, {to: new Set(), obj: new Set(), misto: '', text: '', fotky: [], end: ''});
+    Object.assign(NZ, {to: new Set(), obj: new Set(), misto: '', text: '', fotky: [], end: '', kopie: new Set()});
     const c = $('#m-cancel'); if (c) c.click();
     toast(msg, 9000); if (S.view === 'zavady') renderZavady();
   }
@@ -3599,7 +3617,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <p style="margin:0"><span class="pill zv-st zv-${st}">${ZSTAV[st]}</span></p>
       ${th ? `<img src="${esc(th)}" alt="" onerror="this.remove()">` : ''}
       <p class="hcap" style="margin:0">${esc(zDatum(z))} ${esc(zCas(z))} · poslal ${esc(z.by || '–')}${zVia(z) ? ' · poslané ' + esc(zVia(z)) : ''}</p>
-      <p style="margin:0"><b>${esc(z.firma || 'Bez firmy')}</b>${zKomu(z) ? ' · ' + esc(zKomu(z)) : ''}${z.email ? '<br>' + esc(z.email) : ''}${zMisto(z) ? '<br>' + esc(zMisto(z)) : ''}</p>
+      <p style="margin:0"><b>${esc(z.firma || 'Bez firmy')}</b>${zKomu(z) ? ' · ' + esc(zKomu(z)) : ''}${z.email ? '<br>' + esc(z.email) : ''}${zMisto(z) ? '<br>' + esc(zMisto(z)) : ''}${(z.kopie || []).length ? '<br>Na vědomí: ' + esc(z.kopie.join(', ')) : ''}</p>
       ${z.text ? `<div class="zv-txt">${esc(z.text)}</div>` : ''}
       <div class="zv-a" style="justify-content:flex-start">${pdf ? `<a class="btn" href="${esc(pdf)}" target="_blank" rel="noopener">Formulář PDF</a>` : ''}${odk ? '<button type="button" class="btn" id="zv-odkaz">Kopírovat odkaz pro firmu</button>' : ''}</div>
       <h4 class="zv-h4">Odpovědi</h4>
