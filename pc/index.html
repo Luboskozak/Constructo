@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-o+p63yrMUqxiF9SNHSHPtxlQH3+Az06sy420iJfSAMc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-M2DlybPcntEUsNnUbtKFBZJp30BK/ZJVPxidHM3Viik=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -83,6 +83,7 @@ h2{font:700 16px/1.2 var(--f-display);font-stretch:90%;margin:0;text-transform:u
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .toolbar input,.toolbar select{border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:7px 10px;min-width:0}
 .toolbar input{flex:1 1 200px}
+.q-hint{flex:1 0 100%;order:9;font-size:12.5px;color:var(--muted,#667);margin:-4px 2px 0}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel)}
 .seg button{border:0;background:none;padding:7px 12px}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
@@ -1006,7 +1007,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     <div class="toolbar">
       <div class="seg uk-src no-print" id="uk-src" role="group" aria-label="Které úkoly"><button type="button" data-uk="all" aria-pressed="true">Všechny úkoly</button><button type="button" data-uk="porada" aria-pressed="false">Jen z porady</button></div>
       <select id="f-osoba" aria-label="Přidělená osoba"><option value="">Všechny osoby</option></select>
-      <input id="q" type="search" placeholder="Hledat činnost, dodavatele…" aria-label="Hledat">
+      <input id="q" type="search" placeholder="Hledat" aria-label="Hledat" title="Hledá ve všem textu: názvy, poznámky, firmy, osoby, objekty. Nevadí chybějící háčky, překlep ani zkratka (MTS = Metrostav)."><span class="q-hint" id="q-hint" hidden></span>
       <select id="f-objekt" aria-label="Objekt"><option value="">Všechny objekty</option></select>
       <select id="f-stav" aria-label="Stav">
         <option value="">Všechny stavy</option><option value="todo">Nezahájeno</option><option value="doing">Probíhá</option>
@@ -1153,7 +1154,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.45';
+  const APP_VERSION = '4.46';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1351,7 +1352,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (S.owner && !hasPerson(t, S.owner) && !subHas(t, S.owner)) return false;
     if (S.obj && !objHit(t.obj, S.obj)) return false;
     if (S.fstat && eff(t) !== S.fstat) return false;
-    if (S.q) { const h = `${t.title} ${t.supplier} ${ownerTxt(t)} ${t.obj} ${t.note}`.toLowerCase(); if (!h.includes(S.q.toLowerCase())) return false; }
+    if (S.q && !hledej(S.q, hlUkolTxt(t), (t.hmg || []).map(id => { const h = D.hmg.find(x => String(x.hid) === String(id)); return h ? h.name : ''; }))) return false;
     return true;
   });
   const avg = arr => arr.length ? Math.round(arr.reduce((a,t) => a + (Number(t.done)||0), 0) / arr.length) : 0;
@@ -1529,11 +1530,11 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function pickHmgFor(n) {
     const list = () => D.hmg.slice().sort((a, b) => objOrderOf(a.obj) - objOrderOf(b.obj) || a.hid - b.hid);
     confirmModal(`Z harmonogramu: ${n}`, `
-      <div class="fld"><label for="ph-q">Hledat činnost</label><input id="ph-q" placeholder="např. malby, okna, 26"></div>
+      <div class="fld"><label for="ph-q">Hledat</label><input id="ph-q" placeholder="např. malby, okna, 26"></div>
       <div class="fld"><label for="ph-sel">Činnost HMG</label><select id="ph-sel" size="10" style="height:auto"></select></div>
       <p class="hcap" id="ph-info"></p>`, 'Pokračovat', () => { const h = D.hmg.find(x => String(x.hid) === $('#ph-sel').value); if (h) setTimeout(() => chooseFromHmg(n, h), 0); });
     const draw = () => {
-      const q = foldName($('#ph-q').value), hs = list().filter(h => !q || foldName(`${h.hid} ${h.name} ${h.obj} ${h.owner}`).includes(q));
+      const q = $('#ph-q').value, hs = list().filter(h => hledej(q, String(h.hid), h.name, h.obj, h.owner, linkedTasks(h).map(t => t.title)));
       $('#ph-sel').innerHTML = hs.map(h => `<option value="${h.hid}">${h.hid} · ${esc(sectKey(h.obj))} · ${esc(h.name)}${h.owner ? ' (' + esc(h.owner) + ')' : ''}</option>`).join('');
       if (hs.length) $('#ph-sel').selectedIndex = 0;
       info();
@@ -1820,13 +1821,13 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     d.akce = d.ukKomu ? 'ukol' : 'zapis';
   }
   const filteredDiary = () => {
-    const s = dSeen0 || '', q = (S.q || '').toLowerCase();
+    const s = dSeen0 || '', q = S.q || '';
     return D.diary.filter(e => isZapis(e)
       && (!S.owner || e.owner === S.owner || e.by === S.owner || (e.komu || []).includes(S.owner) || e.ukKomu === S.owner)
       && (!S.obj || (e.obj && objHit(e.obj, S.obj)))
       && (S.dFil !== 'me' || dForMe(e)) && (S.dFil !== 'problem' || (e.typ === 'problem' && !e.vyreseno)) && (S.dFil !== 'term' || !!e.ukolId)
       && (S.dFil !== 'new' || dIsNew(e, s))
-      && (!q || `${e.text} ${e.owner} ${e.by || ''} ${e.taskTitle || ''} ${mistoTxt(e.misto)} ${dRepl(e.id).map(r => r.text + ' ' + r.by).join(' ')}`.toLowerCase().includes(q)));
+      && hledej(q, e.text, e.owner, e.by, e.taskTitle, e.obj, (e.komu || []), e.ukKomu, mistoTxt(e.misto), dRepl(e.id).map(r => r.text + ' ' + r.by)));
   };
   function entryHtml(e, seen) {
     const t = dTyp(e.typ), rs = dRepl(e.id), nw = dIsNew(e, seen), who = e.by || e.owner || '?';
@@ -2245,7 +2246,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       if (S.hmgHideDone && done) return false;
       if (S.hmgRange !== 'all' && !((h.start < hi && h.end >= lo) || (current && h.end < lo && !done))) return false;
       if (S.owner && !(h.owner || '').split(/\s*\/\s*/).map(canonOwner).includes(S.owner) && !linkedTasks(h).some(t => hasPerson(t, S.owner))) return false;
-      if (S.q && !`${h.name} ${h.owner} ${h.obj} ${h.hid}`.toLowerCase().includes(S.q.toLowerCase())) return false;
+      if (S.q && !hledej(S.q, h.name, h.owner, h.obj, 'objekt ' + h.obj, String(h.hid), linkedTasks(h).map(hlUkolTxt))) return false;
       if (S.obj && !objMatch(h, S.obj)) return false;
       if (!hstatOk(h)) return false;
       return true;
@@ -2383,6 +2384,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (fs.dataset.kind !== want) { fs.dataset.kind = want; fs.innerHTML = hv ? HSTAT.map(([k, l]) => `<option value="${k}">${l}</option>`).join('') : '<option value="">Všechny stavy</option>' + ['todo', 'doing', 'late', 'hold', 'done'].map(k => `<option value="${k}">${STATUS[k]}</option>`).join(''); }
     fs.value = hv ? S.hstat : S.fstat;
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
+    { const t = hledejInfo(S.q), el = $('#q-hint'); if (el) { el.textContent = t ? 'Hledám i: ' + t : ''; el.hidden = !t; } }
     if (S.view !== 'diary' && $('#j-text')) dGrab();
     S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
@@ -2695,6 +2697,91 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
 
   const foldName = n => String(n || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+  /* 4.46: chytré hledání – stejné všude (Harmonogram, Úkoly, Deník, Zprávy, Odeslané, Plán prací).
+     Hledá v celém textu bez ohledu na háčky a čárky, snese překlep a zná zkratky: firmy (MTS = Metrostav,
+     odvozené z názvu nebo ručně v kartě firmy „Zkratky pro hledání“) a běžné stavařské (SDK, VZT, ZTI…). */
+  function hlNorm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  const HL_OBOR = {sdk: 'sadrokarton', vzt: 'vzduchotechnika', zti: 'zdravotechnika', ut: 'ustredni topeni', mar: 'mereni a regulace', eps: 'elektricka pozarni signalizace',
+    ezs: 'elektricka zabezpecovaci signalizace', slp: 'slaboproud', tzb: 'technicke zarizeni budov', zb: 'zelezobeton', hi: 'hydroizolace', tds: 'technicky dozor',
+    bozp: 'bezpecnost prace', kd: 'kontrolni den', pd: 'projektova dokumentace', rds: 'realizacni dokumentace', dps: 'dokumentace pro provedeni stavby', hmg: 'harmonogram', gd: 'generalni dodavatel'};
+  const HL_FORMA = new Set(['s', 'r', 'o', 'sro', 'spol', 'a', 'as', 'v', 'vos', 'k', 'ks', 'se', 'gmbh', 'ltd', 'cz', 'czech', 'republic', 'group', 'holding', 'company', 'firma', 'stavebni']);
+  let hlCache = new Map(), hlFirmyMemo = {k: '', a: []}, hlLast = {q: null, t: 0, m: null, info: ''};
+  function hlTxt(s) { // normalizovaný text + jeho slova, s pamětí
+    let x = hlCache.get(s); if (x) return x;
+    if (hlCache.size > 8000) hlCache = new Map();
+    const n = hlNorm(s); x = {n: ' ' + n + ' ', w: n ? n.split(' ') : []}; hlCache.set(s, x); return x;
+  }
+  function hlFirmy() { // firmy z karty Firmy + dodavatelé z úkolů a HMG, každá se zkratkami
+    const fm = Array.isArray(D.project && D.project.firmy) ? D.project.firmy : [];
+    const sup = new Set(); (D.tasks || []).forEach(t => t && t.supplier && String(t.supplier).split(/\s*[;/,]\s*/).forEach(o => sup.add(o))); (D.hmg || []).forEach(h => h && h.owner && String(h.owner).split(/\s*\/\s*/).forEach(o => sup.add(o)));
+    const key = fm.map(f => f.firma + '|' + (f.zkratky || '')).join('¦') + '¦' + [...sup].join('¦');
+    if (hlFirmyMemo.k === key) return hlFirmyMemo.a;
+    const out = [], seen = new Set();
+    const add = (jmeno, zk) => {
+      const ciste = String(jmeno).replace(/\b(s\.?\s*r\.?\s*o\.?|spol\.?|a\.\s*s\.|v\.\s*o\.\s*s\.|k\.\s*s\.)(?=\s|,|$)/gi, ' ').replace(/\([^)]*\)/g, ' ');
+      const w = hlNorm(ciste).replace(/\b([a-z0-9])(?: (?=[a-z0-9]\b))/g, '$1').split(' ').filter(x => x && !HL_FORMA.has(x)); if (!w.length) return;
+      const id = w.join(' '); if (seen.has(id)) { if (zk) { const f = out.find(o => o.id === id); hlNorm(zk).split(' ').forEach(z => z && f.zk.add(z)); } return; } seen.add(id);
+      const zks = new Set(hlNorm(zk).split(' ').filter(Boolean)); if (w.length > 1) zks.add(w.map(x => x[0]).join(''));
+      out.push({id, jmeno: String(jmeno).trim(), w, comp: w.join(''), zk: zks, hl: w[0].length >= 3 ? w[0] : id});
+    };
+    fm.forEach(f => f && f.firma && add(f.firma, f.zkratky || '')); sup.forEach(s => add(s, ''));
+    hlFirmyMemo = {k: key, a: out}; return out;
+  }
+  function hlSubseq(t, s) { let i = 0; for (const c of s) { if (c === t[i]) i++; if (i === t.length) return true; } return false; }
+  function hlDist(a, b, max) { // Damerau-Levenshtein (prohození sousedních písmen = 1 chyba)
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    let p2 = null, p = Array.from({length: b.length + 1}, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const c = [i]; let lo = i;
+      for (let j = 1; j <= b.length; j++) {
+        let v = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (p2 && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, p2[j - 2] + 1);
+        c.push(v); if (v < lo) lo = v;
+      }
+      if (lo > max) return max + 1; p2 = p; p = c;
+    }
+    return p[b.length];
+  }
+  function hlVyraz(q) { // dotaz → pro každé slovo seznam možností (stačí jedna), všechna slova musí sedět
+    const raw = String(q || '').trim().split(/\s+/).filter(Boolean), info = [], slova = [];
+    raw.forEach(r => {
+      const t = hlNorm(r); if (!t) return;
+      t.split(' ').forEach(t => {
+        const alt = [{s: t, cele: false, prekl: t.length >= 5}];
+        const velke = /^[A-ZÁ-Ž0-9]{2,6}$/.test(r) && /[A-ZÁ-Ž]/.test(r), bezSam = t.length >= 2 && t.length <= 5 && !/[aeiouy0-9]/.test(t);
+        hlFirmy().forEach(f => {
+          if (t.length >= 3 && (f.comp.startsWith(t) || f.w.some(x => x.startsWith(t)) || (t.length >= 5 && (hlDist(t, f.w[0].slice(0, t.length), 1) <= 1 || hlDist(t, f.w[0], 1) <= 1)))) {
+            alt.push({zkr: f}); return; // napsaný název firmy najde i její zkratku v textu (Metrostav → MTS)
+          }
+          if (f.zk.has(t) || ((velke || bezSam) && t.length >= 3 && t.length <= 6 && t[0] === f.comp[0] && hlSubseq(t, f.comp))) {
+            alt.push({s: f.hl, cele: false, prekl: false}); if (f.w.length > 1) alt.push({s: f.id, cele: false, prekl: false});
+            info.push(r.toUpperCase() + ' = ' + f.jmeno);
+          }
+        });
+        if (HL_OBOR[t]) { alt.push({s: HL_OBOR[t], cele: false, prekl: true}); info.push(r.toUpperCase() + ' = ' + HL_OBOR[t]); }
+        if (t.length >= 4) Object.keys(HL_OBOR).forEach(z => { const e = HL_OBOR[z]; if (e.startsWith(t) || (t.length >= 6 && (hlDist(t, e.slice(0, t.length), 1) <= 1 || hlDist(t, e, 1) <= 1))) alt.push({s: z, cele: true, prekl: false}); });
+        slova.push(alt);
+      });
+    });
+    return {slova, info: [...new Set(info)].slice(0, 4).join(' · ')};
+  }
+  function hlSedi(a, x) {
+    if (a.zkr) return x.w.some(w => a.zkr.zk.has(w) || (w.length >= 3 && w.length <= 5 && !/[aeiouy0-9]/.test(w) && w[0] === a.zkr.comp[0] && hlSubseq(w, a.zkr.comp)));
+    if (a.cele ? x.n.includes(' ' + a.s + ' ') : x.n.includes(a.s)) return true;
+    if (!a.prekl) return false;
+    const L = a.s.length, k = L >= 10 ? 2 : 1;
+    return x.w.some(w => w.length >= L - k && (hlDist(a.s, w, k) <= k || (L >= 5 && w.length > L && [L - 1, L, L + 1].some(l => hlDist(a.s, w.slice(0, l), k) <= k))));
+  }
+  // hledej(dotaz, text1, text2…) → true, když text odpovídá; prázdný dotaz odpovídá vždy
+  function hledej(q, ...co) {
+    if (!q || !String(q).trim()) return true;
+    const now = Date.now();
+    if (hlLast.q !== q || now - hlLast.t > 1500) { const v = hlVyraz(q); hlLast = {q, t: now, m: v.slova, info: v.info}; }
+    const x = hlTxt(co.flat(3).filter(s => s != null && s !== '').join(' · '));
+    return hlLast.m.every(alt => alt.some(a => hlSedi(a, x)));
+  }
+  function hledejInfo(q) { if (!q || !String(q).trim()) return ''; hledej(q, ''); return hlLast.info; }
+  function hlUkolTxt(t) { return t ? [t.title, t.supplier, ownerTxt(t), t.obj, t.note, t.missed, (t.sub || []).map(u => u && u.text)] : []; }
   // jména z porad, která patří stávajícím odpovědným osobám (dle Luboše 14. 10. 2026)
   const ALIASES = Object.assign({'lk': 'Luboš Kozák', 'helca': 'Helena Tomková'}, Object.fromEntries(Object.entries(TEAM_V2).map(([a, n]) => [a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), n])));
   function fixAliases() {
@@ -3057,7 +3144,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     else html += `<div class="fm-hd"><span>Firma</span><span>Osoby, kterým chodí zprávy</span><span>Zprávy</span><span></span></div>` + a.map(x => {
       const n = cnt.get(zFirmaKey(x.firma)) || 0, ks = kontaktyOf(x), maMail = ks.some(k => k.email && k.posilat !== false);
       return `<div class="fm-row" data-fm="${esc(x.id)}">
-        <div><b>${esc(x.firma)}</b>${x.ico || x.dic ? `<small>${esc([x.ico ? 'IČO ' + x.ico : '', x.dic ? 'DIČ ' + x.dic : ''].filter(Boolean).join(' · '))}</small>` : ''}${x.adresa ? `<small>${esc(x.adresa)}</small>` : ''}${x.pozn ? `<small class="fm-pz">${esc(x.pozn)}</small>` : ''}</div>
+        <div><b>${esc(x.firma)}</b>${x.ico || x.dic ? `<small>${esc([x.ico ? 'IČO ' + x.ico : '', x.dic ? 'DIČ ' + x.dic : ''].filter(Boolean).join(' · '))}</small>` : ''}${x.adresa ? `<small>${esc(x.adresa)}</small>` : ''}${x.zkratky ? `<small>Zkratky: ${esc(x.zkratky)}</small>` : ''}${x.pozn ? `<small class="fm-pz">${esc(x.pozn)}</small>` : ''}</div>
         <div class="fm-ks">${ks.length ? ks.map(k => `<div class="${k.posilat === false ? 'fm-off' : ''}"><b>${esc(k.jmeno || 'e-mail firmy')}</b>${k.funkce ? ` <span>· ${esc(k.funkce)}</span>` : ''}<small>${[k.email ? `<a href="mailto:${esc(k.email)}">${esc(k.email)}</a>` : '', k.tel ? esc(k.tel) : ''].filter(Boolean).join(' · ') || 'bez kontaktu'}${k.posilat === false ? ' · zprávy nedostává' : ''}</small></div>`).join('') : ''}${maMail ? '' : '<span class="fm-chybi">chybí e-mail pro zprávy</span>'}</div>
         <div>${n ? `<button type="button" class="linkish" data-fz="${esc(x.firma)}">${n} ${n === 1 ? 'zpráva' : n < 5 ? 'zprávy' : 'zpráv'} →</button>` : '<span class="hcap" style="margin:0">0</span>'}</div>
         <div class="fm-a no-print">${ro ? '' : `<button type="button" class="btn" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="btn" data-fd="${esc(x.id)}">Smazat</button>`}</div></div>`;
@@ -3142,6 +3229,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <p class="hcap" id="fm-ares-st" style="margin:-4px 0 0">Napište IČO a klikněte Doplnit z ARES: název, adresa a DIČ se vyplní samy.</p>
       ${f('firma', 'Název firmy', 'např. ALPOD s.r.o.')}
       <div class="fm-2">${f('dic', 'DIČ', 'CZ12345678')}${f('adresa', 'Sídlo', 'Ulice 1, 110 00 Praha 1')}</div>
+      ${f('zkratky', 'Zkratky pro hledání', 'např. MTS, MS (oddělte čárkou)')}
       <div class="fld"><label>Osoby ve firmě <span class="hcap" style="margin:0">(zaškrtnutým se zpráva nabídne v mobilu jako první)</span></label><div id="fm-ks">${ksHtml()}</div>
         <button type="button" class="btn" id="fm-kadd" style="align-self:flex-start">+ Další osoba</button></div>
       <div class="fld"><label for="fm-pozn">Poznámka</label><textarea id="fm-pozn" placeholder="např. dělá SDK v objektu C">${esc(ed ? ed.pozn || '' : '')}</textarea></div></div>`, ed ? 'Uložit změny' : 'Přidat firmu', () => {
@@ -3155,7 +3243,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       kk.forEach((k, i) => { if (!k.id) k.id = 'k' + Date.now().toString(36) + i; });
       // první osoba, které chodí zprávy, se ukládá i postaru (e-mail, telefon, kontakt) pro starší verze mobilu
       const hl = kk.find(k => k.posilat !== false && k.email) || kk.find(k => k.posilat !== false) || kk[0] || {};
-      const x = Object.assign({}, ed || {}, {id: ed ? ed.id : 'f' + Date.now().toString(36), firma: n, ico: g('ico').replace(/\s/g, ''), dic: g('dic'), adresa: g('adresa'), pozn: g('pozn'),
+      const x = Object.assign({}, ed || {}, {id: ed ? ed.id : 'f' + Date.now().toString(36), firma: n, ico: g('ico').replace(/\s/g, ''), dic: g('dic'), adresa: g('adresa'), pozn: g('pozn'), zkratky: g('zkratky'),
         kontakty: kk, email: hl.email || '', tel: hl.tel || '', kontakt: [hl.jmeno, hl.funkce].filter(Boolean).join(', ')});
       // přejmenování firmy: starší zprávy zůstanou pod novým názvem
       if (ed && foldName(ed.firma) !== foldName(n)) ZAV().forEach(z => { if (zFirmaKey(z.firma) === foldName(ed.firma)) z.firma = n; });
@@ -3372,12 +3460,12 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return `<div class="zv-th"><img src="${esc(id ? 'https://lh3.googleusercontent.com/d/' + id + '=w240' : alt)}" alt="" loading="lazy" data-alt="${esc(alt)}" onerror="if(this.dataset.alt&&this.src!==this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt=''}else{this.parentNode.classList.add('ph');this.parentNode.textContent='bez náhledu'}"></div>`; };
   const zThumb = z => z.foto && (z.foto.thumb || (z.foto.id ? `https://drive.google.com/thumbnail?id=${z.foto.id}&sz=w400` : ''));
   function zavadyVyber() {
-    const q = ZF.q.toLowerCase();
+    const q = ZF.q;
     const kol = ZF.firma || ZF.stav ? [] : kolZpravy().filter(z => (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
-      && (!q || `${z.typ} ${z.popis} ${z.by} ${z.komu.join(' ')} ${z.obj} ${KOL}`.toLowerCase().includes(q)));
+      && hledej(q, z.typ, z.popis, z.by, z.komu, z.obj, KOL));
     const a = (ZF.sort === 'kolektiv' ? [] : ZAV()).filter(z => (!ZF.firma || zFirmaKey(z.firma) === zFirmaKey(ZF.firma)) && (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
       && (!ZF.stav || (ZF.stav === 'otevrene' ? zStav(z) !== 'uzavreno' : zStav(z) === ZF.stav))
-      && (!q || `${z.cislo} ${z.firma} ${zKomu(z)} ${z.typ} ${zMisto(z)} ${zPopis(z)} ${z.by}`.toLowerCase().includes(q))).concat(kol);
+      && hledej(q, z.cislo, z.firma, zKomu(z), z.typ, zMisto(z), zPopis(z), z.by)).concat(kol);
     const byDate = (x, y) => String(y.at || '').localeCompare(String(x.at || ''));
     if (ZF.sort === 'datum' || ZF.sort === 'kolektiv') return a.sort(byDate);
     const k = ZF.sort === 'osoba' ? 'by' : 'firma';
@@ -3393,7 +3481,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <select id="zv-osoba" aria-label="Kdo poslal">${opt(osoby, ZF.osoba, 'Všichni, kdo posílali')}</select>
       <select id="zv-stav" aria-label="Stav">${[['', 'Všechny stavy'], ['otevrene', 'Neuzavřené'], ...Object.entries(ZSTAV)].map(([k, l]) => `<option value="${k}"${ZF.stav === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
       <div class="seg" role="group" aria-label="Řazení"><button type="button" data-zs="firma" aria-pressed="${ZF.sort === 'firma'}">Podle firem</button><button type="button" data-zs="kolektiv" aria-pressed="${ZF.sort === 'kolektiv'}">V kolektivu</button><button type="button" data-zs="osoba" aria-pressed="${ZF.sort === 'osoba'}">Podle osoby</button><button type="button" data-zs="datum" aria-pressed="${ZF.sort === 'datum'}">Podle data</button></div>
-      <input id="zv-q" type="search" placeholder="Hledat…" value="${esc(ZF.q)}" aria-label="Hledat ve zprávách">
+      <input id="zv-q" type="search" placeholder="Hledat" value="${esc(ZF.q)}" aria-label="Hledat ve zprávách">
       <span class="sp"></span><span>${rows.length === all.length ? rows.length : `${rows.length} z ${all.length}`} ${rows.length === 1 ? 'zpráva' : rows.length > 1 && rows.length < 5 ? 'zprávy' : 'zpráv'}</span>
       ${RO() ? '' : '<button type="button" class="btn primary no-print" id="zv-nova">+ Nová zpráva</button>'}
       <button type="button" class="btn no-print" id="zv-tisk"${firmRows.length ? '' : ' disabled'} title="Tisk zpráv pro firmy">Tisk</button>
@@ -3505,9 +3593,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return id ? {view: `https://drive.google.com/file/d/${id}/preview`, open: `https://drive.google.com/file/d/${id}/view`, dl: `https://drive.google.com/uc?export=download&id=${id}`} : u ? {view: u, open: u, dl: u} : null; };
   const odJmeno = z => `${z.cislo || 'zprava'}.pdf`;
   function odVyber() {
-    const q = OD.q.toLowerCase();
+    const q = OD.q;
     return ZAV().filter(z => (!OD.firma || zFirmaKey(z.firma) === zFirmaKey(OD.firma)) && (!OD.osoba || foldName(z.by || '') === foldName(OD.osoba))
-      && (!q || `${z.cislo} ${z.firma} ${zKomu(z)} ${z.typ} ${zMisto(z)} ${zPopis(z)} ${z.by}`.toLowerCase().includes(q)))
+      && hledej(q, z.cislo, z.firma, zKomu(z), z.typ, zMisto(z), zPopis(z), z.by))
       .sort((x, y) => OD.stare ? String(x.at || '').localeCompare(String(y.at || '')) : String(y.at || '').localeCompare(String(x.at || '')));
   }
   function renderOdeslane() {
@@ -3521,7 +3609,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <select id="od-osoba" aria-label="Odesílatel">${opt(osoby, OD.osoba, 'Všichni odesílatelé')}</select>
       <select id="od-firma" aria-label="Firma">${opt(firmyN, OD.firma, 'Všechny firmy')}</select>
       <div class="seg" role="group" aria-label="Řazení podle data"><button type="button" data-os="0" aria-pressed="${!OD.stare}">Nejnovější nahoře</button><button type="button" data-os="1" aria-pressed="${OD.stare}">Nejstarší nahoře</button></div>
-      <input id="od-q" type="search" placeholder="Hledat…" value="${esc(OD.q)}" aria-label="Hledat v odeslaných zprávách">
+      <input id="od-q" type="search" placeholder="Hledat" value="${esc(OD.q)}" aria-label="Hledat v odeslaných zprávách">
       ${filtr ? '<button type="button" class="btn" id="od-zrus">Zrušit filtr</button>' : ''}
       <span class="sp"></span><span>${rows.length === all.length ? rows.length : `${rows.length} z ${all.length}`} ${nZ(rows.length)}</span></div>
       <p class="od-pop">Každá zpráva, která odešla firmě, se sem uloží sama i s formulářem PDF přesně tak, jak ho firma dostala. Řazeno podle data odeslání.</p>`;
