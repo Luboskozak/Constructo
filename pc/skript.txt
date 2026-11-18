@@ -1,0 +1,665 @@
+// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 12
+// Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
+const HESLO = '@@HESLO@@';
+const SKRIPT_VERZE = 12;
+
+function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
+function doPost(e) {
+  // chyba uvnitř skriptu se vrátí aplikaci jako text (jinak Google pošle jen stránku „Nezdařilo se“ bez důvodu)
+  try { return doPost_(e); } catch (x) { return json_({error: 'Google: ' + ((x && x.message) || String(x))}); }
+}
+function doPost_(e) {
+  let b = {};
+  try { b = JSON.parse(e.postData.contents); } catch (x) {}
+  if (b.akce === 'foto' || b.akce === 'mail' || b.akce === 'zapis') {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(25000);
+    try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
+  }
+  rpZapnout_();
+  if (b.akce === 'verze') return json_({verze: SKRIPT_VERZE, samo: true});
+  if (b.akce === 'samo_aktualizace') return samoAktualizace_(b);
+  if (b.akce === 'prehled') return prehled_(b, false);
+  if (b.akce === 'prehled_ok') return prehled_(b, true);
+  if (b.akce === 'prehled_stav') return prehledStav_(b);
+  if (b.akce === 'prehled_test') return prehledTest_(b);
+  if (b.akce === 'odborne') return odborne_(b);
+  if (b.akce === 'korektura') return korektura_(b);
+  if (b.akce === 'formulace') return formulace_(b);
+  if (b.akce === 'zapis_pdf') return zapisPdf_(b);
+  if (b.akce === 'zavada') return zavada_(b);
+  if (b.akce === 'pozvanka') return pozvanka_(b);
+  if (b.akce === 'pripojit') return pripojit_(b);
+  if (b.akce === 'ares') return ares_(b);
+  if (b.akce === 'firma_zprava') return firmaZprava_(b);
+  if (b.akce === 'firma_odpoved') return firmaOdpoved_(b);
+  if (b.akce === 'kolega_zprava') return kolegaZprava_(b);
+  if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
+  return odpoved_(b.key, Number(b.rev), b.data || null);
+}
+// Fotky z mobilní aplikace: složka „Constructo – fotky ze stavby“ na Disku, podsložky po dnech.
+// Fotku uvidí každý, kdo má její odkaz (odkaz je jen v datech stavby a v e-mailu).
+function foto_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const den = /^\d{4}-\d{2}-\d{2}$/.test(b.den || '') ? b.den : Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
+  const sl = slozka_(slozka_(DriveApp.getRootFolder(), 'Constructo – fotky ze stavby'), den);
+  const jmeno = String(b.name || 'foto.jpg').replace(/[^\w.-]/g, '_');
+  const it = sl.getFilesByName(jmeno);
+  const f = it.hasNext() ? it.next() : sl.createFile(Utilities.newBlob(Utilities.base64Decode(b.data), b.mime || 'image/jpeg', jmeno));
+  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+  const id = f.getId();
+  return json_({id: id, url: 'https://drive.google.com/file/d/' + id + '/view', thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800'});
+}
+// Zvací kódy: administrátor v programu vytvoří krátký kód pro kolegu, aplikace ho tady vymění za připojení.
+// Kód platí 14 dní a dá se použít nejvýš na 20 zařízeních.
+function pozvanka_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties(), abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let kod = '';
+  do { kod = ''; for (let i = 0; i < 6; i++) kod += abc.charAt(Math.floor(Math.random() * abc.length)); } while (p.getProperty('poz:' + kod));
+  const exp = Date.now() + 14 * 864e5;
+  p.setProperty('poz:' + kod, JSON.stringify({jmeno: String(b.jmeno || ''), exp: exp, n: 0, role: b.role === 'cteni' ? 'cteni' : ''}));
+  return json_({kod: kod, exp: exp});
+}
+function pripojit_(b) {
+  const c = CacheService.getScriptCache(), spatne = Number(c.get('spatne') || 0);
+  if (spatne > 100) return json_({error: 'Příliš mnoho pokusů, zkuste to za hodinu.'});
+  const kod = String(b.kod || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const p = PropertiesService.getScriptProperties(), raw = kod.length === 6 ? p.getProperty('poz:' + kod) : null;
+  const z = raw ? JSON.parse(raw) : null;
+  if (!z || z.exp < Date.now() || z.n >= 20) { c.put('spatne', String(spatne + 1), 3600); return json_({error: 'kod'}); }
+  z.n++; p.setProperty('poz:' + kod, JSON.stringify(z));
+  if (z.role === 'cteni') return json_({key: cteni_(p), jmeno: z.jmeno, role: 'cteni'});
+  return json_({key: HESLO, jmeno: z.jmeno});
+}
+// Klíč jen pro čtení (pro pozvané „jen nahlíží“): data jde stáhnout, ale ne změnit. Smazáním vlastnosti „cteni“ se všem nahlížejícím přístup zruší.
+function cteni_(p) {
+  let k = p.getProperty('cteni');
+  if (!k) { k = 'cteni-' + Utilities.getUuid().replace(/-/g, ''); p.setProperty('cteni', k); }
+  return k;
+}
+function slozka_(rodic, jmeno) { const it = rodic.getFoldersByName(jmeno); return it.hasNext() ? it.next() : rodic.createFolder(jmeno); }
+// E-mail vybraným lidem z mobilní aplikace. Posílá jen na adresy uložené u lidí v programu (Upravit osobu → E-mail).
+function mail_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties();
+  if (p.getProperty('mail:' + b.cid)) return json_({ok: true, opakovane: true});
+  const d = nacti_(p) || {}, lide = (d.project && d.project.people) || {};
+  const komu = [], chybi = [];
+  (b.to || []).forEach(function (n) { const e = lide[n] && lide[n].email; if (e) komu.push(e); else chybi.push(n); });
+  if (!komu.length) { p.setProperty('mail:' + b.cid, '0'); return json_({ok: true, sent: 0, missing: chybi}); }
+  const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  const text = String(b.text || '').trim() || 'Foto ze stavby';
+  const stavba = (d.project && d.project.name) || 'Stavba';
+  const predmet = (b.info ? 'Na vědomí od ' : 'Nový úkol od ') + (b.by || 'kolegy') + ': ' + text.split('\n')[0].slice(0, 70);
+  const obr = {}; let fotky = '';
+  (b.fotky || []).slice(0, 6).forEach(function (id, i) {
+    try { obr['f' + i] = DriveApp.getFileById(id).getBlob(); fotky += '<p><a href="https://drive.google.com/file/d/' + id + '/view"><img src="cid:f' + i + '" style="max-width:100%;border-radius:8px"></a></p>'; } catch (x) {}
+  });
+  const termin = b.end ? String(b.end).split('-').reverse().map(Number).join('. ') : '';
+  const telo = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">' +
+    '<p style="font-size:17px"><b>' + esc(text).replace(/\n/g, '<br>') + '</b></p>' +
+    '<p style="color:#555">' + esc(stavba) + (b.obj ? ' · objekt ' + esc(b.obj) : '') + (b.info ? ' · na vědomí' : termin ? ' · splnit do ' + termin : '') +
+    '<br>Zadal ' + esc(b.by || '') + ' z mobilní aplikace Constructo</p>' + fotky +
+    '<p style="color:#555">' + (b.info ? 'Informaci najdete v programu Constructo v záložce Úkoly.' : 'Úkol najdete v programu Constructo v záložce Úkoly. Až bude hotový, klikněte Splněno.') + '</p></div>';
+  MailApp.sendEmail({to: komu.join(','), subject: predmet, htmlBody: telo, inlineImages: obr, name: 'Constructo'});
+  p.setProperty('mail:' + b.cid, '1');
+  return json_({ok: true, sent: komu.length, missing: chybi});
+}
+function odpoved_(key, rev, data) {
+  const ro = !!key && key !== HESLO && key === PropertiesService.getScriptProperties().getProperty('cteni');
+  if (key !== HESLO && !ro) return json_({error: 'heslo'});
+  if (ro && data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    const p = PropertiesService.getScriptProperties();
+    let cur = nacti_(p), r = Number(p.getProperty('rev') || 0);
+    if (data) { cur = mergeData(cur || {}, data); r++; uloz_(p, cur); p.setProperty('rev', String(r)); }
+    if (!data && rev === r) return json_({rev: r, same: true});
+    return json_({rev: r, data: cur || {}});
+  } finally { lock.releaseLock(); }
+}
+function nacti_(p) {
+  const id = p.getProperty('fileId');
+  return id ? JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString('UTF-8')) : null;
+}
+function uloz_(p, d) {
+  const s = JSON.stringify(d);
+  let id = p.getProperty('fileId');
+  if (id) DriveApp.getFileById(id).setContent(s);
+  else { id = DriveApp.createFile('rizeni-praci-hybernska-data.json', s, 'application/json').getId(); p.setProperty('fileId', id); }
+  const den = Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
+  if (p.getProperty('zaloha') !== den) { DriveApp.getFileById(id).makeCopy('zaloha-rizeni-praci-' + den + '.json'); p.setProperty('zaloha', den); }
+}
+function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+
+function mergeData(a, b) {
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id};
+    a = a || {}; b = b || {};
+    const out = Object.assign({}, a); out.tomb = {};
+    Object.keys(KEYS).forEach(c => {
+      const k = KEYS[c], ta = (a.tomb || {})[c] || {}, tb = (b.tomb || {})[c] || {}, tomb = Object.assign({}, ta);
+      Object.keys(tb).forEach(x => { if (!(tomb[x] >= tb[x])) tomb[x] = tb[x]; });
+      const m = new Map();
+      (a[c] || []).concat(b[c] || []).forEach(r => { const key = k(r), o = m.get(key); if (!o || (r._ts || 0) > (o._ts || 0)) m.set(key, r); });
+      out[c] = Array.from(m.values()).filter(r => !(tomb[k(r)] >= (r._ts || 0)));
+      out.tomb[c] = tomb;
+    });
+    ['project', 'hmgInfo'].forEach(f => { out[f] = ((b[f] || {})._ts || 0) > ((a[f] || {})._ts || 0) ? b[f] : (a[f] || b[f]); });
+    // 4.34: firmy, příjemci, lidé a tým v údajích stavby se slučují po jednom (dřív vyhrála celá novější kopie a starší počítač mohl firmy smazat)
+    const pa = a.project, pb = b.project;
+    if (pa && pb && pa !== pb) {
+      const win = out.project === pb ? pb : pa, los = win === pb ? pa : pb, P = Object.assign({}, win), sm = {};
+      ['firmy', 'prijemci', 'people', 'team'].forEach(k => { sm[k] = Object.assign({}, ((los.smazane || {})[k]) || {}); const w = ((win.smazane || {})[k]) || {}; Object.keys(w).forEach(x => { if (!(sm[k][x] >= w[x])) sm[k][x] = w[x]; }); });
+      P.smazane = sm;
+      ['firmy', 'prijemci'].forEach(k => {
+        const m = new Map();
+        (Array.isArray(los[k]) ? los[k] : []).forEach(r => { if (r && r.id) m.set(r.id, {r, w: false}); });
+        (Array.isArray(win[k]) ? win[k] : []).forEach(r => { if (!r || !r.id) return; const o = m.get(r.id); if (!o || (r._ts || 0) >= (o.r._ts || 0)) m.set(r.id, {r, w: true}); });
+        P[k] = Array.from(m.values()).filter(x => x.w || !(sm[k][x.r.id] >= (x.r._ts || 0))).map(x => x.r);
+      });
+      const pw = win.people || {}, pl = los.people || {}, pp = Object.assign({}, pw);
+      Object.keys(pl).forEach(n => { if (!(n in pp) && !(sm.people[n] >= ((pl[n] || {})._ts || 0))) pp[n] = pl[n]; });
+      if (win.people || los.people) P.people = pp;
+      if (Array.isArray(win.team) || Array.isArray(los.team)) { const t = Array.isArray(win.team) ? win.team.slice() : []; (Array.isArray(los.team) ? los.team : []).forEach(n => { if (!t.includes(n) && !sm.team[n]) t.push(n); }); P.team = t; }
+      out.project = P;
+    }
+    return out;
+  }
+// Zpráva o závadě pro firmu (z mobilu): napíše ji Claude podle popisu, fotek a výřezu půdorysu.
+// Když je popis nejasný, vrátí jednu otázku (dotaz) pro pracovníka. Smí si dohledat ČSN nebo technologický postup výrobce.
+// Klíč Anthropic patří do Nastavení projektu → Vlastnosti skriptu jako CLAUDE_KLIC, nikdy přímo sem.
+function odborne_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const obsah = [];
+  if (b.vyrez) obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(b.vyrez)}});
+  (b.fotky || []).slice(0, 3).forEach(function (f) { obsah.push({type: 'image', source: {type: 'base64', media_type: 'image/jpeg', data: String(f)}}); });
+  const udaje = {typ_zavady: b.typ, ton_zpravy: b.ton, predmet: b.predmet, misto: b.misto, popis_od_pracovnika: b.popis, doplneni_od_pracovnika: b.dotazy || [],
+    odstranit_do: b.termin, stavba: b.stavba, datum_kontroly: b.datum, podpis: b.podpis};
+  obsah.push({type: 'text', text: 'Podklady k závadě (první obrázek je výřez půdorysu s vyznačeným místem, další jsou fotky ze stavby):\n' + JSON.stringify(udaje, null, 2) +
+    (b.bezDotazu ? '\nPracovník už nic doplnit neumí: napiš zprávu z toho, co máš, bez dalšího dotazu.' : '')});
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele (Společnost pro rekonstrukci objektu Hybernská 8: Subterra & Auböck & VISTORIA). Z podkladů napiš zprávu subdodavateli o zjištěné závadě. ' +
+    'Piš česky, správnou stavební terminologií, zdvořile, ale dostatečně rázně; tón řiď podle pole ton_zpravy (nepořádek vlídněji, reklamace a BOZP tvrději). ' +
+    'Popis od pracovníka může být ukrajinsky nebo směsí ukrajinštiny a češtiny, zprávu ale vždy piš česky. Popis od pracovníka přepiš odborně a přesně. Z fotek doplň jen to, co je na nich jasně vidět, nic si nevymýšlej. Když se to hodí, odkaž na konkrétní ČSN nebo technologický postup výrobce; ' +
+    'normy a postupy si můžeš ověřit vyhledáním na webu, neuváděj čísla norem, která sis neověřil. ' +
+    'Pokud je popis tak nejasný, že z něj nejde poznat, o jakou vadu jde, a doplnění od pracovníka to neřeší, odpověz místo zprávy jediným řádkem: DOTAZ: a jedna krátká, jednoduchá otázka pro pracovníka na stavbě (není odborník). ' +
+    'Jinak vrať jen hotovou zprávu bez Markdownu, hvězdiček a nadpisů v této stavbě: první řádek „Předmět: …“, prázdný řádek, „Dobrý den,“, odstavec se zjištěním (stavba, datum kontroly, místo), ' +
+    'odstavec „Popis vady: …“, odstavec s požadavkem na odstranění a termínem, věta o přílohách (fotodokumentace a výřez půdorysu s vyznačeným místem), „S pozdravem“, prázdný řádek a pole podpis přesně tak, jak je.';
+  const zpravy = [{role: 'user', content: obsah}];
+  let o = {};
+  for (let kolo = 0; kolo < 4; kolo++) {
+    const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+      payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 6000, fallbacks: 'default', output_config: {effort: 'medium'}, system: zadani, messages: zpravy,
+        tools: [{type: 'web_search_20260209', name: 'web_search', max_uses: 3}]})});
+    o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+    if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+    if (o.stop_reason !== 'pause_turn') break;
+    zpravy.push({role: 'assistant', content: o.content});  // dlouhé hledání na webu: nechat Clauda pokračovat
+  }
+  if (o.stop_reason === 'refusal') return json_({error: 'Claude tenhle text napsat odmítl.'});
+  const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim();
+  if (/^DOTAZ:/i.test(text)) return json_({dotaz: text.replace(/^DOTAZ:\s*/i, '').split('\n')[0].trim()});
+  return json_(text ? {text: text} : {error: 'Claude nevrátil žádný text.'});
+}
+// Kontrola popisu závady (krok 6 v mobilu): opraví překlepy a navrhne odborné výrazy, text jinak nechá, jak ho pracovník napsal.
+function korektura_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const popis = String(b.popis || '').slice(0, 4000);
+  if (!popis.trim()) return json_({text: '', navrhy: []});
+  const zadani = 'Kontroluješ krátký popis závady na stavbě, který napsal nebo nadiktoval pracovník (není odborník). Pokud je text celý nebo zčásti ukrajinsky (případně rusky), přelož ho věrně do češtiny (pracovník mluví směsí ukrajinštiny a češtiny, diktování může slova zkomolit) a vrať český text. Oprav překlepy, diakritiku, gramatiku, interpunkci a chyby z diktování podle smyslu. ' +
+    'Smysl, rozsah a fakta zachovej, nic nepřidávej, nepiš z toho dopis. Hovorové nebo nepřesné výrazy v textu nech, ale navrhni k nim správnou stavební terminologii (nejvýš 5 návrhů, jen když je to opravdu lepší). ' +
+    'Odpověz jen JSON objektem bez dalšího textu: {"text": "opravený text", "navrhy": [{"z": "výraz přesně tak, jak je v opraveném textu", "na": "odborný výraz"}]}';
+  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 2000, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani,
+      messages: [{role: 'user', content: 'Typ závady: ' + String(b.typ || '') + '\nPopis od pracovníka:\n' + popis}]})});
+  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  const text = (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('');
+  const m = text.match(/\{[\s\S]*\}/);
+  let j = null; try { j = m ? JSON.parse(m[0]) : null; } catch (x) {}
+  if (!j || typeof j.text !== 'string') return json_({error: 'Claude nevrátil opravu.'});
+  return json_({text: j.text, navrhy: (Array.isArray(j.navrhy) ? j.navrhy : []).slice(0, 5)});
+}
+// Závada pro firmu z mobilu: e-mail přímo na adresu firmy (formulář Constructo v HTML, v příloze PDF).
+// Odchází z účtu Google, pod kterým běží skript, jménem pisatele; odpověď jde pisateli, ten dostane i kopii.
+function zavada_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties();
+  if (b.cid && p.getProperty('mail:' + b.cid)) return json_({ok: true, opakovane: true});
+  const adr = /^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/, komu = String(b.komu || '').split(/[,;]/).map(function (x) { return x.trim(); }).filter(Boolean).join(',');
+  if (!komu || !komu.split(',').every(function (x) { return adr.test(x); })) return json_({error: 'E-mail firmy nevypadá správně.'});
+  const blob_ = function (d, typ, jm) { return Utilities.newBlob(Utilities.base64Decode(String(d)), typ, jm); };
+  const obr = {};
+  Object.keys(b.obr || {}).slice(0, 10).forEach(function (k) { if (/^\w+$/.test(k) && b.obr[k]) obr[k] = blob_(b.obr[k], k === 'logo' ? 'image/png' : 'image/jpeg', k + (k === 'logo' ? '.png' : '.jpg')); });
+  const o = {to: komu, subject: String(b.predmet || 'Hlášení závady').slice(0, 200), body: String(b.text || ''), htmlBody: String(b.html || ''), inlineImages: obr,
+    attachments: b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\w.-]/g, '_'))] : [],
+    name: (String(b.od || '').slice(0, 60) || 'Constructo') + ' (Constructo)'};
+  const zpet = String(b.odpovedet || '').trim();
+  if (adr.test(zpet)) { o.replyTo = zpet; o.cc = zpet; }
+  MailApp.sendEmail(o);
+  if (b.cid) p.setProperty('mail:' + b.cid, '1');
+  return json_({ok: true});
+}
+// Údaje o firmě z veřejného rejstříku ARES (Ministerstvo financí) podle IČO.
+function ares_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const ico = String(b.ico || '').replace(/\D/g, '');
+  if (ico.length !== 8) return json_({error: 'IČO má mít 8 číslic.'});
+  const r = UrlFetchApp.fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/' + ico, {muteHttpExceptions: true, headers: {Accept: 'application/json'}});
+  if (r.getResponseCode() === 404) return json_({error: 'Firma s tímto IČO v ARES není.'});
+  if (r.getResponseCode() !== 200) return json_({error: 'ARES teď neodpovídá (' + r.getResponseCode() + ').'});
+  const o = JSON.parse(r.getContentText());
+  return json_({ico: o.ico || ico, firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''});
+}
+// Odpověď firmy na zprávu: firma dostane v e-mailu (nebo WhatsAppu) odkaz na stránku jen s touto jednou zprávou
+// (číslo zprávy + náhodný kód zprávy). Může potvrdit přijetí, nahlásit opravu s fotkou nebo nesouhlasit. Nic jiného ze stavby nevidí.
+function firmaNajdi_(d, b) {
+  const z = String(b.z || ''), t = String(b.t || '');
+  if (!z || t.length < 16) return null;
+  const r = (d.zavady || []).filter(function (x) { return x && x.id === z; })[0];
+  return r && r.tok && r.tok === t ? r : null;
+}
+function firmaVen_(d, r) {
+  return {stavba: (d.project && d.project.name) || '', cislo: r.cislo || '', at: r.at || '', typ: r.typ || '', firma: r.firma || '', komu: r.komu || '',
+    misto: [r.patro, r.room ? 'místnost ' + r.room : ''].filter(Boolean).join(' · '), predmet: r.predmet || '', text: r.text || '', by: r.by || '',
+    pdf: (r.pdf && r.pdf.url) || '', foto: (r.foto && (r.foto.thumb || r.foto.url)) || '', stav: r.stav || 'odeslano',
+    odpovedi: (r.odpovedi || []).map(function (o) { return {at: o.at, jmeno: o.jmeno, nase: !!o.nase, stav: o.stav, text: o.text || '', termin: o.termin || '', fotky: o.fotky || []}; })};
+}
+function firmaPokusy_() {
+  const c = CacheService.getScriptCache();
+  return {moc: Number(c.get('spatne-o') || 0) > 200, spatne: function () { c.put('spatne-o', String(Number(c.get('spatne-o') || 0) + 1), 3600); }};
+}
+function firmaZprava_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const d = nacti_(PropertiesService.getScriptProperties()) || {}, r = firmaNajdi_(d, b);
+  if (!r) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  return json_({zprava: firmaVen_(d, r)});
+}
+function firmaOdpoved_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const stav = {vedomi: 1, opraveno: 1, nesouhlas: 1}[b.stav] ? b.stav : '';
+  const text = String(b.text || '').trim().slice(0, 3000), jmeno = String(b.jmeno || '').trim().slice(0, 80);
+  if (!stav) return json_({error: 'Vyberte prosím odpověď.'});
+  if (!jmeno) return json_({error: 'Napište prosím své jméno.'});
+  if (stav === 'nesouhlas' && !text) return json_({error: 'Napište prosím, proč nesouhlasíte.'});
+  const p = PropertiesService.getScriptProperties(), lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  let d, r, o;
+  try {
+    d = nacti_(p) || {}; r = firmaNajdi_(d, b);
+    if (!r) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+    const cid = String(b.cid || '').slice(0, 40);
+    if (cid && (r.odpovedi || []).some(function (x) { return x.cid === cid; })) return json_({ok: true, zprava: firmaVen_(d, r)});
+    if (r.stav === 'uzavreno') return json_({error: 'Zpráva je už uzavřená, děkujeme.', zprava: firmaVen_(d, r)});
+    const fotky = [];
+    (Array.isArray(b.fotky) ? b.fotky : []).slice(0, 4).forEach(function (f, i) {
+      if (typeof f !== 'string' || f.length > 4000000) return;
+      try {
+        const sl = slozka_(slozka_(DriveApp.getRootFolder(), 'Constructo – fotky ze stavby'), 'odpovedi-firem');
+        const jm = String((r.cislo || r.id) + '-odpoved-' + Date.now().toString(36) + '-' + (i + 1) + '.jpg').replace(/[^\w.-]/g, '_');
+        const s = sl.createFile(Utilities.newBlob(Utilities.base64Decode(f), 'image/jpeg', jm));
+        try { s.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+        const id = s.getId();
+        fotky.push({id: id, url: 'https://drive.google.com/file/d/' + id + '/view', thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800'});
+      } catch (x) {}
+    });
+    o = {at: new Date().toISOString(), cid: cid, jmeno: jmeno, stav: stav, text: text, termin: /^\d{4}-\d{2}-\d{2}$/.test(String(b.termin || '')) ? b.termin : '', fotky: fotky};
+    r.odpovedi = (r.odpovedi || []).concat([o]); r.stav = stav; r._ts = Date.now();
+    uloz_(p, d); p.setProperty('rev', String(Number(p.getProperty('rev') || 0) + 1));
+  } finally { lock.releaseLock(); }
+  try { firmaUpozornit_(d, r, o); } catch (x) {}
+  return json_({ok: true, zprava: firmaVen_(d, r)});
+}
+// Verze 12: reakce kolegy na zprávu v kolektivu (Na vědomí / Úkol) přes odkaz v e-mailu – stránka /reakce/, bez přihlášení a bez kódu.
+// Odkaz nese skupinu zprávy a kód = HMAC-SHA256(skupina, HESLO); nikde se neukládá. Stránka ukáže jen tuto jednu zprávu.
+function kolegaTok_(grp) { return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(String(grp), HESLO)).slice(0, 22); }
+function kolegaNajdi_(d, b) {
+  const z = String(b.z || ''), t = String(b.t || '');
+  if (!z || t.length !== 22 || kolegaTok_(z) !== t) return null;
+  const ts = (d.tasks || []).filter(function (x) { return x && x.grp === z; });
+  return ts.length ? ts : null;
+}
+function kolegaVen_(d, ts) {
+  const t = ts[0], z = ts.map(function (x) { return x.zprava; }).filter(Boolean)[0] || null;
+  const komu = z && z.komu && z.komu.length ? z.komu : ts.reduce(function (a, x) { return a.concat(t.info ? [x.owner].concat(x.team || []) : [x.owner]); }, []).filter(function (n, i, a) { return n && a.indexOf(n) === i; });
+  const rk = {}; ts.forEach(function (x) { (x.reakce || []).forEach(function (o) { rk[o.cid || (o.at + o.jmeno)] = o; }); });
+  return {stavba: (d.project && d.project.name) || '', info: !!t.info, text: t.title || '', by: t.createdBy || '', at: t.createdAt || '', end: t.info ? '' : (t.end || ''), obj: t.obj || '', komu: komu,
+    hotovo: ts.filter(function (x) { return !t.info && (x.done >= 100 || x.status === 'done'); }).map(function (x) { return x.owner; }),
+    fotky: (t.att || []).slice(0, 12).map(function (a) { return {url: a.url || '', thumb: a.id ? 'https://lh3.googleusercontent.com/d/' + a.id + '=w600' : (a.thumb || '')}; }),
+    pdf: (z && z.pdf && (z.pdf.url || (z.pdf.id ? 'https://drive.google.com/file/d/' + z.pdf.id + '/view' : ''))) || '',
+    reakce: Object.keys(rk).map(function (k) { return rk[k]; }).sort(function (a, b) { return String(a.at).localeCompare(String(b.at)); })};
+}
+function kolegaZprava_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const d = nacti_(PropertiesService.getScriptProperties()) || {}, ts = kolegaNajdi_(d, b);
+  if (!ts) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  return json_({zprava: kolegaVen_(d, ts)});
+}
+function kolegaOdpoved_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const stav = {vedomi: 1, splneno: 1, odpoved: 1}[b.stav] ? b.stav : '';
+  const text = String(b.text || '').trim().slice(0, 3000), kdo = String(b.kdo || '').trim();
+  if (!stav) return json_({error: 'Vyberte prosím odpověď.'});
+  if (stav === 'odpoved' && !text) return json_({error: 'Napište prosím odpověď.'});
+  const p = PropertiesService.getScriptProperties(), lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  let d, ts, o;
+  try {
+    d = nacti_(p) || {}; ts = kolegaNajdi_(d, b);
+    if (!ts) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+    const v = kolegaVen_(d, ts);
+    if (v.komu.indexOf(kdo) < 0 && kdo !== v.by) return json_({error: 'Vyberte prosím své jméno.'});
+    const cid = String(b.cid || '').slice(0, 40);
+    if (cid && v.reakce.some(function (x) { return x.cid === cid; })) return json_({ok: true, zprava: v});
+    const ted = new Date().toISOString(), nyni = Date.now();
+    o = {at: ted, cid: cid || nyni.toString(36), jmeno: kdo, stav: stav, text: text};
+    ts.forEach(function (x) {
+      x.reakce = (x.reakce || []).concat([o]); x._ts = nyni; x.updatedAt = ted; x.updatedBy = kdo;
+      if (stav === 'splneno' && !x.info && x.owner === kdo && !(x.done >= 100)) { x.done = 100; x.status = 'done'; x.doneAt = ted; x.doneBy = kdo; }
+    });
+    uloz_(p, d); p.setProperty('rev', String(Number(p.getProperty('rev') || 0) + 1));
+  } finally { lock.releaseLock(); }
+  try { kolegaUpozornit_(d, ts, o); } catch (x) {}
+  return json_({ok: true, zprava: kolegaVen_(d, ts)});
+}
+// Upozornění tomu, kdo zprávu poslal (e-mail z karty osoby v Lidech).
+function kolegaUpozornit_(d, ts, o) {
+  const lide = (d.project && d.project.people) || {}, t = ts[0], kdo = t.createdBy || '';
+  const komu = String((lide[kdo] && lide[kdo].email) || '').split(',')[0].trim();
+  if (!komu || komu.indexOf('@') < 1 || kdo === o.jmeno) return;
+  const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  const co = {vedomi: 'bere na vědomí', splneno: 'hlásí: splněno', odpoved: 'odpověděl(a)'}[o.stav];
+  const html = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">' +
+    '<p style="font-size:17px"><b>' + esc(o.jmeno) + ' ' + esc(co) + '</b></p>' +
+    '<p style="color:#555">' + (t.info ? 'Na vědomí' : 'Úkol') + ': ' + esc(String(t.title || '').slice(0, 200)) + '</p>' +
+    (o.text ? '<p style="background:#f4f4f1;border-radius:8px;padding:10px 12px;white-space:pre-wrap">' + esc(o.text) + '</p>' : '') +
+    '<p style="color:#555">Všechny reakce najdete v Constructu v záložce Zprávy (V kolektivu).<br><a href="' + ODKAZ + '">Otevřít Constructo</a></p></div>';
+  MailApp.sendEmail({to: komu, subject: o.jmeno + ' ' + co + ' – ' + String(t.title || '').split(String.fromCharCode(10))[0].slice(0, 70), htmlBody: html, name: 'Constructo'});
+}
+// Upozornění tomu, kdo zprávu poslal (jeho e-mail z mobilu, jinak z karty osoby v Lidech).
+function firmaUpozornit_(d, r, o) {
+  const lide = (d.project && d.project.people) || {}, adr = /^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/;
+  const komu = adr.test(String(r.odEmail || '')) ? r.odEmail : (lide[r.by] && lide[r.by].email) || '';
+  if (!adr.test(komu)) return;
+  const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  const co = {vedomi: 'potvrdila přijetí', opraveno: 'hlásí, že je opraveno', nesouhlas: 'nesouhlasí'}[o.stav];
+  const termin = o.termin ? o.termin.split('-').reverse().map(Number).join('. ') : '';
+  const html = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">' +
+    '<p style="font-size:17px"><b>' + esc(r.firma || 'Firma') + ' ' + esc(co) + '</b></p>' +
+    '<p style="color:#555">Zpráva ' + esc(r.cislo || '') + ': ' + esc(r.predmet || r.typ || '') + '<br>Odpověděl(a): ' + esc(o.jmeno) + (termin ? '<br>Termín opravy: ' + termin : '') + '</p>' +
+    (o.text ? '<p style="background:#f4f4f1;border-radius:8px;padding:10px 12px;white-space:pre-wrap">' + esc(o.text) + '</p>' : '') +
+    o.fotky.map(function (f) { return '<p><a href="' + f.url + '">Fotka od firmy</a></p>'; }).join('') +
+    '<p style="color:#555">' + (o.stav === 'opraveno' ? 'Zkontrolujte prosím opravu na stavbě a potom zprávu v Constructu uzavřete (Zprávy pro firmy → Detail → Uzavřít).' : 'Celou zprávu najdete v Constructu v záložce Zprávy pro firmy.') +
+    '<br><a href="' + ODKAZ + '">Otevřít Constructo</a></p></div>';
+  MailApp.sendEmail({to: komu, subject: (r.firma || 'Firma') + ' ' + co + ' – ' + (r.cislo || ''), htmlBody: html, name: 'Constructo'});
+}
+// Zápis z porady jako PDF: z HTML zápisu (připraví program) udělá PDF, uloží ho na Disk do složky „Constructo – zápisy z porad“ a vrátí odkaz.
+function zapisPdf_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const jm = String(b.jmeno || 'Zapis-z-porady.pdf').replace(/[^\w.-]/g, '_');
+  const pdf = Utilities.newBlob(String(b.html || ''), 'text/html', 'zapis.html').getAs('application/pdf').setName(jm);
+  const f = slozka_(DriveApp.getRootFolder(), 'Constructo – zápisy z porad').createFile(pdf);
+  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+  return json_({id: f.getId(), url: 'https://drive.google.com/file/d/' + f.getId() + '/view'});
+}
+// Návrh odborného textu bodu porady: Claude přepíše rychle napsaný bod spisovně a odborně, smysl a fakta nemění.
+function formulace_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const klic = PropertiesService.getScriptProperties().getProperty('CLAUDE_KLIC');
+  if (!klic) return json_({error: 'klic'});
+  const text = String(b.text || '').slice(0, 1500);
+  if (!text.trim()) return json_({text: ''});
+  const zadani = 'Jsi zkušený stavbyvedoucí generálního dodavatele a píšeš zápis z kontrolního dne stavby ' + String(b.stavba || '').slice(0, 80) + '. Dostaneš jeden bod porady, který někdo rychle napsal během jednání svými slovy (zkratky, překlepy, chybějící slova). Nejdřív pochop, o co jde a co je předmětem bodu. ' +
+    'Přepiš ho jako profesionální stavbyvedoucí do zápisu z kontrolního dne: spisovná čeština, správná stavební terminologie, věcně, stručně a jednoznačně (kdo, co, kde, do kdy). Odrážky a číslování zachovej. Zachovej smysl a přesně zachovej jména, firmy, čísla, místa a termíny; nic nepřidávej a nevymýšlej. ' +
+    'Zkratky, kterým nerozumíš, nech beze změny. Odpověz jen přepsaným textem bez uvozovek a bez komentáře.';
+  const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: {'x-api-key': klic, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01'},
+    payload: JSON.stringify({model: 'claude-opus-5-5', max_tokens: 600, fallbacks: 'default', output_config: {effort: 'low'}, system: zadani, messages: [{role: 'user', content: text}]})});
+  let o = {}; try { o = JSON.parse(r.getContentText()); } catch (x) {}
+  if (r.getResponseCode() !== 200) return json_({error: 'Claude: ' + ((o.error && o.error.message) || ('chyba ' + r.getResponseCode()))});
+  return json_({text: (o.content || []).filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; }).join('').trim()});
+}
+// Zápis z porady po uzavření: každý dostane e-mail se svými úkoly a celým zápisem (HTML připraví program), v příloze PDF zápisu.
+function zapis_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties();
+  if (p.getProperty('mail:' + b.cid)) return json_({ok: true, sent: 1, opakovane: true});
+  const d = nacti_(p) || {}, lide = (d.project && d.project.people) || {};
+  const komu = [], chybi = [];
+  (b.to || []).forEach(function (n) { const e = lide[n] && lide[n].email; if (e) komu.push(e); else chybi.push(n); });
+  if (!komu.length) return json_({ok: false, sent: 0, missing: chybi});
+  let pril = []; try { if (b.pdfId) pril = [DriveApp.getFileById(String(b.pdfId)).getBlob()]; } catch (x) {}
+  MailApp.sendEmail({to: komu.join(','), subject: String(b.predmet || 'Zápis z porady'), htmlBody: String(b.html || ''), attachments: pril, name: 'Constructo'});
+  p.setProperty('mail:' + b.cid, '1');
+  return json_({ok: true, sent: komu.length, missing: chybi});
+}
+// Ranní přehled úkolů (verze 11): každé pondělí v 7:00 dostane každý z týmu (Lidé s e-mailem) e-mail s PDF – 1. úkoly po termínu, 2. úkoly na příští týden.
+// V e-mailu je tlačítko „Beru na vědomí“ (stránka /potvrdit/). Kdo potvrdí, dostane další přehled až příští pondělí; kdo nepotvrdí, dostane ho znovu každý pracovní den v 7:00.
+// Plánovač běží každý den mezi 6:00 a 7:00 a nastaví odeslání přesně na 7:00. Zapíná se sám po vložení nového skriptu (nebo ručně funkcí zapnoutRanniPrehled).
+const RP_VIKEND = false;   // true = připomínky i v sobotu a v neděli
+const RP_WEB = 'https://lovely-gumption-be0f29.netlify.app';
+function rpDnes_() { return Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd'); }
+function rpPlus_(s, n) { const p = s.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
+function rpDenTydne_(s) { const p = s.split('-').map(Number); return (new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay() + 6) % 7; }   // 0 = pondělí
+function rpLide_(d) {
+  const lide = (d.project && d.project.people) || {}, tym = Array.isArray(d.project && d.project.team) ? d.project.team : Object.keys(lide);
+  const adr = /^[^@ ,;]+@[^@ ,;]+[.][^@ ,;]+$/;
+  return tym.filter(function (n, i) { return n && tym.indexOf(n) === i && lide[n] && adr.test(String(lide[n].email || '').trim()); }).map(function (n) { return {n: n, email: String(lide[n].email).trim()}; });
+}
+function rpKlic_(n) { return 'rpn:' + Utilities.base64EncodeWebSafe(Utilities.newBlob(String(n)).getBytes()); }
+function rpStav_(p, tok) { try { return tok ? JSON.parse(p.getProperty('rp:' + tok) || 'null') : null; } catch (x) { return null; } }
+function rpPosli_(d, komu, jmeno, dnes, tok, pripominka, zkouska) {
+  const r = ranniData(d, jmeno, dnes);
+  const pdf = Utilities.newBlob(ranniPdfHtml(d, jmeno, dnes, 'data:image/png;base64,' + CX_LOGO_PNG, r), 'text/html', 'prehled.html').getAs('application/pdf').setName('Constructo-prehled-ukolu-' + dnes + '.pdf');
+  const m = ranniMail(d, jmeno, dnes, RP_WEB + '/potvrdit/#' + tok, pripominka, r);
+  MailApp.sendEmail({to: komu, subject: (zkouska ? 'ZKOUŠKA (přehled pro ' + jmeno + ') – ' : '') + m.predmet, htmlBody: m.html, attachments: [pdf],
+    inlineImages: {logo: Utilities.newBlob(Utilities.base64Decode(CX_LOGO_PNG), 'image/png', 'logo.png')}, name: 'Constructo'});
+}
+// plánovač (každý den 6:00–7:00): nastaví jednorázové spuštění ranniPrehled přesně na 7:00
+function ranniPlan() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'ranniPrehled') ScriptApp.deleteTrigger(t); });
+  const sedm = new Date(Utilities.formatDate(new Date(), 'Europe/Prague', "yyyy-MM-dd'T'07:00:00XXX"));
+  if (sedm.getTime() - Date.now() < 60000) { ranniPrehled(); return; }
+  ScriptApp.newTrigger('ranniPrehled').timeBased().at(sedm).create();
+}
+function ranniPrehled() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'ranniPrehled') ScriptApp.deleteTrigger(t); });
+  const p = PropertiesService.getScriptProperties(), d = nacti_(p) || {}, dnes = rpDnes_(), wd = rpDenTydne_(dnes), pondeli = rpPlus_(dnes, -wd);
+  if (wd > 4 && !RP_VIKEND) return;
+  rpLide_(d).forEach(function (o) {
+    try {
+      const k = rpKlic_(o.n);
+      let tok = p.getProperty(k), st = rpStav_(p, tok);
+      const novy = !st || st.w !== pondeli;
+      if (!novy && (st.ok || (st.poslano || []).indexOf(dnes) >= 0)) return;
+      const r = ranniData(d, o.n, dnes);
+      if (!r.po.length && !r.tyden.length) { if (novy) { tok = Utilities.getUuid().replace(/-/g, ''); p.setProperty('rp:' + tok, JSON.stringify({n: o.n, w: pondeli, ok: 'nic', poslano: []})); p.setProperty(k, tok); } return; }
+      if (novy) { tok = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '').slice(0, 8); st = {n: o.n, w: pondeli, ok: '', poslano: []}; }
+      rpPosli_(d, o.email, o.n, dnes, tok, !novy, false);
+      const lock = LockService.getScriptLock(); lock.waitLock(25000);
+      try { const s2 = novy ? st : (rpStav_(p, tok) || st); s2.poslano = (s2.poslano || []).concat([dnes]); p.setProperty('rp:' + tok, JSON.stringify(s2)); if (novy) p.setProperty(k, tok); } finally { lock.releaseLock(); }
+    } catch (x) { console.error('Ranní přehled ' + o.n + ': ' + ((x && x.message) || x)); }
+  });
+  // staré potvrzovací odkazy (starší než 6 týdnů) uklidit
+  const vse = p.getProperties(), hranice = rpPlus_(pondeli, -42);
+  Object.keys(vse).forEach(function (k) { if (k.indexOf('rp:') === 0) { try { if (JSON.parse(vse[k]).w < hranice) p.deleteProperty(k); } catch (x) {} } });
+}
+function zapnoutRanniPrehled() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { const f = t.getHandlerFunction(); if (f === 'tydenniPrehled' || f === 'ranniPrehled' || f === 'ranniPlan') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('ranniPlan').timeBased().everyDays(1).atHour(6).inTimezone('Europe/Prague').create();
+  PropertiesService.getScriptProperties().setProperty('rp-zapnuto', '11');
+}
+function rpZapnout_() {
+  const p = PropertiesService.getScriptProperties();
+  const z = p.getProperty('rp-zapnuto') || '';
+  if (z === '11' || (z.indexOf('chyba:') === 0 && Date.now() - Number(z.slice(6)) < 3600000)) return;
+  try { zapnoutRanniPrehled(); } catch (x) { p.setProperty('rp-zapnuto', 'chyba:' + Date.now()); console.error('Ranní přehled se nezapnul: ' + ((x && x.message) || x)); }
+}
+function tydenniPrehled() {}   // starý pondělní přehled (6:00) nahradil ranní přehled; prázdná funkce jen pro případ, že starý spouštěč ještě existuje
+// stránka /potvrdit/: přehled jednoho člověka podle náhodného kódu z e-mailu a tlačítko Beru na vědomí (nic jiného ze stavby neukáže)
+function rpVen_(d, st, dnes) {
+  const r = ranniData(d, st.n, dnes), ven = function (x) { return {end: x.end, text: x.text, ukol: x.ukol || '', obj: x.obj || '', dilci: !!x.dilci}; };
+  return {jmeno: st.n, stavba: (d.project && d.project.name) || '', ok: st.ok === 'nic' ? '' : st.ok || '', dalsi: rpPlus_(st.w, 7), dnes: dnes, od: r.od, do: r.do, po: r.po.map(ven), tyden: r.tyden.map(ven)};
+}
+function prehled_(b, potvrdit) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const t = String(b.t || ''), p = PropertiesService.getScriptProperties();
+  if (t.length < 20) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  let st = rpStav_(p, t);
+  if (!st) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  if (potvrdit && !st.ok) {
+    const lock = LockService.getScriptLock(); lock.waitLock(25000);
+    try { st = rpStav_(p, t) || st; if (!st.ok) { st.ok = new Date().toISOString(); p.setProperty('rp:' + t, JSON.stringify(st)); } } finally { lock.releaseLock(); }
+  }
+  return json_({prehled: rpVen_(nacti_(p) || {}, st, rpDnes_())});
+}
+function prehledStav_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties(), d = nacti_(p) || {}, lide = {}, pondeli = rpPlus_(rpDnes_(), -rpDenTydne_(rpDnes_()));
+  rpLide_(d).forEach(function (o) { const st = rpStav_(p, p.getProperty(rpKlic_(o.n))); if (st && st.w === pondeli) lide[o.n] = {ok: st.ok || '', poslano: st.poslano || []}; });
+  const zapnuto = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'ranniPlan'; });
+  return json_({zapnuto: zapnuto, lide: lide});
+}
+function prehledTest_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const adr = /^[^@ ,;]+@[^@ ,;]+[.][^@ ,;]+$/, komu = String(b.komu || '').trim();
+  if (!adr.test(komu)) return json_({error: 'Doplňte si u sebe v Lidech e-mail.'});
+  rpPosli_(nacti_(PropertiesService.getScriptProperties()) || {}, komu, String(b.jmeno || ''), rpDnes_(), 'zkouska', false, true);
+  return json_({ok: true});
+}
+// Samoaktualizace (verze 12): skript si sám stáhne novou verzi z webu Constructa, nahraje ji a nasadí.
+// Potřebuje zapnuté Google Apps Script API (script.google.com/home/usersettings) a oprávnění z appsscript.json.
+// Kód se bere jen z oficiální adresy webu, ne od toho, kdo akci zavolá.
+function samoAktualizace_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) return json_({ok: false, duvod: 'zaneprazdneno'});
+  try {
+    const r = UrlFetchApp.fetch(ODKAZ + 'skript.txt?t=' + Date.now(), {muteHttpExceptions: true});
+    if (r.getResponseCode() !== 200) return json_({ok: false, duvod: 'web ' + r.getResponseCode()});
+    const sablona = r.getContentText();
+    const i = sablona.indexOf('const SKRIPT_VERZE = ');
+    const nova = i >= 0 ? parseInt(sablona.slice(i + 21), 10) : 0;
+    if (!(nova > SKRIPT_VERZE)) return json_({ok: true, verze: SKRIPT_VERZE, beze_zmeny: true});
+    const ZN = '@@' + 'HESLO@@';
+    if (sablona.split(ZN).length !== 2 || sablona.indexOf('function doPost(') < 0) return json_({ok: false, duvod: 'sablona'});
+    const kod = sablona.split(ZN).join(HESLO);
+    const id = ScriptApp.getScriptId();
+    const api = 'https://script.googleapis.com/v1/projects/' + id;
+    const vol = (metoda, cesta, telo) => {
+      const o = {method: metoda, headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken()}, muteHttpExceptions: true};
+      if (telo) { o.contentType = 'application/json'; o.payload = JSON.stringify(telo); }
+      const x = UrlFetchApp.fetch(api + cesta, o);
+      const t = x.getContentText();
+      if (x.getResponseCode() >= 300) throw new Error('API ' + x.getResponseCode() + ': ' + t.slice(0, 300));
+      return t ? JSON.parse(t) : {};
+    };
+    const obsah = vol('get', '/content');
+    const soubory = (obsah.files || []).map(f => ({name: f.name, type: f.type, source: f.source}));
+    const hlavni = soubory.filter(f => f.type === 'SERVER_JS' && String(f.source).indexOf('const HESLO') >= 0)[0] || soubory.filter(f => f.type === 'SERVER_JS')[0];
+    if (!hlavni) return json_({ok: false, duvod: 'soubor'});
+    hlavni.source = kod;
+    vol('put', '/content', {files: soubory});
+    const verze = vol('post', '/versions', {description: 'Constructo skript ' + nova});
+    const moje = String(ScriptApp.getService().getUrl() || '');
+    const nasazeni = (vol('get', '/deployments').deployments || []).filter(d => d.deploymentConfig && d.deploymentConfig.versionNumber && (d.entryPoints || []).some(p => p.entryPointType === 'WEB_APP'));
+    const cil = nasazeni.filter(d => moje.indexOf(d.deploymentId) >= 0);
+    const vybrane = cil.length ? cil : nasazeni.length === 1 ? nasazeni : [];
+    if (!vybrane.length) return json_({ok: false, duvod: 'nasazeni', verze: SKRIPT_VERZE});
+    vybrane.forEach(d => vol('put', '/deployments/' + d.deploymentId, {deploymentConfig: {scriptId: id, versionNumber: verze.versionNumber, manifestFileName: 'appsscript', description: 'Constructo skript ' + nova}}));
+    return json_({ok: true, verze: nova, predtim: SKRIPT_VERZE});
+  } catch (x) {
+    return json_({ok: false, duvod: String((x && x.message) || x).slice(0, 400)});
+  } finally { lock.releaseLock(); }
+}
+const ODKAZ = 'https://lovely-gumption-be0f29.netlify.app/pc/';
+const CX_LOGO_PNG = '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';
+function cxVystup(o) {
+    // o: {nadpis, pod, telo (HTML), logo (adresa obrázku), stavba, pata, mail (true = e-mail, jinak celé PDF)}
+    const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+    const hlava = '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;background:#131518"><tr>' +
+      '<td bgcolor="#131518" style="background:#131518;padding:18px 22px;vertical-align:middle;white-space:nowrap"><img src="' + e(o.logo) + '" width="43" height="26" alt="" style="vertical-align:middle;width:43px;height:26px;border:0">' +
+      '<span style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:300;vertical-align:middle;padding-left:10px">Constructo</span></td>' +
+      '<td bgcolor="#131518" align="right" style="background:#131518;padding:14px 22px;vertical-align:middle;font-family:Arial,Helvetica,sans-serif">' +
+      '<div style="color:#F4D23C;font-size:17px;font-weight:800;letter-spacing:.5px">' + e(o.nadpis) + '</div>' +
+      (o.pod ? '<div style="color:#c9ced3;font-size:12px;margin-top:3px">' + e(o.pod) + '</div>' : '') + '</td></tr>' +
+      '<tr><td colspan="2" bgcolor="#F4D23C" style="background:#F4D23C;height:5px;line-height:5px;font-size:1px">&nbsp;</td></tr></table>';
+    const pata = '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin-top:26px;border-top:2px solid #16191c;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7279"><tr>' +
+      '<td style="padding:8px 0;font-weight:700;color:#16191c">Constructo' + (o.stavba ? ' · ' + e(o.stavba) : '') + '</td>' +
+      '<td align="center" style="padding:8px 0">Developed by Luboš Kozák</td><td align="right" style="padding:8px 0">' + e(o.pata || '') + '</td></tr></table>';
+    const obsah = hlava + '<div style="padding:20px 22px 6px;font-family:Arial,Helvetica,sans-serif;color:#16191c;font-size:14px;line-height:1.45">' + o.telo + pata + '</div>';
+    if (o.mail) return '<div style="background:#f4f4f1;padding:16px 8px"><div style="max-width:720px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden">' + obsah + '</div></div>';
+    return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>' + e(o.nadpis) + '</title><style>@page{size:A4;margin:12mm}body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif}table{page-break-inside:auto}tr{page-break-inside:avoid}</style></head><body>' + obsah + '</body></html>';
+  }
+function cxSekce(nadpis, barva) {
+    return '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:22px 0 8px"><tr><td bgcolor="#F4D23C" style="background:#F4D23C;width:6px;font-size:1px">&nbsp;</td>' +
+      '<td style="padding:2px 0 2px 10px;font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:800;color:' + (barva || '#16191c') + '">' + nadpis + '</td></tr></table>';
+  }
+function ranniData(d, jmeno, dnes) {
+    const add = (s, n) => { const p = String(s).split('-').map(Number), x = new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)); return x.toISOString().slice(0, 10); };
+    const doK = add(dnes, 7), out = [];
+    (d.tasks || []).forEach(t => {
+      if (!t || t.info) return;
+      const hot = t.status === 'done' || (Number(t.done) || 0) >= 100, lidi = [t.owner].concat(t.team || []).filter((n, i, a) => n && a.indexOf(n) === i);
+      if (!hot && t.end && lidi.indexOf(jmeno) >= 0) out.push({end: t.end, text: String(t.title || '(bez názvu)'), obj: t.obj || '', pct: Number(t.done) || 0, spolu: lidi.filter(n => n !== jmeno), sled: t.kind !== 'simple'});
+      (t.sub || []).forEach(u => {
+        if (hot || !u || u.done || !u.end || !String(u.text || '').trim() || (u.owner || t.owner) !== jmeno) return;
+        out.push({end: u.end, text: String(u.text), ukol: String(t.title || ''), obj: t.obj || '', dilci: true, spolu: []});
+      });
+    });
+    out.sort((a, b) => a.end.localeCompare(b.end) || a.text.localeCompare(b.text, 'cs'));
+    return {po: out.filter(x => x.end < dnes), tyden: out.filter(x => x.end >= dnes && x.end <= doK), od: dnes, do: doK};
+  }
+function ranniTelo(d, jmeno, dnes, prehled, proMail) {
+    const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+    const p = String(dnes).split('-').map(Number), dt = s => { const q = String(s).split('-').map(Number); return q[2] + '. ' + q[1] + '.'; };
+    const dny = (a, b) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 864e5);
+    const DOW = ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'], dow = s => DOW[new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))).getUTCDay()];
+    const dn = n => n === 1 ? 'den' : n > 1 && n < 5 ? 'dny' : 'dní', uk = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů';
+    const r = prehled || ranniData(d, jmeno, dnes), td = 'padding:7px 9px;border-bottom:1px solid #e4e4df;vertical-align:top;font-family:Arial,Helvetica,sans-serif;font-size:13px;';
+    const th = 'padding:7px 9px;text-align:left;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7279;text-transform:uppercase;letter-spacing:.4px;background:#f4f4f1;border-bottom:2px solid #e4e4df;';
+    const popis = x => '<b>' + e(x.text) + '</b>' + ((x.dilci || x.spolu.length || x.sled) ? '<br><span style="font-size:11.5px;color:#6b7279">' +
+      [x.dilci ? 'dílčí úkol k: ' + e(x.ukol) : '', x.spolu.length ? 'spolu s ' + e(x.spolu.join(', ')) : '', !x.dilci && x.sled ? 'sledovaný úkol' : ''].filter(Boolean).join(' · ') + '</span>' : '');
+    const tab = (xs, po) => '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #e4e4df">' +
+      '<tr><th style="' + th + 'width:70px">Termín</th><th style="' + th + 'width:' + (po ? 82 : 52) + 'px">' + (po ? 'Zpoždění' : 'Den') + '</th><th style="' + th + '">Úkol</th><th style="' + th + 'width:60px">Objekt</th></tr>' +
+      xs.map(x => '<tr' + (po ? ' bgcolor="#fdeae6" style="background:#fdeae6"' : '') + '><td style="' + td + 'font-weight:700;white-space:nowrap;color:' + (po ? '#b3261e' : '#16191c') + '">' + dt(x.end) + '</td>' +
+        '<td style="' + td + 'white-space:nowrap;color:' + (po ? '#b3261e' : '#6b7279') + '">' + (po ? dny(x.end, dnes) + ' ' + dn(dny(x.end, dnes)) : (x.end === dnes ? 'dnes' : dow(x.end))) + '</td>' +
+        '<td style="' + td + '">' + popis(x) + '</td><td style="' + td + 'color:#6b7279">' + e(x.obj) + '</td></tr>').join('') + '</table>';
+    const prazdne = t => '<p style="margin:4px 0 0;color:#2f8a52;font-weight:700">' + t + '</p>';
+    const stavba = (d.project && d.project.name) || 'Stavba';
+    return '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse"><tr><td bgcolor="#f4f4f1" style="background:#f4f4f1;border-radius:10px;padding:14px 16px;font-family:Arial,Helvetica,sans-serif">' +
+      '<div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.5px">Přehled úkolů pro</div>' +
+      '<div style="font-size:22px;font-weight:800;margin:2px 0 4px">' + e(jmeno) + '</div>' +
+      '<div style="font-size:13px;color:#6b7279">' + e(stavba) + ' · stav k ' + p[2] + '. ' + p[1] + '. ' + p[0] + '</div>' +
+      '<div style="margin-top:8px;font-size:14px"><b style="color:' + (r.po.length ? '#b3261e' : '#2f8a52') + '">' + r.po.length + ' ' + uk(r.po.length) + ' po termínu</b> · <b>' + r.tyden.length + ' ' + uk(r.tyden.length) + ' na příští týden</b></div></td></tr></table>' +
+      cxSekce('1. Nesplněné úkoly po termínu (' + r.po.length + ')', r.po.length ? '#b3261e' : '') + (r.po.length ? tab(r.po, true) : prazdne('Nemáte žádný úkol po termínu. Děkujeme!')) +
+      cxSekce('2. Úkoly na příští týden · ' + dt(r.od) + ' – ' + dt(r.do) + ' (' + r.tyden.length + ')') + (r.tyden.length ? tab(r.tyden, false) : prazdne('Na příští týden nemáte žádný úkol s termínem.')) +
+      (proMail ? '' : '<p style="margin:16px 0 0;font-size:12.5px;color:#6b7279">Hotové úkoly označte v Constructu v záložce Úkoly tlačítkem Splněno. Pokud termín nestihnete, domluvte nový termín se stavbyvedoucím.</p>');
+  }
+function ranniPdfHtml(d, jmeno, dnes, logo, prehled) {
+    const p = String(dnes).split('-').map(Number), stavba = (d.project && d.project.name) || 'Stavba';
+    return cxVystup({nadpis: 'PŘEHLED ÚKOLŮ', pod: jmeno + ' · ' + p[2] + '. ' + p[1] + '. ' + p[0], logo, stavba, pata: 'stav k ' + p[2] + '. ' + p[1] + '. ' + p[0], telo: ranniTelo(d, jmeno, dnes, prehled, false)});
+  }
+function ranniMail(d, jmeno, dnes, odkaz, pripominka, prehled) {
+    const r = prehled || ranniData(d, jmeno, dnes), p = String(dnes).split('-').map(Number), stavba = (d.project && d.project.name) || 'Stavba';
+    const uk = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů';
+    const tl = '<table cellspacing="0" cellpadding="0" style="margin:18px 0 6px"><tr><td bgcolor="#F4D23C" style="background:#F4D23C;border-radius:10px">' +
+      '<a href="' + String(odkaz).replace(/"/g, '&quot;') + '" style="display:inline-block;padding:14px 28px;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:800;color:#131518;text-decoration:none">&#10003; Beru na vědomí</a></td></tr></table>' +
+      '<p style="margin:0;font-size:12.5px;color:#6b7279">Po potvrzení vám další přehled přijde až příští pondělí v 7:00. Dokud přehled nepotvrdíte, bude chodit znovu každý pracovní den v 7:00.</p>';
+    const upoz = pripominka ? '<p style="margin:0 0 14px;padding:10px 14px;background:#fdeae6;border-radius:8px;color:#b3261e;font-weight:700">Připomínka: přehled úkolů zatím není potvrzený. Potvrďte ho prosím tlačítkem Beru na vědomí.</p>' : '';
+    const html = cxVystup({mail: true, nadpis: 'PŘEHLED ÚKOLŮ', pod: p[2] + '. ' + p[1] + '. ' + p[0], logo: 'cid:logo', stavba, pata: 'PDF v příloze',
+      telo: upoz + '<p style="margin:0 0 14px">Dobrý den,<br>posíláme přehled vašich úkolů na stavbě ' + stavba.replace(/[&<>"]/g, '') + '. Celý přehled je i v příloze jako PDF.</p>' + tl + ranniTelo(d, jmeno, dnes, r, true) + tl});
+    return {predmet: (pripominka ? 'Připomínka: ' : '') + 'Přehled úkolů ' + p[2] + '. ' + p[1] + '.' + (r.po.length ? ' – ' + r.po.length + ' po termínu' : '') + ' · ' + stavba.split(',')[0], html, po: r.po.length, tyden: r.tyden.length};
+  }
