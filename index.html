@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-xTBDrEInU6Q1KhGUHDn92TvoMQ09Q7FWyMfReQcJGyg=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-pI2wIsny52ykDQfpx6+LsvvRJDwNa2ci/6Jc1rp4XyQ=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -41,6 +41,16 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:calc(var(--st
 .logo{display:flex;align-items:center;gap:9px}
 .logo svg{height:21px;width:auto;fill:#FAD805}
 .logo span{font-weight:300;font-size:22px;letter-spacing:.005em}
+.konec{position:fixed;inset:0;z-index:9999;background:#131518;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:30px 28px calc(110px + env(safe-area-inset-bottom));text-align:center}
+.konec .ok{width:96px;height:96px;border-radius:50%;background:var(--y);color:var(--k);display:grid;place-items:center;font-size:54px;font-weight:900}
+.konec h2{margin:0;font-size:34px;font-weight:900;letter-spacing:-.02em}
+.konec p{margin:0;font-size:21px;line-height:1.4;color:#e6e8ea}
+.konec .gesto{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--y);font-weight:800;font-size:17px}
+.konec .gesto i{width:14px;height:14px;border-left:4px solid var(--y);border-top:4px solid var(--y);transform:rotate(45deg);animation:konec 1.2s ease-in-out infinite}
+.konec .gesto i:nth-child(2){animation-delay:.15s}.konec .gesto i:nth-child(3){animation-delay:.3s}
+.konec .gesto b{display:block;width:140px;height:6px;border-radius:3px;background:#fff;opacity:.8;margin-top:8px}
+.konec .zpet{position:absolute;top:calc(18px + env(safe-area-inset-top));right:18px;background:transparent;color:#9aa1a8;border:1px solid #3a3f45;border-radius:18px;padding:8px 14px;font-size:14px}
+@keyframes konec{0%,100%{opacity:.25;transform:translateY(6px) rotate(45deg)}50%{opacity:1;transform:translateY(-6px) rotate(45deg)}}
 .zavrit-top{margin-left:auto;height:38px;padding:0 14px;border-radius:19px;background:var(--y);color:var(--k);border:0;font-weight:800;font-size:14px;white-space:nowrap}
 .me{width:38px;height:38px;border-radius:50%;background:var(--y);color:var(--k);border:0;font-weight:800;font-size:13px}
 .head .ttl{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
@@ -279,7 +289,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/zprava.js"></script>
 <script>
 (() => {
-  const VERSION = '1.25';
+  const VERSION = '1.26';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1705,6 +1715,20 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     zavritKonec();
   }
   const hash = t => { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); };
+  // 1.26: závěrečná obrazovka po Zavřít. Aplikace z plochy se sama zavřít nesmí (iPhone ani Android to nedovolí),
+  // proto celá černá obrazovka „Hotovo“ s velkou šipkou, kam přejet prstem. Po návratu do aplikace se sama schová.
+  function konec() {
+    try { window.close(); } catch (e) {}
+    zReset(); F.photos = []; F.result = null; view = 'hlaseni'; ls.set('cx-view', 'hlaseni'); render(); scrollTo(0, 0);
+    const d = document.createElement('div'); d.className = 'konec';
+    d.innerHTML = `<button type="button" class="zpet">Zpět do aplikace</button><div class="ok">✓</div><h2>Hotovo</h2>
+      <p>Constructo je připravené na příště.</p><p><b style="color:var(--y)">Přejeďte prstem od spodního okraje nahoru</b> a jste na ploše.</p>
+      <div class="gesto"><i></i><i></i><i></i><span>sem dejte prst a táhněte nahoru</span><b></b></div>`;
+    document.body.appendChild(d);
+    d.querySelector('.zpet').onclick = () => d.remove();
+    const pryc = () => { if (document.visibilityState === 'visible') { d.remove(); document.removeEventListener('visibilitychange', pryc); } };
+    setTimeout(() => document.addEventListener('visibilitychange', pryc), 500);
+  }
   async function zavritKonec() {
     const sh = sheet('<h3>Zavírám…</h3><p class="hint">Kontroluji, jestli je všechno odeslané.</p>');
     await loadQ();
@@ -1732,6 +1756,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       }
     }
     const n = w.length;
+    if (!n) { closeSheet(); return konec(); }   // 1.26: všechno odeslané → rovnou závěrečná obrazovka
     sh.innerHTML = `<span class="grab"></span>${n ? `<h3>Neodesláno: ${n}</h3>
         <p style="margin:0">${n === 1 ? 'Jedno hlášení zůstalo' : 'Hlášení zůstala'} uložené v telefonu a ${n === 1 ? 'odejde samo' : 'odejdou sama'}, až Constructo znovu otevřete a bude signál.</p>
         ${info ? `<p style="margin:0">${esc(info)}</p>` : ''}
@@ -1739,7 +1764,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       : '<h3>✓ Všechno je odeslané</h3>'}
       <p class="hint" style="margin:6px 0 0">${ios() ? 'Teď aplikaci zavřete: přejeďte prstem od spodního okraje displeje nahoru a Constructo odsuňte nahoru.' : 'Teď můžete aplikaci zavřít.'}</p>
       <button type="button" class="big pri" data-close>Hotovo</button>`;
-    sh.querySelector('[data-close]').onclick = () => { closeSheet(); try { window.close(); } catch (e) {} };
+    sh.querySelector('[data-close]').onclick = () => { closeSheet(); konec(); };
     const zk = sh.querySelector('#zk-zkus'); if (zk) zk.onclick = () => { closeSheet(); go('archiv'); zaiPump(); kick(); toast(navigator.onLine ? 'Odesílám…' : 'Bez signálu, odešle se později.'); };
   }
 
