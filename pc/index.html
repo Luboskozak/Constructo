@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-3IyQj5Ib6vwvhpcoj1OjOwEAiWxA19fGmXMdQE2+YlQ=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-o+p63yrMUqxiF9SNHSHPtxlQH3+Az06sy420iJfSAMc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -674,6 +674,13 @@ tr.zp-new td{animation:zpflash 1.6s}
 .pp-foot .btn{font-size:15px;padding:10px 18px;font-weight:600}
 .pp-arch{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
 .pp-arch .btn{padding:6px 12px}
+.pp-sent{font-size:12.5px;color:#2b6cb0;font-weight:600}
+.pp-foot .pp-mail{background:#F4D23C;border-color:#F4D23C;color:#16191c;font-weight:700}
+.pm-co{display:flex;flex-direction:column;gap:2px;background:var(--bg);border-radius:10px;padding:10px 12px}
+.pm-list{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.pm-r{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:14px;cursor:pointer}.pm-r input{margin-top:3px;width:18px;height:18px}
+.pm-r small{color:var(--muted,#6b7279)}.pm-r .pm-em{display:block}
+.pm-jiny{display:flex;gap:8px}.pm-jiny input{flex:1}
 #pp-pdf{position:fixed;inset:0;z-index:40;background:rgba(19,21,24,.6);display:flex;flex-direction:column;padding:16px}
 #pp-pdf[hidden]{display:none}
 #pp-pdf iframe{flex:1;border:0;background:#fff;border-radius:0 0 12px 12px;width:100%}
@@ -1127,10 +1134,11 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         <span class="zp-sp"></span>
         <button type="button" class="btn" id="pp-print">Tisk</button>
         <button type="button" class="btn primary" id="pp-save">Uložit PDF</button>
+        <button type="button" class="btn pp-mail" id="pp-mail">✉ Odeslat e-mailem</button>
       </div>
     </div>
     <div class="zp-main" id="pp-arch" hidden>
-      <div class="card"><h3 style="margin:0 0 4px">Uložené plány prací</h3><p class="hcap" style="margin:0 0 6px">Každý plán uložený tlačítkem Uložit PDF nebo vytištěný. Nejnovější nahoře. Plány se sdílí s kolegy stejně jako úkoly.</p><div id="pp-alist"></div></div>
+      <div class="card"><h3 style="margin:0 0 4px">Uložené plány prací</h3><p class="hcap" style="margin:0 0 6px">Každý plán uložený tlačítkem Uložit PDF, vytištěný nebo odeslaný e-mailem. Nejnovější nahoře. Plány se sdílí s kolegy stejně jako úkoly.</p><div id="pp-alist"></div></div>
     </div>
   </div>
 </div>
@@ -1145,7 +1153,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.44';
+  const APP_VERSION = '4.45';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -6087,7 +6095,7 @@ ${tydenniHtml.toString()}
     const k = ppSel().length, nt = ppTodo().length;
     $('#pp-count').textContent = `Do PDF půjde ${k} z ${PP.rows.length} ${zN(PP.rows.length, 'položky', 'položek', 'položek')}`;
     $('#pp-notodo').textContent = `Odstranit z tisku nezahájené činnosti${nt ? ` (${nt})` : ''}`;
-    $('#pp-notodo').disabled = !nt; $('#pp-save').disabled = $('#pp-print').disabled = !k;
+    $('#pp-notodo').disabled = !nt; $('#pp-save').disabled = $('#pp-print').disabled = $('#pp-mail').disabled = !k;
   }
   // snímek vybraných řádků pro archiv (stav a odpovědné osoby v době uložení)
   function ppRecord() {
@@ -6117,6 +6125,104 @@ ${tydenniHtml.toString()}
     fr.onload = () => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { toast('Tisk se nepodařilo spustit.'); } };
     fr.srcdoc = planHtml(rec.o, rec.rows); document.body.appendChild(fr);
   }
+  /* 4.45: plán prací e-mailem – příjemci TDS a investor předvybraní, další lidé z Lidí a Firem z rozbalovacího seznamu.
+     Odejde hned přes skript Google (stejná akce jako zprávy firmám, odesílatel Constructo) s PDF plánu v příloze. */
+  const ppEmOk = s => /^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(s);
+  const ppEm1 = s => String(s || '').split(/[,;\s]+/).filter(ppEmOk)[0] || '';
+  const ppPred = kdo => /tds|technick\w*\s+dozor|investor/i.test(kdo || '');
+  function ppAdresati() {
+    const out = [], seen = new Set();
+    const add = (grp, jmeno, pozn, email, pred) => { const em = ppEm1(email), k = em.toLowerCase(); if (!em || seen.has(k)) return; seen.add(k); out.push({k, grp, jmeno: jmeno || em, pozn: pozn || '', email: em, pred: !!pred}); };
+    prijemciList().forEach(p => add('dozor', [p.kdo, p.jmeno].filter(Boolean).join(' – '), p.firma, p.email, ppPred(p.kdo)));
+    owners().forEach(n => add('lide', n, personOf(n).role || '', personOf(n).email));
+    firmyList().forEach(f => kontaktyOf(f).filter(k => k.posilat !== false).forEach(k => add('firmy', f.firma + (k.jmeno ? ' – ' + k.jmeno : ''), k.funkce, k.email)));
+    return out;
+  }
+  function ppLogo() {
+    const c = document.createElement('canvas'), s = 52 / 310; c.width = Math.ceil(516 * s); c.height = 52;
+    const g = c.getContext('2d'); g.scale(s, s); g.translate(-190, -130); g.fillStyle = '#FAD805';
+    g.fill(new Path2D('M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z'));
+    return c.toDataURL('image/png').split(',')[1];
+  }
+  function ppMailHtml(rec, stavba, text) {
+    const o = rec.o, f = ppFilt(o), todo = rec.rows.filter(t => stOf(t) === 'todo').length, late = rec.rows.filter(t => stOf(t) === 'late').length;
+    const pol = [['Stavba', stavba], ['Období', `${fmtD(o.from)} – ${fmtDY(o.to)}${f ? ' · ' + f : ''}`], ['Počet činností', String(rec.rows.length) + (todo ? ` (nezahájeno ${todo})` : '') + (late ? `, ve skluzu ${late}` : '')], ['Zpracoval', o.author || me() || '—']];
+    const radky = [0, 2].map(i => '<tr>' + pol.slice(i, i + 2).map(p => `<td style="padding:10px 14px;vertical-align:top;width:50%"><div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.05em">${esc(p[0])}</div><div style="font-size:14px;font-weight:600;color:#16191c;margin-top:3px">${esc(p[1])}</div></td>`).join('') + '</tr>').join('');
+    return `<!doctype html><html><body style="margin:0;background:#f4f4f1"><div style="background:#f4f4f1;padding:20px 8px;font-family:Arial,Helvetica,sans-serif;color:#16191c">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden">
+<tr><td style="background:#131518;padding:20px 26px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+<td style="vertical-align:middle;white-space:nowrap"><img src="cid:logo" height="26" alt="" style="vertical-align:middle;height:26px"><span style="color:#ffffff;font-size:24px;font-weight:300;vertical-align:middle;margin-left:10px">Constructo</span><div style="color:#c9ced3;font-size:13px;margin-top:6px">${esc(stavba)}</div></td>
+<td align="right" style="vertical-align:middle;color:#F4D23C;font-size:15px;font-weight:800;letter-spacing:.08em">PLÁN PRACÍ<div style="color:#c9ced3;font-size:12px;font-weight:400;letter-spacing:0;margin-top:3px">${esc(fmtDY(today))}</div></td></tr></table></td></tr>
+<tr><td style="height:5px;background:#F4D23C;font-size:0;line-height:0">&nbsp;</td></tr>
+<tr><td style="padding:22px 26px 26px">
+<div style="font-size:21px;font-weight:800;margin:0 0 16px;line-height:1.3">${esc(rec.text)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f1;border-radius:10px">${radky}</table>
+<div style="font-size:15px;line-height:1.6;margin-top:20px">${esc(text).replace(/\n/g, '<br>')}</div>
+<p style="font-size:13px;color:#6b7279;margin:18px 0 0">Celý plán prací je v příloze jako PDF.</p>
+</td></tr>
+<tr><td style="background:#131518;padding:16px 26px;font-size:12px;color:#9aa1a8">Odesláno z aplikace Constructo · ${esc(stavba)}<br><span style="color:#F4D23C">Developed by Luboš Kozák</span></td></tr>
+</table></div></body></html>`;
+  }
+  // rec: hotový záznam (Uložené plány), nebo null = právě vybrané položky (uloží se při odeslání)
+  function ppMail(rec0) {
+    if (RO()) { toast('Jen prohlížení: e-maily posílat nejde.'); return; }
+    if (!SY) { toast('E-mail jde poslat jen s připojením ke Googlu (Data → Automatická synchronizace).'); return; }
+    const vse = ppAdresati(), byK = new Map(vse.map(x => [x.k, x])), stavba = (D.project || {}).name || 'Stavba';
+    const titul = rec0 ? rec0.text : ppTitle(PP.o), pocet = rec0 ? rec0.rows.length : ppSel().length;
+    if (!pocet) { toast('Nejdřív zaškrtněte položky, které mají být v plánu.'); return; }
+    const S2 = {vid: vse.filter(x => x.grp === 'dozor').map(x => x.k), on: new Set(vse.filter(x => x.pred).map(x => x.k)),
+      text: `Dobrý den,\n\nv příloze posílám ${titul.charAt(0).toLowerCase() + titul.slice(1)} pro stavbu ${stavba}.\n\nS pozdravem\n${me() || ''}`.trim()};
+    const GRP = {dozor: 'TDS, investor, BOZP', lide: 'Lidé (tým)', firmy: 'Firmy'};
+    const body = () => {
+      const zbyva = vse.filter(x => !S2.vid.includes(x.k));
+      return `<div class="nz pm">
+      <div class="pm-co"><b>${esc(titul)}</b><span class="hcap" style="margin:0">${pocet} ${zN(pocet, 'položka', 'položky', 'položek')} · PDF půjde jako příloha</span></div>
+      <label>Komu</label>
+      <div class="pm-list">${S2.vid.length ? S2.vid.map(k => { const x = byK.get(k); return `<label class="pm-r"><input type="checkbox" data-pk="${esc(k)}"${S2.on.has(k) ? ' checked' : ''}><span><b>${esc(x.jmeno)}</b>${x.pozn ? ` <small>· ${esc(x.pozn)}</small>` : ''}<small class="pm-em">${esc(x.email)}</small></span></label>`; }).join('')
+        : '<div class="hcap" style="margin:0">Zatím nikdo. TDS a investora přidáte v záložce Firmy → Další příjemci zpráv, nebo vyberte níže.</div>'}</div>
+      <label for="pm-add">Přidat další osobu</label>
+      <select id="pm-add"><option value="">— vyberte ze seznamu —</option>${['dozor', 'lide', 'firmy'].map(g => { const a = zbyva.filter(x => x.grp === g); return a.length ? `<optgroup label="${GRP[g]}">${a.map(x => `<option value="${esc(x.k)}">${esc(x.jmeno)} (${esc(x.email)})</option>`).join('')}</optgroup>` : ''; }).join('')}</select>
+      <div class="pm-jiny"><input id="pm-em" type="email" placeholder="nebo napište jiný e-mail"><button type="button" class="btn" id="pm-em-ok">Přidat</button></div>
+      <label for="pm-text">Text e-mailu</label><textarea id="pm-text" rows="6">${esc(S2.text)}</textarea>
+      <div class="hcap" style="margin:0">Odejde hned, odesílatel Constructo. Kopii dostanete i vy${ppEm1(personOf(me()).email) ? '' : ' (až budete mít e-mail ve své kartě v Lidech)'}.</div></div>`;
+    };
+    const uloz = () => { const t = $('#pm-text'); if (t) S2.text = t.value; };
+    const prekresli = () => { uloz(); const b = document.querySelector('#overlay .modal > div'); if (b) { b.innerHTML = body(); napoj(); } };
+    const pridej = k => { if (!S2.vid.includes(k)) S2.vid.push(k); S2.on.add(k); prekresli(); };
+    function napoj() {
+      document.querySelectorAll('#overlay [data-pk]').forEach(c => c.onchange = () => { c.checked ? S2.on.add(c.dataset.pk) : S2.on.delete(c.dataset.pk); });
+      const sel = $('#pm-add'); if (sel) sel.onchange = () => { if (sel.value) pridej(sel.value); };
+      const em = $('#pm-em'), ok = $('#pm-em-ok');
+      const jiny = () => { const v = em.value.trim(); if (!ppEmOk(v)) { toast('Napište platný e-mail, např. novak@firma.cz'); return; }
+        const k = v.toLowerCase(); if (!byK.has(k)) { const x = {k, grp: 'jiny', jmeno: v, pozn: '', email: v}; vse.push(x); byK.set(k, x); } pridej(k); };
+      if (ok) ok.onclick = jiny; if (em) em.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); jiny(); } };
+    }
+    let bezi = false;
+    confirmModal('Odeslat plán prací e-mailem', body(), 'Odeslat', () => {
+      uloz(); if (bezi) return 'keep';
+      const komu = S2.vid.filter(k => S2.on.has(k)).map(k => byK.get(k));
+      if (!komu.length) { toast('Zaškrtněte, komu má plán přijít.'); return 'keep'; }
+      bezi = true; const b = $('#m-ok'); b.disabled = true; b.textContent = 'Odesílám…';
+      (async () => {
+        try {
+          const rec = rec0 || ppStore('mail'), r = await planPdf(rec.o, rec.rows), pdf = await CXZprava.b64(r.blob), mujEm = ppEm1(personOf(me()).email);
+          const res = await call('POST', {key: SY.key, akce: 'zavada', cid: 'plan-' + rec.id + '-' + Date.now().toString(36), komu: komu.map(x => x.email).join(','),
+            predmet: `Constructo · ${stavba} – ${rec.text}`, html: ppMailHtml(rec, stavba, S2.text), text: S2.text + '\n\nPlán prací je v příloze jako PDF.',
+            pdf, pdfJmeno: r.name, obr: {logo: ppLogo()}, od: me() || 'Constructo', odpovedet: mujEm});
+          if (!res || !res.ok) throw new Error((res && res.error) || 'neznámá chyba');
+          const zaz = D.diary.find(e => e.id === rec.id);
+          if (zaz) { zaz.mail = (zaz.mail || []).concat([{at: new Date().toISOString(), by: me() || '', komu: komu.map(x => x.jmeno), emaily: komu.map(x => x.email)}]); zaz.how = [...new Set([...(zaz.how || []), 'mail'])]; commit(); }
+          const c = $('#m-cancel'); if (c) c.click();
+          toast(`Plán odeslán: ${komu.map(x => x.jmeno).join(', ')}.${mujEm ? ' Kopie přišla i vám.' : ''}`, 9000);
+          if (!$('#pp-arch').hidden) ppArch(); else $('#pp-t-arch').textContent = `Uložené plány (${PLANY().length})`;
+        } catch (e) { console.error(e); toast('Plán se nepodařilo odeslat: ' + ((e && e.message) || e), 9000); bezi = false; b.disabled = false; b.textContent = 'Odeslat'; }
+      })();
+      return 'keep';
+    });
+    document.querySelector('#overlay .modal').classList.add('wide');
+    $('#scrim').onclick = null;
+    napoj();
+  }
   function ppView(rec) {
     let v = $('#pp-pdf');
     if (!v) { v = document.createElement('div'); v.id = 'pp-pdf'; document.body.appendChild(v); }
@@ -6132,14 +6238,15 @@ ${tydenniHtml.toString()}
     const ps = PLANY(), ro = RO();
     const tm = s => { try { return new Date(s).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}); } catch (e) { return ''; } };
     $('#pp-alist').innerHTML = ps.length ? ps.map(r => { const f = ppFilt(r.o || {});
-      return `<div class="pp-arch"><span style="flex:1"><b>${esc(r.text || 'Plán prací')}</b>${f ? ' · ' + esc(f) : ''}<br><span class="hcap">${r.rows.length} z ${r.all || r.rows.length} položek · ${(r.how || []).includes('print') && !(r.how || []).includes('pdf') ? 'vytištěno' : 'uloženo'} ${esc(fmtDY(r.date))} ${esc(tm(r.savedAt))}${r.by ? ' · ' + esc(r.by) : ''}</span></span>
-        <button type="button" class="btn" data-pv="${esc(r.id)}">Zobrazit</button><button type="button" class="btn" data-pd="${esc(r.id)}">Stáhnout PDF</button><button type="button" class="btn" data-pp="${esc(r.id)}">Tisk</button>${ro ? '' : `<button type="button" class="btn" data-px="${esc(r.id)}" style="color:var(--bad)">Smazat</button>`}</div>`; }).join('')
-      : '<p style="margin:8px 0">Zatím není uložený žádný plán. Plán se sem uloží sám, když v Plánu prací kliknete na <b>Uložit PDF</b> nebo <b>Tisk</b>.</p>';
+      return `<div class="pp-arch"><span style="flex:1"><b>${esc(r.text || 'Plán prací')}</b>${f ? ' · ' + esc(f) : ''}<br><span class="hcap">${r.rows.length} z ${r.all || r.rows.length} položek · ${(r.how || []).includes('print') && !(r.how || []).includes('pdf') ? 'vytištěno' : 'uloženo'} ${esc(fmtDY(r.date))} ${esc(tm(r.savedAt))}${r.by ? ' · ' + esc(r.by) : ''}</span>${(r.mail || []).map(m => `<br><span class="pp-sent">✉ odesláno ${esc(fmtDY(String(m.at).slice(0, 10)))} ${esc(tm(m.at))}${m.by ? ' (' + esc(m.by) + ')' : ''}: ${esc((m.komu || []).join(', '))}</span>`).join('')}</span>
+        <button type="button" class="btn" data-pv="${esc(r.id)}">Zobrazit</button><button type="button" class="btn" data-pd="${esc(r.id)}">Stáhnout PDF</button><button type="button" class="btn" data-pp="${esc(r.id)}">Tisk</button>${ro ? '' : `<button type="button" class="btn" data-pm="${esc(r.id)}">✉ Odeslat</button>`}${ro ? '' : `<button type="button" class="btn" data-px="${esc(r.id)}" style="color:var(--bad)">Smazat</button>`}</div>`; }).join('')
+      : '<p style="margin:8px 0">Zatím není uložený žádný plán. Plán se sem uloží sám, když v Plánu prací kliknete na <b>Uložit PDF</b>, <b>Tisk</b> nebo <b>Odeslat e-mailem</b>.</p>';
     const get = id => D.diary.find(e => e.id === id);
     const box = $('#pp-alist');
     box.querySelectorAll('[data-pv]').forEach(b => b.onclick = () => { const r = get(b.dataset.pv); if (r) ppView(r); });
     box.querySelectorAll('[data-pd]').forEach(b => b.onclick = () => { const r = get(b.dataset.pd); if (r) ppPdf(r, false); });
     box.querySelectorAll('[data-pp]').forEach(b => b.onclick = () => { const r = get(b.dataset.pp); if (r) ppPrint(r); });
+    box.querySelectorAll('[data-pm]').forEach(b => b.onclick = () => { const r = get(b.dataset.pm); if (r) ppMail(r); });
     box.querySelectorAll('[data-px]').forEach(b => b.onclick = () => { const r = get(b.dataset.px); if (!r) return;
       confirmModal('Smazat uložený plán?', `<p><b>${esc(r.text)}</b> (${r.rows.length} položek, ${esc(fmtDY(r.date))}) zmizí z Uložených plánů u všech kolegů. Úkoly se nemění.</p>`, 'Smazat', () => {
         D.diary = D.diary.filter(e => e.id !== r.id); if (PP && PP.recId === r.id) PP.recId = ''; commit(); toast('Plán smazán'); ppTab('arch'); }); });
@@ -6153,6 +6260,7 @@ ${tydenniHtml.toString()}
     $('#pp-notodo').onclick = () => { const n = ppTodo().length; ppTodo().forEach(t => PP.off.add(t.id)); ppRender(); toast(`Z tisku odebráno ${n} ${zN(n, 'nezahájená činnost', 'nezahájené činnosti', 'nezahájených činností')}. Vrátit je můžete zaškrtnutím.`); };
     $('#pp-save').onclick = () => ppPdf(ppStore('pdf'), !RO());
     $('#pp-print').onclick = () => { ppPrint(ppStore('print')); };
+    $('#pp-mail').onclick = () => ppMail(null);
   })();
 
   /* ---------- napojení ---------- */
