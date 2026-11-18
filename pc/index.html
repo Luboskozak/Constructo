@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-VdF5A4EhQyZ6IbWQRYrJCbZ5gHR5Gedn37vcbnu187g=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-orkaczZixhZwq89mH3QP71+WtxpQukZzXLOldFFeoWE=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -3608,6 +3608,36 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       finally { b.disabled = false; b.textContent = 'Stáhnout PDF'; }
     };
   }
+  // 4.48: kopie už odeslané zprávy pro firmu kolegům „na vědomí“ – e-mail od Constructa, každému zvlášť, s odkazem na PDF, které dostala firma (bez odkazu pro odpověď firmy)
+  async function zKopieKolegum(id, lide, btn) {
+    const z = ZAV().find(x => x.id === id); if (!z) return;
+    if (!lide.length) { toast('Zaškrtněte, komu kopii poslat.'); return; }
+    if (!SY) { toast('E-mail jde poslat jen s připojením ke Googlu (Data → Automatická synchronizace).'); return; }
+    const P = D.project || {}, stavba = P.name || 'Stavba', pdf = zPdfUrl(z);
+    const em = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
+    const komu = lide.filter(n => em(n)), missing = lide.filter(n => !em(n)), poslano = [], chyby = [];
+    const uvod = `Pro informaci: tuto zprávu poslal Constructo firmě ${z.firma}${zKomu(z) ? ' (' + zKomu(z) + ')' : ''} dne ${zDatum(z)} v ${zCas(z)}. Zapsal ${z.by || '–'}.`;
+    const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c;max-width:640px">
+      <p style="font-size:13px;color:#6b7279;margin:0 0 6px">NA VĚDOMÍ · ${esc(z.cislo || '')}</p>
+      <p style="font-size:19px;margin:0 0 10px"><b>${esc(z.predmet || z.typ || 'Zpráva pro firmu')}</b></p>
+      <p style="margin:0 0 12px">${esc(uvod)}</p>
+      <p style="margin:0 0 12px">Typ: <b>${esc(z.typ || '–')}</b>${zMisto(z) ? '<br>Místo: ' + esc(zMisto(z)) : ''}</p>
+      ${pdf ? `<p style="margin:16px 0"><a href="${esc(pdf)}" style="display:inline-block;background:#131518;color:#fff;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none">Otevřít PDF, které dostala firma &rarr;</a></p>` : ''}
+      ${z.text ? `<div style="background:#f4f4f1;border-radius:8px;padding:12px 14px;white-space:pre-wrap;line-height:1.45">${esc(z.text)}</div>` : ''}
+      <p style="color:#6b7279;font-size:13px;margin-top:16px">Constructo · ${esc(stavba)}</p></div>`;
+    const t0 = btn.textContent; btn.disabled = true;
+    try {
+      for (const n of komu) {
+        btn.textContent = `Posílám ${poslano.length + 1}/${komu.length}…`;
+        let r; try { r = await call('POST', {key: SY.key, akce: 'zavada', cid: 'kop-' + z.id + '-' + em(n).toLowerCase(), komu: em(n), predmet: `Constructo · ${stavba} – Na vědomí: ${z.predmet || z.typ || ''} (${z.cislo || ''})`,
+          html, text: uvod + (pdf ? '\n\nPDF: ' + pdf : '') + '\n\n' + (z.text || ''), od: 'Constructo'}); } catch (e) { r = {error: (e && e.message) || String(e)}; }
+        if (r && r.ok) poslano.push(n); else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
+      }
+      if (poslano.length) { const r = ZAV().find(x => x.id === id); if (r) { r.kopie = [...new Set((r.kopie || []).concat(poslano))].sort((a, b) => a.localeCompare(b, 'cs')); commit(); } }
+      toast(`${poslano.length ? 'Kopie odešla: ' + poslano.join(', ') + '.' : 'Kopie neodešla.'}${missing.length ? ' Chybí e-mail u: ' + missing.join(', ') + ' (doplňte v Lidech).' : ''}${chyby.length ? ' Chyba: ' + chyby.join('; ') : ''}`, 8000);
+      const c = $('#m-cancel'); if (c) c.click(); if (S.view === 'zavady') renderZavady();
+    } finally { btn.disabled = false; btn.textContent = t0; }
+  }
   function zavadaDetail(id) {
     const z = ZAV().find(x => x.id === id); if (!z) return;
     const th = zThumb(z), pdf = zPdfUrl(z), st = zStav(z), ro = RO(), odk = zOdkaz(z);
@@ -3620,6 +3650,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <p style="margin:0"><b>${esc(z.firma || 'Bez firmy')}</b>${zKomu(z) ? ' · ' + esc(zKomu(z)) : ''}${z.email ? '<br>' + esc(z.email) : ''}${zMisto(z) ? '<br>' + esc(zMisto(z)) : ''}${(z.kopie || []).length ? '<br>Na vědomí: ' + esc(z.kopie.join(', ')) : ''}</p>
       ${z.text ? `<div class="zv-txt">${esc(z.text)}</div>` : ''}
       <div class="zv-a" style="justify-content:flex-start">${pdf ? `<a class="btn" href="${esc(pdf)}" target="_blank" rel="noopener">Formulář PDF</a>` : ''}${odk ? '<button type="button" class="btn" id="zv-odkaz">Kopírovat odkaz pro firmu</button>' : ''}</div>
+      ${ro || !z.firma ? '' : `<h4 class="zv-h4">Poslat kopii kolegům (na vědomí)</h4>
+      <div class="nz-lide">${(D.project.team || []).filter(n => n && n !== me()).map(n => `<label class="nz-ch"><input type="checkbox" data-zkk="${esc(n)}"> ${esc(n)}${(z.kopie || []).includes(n) ? ' ✓' : ''}</label>`).join('')}</div>
+      <div class="zv-a" style="justify-content:flex-start"><button type="button" class="btn" id="zv-kopie">Poslat kopii vybraným</button><span class="hcap">Každý dostane zvlášť e-mail od Constructa s textem zprávy a odkazem na PDF, které dostala firma. Firmě se nic neposílá. ✓ = kopii už dostal.</span></div>`}
       <h4 class="zv-h4">Odpovědi</h4>
       ${hist ? `<div class="zv-hist">${hist}</div>` : `<p class="hcap" style="margin:0">${odk ? 'Firma zatím neodpověděla. Odpoví přes odkaz v e-mailu, který dostala.' : 'Tahle zpráva odešla dřív, než šlo odpovídat přes odkaz.'}</p>`}
       ${ro ? '' : `<div class="zv-uz"><label for="zv-pozn">${st === 'uzavreno' ? 'Proč znovu otevřít' : 'Poznámka (u Vrátit firmě povinná, firma ji uvidí)'}</label><textarea id="zv-pozn" placeholder="${st === 'uzavreno' ? 'např. vada se znovu objevila' : 'např. zkontrolováno na stavbě 4. 11., v pořádku / spáry stále nejsou přetmelené'}"></textarea>
@@ -3632,6 +3665,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       r.odpovedi = (r.odpovedi || []).concat([o]); r.stav = stav; commit(); return r;
     };
     const ob = $('#zv-odkaz'); if (ob) ob.onclick = async () => { try { await navigator.clipboard.writeText(odk); toast('Odkaz je zkopírovaný. Můžete ho firmě poslat třeba WhatsAppem.'); } catch (e) { prompt('Odkaz pro firmu:', odk); } };
+    const kb = $('#zv-kopie'); if (kb) kb.onclick = () => zKopieKolegum(id, [...document.querySelectorAll('#overlay [data-zkk]:checked')].map(c => c.dataset.zkk), kb);
     const zb = $('#zv-zav'); if (zb) zb.onclick = () => { zapis('uzavreno', $('#zv-pozn').value.trim()); zavri(); toast('Zpráva uzavřena.'); };
     const vb = $('#zv-vrat'); if (vb) vb.onclick = async () => {
       const t = $('#zv-pozn').value.trim();
