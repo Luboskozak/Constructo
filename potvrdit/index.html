@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-JsmbWwcDrKHetwHaT7kud4lckRqprp2vFt9zvEVtBHA='; object-src 'none'; base-uri 'self'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Přehled úkolů · Constructo</title>
+<meta name="theme-color" content="#131518">
+<link rel="icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap">
+<style>
+/* Constructo: potvrzení ranního přehledu úkolů (jen úkoly jednoho člověka, nic jiného ze stavby) */
+:root{
+  --y:#F4D23C; --y2:#FFF4BF; --k:#131518; --bg:#f4f4f1; --card:#fff; --ink:#16191c; --mut:#6b7279; --line:#e4e4df;
+  --red:#b3261e; --red2:#fdeae6; --grn:#2f8a52; --grn2:#dcefe3;
+  --f:"Hanken Grotesk","Helvetica Neue",Arial,system-ui,sans-serif; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #2b6cb0;outline-offset:2px}
+.head{background:var(--k);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 0;border-bottom:6px solid var(--y)}
+.head .in{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding-bottom:20px}
+.logo{display:flex;align-items:center;gap:9px;font-size:20px;font-weight:300}
+.logo svg{height:20px;width:auto;fill:#FAD805}
+.head h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em}
+.head p{margin:0;color:#c9ced3;font-size:14px}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:16px;padding:18px;box-shadow:0 1px 0 var(--line)}
+.card h2{margin:0 0 10px;font-size:18px;font-weight:800;display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:6px;height:22px;background:var(--y);border-radius:2px}
+.card h2.red{color:var(--red)}
+.sum{font-size:15px}.sum b.r{color:var(--red)}
+.it{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.it:first-of-type{border-top:0}
+.it .d{font-weight:800;font-size:14px}.it.po .d{color:var(--red)}
+.it .d small{display:block;font-weight:500;font-size:12px;color:var(--mut)}.it.po .d small{color:var(--red)}
+.it .t{font-weight:600}.it .t small{display:block;font-weight:400;font-size:13px;color:var(--mut)}
+.nic{color:var(--grn);font-weight:700;margin:0}
+.ok{background:var(--grn2);color:#1d5e37;border-radius:14px;padding:16px 18px;font-weight:600;font-size:17px}
+.ok b{display:block;font-size:20px;margin-bottom:4px}
+.send{width:100%;border:0;border-radius:14px;background:var(--y);color:var(--k);font-size:20px;font-weight:800;padding:18px}
+.send:disabled{opacity:.55}
+.hint{color:var(--mut);font-size:14px;margin:8px 0 0;text-align:center}
+.err{color:var(--red);font-weight:600;margin:10px 0 0;text-align:center}
+.big{text-align:center;padding:40px 18px}.big b{display:block;font-size:19px;margin-bottom:6px}
+footer{max-width:720px;margin:0 auto;padding:0 16px 30px;color:var(--mut);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <symbol id="cx-mark" viewBox="190 130 516 310"><path d="M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z"/></symbol>
+</defs></svg>
+<header class="head"><div class="in">
+  <div class="logo"><svg viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg>Constructo</div>
+  <h1>Přehled úkolů</h1>
+  <p id="sub">Načítám přehled…</p>
+</div></header>
+<main id="main"><div class="card big"><b>Načítám přehled…</b>Chvilku strpení.</div></main>
+<footer>Tato stránka ukazuje jen váš přehled úkolů. Odkaz nikomu dalšímu neposílejte.<br>Constructo · Developed by Luboš Kozák</footer>
+<script>
+(() => {
+  'use strict';
+  const API = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  const den = s => s ? s.split('-').slice(1).reverse().map(Number).join('. ') + '.' : '';
+  const dny = (a, b) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 864e5);
+  const DOW = ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'], dow = s => DOW[new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))).getUTCDay()];
+  const uk = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů', dn = n => n === 1 ? 'den' : n > 1 && n < 5 ? 'dny' : 'dní';
+  let t = ''; try { t = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  if (!t && window.ZKOUSKA_HASH) t = window.ZKOUSKA_HASH;
+  let P = null, posilam = false, chyba = '';
+
+  async function call(o) {
+    if (typeof window.ZKOUSKA_API === 'function') return window.ZKOUSKA_API(o);
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 60000);
+    try {
+      const r = await fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(o), redirect: 'follow', signal: ctl.signal});
+      return await r.json();
+    } finally { clearTimeout(tm); }
+  }
+  function hlaska(nadpis, text) {
+    $('#sub').textContent = 'Přehled se nepodařilo otevřít';
+    $('#main').innerHTML = `<div class="card big"><b>${esc(nadpis)}</b>${esc(text)}</div>`;
+  }
+  async function nacti() {
+    if (t === 'zkouska') return hlaska('Toto je zkušební e-mail.', 'Ve zkušebním e-mailu se nic nepotvrzuje. Skutečný přehled chodí každé pondělí v 7:00.');
+    if (t.length < 20) return hlaska('Odkaz není celý.', 'Otevřete prosím odkaz znovu přímo z e-mailu.');
+    let r;
+    try { r = await call({akce: 'prehled', t}); } catch (e) { return hlaska('Spojení se nepodařilo.', 'Zkontrolujte připojení k internetu a stránku obnovte.'); }
+    if (r && r.prehled) { P = r.prehled; return kresli(); }
+    if (r && r.error === 'nenalezeno') return hlaska('Přehled jsme nenašli.', 'Odkaz je možná starý. Platí vždy odkaz z posledního e-mailu.');
+    hlaska('Přehled se nepodařilo otevřít.', (r && r.error) || 'Zkuste to prosím později.');
+  }
+  const polozka = (x, po) => `<div class="it${po ? ' po' : ''}"><div class="d">${esc(den(x.end))}<small>${po ? dny(x.end, P.dnes) + ' ' + dn(dny(x.end, P.dnes)) + ' po' : x.end === P.dnes ? 'dnes' : esc(dow(x.end))}</small></div>
+    <div class="t">${esc(x.text)}${x.dilci || x.obj ? `<small>${[x.dilci ? 'dílčí úkol k: ' + esc(x.ukol) : '', x.obj ? 'objekt ' + esc(x.obj) : ''].filter(Boolean).join(' · ')}</small>` : ''}</div></div>`;
+  function kresli() {
+    $('#sub').textContent = `${P.jmeno} · ${P.stavba || 'Stavba'}`;
+    const potvrzeni = P.ok
+      ? `<div class="ok"><b>✓ Děkujeme, přehled je potvrzený.</b>Další přehled vám přijde v pondělí ${esc(den(P.dalsi))} v 7:00.</div>`
+      : `<div class="card"><button type="button" class="send" id="send"${posilam ? ' disabled' : ''}>${posilam ? 'Potvrzuji…' : '✓ Beru na vědomí'}</button>
+         ${chyba ? `<p class="err">${esc(chyba)}</p>` : ''}<p class="hint">Po potvrzení vám další přehled přijde až v pondělí ${esc(den(P.dalsi))}. Bez potvrzení chodí každý pracovní den v 7:00.</p></div>`;
+    $('#main').innerHTML = `<div class="card sum"><b class="${P.po.length ? 'r' : ''}">${P.po.length} ${uk(P.po.length)} po termínu</b> · <b>${P.tyden.length} ${uk(P.tyden.length)} na příští týden</b></div>
+      ${potvrzeni}
+      <div class="card"><h2 class="${P.po.length ? 'red' : ''}">1. Nesplněné úkoly po termínu</h2>${P.po.length ? P.po.map(x => polozka(x, true)).join('') : '<p class="nic">Žádný úkol po termínu. Děkujeme!</p>'}</div>
+      <div class="card"><h2>2. Úkoly na příští týden · ${esc(den(P.od))} – ${esc(den(P.do))}</h2>${P.tyden.length ? P.tyden.map(x => polozka(x, false)).join('') : '<p class="nic">Na příští týden nemáte žádný úkol s termínem.</p>'}</div>
+      ${P.ok ? '' : '<div class="card"><button type="button" class="send" id="send2">✓ Beru na vědomí</button></div>'}`;
+    ['#send', '#send2'].forEach(s => { const b = $(s); if (b) b.onclick = potvrd; });
+  }
+  async function potvrd() {
+    if (posilam) return;
+    posilam = true; chyba = ''; kresli(); window.scrollTo({top: 0, behavior: 'smooth'});
+    try { const r = await call({akce: 'prehled_ok', t}); if (r && r.prehled) P = r.prehled; else chyba = (r && r.error) || 'Potvrzení se nepodařilo, zkuste to prosím znovu.'; }
+    catch (e) { chyba = 'Bez spojení. Zkontrolujte internet a zkuste to znovu.'; }
+    posilam = false; kresli();
+  }
+  nacti();
+})();
+</script>
+</body>
+</html>

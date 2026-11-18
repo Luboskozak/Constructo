@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-M2DlybPcntEUsNnUbtKFBZJp30BK/ZJVPxidHM3Viik=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-7qVP086k3kdkjr4oruzYM8MO3j/9MRqSlvQFCn8cC4w=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -752,8 +752,24 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .kl-it.st-todo{border-left-color:var(--muted)}.kl-it.st-hold{border-left-color:var(--hold)}
 .kl-it .kl-sub{font-weight:500;color:var(--muted)}
 .kl-one .kl-day{min-height:0}.kl-one .kl-it{font-size:15.5px;padding:10px 12px}.kl-one .kl-it .kl-t{-webkit-line-clamp:4}
-.kl-late{padding:8px 14px 10px;border-bottom:1px solid var(--line);background:var(--bad-soft)}.kl-late>b{display:block;font-size:13px;margin-bottom:6px;color:var(--bad)}
-.kl-late .kl-row{display:flex;flex-wrap:wrap;gap:6px}.kl-late .kl-it{width:auto;max-width:400px}
+.kl-late{border-bottom:1px solid var(--line);border-left:5px solid var(--bad);background:color-mix(in srgb,var(--bad-soft) 55%,var(--panel))}
+.kl-lh{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:10px 14px 6px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;text-align:left;flex-wrap:wrap}
+.kl-lh .kl-lc{background:var(--bad);color:#fff;font-weight:800;border-radius:999px;padding:2px 10px;font-size:14px}.kl-lh b{color:var(--bad);font-size:15px}.kl-lh .kl-li{color:var(--muted);font-size:13px}
+.kl-lh .sp{flex:1}.kl-lh .kl-lb{font-weight:700;font-size:13px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 12px}.kl-lh:hover .kl-lb{border-color:var(--accent)}
+.kl-lp{display:flex;flex-wrap:wrap;gap:6px;padding:2px 14px 10px}
+.kl-lp button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 10px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--ink)}.kl-lp button b{color:var(--bad);margin-left:3px}
+.kl-lp button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}.kl-lp button[aria-pressed=true] b{color:inherit}.kl-lp button:hover{border-color:var(--accent)}
+.kl-ll{max-height:430px;overflow:auto;border-top:1px solid var(--line);background:var(--panel)}
+.kl-lr{display:grid;grid-template-columns:62px 78px minmax(0,1fr) minmax(150px,30%);gap:10px;align-items:baseline;padding:6px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.kl-lr:last-child{border-bottom:0}.kl-lr:hover{background:var(--soft)}
+.kl-ld{font:600 13px var(--f-mono);color:var(--bad)}.kl-la{font-size:12.5px;color:var(--bad);white-space:nowrap}
+.kl-lt{border:0;background:none;padding:0;font:inherit;font-weight:600;text-align:left;cursor:pointer;color:var(--ink);min-width:0;word-break:break-word}.kl-lt:hover{text-decoration:underline}
+.kl-lt .kl-n{font-weight:700;color:var(--muted);font-size:12.5px;margin-left:5px}
+.kl-lw{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 8px}.kl-lw button{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer}.kl-lw button:hover{color:var(--ink);text-decoration:underline}
+.kl-it.kl-grp{cursor:default}.kl-it.kl-grp .kl-gt{all:unset;cursor:pointer;display:block}.kl-it.kl-grp .kl-gt:hover .kl-t{text-decoration:underline}
+.kl-it .kl-gn{display:inline-block;background:var(--soft);border-radius:999px;font-size:11.5px;font-weight:700;padding:0 7px;margin-left:4px;color:var(--muted)}
+.kl-it .kl-gp{display:flex;flex-wrap:wrap;gap:0 8px;margin-top:2px;white-space:normal}.kl-it .kl-gp button{all:unset;cursor:pointer;font-size:12.5px;color:var(--muted)}.kl-it .kl-gp button:hover{color:var(--ink);text-decoration:underline}
+@media (max-width:760px){.kl-lr{grid-template-columns:56px minmax(0,1fr)}.kl-la{display:none}.kl-lw{grid-column:2}}
 .kl-os{display:grid;grid-template-columns:200px minmax(0,1fr);border-bottom:1px solid var(--line)}
 .kl-os>div:first-child{padding:12px 14px;font-weight:700;font-size:16px;border-right:1px solid var(--line)}.kl-os>div:first-child small{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .kl-os .kl-ag{padding:10px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
@@ -955,7 +971,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           <span class="mh">Úkoly</span>
           <button type="button" data-act="tasksxl">Přidat úkoly z tabulky (Excel)…</button>
           <button type="button" data-act="rename">Přejmenovat nebo sloučit osobu…</button>
-          <button type="button" data-act="tydenni">Týdenní přehled úkolů e-mailem…</button>
+          <button type="button" data-act="tydenni">Ranní přehled úkolů e-mailem…</button>
           <button type="button" data-act="lidezaloha">Načíst lidi a e-maily ze zálohy…</button>
           <hr>
           <span class="mh">Závady pro firmy</span>
@@ -1154,7 +1170,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.46';
+  const APP_VERSION = '4.47';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3044,7 +3060,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   // Firmy (subdodavatelé) pro závady z mobilu: adresy, kam telefon pošle e-mail nebo WhatsApp. Nejsou to osoby, do Lidí ani do týmu se nepřidávají.
   // Ukládají se do dat stavby (D.project.firmy), takže je všechny telefony převezmou při synchronizaci.
   /* ---------- 4.28 záložka Kalendář: úkoly a dílčí úkoly podle termínu (do kdy), jen k nahlédnutí ---------- */
-  const KL = (() => { let o = {}; try { o = JSON.parse(store.get('hyb-kal') || '{}') || {}; } catch(e) {} return Object.assign({p: 'week', od: '', do: '', osoba: '', mode: 'cal', done: false, at: ''}, o); })();
+  const KL = (() => { let o = {}; try { o = JSON.parse(store.get('hyb-kal') || '{}') || {}; } catch(e) {} return Object.assign({p: 'week', od: '', do: '', osoba: '', mode: 'cal', done: false, at: '', lateOpen: false}, o); })();
   const klSave = () => store.set('hyb-kal', JSON.stringify(KL));
   const klAdd = (s, n) => { const d = pd(s); d.setDate(d.getDate() + n); return iso(d); };
   const klMon = s => { const d = pd(s); return klAdd(s, -((d.getDay() + 6) % 7)); };
@@ -3080,6 +3096,34 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const klChip = (x, withDate) => `<button type="button" class="kl-it st-${x.st}" data-kt="${esc(x.t.id)}" title="${esc((x.u ? 'Dílčí úkol: ' + x.u.text + '\nÚkol: ' + x.t.title : x.t.title) + '\nKdo: ' + (x.u ? x.who : ownerTxt(x.t) || 'Bez přiřazení') + '\nDo kdy: ' + fmtDY(x.end))}">
       <span class="kl-t">${withDate ? `<b class="kl-d">${fmtD(x.end)}</b>` : ''}${x.u ? '<span class="kl-sub">dílčí: </span>' : ''}${esc(x.text)}</span>
       <small>${esc(x.u ? (KL.mode === 'os' ? '' : x.who + ' · ') + (x.t.title || '') : (KL.mode === 'os' ? (x.t.obj ? 'objekt ' + x.t.obj : (x.t.supplier || '')) : ownerTxt(x.t) || 'Bez přiřazení'))}</small></button>`;
+  // 4.47: stejný úkol se stejným termínem pro více lidí (např. 6× ze zápisu porady) = jedna položka se všemi jmény
+  const klNorm = s => String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+  const klWho = x => x.u ? [x.who] : x.ppl;
+  function klGroup(list) {
+    const m = new Map(), rank = {late: 0, hold: 1, doing: 2, todo: 3, done: 4};
+    list.forEach(x => { const k = x.end + '|' + (x.u ? 's' : 't') + '|' + klNorm(x.text); if (!m.has(k)) m.set(k, []); m.get(k).push(x); });
+    return [...m.values()].map(xs => xs.slice().sort((a, b) => (rank[a.st] ?? 9) - (rank[b.st] ?? 9)));
+  }
+  const klNames = xs => { const out = []; xs.forEach(x => klWho(x).forEach(n => { if (!out.some(o => o.n === n)) out.push({n, id: x.t.id}); })); return out; };
+  function klChipG(xs, withDate) {
+    if (xs.length === 1) return klChip(xs[0], withDate);
+    const x = xs[0], nm = klNames(xs);
+    return `<div class="kl-it kl-grp st-${x.st}"><button type="button" class="kl-gt" data-kt="${esc(x.t.id)}" title="${esc(x.text + '\nDo kdy: ' + fmtDY(x.end) + '\nStejný úkol má ' + nm.length + ' lidí – klik na jméno otevře úkol toho člověka')}">
+      <span class="kl-t">${withDate ? `<b class="kl-d">${fmtD(x.end)}</b>` : ''}${x.u ? '<span class="kl-sub">dílčí: </span>' : ''}${esc(x.text)}<span class="kl-gn">${nm.length}×</span></span></button>
+      <small class="kl-gp">${nm.map(o => `<button type="button" data-kt="${esc(o.id)}">${esc(o.n)}</button>`).join('')}</small></div>`;
+  }
+  function klLate(late) {
+    const gs = klGroup(late).sort((a, b) => a[0].end.localeCompare(b[0].end) || a[0].text.localeCompare(b[0].text, 'cs'));
+    const cnt = new Map(); late.forEach(x => klWho(x).forEach(n => cnt.set(n, (cnt.get(n) || 0) + 1)));
+    const ppl = [...cnt.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'cs'));
+    const old = gs[0][0].end, dn = n => n === 1 ? 'den' : n > 1 && n < 5 ? 'dny' : 'dní', open = !!KL.lateOpen;
+    const rows = gs.map(xs => { const x = xs[0], n = dayDiff(x.end, today), nm = klNames(xs);
+      return `<div class="kl-lr"><span class="kl-ld">${fmtD(x.end)}</span><span class="kl-la">${n} ${dn(n)} po</span><button type="button" class="kl-lt" data-kt="${esc(x.t.id)}">${x.u ? '<span class="kl-sub">dílčí: </span>' : ''}${esc(x.text)}${nm.length > 1 ? `<span class="kl-n">${nm.length}×</span>` : ''}</button><span class="kl-lw">${nm.map(o => `<button type="button" data-kt="${esc(o.id)}">${esc(o.n)}</button>`).join('')}</span></div>`; }).join('');
+    return `<div class="kl-late${open ? ' open' : ''}"><button type="button" class="kl-lh" id="kl-late-t" aria-expanded="${open}"><span class="kl-lc">${late.length}</span><b>Po termínu a nesplněno</b>
+      <span class="kl-li">${gs.length < late.length ? gs.length + ' různých úkolů · ' : ''}nejstarší od ${fmtD(old)} (${dayDiff(old, today)} ${dn(dayDiff(old, today))})</span><span class="sp"></span><span class="kl-lb">${open ? 'Skrýt seznam ▴' : 'Zobrazit seznam ▾'}</span></button>
+      <div class="kl-lp">${ppl.map(([n, c]) => `<button type="button" data-ko="${esc(n)}" aria-pressed="${KL.osoba === n}" title="${KL.osoba === n ? 'Zrušit výběr osoby' : 'Ukázat jen úkoly této osoby'}">${esc(n)}<b>${c}</b>${KL.osoba === n ? ' ✕' : ''}</button>`).join('')}</div>
+      ${open ? `<div class="kl-ll">${rows}</div>` : ''}</div>`;
+  }
   function renderKal() {
     const v = $('#view'), [od, dd] = klRange(), all = klItems(), its = all.filter(x => x.end >= od && x.end <= dd);
     const late = od <= today && dd >= today ? all.filter(x => x.st === 'late' && x.end < od) : [];
@@ -3094,7 +3138,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <label class="hcap" style="display:flex;gap:5px;align-items:center"><input type="checkbox" id="kl-done"${KL.done ? ' checked' : ''}> i splněné</label></div>
       <div class="sl-top kl-top"><div class="kl-nav"><button type="button" class="btn" id="kl-prev" title="Předchozí">◀</button><button type="button" class="btn" id="kl-dnes">Dnes</button><button type="button" class="btn" id="kl-next" title="Další">▶</button></div>
       <span class="kl-rng">${rngTxt}</span><span>${its.length} ${nm(its.length)} s termínem v tomto období${KL.osoba ? ' · ' + esc(KL.osoba) : ''}</span></div>`;
-    if (late.length) html += `<div class="kl-late"><b>Po termínu a nesplněno (${late.length})</b><div class="kl-row">${late.map(x => klChip(x, true)).join('')}</div></div>`;
+    if (late.length) html += klLate(late);
     if (KL.mode === 'os') {
       const g = new Map(); its.forEach(x => { const k = ppl.includes(x.who) ? x.who : 'Bez přiřazení'; if (!g.has(k)) g.set(k, []); g.get(k).push(x); });
       const keys = [...ppl.filter(n => g.has(n)), ...(g.has('Bez přiřazení') ? ['Bez přiřazení'] : [])];
@@ -3105,7 +3149,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       for (let d = from; d <= to; d = klAdd(d, 1)) days.push(d);
       html += `${one ? '' : `<div class="kl-dow">${KL_DOW.map(x => `<span>${x}</span>`).join('')}</div>`}<div class="kl-grid${one ? ' kl-one' : ''}"${one ? ' style="grid-template-columns:1fr"' : ''}>` + days.map(d => {
         const wd = (pd(d).getDay() + 6) % 7, ds = its.filter(x => x.end === d), out = d < od || d > dd;
-        return `<div class="kl-day${out ? ' out' : ''}${wd > 4 ? ' we' : ''}${d === today ? ' dnes' : ''}"><div class="kl-dn"><span>${pd(d).getDate()}.${pd(d).getDate() === 1 || d === from ? ' ' + (pd(d).getMonth() + 1) + '.' : ''}</span>${d === today ? '<span>dnes</span>' : ''}${one ? `<span>${KL_DOW[wd]}</span>` : ''}</div>${out ? '' : ds.map(x => klChip(x)).join('')}${one && !ds.length ? '<span class="hcap">Žádný úkol s termínem v tento den.</span>' : ''}</div>`;
+        return `<div class="kl-day${out ? ' out' : ''}${wd > 4 ? ' we' : ''}${d === today ? ' dnes' : ''}"><div class="kl-dn"><span>${pd(d).getDate()}.${pd(d).getDate() === 1 || d === from ? ' ' + (pd(d).getMonth() + 1) + '.' : ''}</span>${d === today ? '<span>dnes</span>' : ''}${one ? `<span>${KL_DOW[wd]}</span>` : ''}</div>${out ? '' : klGroup(ds).map(xs => klChipG(xs)).join('')}${one && !ds.length ? '<span class="hcap">Žádný úkol s termínem v tento den.</span>' : ''}</div>`;
       }).join('') + '</div>';
     }
     v.innerHTML = html + '<p class="kl-pop">Úkol je v kalendáři v den svého termínu (do kdy), dílčí úkol v den svého termínu. Červeně = po termínu. Tady se nic nezapisuje – klik na úkol otevře jeho okno v záložce Úkoly.</p></div>';
@@ -3117,6 +3161,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#kl-prev').onclick = () => klShift(-1); $('#kl-next').onclick = () => klShift(1);
     $('#kl-dnes').onclick = () => { KL.at = today; if (KL.p === 'own') { const n = dayDiff(...klRange()); KL.od = today; KL.do = klAdd(today, n); } klSave(); renderKal(); };
     v.querySelectorAll('[data-kt]').forEach(b => b.onclick = () => klOpen(b.dataset.kt));
+    if ($('#kl-late-t')) $('#kl-late-t').onclick = () => { KL.lateOpen = !KL.lateOpen; klSave(); renderKal(); };
+    v.querySelectorAll('[data-ko]').forEach(b => b.onclick = () => { KL.osoba = KL.osoba === b.dataset.ko ? '' : b.dataset.ko; klSave(); renderKal(); });
   }
   // klik v kalendáři: přepnout do Úkolů (všechny úkoly, bez filtrů, aby byl úkol vidět) a otevřít stejné okno Úkol jako všude jinde
   function klOpen(id) {
@@ -4178,7 +4224,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 10
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 11
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
 
@@ -4195,7 +4241,12 @@ function doPost_(e) {
     lock.waitLock(25000);
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
-  if (b.akce === 'verze') return json_({verze: 10});
+  rpZapnout_();
+  if (b.akce === 'verze') return json_({verze: 11});
+  if (b.akce === 'prehled') return prehled_(b, false);
+  if (b.akce === 'prehled_ok') return prehled_(b, true);
+  if (b.akce === 'prehled_stav') return prehledStav_(b);
+  if (b.akce === 'prehled_test') return prehledTest_(b);
   if (b.akce === 'odborne') return odborne_(b);
   if (b.akce === 'korektura') return korektura_(b);
   if (b.akce === 'formulace') return formulace_(b);
@@ -4515,23 +4566,104 @@ function zapis_(b) {
   p.setProperty('mail:' + b.cid, '1');
   return json_({ok: true, sent: komu.length, missing: chybi});
 }
-// Týdenní přehled: každé pondělí ráno pošle každému člověku s e-mailem tabulku jeho nehotových úkolů.
-// Zapíná se jednou: v editoru skriptu vybrat funkci zapnoutTydenniPrehled a kliknout Spustit.
-function tydenniPrehled() {
-  const d = nacti_(PropertiesService.getScriptProperties()) || {}, lide = (d.project && d.project.people) || {};
-  const dnes = Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
-  Object.keys(lide).forEach(function (n) {
-    const em = lide[n] && lide[n].email; if (!em) return;
-    const m = tydenniHtml(d, n, dnes, ODKAZ);
-    if (m) MailApp.sendEmail({to: em, subject: m.predmet, htmlBody: m.html, name: 'Constructo'});
-  });
+// Ranní přehled úkolů (verze 11): každé pondělí v 7:00 dostane každý z týmu (Lidé s e-mailem) e-mail s PDF – 1. úkoly po termínu, 2. úkoly na příští týden.
+// V e-mailu je tlačítko „Beru na vědomí“ (stránka /potvrdit/). Kdo potvrdí, dostane další přehled až příští pondělí; kdo nepotvrdí, dostane ho znovu každý pracovní den v 7:00.
+// Plánovač běží každý den mezi 6:00 a 7:00 a nastaví odeslání přesně na 7:00. Zapíná se sám po vložení nového skriptu (nebo ručně funkcí zapnoutRanniPrehled).
+const RP_VIKEND = false;   // true = připomínky i v sobotu a v neděli
+const RP_WEB = '${WEB_HOME}';
+function rpDnes_() { return Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd'); }
+function rpPlus_(s, n) { const p = s.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
+function rpDenTydne_(s) { const p = s.split('-').map(Number); return (new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay() + 6) % 7; }   // 0 = pondělí
+function rpLide_(d) {
+  const lide = (d.project && d.project.people) || {}, tym = Array.isArray(d.project && d.project.team) ? d.project.team : Object.keys(lide);
+  const adr = /^[^@ ,;]+@[^@ ,;]+[.][^@ ,;]+$/;
+  return tym.filter(function (n, i) { return n && tym.indexOf(n) === i && lide[n] && adr.test(String(lide[n].email || '').trim()); }).map(function (n) { return {n: n, email: String(lide[n].email).trim()}; });
 }
-function zapnoutTydenniPrehled() {
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'tydenniPrehled') ScriptApp.deleteTrigger(t); });
-  ScriptApp.newTrigger('tydenniPrehled').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(6).inTimezone('Europe/Prague').create();
+function rpKlic_(n) { return 'rpn:' + Utilities.base64EncodeWebSafe(Utilities.newBlob(String(n)).getBytes()); }
+function rpStav_(p, tok) { try { return tok ? JSON.parse(p.getProperty('rp:' + tok) || 'null') : null; } catch (x) { return null; } }
+function rpPosli_(d, komu, jmeno, dnes, tok, pripominka, zkouska) {
+  const r = ranniData(d, jmeno, dnes);
+  const pdf = Utilities.newBlob(ranniPdfHtml(d, jmeno, dnes, 'data:image/png;base64,' + CX_LOGO_PNG, r), 'text/html', 'prehled.html').getAs('application/pdf').setName('Constructo-prehled-ukolu-' + dnes + '.pdf');
+  const m = ranniMail(d, jmeno, dnes, RP_WEB + '/potvrdit/#' + tok, pripominka, r);
+  MailApp.sendEmail({to: komu, subject: (zkouska ? 'ZKOUŠKA (přehled pro ' + jmeno + ') – ' : '') + m.predmet, htmlBody: m.html, attachments: [pdf],
+    inlineImages: {logo: Utilities.newBlob(Utilities.base64Decode(CX_LOGO_PNG), 'image/png', 'logo.png')}, name: 'Constructo'});
+}
+// plánovač (každý den 6:00–7:00): nastaví jednorázové spuštění ranniPrehled přesně na 7:00
+function ranniPlan() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'ranniPrehled') ScriptApp.deleteTrigger(t); });
+  const sedm = new Date(Utilities.formatDate(new Date(), 'Europe/Prague', "yyyy-MM-dd'T'07:00:00XXX"));
+  if (sedm.getTime() - Date.now() < 60000) { ranniPrehled(); return; }
+  ScriptApp.newTrigger('ranniPrehled').timeBased().at(sedm).create();
+}
+function ranniPrehled() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'ranniPrehled') ScriptApp.deleteTrigger(t); });
+  const p = PropertiesService.getScriptProperties(), d = nacti_(p) || {}, dnes = rpDnes_(), wd = rpDenTydne_(dnes), pondeli = rpPlus_(dnes, -wd);
+  if (wd > 4 && !RP_VIKEND) return;
+  rpLide_(d).forEach(function (o) {
+    try {
+      const k = rpKlic_(o.n);
+      let tok = p.getProperty(k), st = rpStav_(p, tok);
+      const novy = !st || st.w !== pondeli;
+      if (!novy && (st.ok || (st.poslano || []).indexOf(dnes) >= 0)) return;
+      const r = ranniData(d, o.n, dnes);
+      if (!r.po.length && !r.tyden.length) { if (novy) { tok = Utilities.getUuid().replace(/-/g, ''); p.setProperty('rp:' + tok, JSON.stringify({n: o.n, w: pondeli, ok: 'nic', poslano: []})); p.setProperty(k, tok); } return; }
+      if (novy) { tok = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '').slice(0, 8); st = {n: o.n, w: pondeli, ok: '', poslano: []}; }
+      rpPosli_(d, o.email, o.n, dnes, tok, !novy, false);
+      const lock = LockService.getScriptLock(); lock.waitLock(25000);
+      try { const s2 = novy ? st : (rpStav_(p, tok) || st); s2.poslano = (s2.poslano || []).concat([dnes]); p.setProperty('rp:' + tok, JSON.stringify(s2)); if (novy) p.setProperty(k, tok); } finally { lock.releaseLock(); }
+    } catch (x) { console.error('Ranní přehled ' + o.n + ': ' + ((x && x.message) || x)); }
+  });
+  // staré potvrzovací odkazy (starší než 6 týdnů) uklidit
+  const vse = p.getProperties(), hranice = rpPlus_(pondeli, -42);
+  Object.keys(vse).forEach(function (k) { if (k.indexOf('rp:') === 0) { try { if (JSON.parse(vse[k]).w < hranice) p.deleteProperty(k); } catch (x) {} } });
+}
+function zapnoutRanniPrehled() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { const f = t.getHandlerFunction(); if (f === 'tydenniPrehled' || f === 'ranniPrehled' || f === 'ranniPlan') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('ranniPlan').timeBased().everyDays(1).atHour(6).inTimezone('Europe/Prague').create();
+  PropertiesService.getScriptProperties().setProperty('rp-zapnuto', '11');
+}
+function rpZapnout_() {
+  const p = PropertiesService.getScriptProperties();
+  const z = p.getProperty('rp-zapnuto') || '';
+  if (z === '11' || (z.indexOf('chyba:') === 0 && Date.now() - Number(z.slice(6)) < 3600000)) return;
+  try { zapnoutRanniPrehled(); } catch (x) { p.setProperty('rp-zapnuto', 'chyba:' + Date.now()); console.error('Ranní přehled se nezapnul: ' + ((x && x.message) || x)); }
+}
+function tydenniPrehled() {}   // starý pondělní přehled (6:00) nahradil ranní přehled; prázdná funkce jen pro případ, že starý spouštěč ještě existuje
+// stránka /potvrdit/: přehled jednoho člověka podle náhodného kódu z e-mailu a tlačítko Beru na vědomí (nic jiného ze stavby neukáže)
+function rpVen_(d, st, dnes) {
+  const r = ranniData(d, st.n, dnes), ven = function (x) { return {end: x.end, text: x.text, ukol: x.ukol || '', obj: x.obj || '', dilci: !!x.dilci}; };
+  return {jmeno: st.n, stavba: (d.project && d.project.name) || '', ok: st.ok === 'nic' ? '' : st.ok || '', dalsi: rpPlus_(st.w, 7), dnes: dnes, od: r.od, do: r.do, po: r.po.map(ven), tyden: r.tyden.map(ven)};
+}
+function prehled_(b, potvrdit) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const t = String(b.t || ''), p = PropertiesService.getScriptProperties();
+  if (t.length < 20) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  let st = rpStav_(p, t);
+  if (!st) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  if (potvrdit && !st.ok) {
+    const lock = LockService.getScriptLock(); lock.waitLock(25000);
+    try { st = rpStav_(p, t) || st; if (!st.ok) { st.ok = new Date().toISOString(); p.setProperty('rp:' + t, JSON.stringify(st)); } } finally { lock.releaseLock(); }
+  }
+  return json_({prehled: rpVen_(nacti_(p) || {}, st, rpDnes_())});
+}
+function prehledStav_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const p = PropertiesService.getScriptProperties(), d = nacti_(p) || {}, lide = {}, pondeli = rpPlus_(rpDnes_(), -rpDenTydne_(rpDnes_()));
+  rpLide_(d).forEach(function (o) { const st = rpStav_(p, p.getProperty(rpKlic_(o.n))); if (st && st.w === pondeli) lide[o.n] = {ok: st.ok || '', poslano: st.poslano || []}; });
+  const zapnuto = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'ranniPlan'; });
+  return json_({zapnuto: zapnuto, lide: lide});
+}
+function prehledTest_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const adr = /^[^@ ,;]+@[^@ ,;]+[.][^@ ,;]+$/, komu = String(b.komu || '').trim();
+  if (!adr.test(komu)) return json_({error: 'Doplňte si u sebe v Lidech e-mail.'});
+  rpPosli_(nacti_(PropertiesService.getScriptProperties()) || {}, komu, String(b.jmeno || ''), rpDnes_(), 'zkouska', false, true);
+  return json_({ok: true});
 }
 const ODKAZ = '${WEB_HOME}/pc/';
-${tydenniHtml.toString()}
+const CX_LOGO_PNG = '${CX_LOGO_PNG}';
+${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.toString()).join('\n')}
 `;
   }
   const copyText = async (txt, okMsg) => {
@@ -5439,50 +5571,128 @@ ${tydenniHtml.toString()}
   const zSubject = () => `Constructo · ${(D.project && D.project.name) || 'Stavba'} – Zápis z porady ${fmtDY(ZC.date)}${ZC.title ? ' – ' + ZC.title : ''}${ZC.no ? ' č. ' + ZC.no : ''}`;
   const zMailText = (n, rows) => zSubject() + '\n\n' + (rows.length ? 'Vaše úkoly z této porady:\n' : 'Z této porady pro vás nejsou žádné úkoly.') + rows.map((r, i) => `${i + 1}. ${r.title.trim()} – ${r.perm ? 'trvalý úkol' : r.end ? 'termín ' + fmtDY(r.end) : r.note || 'bez termínu'}${(r.with || []).length ? ' (spolu s ' + r.with.join(', ') + ')' : ''}`).join('\n');
   const zMarkSent = (n, rows) => { rows.forEach(r => { ZC.sent[r.key + '|' + n] = zSig(r); }); };
-  /* týdenní přehled úkolů e-mailem: stejná funkce běží v aplikaci (náhled) i ve skriptu na Googlu (každé pondělí) */
-  function tydenniHtml(d, jmeno, dnes, odkaz) {
+  /* ---------- 4.47 jednotný vzhled výstupů Constructo (PDF a e-maily) ----------
+     Všechny nové PDF a e-maily používají stejnou hlavičku a patičku jako formuláře zpráv: černý pruh, žluté logo Constructo
+     (poměr stran 516 : 310 zachovaný), žlutá linka, nadpis vpravo žlutě, sekce se žlutou značkou, šedý souhrn, patička s čarou.
+     Funkce jsou samostatné (bez proměnných aplikace), aby šly stejně použít i ve skriptu na Googlu (vkládají se tam přes toString). */
+  function cxVystup(o) {
+    // o: {nadpis, pod, telo (HTML), logo (adresa obrázku), stavba, pata, mail (true = e-mail, jinak celé PDF)}
     const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
-    const dt = s => { const p = String(s).split('-').map(Number); return p[2] + '. ' + p[1] + '. ' + p[0]; };
-    const dny = (a, b) => Math.round((Date.UTC(...b.split('-').map((x, i) => i === 1 ? x - 1 : +x)) - Date.UTC(...a.split('-').map((x, i) => i === 1 ? x - 1 : +x))) / 864e5);
-    const ts = (d.tasks || []).filter(t => (t.owner === jmeno || (t.team || []).includes(jmeno)) && t.status !== 'done' && (Number(t.done) || 0) < 100)
-      .sort((a, b) => (a.end || '9999').localeCompare(b.end || '9999') || String(a.title).localeCompare(String(b.title), 'cs'));
-    if (!ts.length) return null;
-    const late = ts.filter(t => t.end && t.end < dnes).length, soon = ts.filter(t => t.end && t.end >= dnes && dny(dnes, t.end) <= 7).length, stavba = (d.project && d.project.name) || 'Stavba';
-    const td = 'padding:7px 9px;border-bottom:1px solid #e4e4df;vertical-align:top;';
-    const skup = t => !t.end ? 3 : t.end < dnes ? 0 : dny(dnes, t.end) <= 7 ? 1 : 2;
-    const nadpisy = ['Po termínu', 'Termín do 7 dní', 'Další úkoly', 'Bez termínu'], barvy = ['#b3261e', '#9a5b00', '#16191c', '#666'];
-    let rows = '';
-    [0, 1, 2, 3].forEach(g => {
-      const xs = ts.filter(t => skup(t) === g); if (!xs.length) return;
-      rows += '<tr><td colspan="4" style="padding:12px 9px 5px;font-weight:700;font-size:13px;color:' + barvy[g] + ';border-bottom:2px solid ' + (g === 0 ? '#e2a59f' : '#e4e4df') + '">' + nadpisy[g] + ' (' + xs.length + ')</td></tr>';
-      rows += xs.map(t => {
-        const po = g === 0, n = po ? dny(t.end, dnes) : g === 1 ? dny(dnes, t.end) : 0;
-        return '<tr style="' + (po ? 'background:#fdecea;color:#b3261e;' : g === 1 ? 'background:#fff6e0;' : '') + '">' +
-          '<td style="' + td + 'white-space:nowrap;font-weight:700">' + (t.end ? dt(t.end) : '<span style="color:#888;font-weight:400">–</span>') + (po ? '<br><span style="font-size:12px">po termínu ' + n + (n === 1 ? ' den' : n < 5 ? ' dny' : ' dní') + '</span>' : g === 1 ? '<br><span style="font-size:12px;color:#9a5b00">' + (n === 0 ? 'dnes' : n === 1 ? 'zítra' : 'za ' + n + ' dní') + '</span>' : '') + '</td>' +
-          '<td style="' + td + '">' + e(t.title) + (t.kind !== 'simple' || t.owner !== jmeno ? '<br><span style="font-size:12px;color:#666">' + [t.kind !== 'simple' ? 'sledovaný úkol (harmonogram)' : '', t.owner !== jmeno ? 'spolu s ' + e(t.owner) : ''].filter(Boolean).join(' · ') + '</span>' : '') + '</td>' +
-          '<td style="' + td + 'white-space:nowrap">' + e(t.obj || '') + '</td>' +
-          '<td style="' + td + 'text-align:right;white-space:nowrap">' + (Number(t.done) || 0) + ' %</td></tr>';
-      }).join('');
-    });
-    const html = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#16191c;max-width:760px">' +
-      '<p style="font-size:17px;margin:0 0 4px"><b>Týdenní přehled všech vašich úkolů k ' + dt(dnes) + '</b></p>' +
-      '<p style="color:#555;margin:0 0 14px">' + e(stavba) + ' · ' + ts.length + (ts.length === 1 ? ' otevřený úkol' : ts.length < 5 ? ' otevřené úkoly' : ' otevřených úkolů') + (late ? ' · <b style="color:#b3261e">' + late + ' po termínu</b>' : '') + (soon ? ' · <b style="color:#9a5b00">' + soon + ' s termínem do 7 dní</b>' : '') + '</p>' +
-      '<table style="border-collapse:collapse;width:100%;border-top:3px solid #F4D23C"><tr style="background:#f4f4f1;text-align:left;font-size:12px;color:#555">' +
-      '<th style="' + td + '">Termín</th><th style="' + td + '">Úkol</th><th style="' + td + '">Objekt</th><th style="' + td + 'text-align:right">Hotovo</th></tr>' + rows + '</table>' +
-      '<p style="color:#555;margin-top:14px">Hotové úkoly označte v Constructu v záložce Úkoly tlačítkem Splněno' + (odkaz ? ': <a href="' + e(odkaz) + '">' + e(odkaz) + '</a>' : '.') + '</p>' +
-      '<p style="color:#999;font-size:12px">Tento přehled posílá Constructo automaticky každé pondělí ráno.</p></div>';
-    return {predmet: 'Týdenní přehled úkolů ' + dt(dnes) + (late ? ' – ' + late + ' po termínu' : '') + ' · ' + stavba.split(',')[0], html, pocet: ts.length, poTerminu: late};
+    const hlava = '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;background:#131518"><tr>' +
+      '<td bgcolor="#131518" style="background:#131518;padding:18px 22px;vertical-align:middle;white-space:nowrap"><img src="' + e(o.logo) + '" width="43" height="26" alt="" style="vertical-align:middle;width:43px;height:26px;border:0">' +
+      '<span style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:300;vertical-align:middle;padding-left:10px">Constructo</span></td>' +
+      '<td bgcolor="#131518" align="right" style="background:#131518;padding:14px 22px;vertical-align:middle;font-family:Arial,Helvetica,sans-serif">' +
+      '<div style="color:#F4D23C;font-size:17px;font-weight:800;letter-spacing:.5px">' + e(o.nadpis) + '</div>' +
+      (o.pod ? '<div style="color:#c9ced3;font-size:12px;margin-top:3px">' + e(o.pod) + '</div>' : '') + '</td></tr>' +
+      '<tr><td colspan="2" bgcolor="#F4D23C" style="background:#F4D23C;height:5px;line-height:5px;font-size:1px">&nbsp;</td></tr></table>';
+    const pata = '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin-top:26px;border-top:2px solid #16191c;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7279"><tr>' +
+      '<td style="padding:8px 0;font-weight:700;color:#16191c">Constructo' + (o.stavba ? ' · ' + e(o.stavba) : '') + '</td>' +
+      '<td align="center" style="padding:8px 0">Developed by Luboš Kozák</td><td align="right" style="padding:8px 0">' + e(o.pata || '') + '</td></tr></table>';
+    const obsah = hlava + '<div style="padding:20px 22px 6px;font-family:Arial,Helvetica,sans-serif;color:#16191c;font-size:14px;line-height:1.45">' + o.telo + pata + '</div>';
+    if (o.mail) return '<div style="background:#f4f4f1;padding:16px 8px"><div style="max-width:720px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden">' + obsah + '</div></div>';
+    return '<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>' + e(o.nadpis) + '</title><style>@page{size:A4;margin:12mm}body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif}table{page-break-inside:auto}tr{page-break-inside:avoid}</style></head><body>' + obsah + '</body></html>';
   }
-  function weeklyDialog() {
-    const ppl = owners().filter(n => n !== 'Bez přiřazení').map(n => ({n, m: tydenniHtml(D, n, today, WEB_HOME + '/pc/')})).filter(x => x.m);
-    confirmModal('Týdenní přehled úkolů e-mailem', `
-      <p style="margin-top:0">Každé <b>pondělí v 6:00</b> dostane každý člověk e-mail se <b>všemi</b> svými nehotovými úkoly (drobné i sledované z harmonogramu), seřazenými podle termínu: nahoře červeně po termínu, oranžově ty s termínem do 7 dní. Po každé poradě navíc po uzavření odejde jen aktuální zápis.</p>
-      ${ZAPIS_TEST ? '<p class="hcap">Zkušební verze: e-maily se zatím neposílají. Zapne se to při nasazení. Tady si můžete prohlédnout, jak budou vypadat.</p>' : ''}
-      ${ppl.length ? ppl.map((x, i) => `<div class="zp-mail"><b style="min-width:110px">${esc(x.n)}</b><span class="hcap">${x.m.pocet} ${zN(x.m.pocet, 'úkol', 'úkoly', 'úkolů')}${x.m.poTerminu ? ` · <span class="zp-bad">${x.m.poTerminu} po termínu</span>` : ''} · ${personOf(x.n).email ? esc(personOf(x.n).email) : '<span class="zp-bad">chybí e-mail</span>'}</span><span class="zp-sp"></span>${personOf(x.n).email ? '' : `<button type="button" class="btn" data-pe="${i}">Doplnit e-mail</button>`}<button type="button" class="btn" data-pv="${i}">Náhled</button></div>`).join('') : '<p>Nikdo nemá otevřený úkol.</p>'}`);
+  // pomocníci jednotného vzhledu: nadpis sekce se žlutou značkou, šedý souhrn, tabulka
+  function cxSekce(nadpis, barva) {
+    return '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin:22px 0 8px"><tr><td bgcolor="#F4D23C" style="background:#F4D23C;width:6px;font-size:1px">&nbsp;</td>' +
+      '<td style="padding:2px 0 2px 10px;font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:800;color:' + (barva || '#16191c') + '">' + nadpis + '</td></tr></table>';
+  }
+  /* Ranní přehled úkolů: pro jednoho člověka 1) nesplněné úkoly po termínu, 2) úkoly s termínem v příštím týdnu (dnes + 7 dní).
+     Počítá se stejně jako Kalendář: úkol podle svého termínu, dílčí úkol podle svého termínu; „Na vědomí“ a splněné se nepočítají. */
+  function ranniData(d, jmeno, dnes) {
+    const add = (s, n) => { const p = String(s).split('-').map(Number), x = new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)); return x.toISOString().slice(0, 10); };
+    const doK = add(dnes, 7), out = [];
+    (d.tasks || []).forEach(t => {
+      if (!t || t.info) return;
+      const hot = t.status === 'done' || (Number(t.done) || 0) >= 100, lidi = [t.owner].concat(t.team || []).filter((n, i, a) => n && a.indexOf(n) === i);
+      if (!hot && t.end && lidi.indexOf(jmeno) >= 0) out.push({end: t.end, text: String(t.title || '(bez názvu)'), obj: t.obj || '', pct: Number(t.done) || 0, spolu: lidi.filter(n => n !== jmeno), sled: t.kind !== 'simple'});
+      (t.sub || []).forEach(u => {
+        if (hot || !u || u.done || !u.end || !String(u.text || '').trim() || (u.owner || t.owner) !== jmeno) return;
+        out.push({end: u.end, text: String(u.text), ukol: String(t.title || ''), obj: t.obj || '', dilci: true, spolu: []});
+      });
+    });
+    out.sort((a, b) => a.end.localeCompare(b.end) || a.text.localeCompare(b.text, 'cs'));
+    return {po: out.filter(x => x.end < dnes), tyden: out.filter(x => x.end >= dnes && x.end <= doK), od: dnes, do: doK};
+  }
+  function ranniTelo(d, jmeno, dnes, prehled, proMail) {
+    const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+    const p = String(dnes).split('-').map(Number), dt = s => { const q = String(s).split('-').map(Number); return q[2] + '. ' + q[1] + '.'; };
+    const dny = (a, b) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 864e5);
+    const DOW = ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'], dow = s => DOW[new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))).getUTCDay()];
+    const dn = n => n === 1 ? 'den' : n > 1 && n < 5 ? 'dny' : 'dní', uk = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů';
+    const r = prehled || ranniData(d, jmeno, dnes), td = 'padding:7px 9px;border-bottom:1px solid #e4e4df;vertical-align:top;font-family:Arial,Helvetica,sans-serif;font-size:13px;';
+    const th = 'padding:7px 9px;text-align:left;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#6b7279;text-transform:uppercase;letter-spacing:.4px;background:#f4f4f1;border-bottom:2px solid #e4e4df;';
+    const popis = x => '<b>' + e(x.text) + '</b>' + ((x.dilci || x.spolu.length || x.sled) ? '<br><span style="font-size:11.5px;color:#6b7279">' +
+      [x.dilci ? 'dílčí úkol k: ' + e(x.ukol) : '', x.spolu.length ? 'spolu s ' + e(x.spolu.join(', ')) : '', !x.dilci && x.sled ? 'sledovaný úkol' : ''].filter(Boolean).join(' · ') + '</span>' : '');
+    const tab = (xs, po) => '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #e4e4df">' +
+      '<tr><th style="' + th + 'width:70px">Termín</th><th style="' + th + 'width:' + (po ? 82 : 52) + 'px">' + (po ? 'Zpoždění' : 'Den') + '</th><th style="' + th + '">Úkol</th><th style="' + th + 'width:60px">Objekt</th></tr>' +
+      xs.map(x => '<tr' + (po ? ' bgcolor="#fdeae6" style="background:#fdeae6"' : '') + '><td style="' + td + 'font-weight:700;white-space:nowrap;color:' + (po ? '#b3261e' : '#16191c') + '">' + dt(x.end) + '</td>' +
+        '<td style="' + td + 'white-space:nowrap;color:' + (po ? '#b3261e' : '#6b7279') + '">' + (po ? dny(x.end, dnes) + ' ' + dn(dny(x.end, dnes)) : (x.end === dnes ? 'dnes' : dow(x.end))) + '</td>' +
+        '<td style="' + td + '">' + popis(x) + '</td><td style="' + td + 'color:#6b7279">' + e(x.obj) + '</td></tr>').join('') + '</table>';
+    const prazdne = t => '<p style="margin:4px 0 0;color:#2f8a52;font-weight:700">' + t + '</p>';
+    const stavba = (d.project && d.project.name) || 'Stavba';
+    return '<table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse"><tr><td bgcolor="#f4f4f1" style="background:#f4f4f1;border-radius:10px;padding:14px 16px;font-family:Arial,Helvetica,sans-serif">' +
+      '<div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.5px">Přehled úkolů pro</div>' +
+      '<div style="font-size:22px;font-weight:800;margin:2px 0 4px">' + e(jmeno) + '</div>' +
+      '<div style="font-size:13px;color:#6b7279">' + e(stavba) + ' · stav k ' + p[2] + '. ' + p[1] + '. ' + p[0] + '</div>' +
+      '<div style="margin-top:8px;font-size:14px"><b style="color:' + (r.po.length ? '#b3261e' : '#2f8a52') + '">' + r.po.length + ' ' + uk(r.po.length) + ' po termínu</b> · <b>' + r.tyden.length + ' ' + uk(r.tyden.length) + ' na příští týden</b></div></td></tr></table>' +
+      cxSekce('1. Nesplněné úkoly po termínu (' + r.po.length + ')', r.po.length ? '#b3261e' : '') + (r.po.length ? tab(r.po, true) : prazdne('Nemáte žádný úkol po termínu. Děkujeme!')) +
+      cxSekce('2. Úkoly na příští týden · ' + dt(r.od) + ' – ' + dt(r.do) + ' (' + r.tyden.length + ')') + (r.tyden.length ? tab(r.tyden, false) : prazdne('Na příští týden nemáte žádný úkol s termínem.')) +
+      (proMail ? '' : '<p style="margin:16px 0 0;font-size:12.5px;color:#6b7279">Hotové úkoly označte v Constructu v záložce Úkoly tlačítkem Splněno. Pokud termín nestihnete, domluvte nový termín se stavbyvedoucím.</p>');
+  }
+  // PDF ranního přehledu (z tohoto HTML udělá PDF Google, v aplikaci se ukazuje jako náhled)
+  function ranniPdfHtml(d, jmeno, dnes, logo, prehled) {
+    const p = String(dnes).split('-').map(Number), stavba = (d.project && d.project.name) || 'Stavba';
+    return cxVystup({nadpis: 'PŘEHLED ÚKOLŮ', pod: jmeno + ' · ' + p[2] + '. ' + p[1] + '. ' + p[0], logo, stavba, pata: 'stav k ' + p[2] + '. ' + p[1] + '. ' + p[0], telo: ranniTelo(d, jmeno, dnes, prehled, false)});
+  }
+  // e-mail ranního přehledu: logo jako cid:logo, velké tlačítko „Beru na vědomí“ (otevře stránku /potvrdit/ s jedním tlačítkem)
+  function ranniMail(d, jmeno, dnes, odkaz, pripominka, prehled) {
+    const r = prehled || ranniData(d, jmeno, dnes), p = String(dnes).split('-').map(Number), stavba = (d.project && d.project.name) || 'Stavba';
+    const uk = n => n === 1 ? 'úkol' : n > 1 && n < 5 ? 'úkoly' : 'úkolů';
+    const tl = '<table cellspacing="0" cellpadding="0" style="margin:18px 0 6px"><tr><td bgcolor="#F4D23C" style="background:#F4D23C;border-radius:10px">' +
+      '<a href="' + String(odkaz).replace(/"/g, '&quot;') + '" style="display:inline-block;padding:14px 28px;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:800;color:#131518;text-decoration:none">&#10003; Beru na vědomí</a></td></tr></table>' +
+      '<p style="margin:0;font-size:12.5px;color:#6b7279">Po potvrzení vám další přehled přijde až příští pondělí v 7:00. Dokud přehled nepotvrdíte, bude chodit znovu každý pracovní den v 7:00.</p>';
+    const upoz = pripominka ? '<p style="margin:0 0 14px;padding:10px 14px;background:#fdeae6;border-radius:8px;color:#b3261e;font-weight:700">Připomínka: přehled úkolů zatím není potvrzený. Potvrďte ho prosím tlačítkem Beru na vědomí.</p>' : '';
+    const html = cxVystup({mail: true, nadpis: 'PŘEHLED ÚKOLŮ', pod: p[2] + '. ' + p[1] + '. ' + p[0], logo: 'cid:logo', stavba, pata: 'PDF v příloze',
+      telo: upoz + '<p style="margin:0 0 14px">Dobrý den,<br>posíláme přehled vašich úkolů na stavbě ' + stavba.replace(/[&<>"]/g, '') + '. Celý přehled je i v příloze jako PDF.</p>' + tl + ranniTelo(d, jmeno, dnes, r, true) + tl});
+    return {predmet: (pripominka ? 'Připomínka: ' : '') + 'Přehled úkolů ' + p[2] + '. ' + p[1] + '.' + (r.po.length ? ' – ' + r.po.length + ' po termínu' : '') + ' · ' + stavba.split(',')[0], html, po: r.po.length, tyden: r.tyden.length};
+  }
+  const CX_LOGO_PNG = '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';   // žluté logo Constructo 172 × 104 px (průhledné pozadí) pro PDF a e-maily
+  const CX_LOGO_URI = 'data:image/png;base64,' + CX_LOGO_PNG;
+  // okno Data → Ranní přehled úkolů e-mailem: kdo co dostane, náhled e-mailu a PDF, kdo už potvrdil (stav posílá skript na Googlu, verze 11)
+  function ranniDialog() {
+    const lide = teamList().filter(n => n && n !== 'Bez přiřazení').map(n => ({n, r: ranniData(D, n, today), em: personOf(n).email || ''}));
+    const mujMail = personOf(me()).email || '';
+    const dm = s => s ? s.split('-').reverse().map(Number).slice(0, 2).join('. ') + '.' : '';
+    confirmModal('Ranní přehled úkolů e-mailem', `
+      <p style="margin-top:0">Každé <b>pondělí v 7:00</b> dostane každý z týmu e-mail s PDF: <b>1. nesplněné úkoly po termínu</b> a <b>2. úkoly na příští týden</b>. V e-mailu je velké tlačítko <b>Beru na vědomí</b>.</p>
+      <p>Kdo potvrdí, dostane další přehled až <b>příští pondělí</b>. Kdo nepotvrdí, tomu přehled přijde znovu <b>každý pracovní den v 7:00</b>, dokud nepotvrdí.</p>
+      ${ZAPIS_TEST ? '<p class="hcap">Zkušební verze: e-maily se neposílají. Tady si můžete prohlédnout, jak budou vypadat e-mail i PDF.</p>' : '<p class="hcap" id="rp-st">Zjišťuji stav na Googlu…</p>'}
+      ${lide.map((x, i) => `<div class="zp-mail"><b style="min-width:130px">${esc(x.n)}</b><span class="hcap">${x.r.po.length ? `<span class="zp-bad">${x.r.po.length} po termínu</span>` : '0 po termínu'} · ${x.r.tyden.length} na příští týden · ${x.em ? esc(x.em) : '<span class="zp-bad">chybí e-mail</span>'}<span id="rp-s${i}"></span></span><span class="zp-sp"></span>
+        ${x.em ? '' : `<button type="button" class="btn" data-pe="${i}">Doplnit e-mail</button>`}<button type="button" class="btn" data-pm="${i}">Náhled e-mailu</button><button type="button" class="btn" data-pp="${i}">Náhled PDF</button>${!ZAPIS_TEST && SY && mujMail ? `<button type="button" class="btn" data-pt="${i}" title="Pošle přehled tohoto člověka jen vám na ${esc(mujMail)}">Poslat zkušebně mně</button>` : ''}</div>`).join('')}`);
     const ov = $('#overlay');
-    ov.querySelectorAll('[data-pv]').forEach(b => b.onclick = () => { const x = ppl[Number(b.dataset.pv)];
-      zView('Náhled e-mailu: ' + x.n, `<!doctype html><html lang="cs"><head><meta charset="utf-8"></head><body style="margin:24px;background:#fff"><p style="font:13px Arial;color:#888">Komu: ${esc(x.n)} ${esc(personOf(x.n).email || '(chybí e-mail)')}<br>Předmět: ${esc(x.m.predmet)}</p><hr>${x.m.html}</body></html>`); });
-    ov.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => personDialog(ppl[Number(b.dataset.pe)].n));
+    ov.querySelectorAll('[data-pm]').forEach(b => b.onclick = () => { const x = lide[Number(b.dataset.pm)], m = ranniMail(D, x.n, today, WEB_HOME + '/potvrdit/#zkouska', false, x.r);
+      zView('Náhled e-mailu: ' + x.n, `<!doctype html><html lang="cs"><head><meta charset="utf-8"></head><body style="margin:0;background:#fff"><p style="font:13px Arial;color:#888;margin:14px 16px">Komu: ${esc(x.n)} ${esc(x.em || '(chybí e-mail)')}<br>Předmět: ${esc(m.predmet)}<br>Příloha: Constructo-prehled-ukolu-${today}.pdf</p>${m.html.split('cid:logo').join(CX_LOGO_URI)}</body></html>`); });
+    ov.querySelectorAll('[data-pp]').forEach(b => b.onclick = () => { const x = lide[Number(b.dataset.pp)]; zView('Náhled PDF: ' + x.n, ranniPdfHtml(D, x.n, today, CX_LOGO_URI, x.r)); });
+    ov.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => personDialog(lide[Number(b.dataset.pe)].n));
+    ov.querySelectorAll('[data-pt]').forEach(b => b.onclick = async () => {
+      b.disabled = true; b.textContent = 'Posílám…';
+      try { const r = await call('POST', {key: SY.key, akce: 'prehled_test', jmeno: lide[Number(b.dataset.pt)].n, komu: mujMail});
+        if (r && r.ok) { b.textContent = 'Odesláno ✓'; toast('Zkušební přehled odešel na ' + mujMail); }
+        else { b.disabled = false; b.textContent = 'Poslat zkušebně mně'; if (r && r.error) toast(String(r.error)); else confirmModal('Nejdřív aktualizujte skript', '<p>Ranní přehled umí až nová verze skriptu na Googlu (verze 11).</p>', null, null, [['Aktualizovat skript…', scriptUpdateDialog]]); }
+      } catch (e) { b.disabled = false; b.textContent = 'Poslat zkušebně mně'; toast('Bez spojení s Googlem.'); }
+    });
+    if (ZAPIS_TEST) return;
+    const st = $('#rp-st');
+    if (!SY) { st.textContent = 'E-maily posílá skript na Googlu – nejdřív zapněte synchronizaci (Data → Automatická synchronizace).'; return; }
+    call('POST', {key: SY.key, akce: 'prehled_stav'}).then(r => {
+      if (!$('#rp-st')) return;
+      if (!r || !r.lide) { st.innerHTML = '<span class="zp-bad">Ranní přehled zatím neběží: skript na Googlu je potřeba aktualizovat na verzi 11.</span> <button type="button" class="btn" id="rp-upd">Aktualizovat skript…</button>'; $('#rp-upd').onclick = scriptUpdateDialog; return; }
+      st.innerHTML = r.zapnuto ? '✓ Zapnuto: Google posílá přehled každé ráno v 7:00 (pondělí všem, další dny jen těm, kdo nepotvrdili).' : '<span class="zp-bad">Skript je nový, ale ranní odesílání se ještě nezapnulo.</span> Zapne se samo při příští synchronizaci, případně v Googlu spusťte funkci zapnoutRanniPrehled.';
+      lide.forEach((x, i) => { const s = r.lide[x.n], el = $('#rp-s' + i); if (!el || !s) return;
+        el.innerHTML = s.ok === 'nic' ? ' · tento týden nic k potvrzení' : s.ok ? ` · <b style="color:var(--good)">✓ potvrzeno ${esc(new Date(s.ok).toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}))}</b>`
+          : (s.poslano || []).length ? ` · <span class="zp-bad">nepotvrzeno (posláno ${s.poslano.length}×, naposledy ${dm(s.poslano[s.poslano.length - 1])})</span>` : ''; });
+    }, () => { if ($('#rp-st')) st.textContent = 'Stav na Googlu se nepodařilo zjistit (bez spojení).'; });
   }
   // zkušební verze: lidi a e-maily převzít ze zálohy ostré aplikace (Data → Uložit zálohu)
   function zImportPeople() {
@@ -6089,7 +6299,7 @@ ${tydenniHtml.toString()}
     $('#zp-addnote').onclick = () => { ZC.notes = [...(ZC.notes || []), {id: uid(), text: ''}]; zRender(); const t = [...$('#zp-info').querySelectorAll('textarea[data-note]')].pop(); if (t) t.focus(); };
     $('#zp-fs').onclick = () => { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { toast('Celou obrazovku zapnete klávesou F11.'); } };
     document.addEventListener('fullscreenchange', () => { $('#zp-fs').textContent = document.fullscreenElement ? '⛶ Zmenšit' : '⛶ Celá obrazovka'; });
-    document.querySelectorAll('#menu-pop [data-act="tydenni"]').forEach(b => b.addEventListener('click', () => weeklyDialog()));
+    document.querySelectorAll('#menu-pop [data-act="tydenni"]').forEach(b => b.addEventListener('click', () => ranniDialog()));
     document.querySelectorAll('#menu-pop [data-act="lidezaloha"]').forEach(b => { b.hidden = !ZAPIS_TEST; b.addEventListener('click', () => zImportPeople()); });
     $('#zp-print').onclick = zPrint;
     $('#zp-word').onclick = zWord;
