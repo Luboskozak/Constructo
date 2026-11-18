@@ -126,6 +126,12 @@ const CXZprava = (() => {
   }
   // e-mail: stejný vzhled jako zpráva pro firmu (obrázky cid:logo, cid:f0…)
   function html(o, fotky) {
+    // 4.49: velké žluté tlačítko nahoře i dole – firma odpoví na stránce /odpoved/, kolega na /reakce/ (bez přihlášení a bez kódu)
+    const odk = o.firma ? o.odkaz : (o.reakce || o.web);
+    const pop = o.firma ? 'Potvrďte přijetí, nahlaste opravu (i s fotkou) nebo napište, proč nesouhlasíte. Nic nemusíte instalovat ani zadávat žádný kód.'
+      : o.reakce ? (o.info ? 'Jedním klepnutím potvrďte „Beru na vědomí“, nebo napište odpověď. Bez přihlašování a bez kódu.' : 'Jedním klepnutím potvrďte „Splněno“ nebo „Beru na vědomí“, nebo napište odpověď. Bez přihlašování a bez kódu.') : '';
+    const nap = o.firma ? 'Odpovědět na tuto zprávu' : o.reakce ? (o.info ? 'Beru na vědomí / Odpovědět' : 'Splněno / Beru na vědomí / Odpovědět') : 'Otevřít v Constructu';
+    const tlac = horni => !odk ? '' : `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:${horni ? '0 0 18px' : '22px 0 4px'}"><tr><td style="background:#F4D23C;border-radius:12px"><a href="${e(odk)}" style="display:inline-block;padding:${horni ? '16px 26px' : '14px 24px'};color:#131518;font-size:${horni ? 18 : 16}px;font-weight:800;text-decoration:none">${nap} &rarr;</a></td></tr></table>${horni && pop ? `<p style="font-size:13px;color:#6b7279;margin:-10px 0 18px">${pop}</p>` : ''}`;
     const e = esc, st = STITEK(o), pol = o.polozky, radky = [];
     for (let i = 0; i < pol.length; i += 2) radky.push('<tr>' + pol.slice(i, i + 2).map(p => `<td style="padding:10px 14px;vertical-align:top;width:50%"><div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.05em">${e(p[0])}</div><div style="font-size:14px;font-weight:600;color:#16191c;margin-top:3px">${e(p[1]).replace(/\n/g, '<br>')}</div></td>`).join('') + '</tr>');
     const sek = s => `<div style="margin:24px 0 10px;font-size:17px;font-weight:800;color:#16191c;border-left:5px solid #F4D23C;padding-left:10px">${s}</div>`;
@@ -139,13 +145,12 @@ const CXZprava = (() => {
 <tr><td style="padding:22px 26px 26px">
 <span style="display:inline-block;background:${st.bg};color:${st.fg};font-size:12px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:20px">${e(st.l)}</span>${o.firma ? '' : ' <span style="font-size:12px;color:#6b7279;font-weight:600">zpráva v kolektivu</span>'}
 <div style="font-size:21px;font-weight:800;margin:10px 0 16px;line-height:1.3">${e(o.predmet)}</div>
+${tlac(true)}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f1;border-radius:10px">${radky.join('')}</table>
 ${sek('Zpráva')}<div style="font-size:15px;line-height:1.6">${e(o.text).replace(/\n/g, '<br>')}</div>
 ${ff ? sek('Fotodokumentace') + '<div>' + ff + '</div>' + (n > 6 ? `<p style="font-size:13px;color:#6b7279;margin:4px 0 0">Všech ${n} fotek je v PDF v příloze.</p>` : '') : ''}
-${o.firma ? (o.odkaz ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px"><tr><td style="background:#131518;border-radius:10px"><a href="${e(o.odkaz)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none">Odpovědět na tuto zprávu &rarr;</a></td></tr></table><p style="font-size:13px;color:#6b7279;margin:6px 0 0">Tlačítkem potvrdíte přijetí, nahlásíte opravu (i s fotkou) nebo napíšete, proč nesouhlasíte. Nic nemusíte instalovat.</p>` : '')
-  + '<p style="font-size:13px;color:#6b7279;margin:18px 0 0">Celý formulář je v příloze jako PDF.</p>'
-  : `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 4px"><tr><td style="background:#131518;border-radius:10px"><a href="${e(o.web)}" style="display:inline-block;padding:14px 24px;color:#ffffff;font-size:16px;font-weight:800;text-decoration:none">Otevřít v Constructu &rarr;</a></td></tr></table>
-<p style="font-size:13px;color:#6b7279;margin:18px 0 0">${o.info ? 'Zprávu najdete v Constructu v záložce Zprávy.' : 'Úkol najdete v Constructu v záložce Úkoly. Až bude hotový, klikněte Splněno.'} Celý formulář je v příloze jako PDF.</p>`}
+${tlac(false)}
+<p style="font-size:13px;color:#6b7279;margin:18px 0 0">${o.firma ? '' : o.reakce ? (o.info ? 'Zprávu najdete i v Constructu v záložce Zprávy. ' : 'Úkol najdete i v Constructu v záložce Úkoly. ') : (o.info ? 'Zprávu najdete v Constructu v záložce Zprávy. ' : 'Úkol najdete v Constructu v záložce Úkoly. Až bude hotový, klikněte Splněno. ')}Celý formulář je v příloze jako PDF.</p>
 </td></tr>
 <tr><td style="background:#131518;padding:16px 26px;font-size:12px;color:#9aa1a8">Odesláno z aplikace Constructo · ${e(o.stavba)}<br><span style="color:#F4D23C">Developed by Luboš Kozák</span></td></tr>
 </table></div></body></html>`;
@@ -160,6 +165,14 @@ ${o.firma ? (o.odkaz ? `<table role="presentation" cellpadding="0" cellspacing="
       predmet: prvni.length > 90 ? prvni.slice(0, 88).replace(/\s+\S*$/, '') + '…' : prvni, text,
       polozky: [['Stavba', stavba], ['Objekt', it.obj || '—'], ...(it.misto ? [['Místo', it.misto]] : []), ['Komu', (it.to || []).join(', ') || '—'], [it.info ? 'Druh' : 'Splnit do', it.info ? 'Na vědomí – jen informace' : (it.end ? dd(it.end) : '—')], ['Zapsal', it.by || '—'], ['Datum a čas', kdy]]};
   }
-  return {formular, html, udaje, b64};
+  // 4.49: kód odkazu /reakce/ pro jednu zprávu v kolektivu = HMAC-SHA256(skupina, heslo skriptu); skript ho spočítá stejně, nic se neukládá
+  async function tok(key, grp) {
+    if (!key || !grp || !(window.crypto && crypto.subtle)) return '';
+    const enc = new TextEncoder(), k = await crypto.subtle.importKey('raw', enc.encode(String(key)), {name: 'HMAC', hash: 'SHA-256'}, false, ['sign']);
+    const b = new Uint8Array(await crypto.subtle.sign('HMAC', k, enc.encode(String(grp))));
+    return btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').slice(0, 22);
+  }
+  const reakceUrl = async (web, key, grp) => { try { const t = await tok(key, grp); return t ? String(web).replace(/\/pc\/?$/, '').replace(/\/$/, '') + '/reakce/#' + grp + '.' + t : ''; } catch (e) { return ''; } };
+  return {formular, html, udaje, b64, tok, reakceUrl};
 })();
 if (typeof window !== 'undefined') window.CXZprava = CXZprava;

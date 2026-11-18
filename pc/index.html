@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-orkaczZixhZwq89mH3QP71+WtxpQukZzXLOldFFeoWE=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-r4VptqVOqBRgEiyCcRzjg2B3Cg3xrz5zkV7JN2jF4sA=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1170,7 +1170,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.48';
+  const APP_VERSION = '4.49';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3328,6 +3328,11 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (m.error) return {t: 'e-mail neodešel: ' + m.error, bad: true};
     const miss = (m.missing || []).length ? ' · chybí e-mail: ' + m.missing.join(', ') : '';
     return m.sent ? {t: `e-mail s PDF odešel (${m.sent})${(m.poslano || []).length ? ': ' + m.poslano.join(', ') : ''}${miss}${m.error ? ' · neodešlo: ' + m.error : ''}`, bad: !!miss || !!m.error} : {t: 'e-mail neodešel' + (miss || ' – nikdo nemá e-mail'), bad: true}; };
+  // 4.49: reakce kolegů z odkazu v e-mailu (stránka /reakce/, skript v12): Beru na vědomí / Splněno / odpověď
+  const KOL_CO = {vedomi: 'bere na vědomí', splneno: 'splněno', odpoved: 'odpověď'};
+  const kolReakce = z => { const m = new Map(); z.tasks.forEach(t => (t.reakce || []).forEach(o => m.set(o.cid || o.at + o.jmeno, o)));
+    const a = [...m.values()].sort((x, y) => String(x.at).localeCompare(String(y.at))); if (!a.length) return '';
+    return `<div class="sm" style="flex-direction:column;align-items:flex-start;gap:2px">${a.map(o => `<span style="color:${o.stav === 'odpoved' ? 'var(--ink)' : 'var(--ok, #2f8a52)'}">${o.stav === 'odpoved' ? '✎' : '✓'} <b>${esc(o.jmeno)}</b> ${esc(KOL_CO[o.stav] || o.stav)} · ${esc(new Date(o.at).toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}))}${o.text ? ': ' + esc(o.text.length > 300 ? o.text.slice(0, 300) + '…' : o.text) : ''}</span>`).join('')}</div>`; };
   const kolPdfUrl = z => z.zprava && z.zprava.pdf && (z.zprava.pdf.url || (z.zprava.pdf.id ? `https://drive.google.com/file/d/${z.zprava.pdf.id}/view` : ''));
   // 4.39: Poslat znovu = stejný formulář PDF a e-mail jako zprávy pro firmy (fotky z Disku přes lh3, PDF na Disk, e-mail s fotkami a PDF v příloze)
   async function kolPoslat(grp, btn) {
@@ -3340,7 +3345,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     try {
       const P = D.project || {}, stavba = P.name || 'Stavba';
       const it = {cid: grp, info: z.info, text: z.popis, by: z.by, at: z.at, day: String(z.at || '').slice(0, 10), to: lide, obj: z.obj, end: z.end};
-      const o = CXZprava.udaje(it, stavba, WEB_HOME + '/pc/'); o.fotky = z.att.slice(0, 12);
+      const o = CXZprava.udaje(it, stavba, WEB_HOME + '/pc/'); o.fotky = z.att.slice(0, 12); o.reakce = await CXZprava.reakceUrl(WEB_HOME, SY.key, grp);
       const fm = await CXZprava.formular(o), pdfB = await CXZprava.b64(fm.pdf);
       btn.textContent = 'Ukládám PDF…';
       let pdf = null;
@@ -3441,6 +3446,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
   // 4.47: zpráva v kolektivu (úkol / Na vědomí) – e-mail s PDF každému zvlášť a záznam do Zpráv; používá Nová zpráva i kopie zprávy pro firmu
   async function nzKolegum(it, o, fotky, fm, pdfB, pdf, nahraj, krok) {
+    o = Object.assign({}, o, {reakce: await CXZprava.reakceUrl(WEB_HOME, SY.key, it.cid)});   // 4.49: tlačítko Beru na vědomí / Odpovědět bez kódu
     const att = [], P = D.project || {}, stavba = P.name || 'Stavba', obr = {logo: fm.logo}; fm.fotky.forEach((b, i) => { if (b) obr['f' + i] = b; });
     for (let i = 0; i < fotky.length; i++) { krok(`Ukládám fotky ${i + 1}/${fotky.length}…`); const r = await nahraj(it.cid + '-' + (i + 1) + '.jpg', 'image/jpeg', fotky[i].split(',')[1]); att.push({id: r.id, url: r.url, thumb: r.thumb, name: it.cid + '-' + (i + 1) + '.jpg'}); }
     const base = {kind: 'simple', title: it.text, start: today, note: '', obj: it.obj, supplier: '', hmg: [], createdAt: it.at, createdBy: it.by, updatedAt: it.at, updatedBy: it.by, from: 'web', grp: it.cid, att};
@@ -3564,7 +3570,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           html += `<div class="zv-row" data-zv="${esc(z.id)}">
           ${zvTh(z.att[0])}
           <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ)}</span><span class="pill zv-st zv-kol">${KOL}</span> ${esc(z.popis.length > 220 ? z.popis.slice(0, 220) + '…' : z.popis || 'bez popisu')}</div>
-            <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${z.obj ? `<span>objekt ${esc(z.obj)}</span>` : ''}${z.att.length ? `<span>${z.att.length} ${z.att.length === 1 ? 'fotka' : z.att.length < 5 ? 'fotky' : 'fotek'}</span>` : ''}<span${km.bad ? ' style="color:var(--red)"' : ''}>${esc(km.t)}</span></div></div>
+            <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${z.obj ? `<span>objekt ${esc(z.obj)}</span>` : ''}${z.att.length ? `<span>${z.att.length} ${z.att.length === 1 ? 'fotka' : z.att.length < 5 ? 'fotky' : 'fotek'}</span>` : ''}<span${km.bad ? ' style="color:var(--red)"' : ''}>${esc(km.t)}</span></div>${kolReakce(z)}</div>
           <div><b>${KOL}</b><small class="zv-komu">${esc(z.komu.join(', ') || '–')}</small></div>
           <div>${esc(z.by || '–')}</div>
           <div class="zv-a no-print">${kp ? `<a class="btn" href="${esc(kp)}" target="_blank" rel="noopener">PDF</a>` : ''}<button type="button" class="btn" data-zkd="${esc(z.tasks[0].id)}">Detail</button>${RO() ? '' : `<button type="button" class="btn" data-zkm="${esc(z.grp)}">${z.zprava && z.zprava.sent ? 'Poslat znovu' : 'Poslat e-mailem s PDF'}</button>`}</div></div>`;
@@ -4294,7 +4300,7 @@ function doPost_(e) {
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
   rpZapnout_();
-  if (b.akce === 'verze') return json_({verze: 11});
+  if (b.akce === 'verze') return json_({verze: 12});
   if (b.akce === 'prehled') return prehled_(b, false);
   if (b.akce === 'prehled_ok') return prehled_(b, true);
   if (b.akce === 'prehled_stav') return prehledStav_(b);
@@ -4309,6 +4315,8 @@ function doPost_(e) {
   if (b.akce === 'ares') return ares_(b);
   if (b.akce === 'firma_zprava') return firmaZprava_(b);
   if (b.akce === 'firma_odpoved') return firmaOdpoved_(b);
+  if (b.akce === 'kolega_zprava') return kolegaZprava_(b);
+  if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
 }
 // Fotky z mobilní aplikace: složka „Constructo – fotky ze stavby“ na Disku, podsložky po dnech.
@@ -4560,6 +4568,74 @@ function firmaOdpoved_(b) {
   } finally { lock.releaseLock(); }
   try { firmaUpozornit_(d, r, o); } catch (x) {}
   return json_({ok: true, zprava: firmaVen_(d, r)});
+}
+// Verze 12: reakce kolegy na zprávu v kolektivu (Na vědomí / Úkol) přes odkaz v e-mailu – stránka /reakce/, bez přihlášení a bez kódu.
+// Odkaz nese skupinu zprávy a kód = HMAC-SHA256(skupina, HESLO); nikde se neukládá. Stránka ukáže jen tuto jednu zprávu.
+function kolegaTok_(grp) { return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(String(grp), HESLO)).slice(0, 22); }
+function kolegaNajdi_(d, b) {
+  const z = String(b.z || ''), t = String(b.t || '');
+  if (!z || t.length !== 22 || kolegaTok_(z) !== t) return null;
+  const ts = (d.tasks || []).filter(function (x) { return x && x.grp === z; });
+  return ts.length ? ts : null;
+}
+function kolegaVen_(d, ts) {
+  const t = ts[0], z = ts.map(function (x) { return x.zprava; }).filter(Boolean)[0] || null;
+  const komu = z && z.komu && z.komu.length ? z.komu : ts.reduce(function (a, x) { return a.concat(t.info ? [x.owner].concat(x.team || []) : [x.owner]); }, []).filter(function (n, i, a) { return n && a.indexOf(n) === i; });
+  const rk = {}; ts.forEach(function (x) { (x.reakce || []).forEach(function (o) { rk[o.cid || (o.at + o.jmeno)] = o; }); });
+  return {stavba: (d.project && d.project.name) || '', info: !!t.info, text: t.title || '', by: t.createdBy || '', at: t.createdAt || '', end: t.info ? '' : (t.end || ''), obj: t.obj || '', komu: komu,
+    hotovo: ts.filter(function (x) { return !t.info && (x.done >= 100 || x.status === 'done'); }).map(function (x) { return x.owner; }),
+    fotky: (t.att || []).slice(0, 12).map(function (a) { return {url: a.url || '', thumb: a.id ? 'https://lh3.googleusercontent.com/d/' + a.id + '=w600' : (a.thumb || '')}; }),
+    pdf: (z && z.pdf && (z.pdf.url || (z.pdf.id ? 'https://drive.google.com/file/d/' + z.pdf.id + '/view' : ''))) || '',
+    reakce: Object.keys(rk).map(function (k) { return rk[k]; }).sort(function (a, b) { return String(a.at).localeCompare(String(b.at)); })};
+}
+function kolegaZprava_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const d = nacti_(PropertiesService.getScriptProperties()) || {}, ts = kolegaNajdi_(d, b);
+  if (!ts) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+  return json_({zprava: kolegaVen_(d, ts)});
+}
+function kolegaOdpoved_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const stav = {vedomi: 1, splneno: 1, odpoved: 1}[b.stav] ? b.stav : '';
+  const text = String(b.text || '').trim().slice(0, 3000), kdo = String(b.kdo || '').trim();
+  if (!stav) return json_({error: 'Vyberte prosím odpověď.'});
+  if (stav === 'odpoved' && !text) return json_({error: 'Napište prosím odpověď.'});
+  const p = PropertiesService.getScriptProperties(), lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  let d, ts, o;
+  try {
+    d = nacti_(p) || {}; ts = kolegaNajdi_(d, b);
+    if (!ts) { pk.spatne(); return json_({error: 'nenalezeno'}); }
+    const v = kolegaVen_(d, ts);
+    if (v.komu.indexOf(kdo) < 0 && kdo !== v.by) return json_({error: 'Vyberte prosím své jméno.'});
+    const cid = String(b.cid || '').slice(0, 40);
+    if (cid && v.reakce.some(function (x) { return x.cid === cid; })) return json_({ok: true, zprava: v});
+    const ted = new Date().toISOString(), nyni = Date.now();
+    o = {at: ted, cid: cid || nyni.toString(36), jmeno: kdo, stav: stav, text: text};
+    ts.forEach(function (x) {
+      x.reakce = (x.reakce || []).concat([o]); x._ts = nyni; x.updatedAt = ted; x.updatedBy = kdo;
+      if (stav === 'splneno' && !x.info && x.owner === kdo && !(x.done >= 100)) { x.done = 100; x.status = 'done'; x.doneAt = ted; x.doneBy = kdo; }
+    });
+    uloz_(p, d); p.setProperty('rev', String(Number(p.getProperty('rev') || 0) + 1));
+  } finally { lock.releaseLock(); }
+  try { kolegaUpozornit_(d, ts, o); } catch (x) {}
+  return json_({ok: true, zprava: kolegaVen_(d, ts)});
+}
+// Upozornění tomu, kdo zprávu poslal (e-mail z karty osoby v Lidech).
+function kolegaUpozornit_(d, ts, o) {
+  const lide = (d.project && d.project.people) || {}, t = ts[0], kdo = t.createdBy || '';
+  const komu = String((lide[kdo] && lide[kdo].email) || '').split(',')[0].trim();
+  if (!komu || komu.indexOf('@') < 1 || kdo === o.jmeno) return;
+  const esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  const co = {vedomi: 'bere na vědomí', splneno: 'hlásí: splněno', odpoved: 'odpověděl(a)'}[o.stav];
+  const html = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">' +
+    '<p style="font-size:17px"><b>' + esc(o.jmeno) + ' ' + esc(co) + '</b></p>' +
+    '<p style="color:#555">' + (t.info ? 'Na vědomí' : 'Úkol') + ': ' + esc(String(t.title || '').slice(0, 200)) + '</p>' +
+    (o.text ? '<p style="background:#f4f4f1;border-radius:8px;padding:10px 12px;white-space:pre-wrap">' + esc(o.text) + '</p>' : '') +
+    '<p style="color:#555">Všechny reakce najdete v Constructu v záložce Zprávy (V kolektivu).<br><a href="' + ODKAZ + '">Otevřít Constructo</a></p></div>';
+  MailApp.sendEmail({to: komu, subject: o.jmeno + ' ' + co + ' – ' + String(t.title || '').split(String.fromCharCode(10))[0].slice(0, 70), htmlBody: html, name: 'Constructo'});
 }
 // Upozornění tomu, kdo zprávu poslal (jeho e-mail z mobilu, jinak z karty osoby v Lidech).
 function firmaUpozornit_(d, r, o) {
