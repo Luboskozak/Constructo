@@ -17,6 +17,10 @@
   const bezDia = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const druh = n => { const p = pripona(n); return p === 'pdf' ? 'pdf' : p === 'dwg' ? 'dwg' : p === 'dxf' ? 'dxf' : /^(jpe?g|png|gif|webp|bmp)$/.test(p) ? 'obr' : /^(docx?|odt|rtf|txt)$/.test(p) ? 'text' : /^(xlsx?|ods|csv)$/.test(p) ? 'tab' : /^(zip|rar|7z)$/.test(p) ? 'zip' : 'jiny'; };
   const IKONA = {slozka: '📁', pdf: 'PDF', dwg: 'DWG', dxf: 'DXF', obr: 'IMG', text: 'DOC', tab: 'XLS', zip: 'ZIP', jiny: '…'};
+  const dotyk = () => matchMedia('(pointer:coarse)').matches;
+  const bezPripony = n => String(n || '').replace(/\.(pdf|dwg|dxf|jpe?g|png|gif|webp|bmp)$/i, '');
+  const pam = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const pamSet = (k, v) => { try { localStorage.setItem(k, String(v)); } catch (e) {} };
   const lzeOtevrit = n => ['pdf', 'dwg', 'dxf', 'obr'].includes(druh(n));
 
   /* ---------- styl ---------- */
@@ -59,10 +63,12 @@
 .dk-info{font-size:13px;color:#7a5600;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:8px 12px}
 @media (max-width:900px){.dk-hd{display:none}.dk-row{grid-template-columns:44px minmax(0,1fr) auto}.dk-row .dk-m{display:none}}
 /* prohlížeč */
-.dkv{position:fixed;inset:0;z-index:3000;background:#2a2d31;display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:250px minmax(0,1fr);font-family:inherit;color:#16191c}
-.dkv.bez-boku{grid-template-columns:0 minmax(0,1fr)}
+.dkv{position:fixed;inset:0;z-index:3000;background:#2a2d31;display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:var(--dkv-sw,340px) minmax(0,1fr);font-family:inherit;color:#16191c}
+.dkv.bez-boku,.dkv.skryty{grid-template-columns:0 minmax(0,1fr)}.dkv.bez-boku .dkv-side,.dkv.skryty .dkv-side{display:none}
+.dkv-r1,.dkv-r2{display:contents}
+.dkv-side{grid-column:1;grid-row:2}.dkv-stage{grid-column:2;grid-row:2}
 .dkv-bar{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;background:#16191c;color:#fff}
-.dkv-bar .nm{font-weight:700;font-size:14.5px;max-width:28vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 6px}
+.dkv-bar .nm{font-weight:700;font-size:14.5px;line-height:1.25;max-width:34vw;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin:0 6px;word-break:break-word}
 .dkv-bar .sp{flex:1}
 .dkv-b{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:38px;height:38px;padding:0 10px;border-radius:9px;border:1px solid #3a3f45;background:#24282d;color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
 .dkv-b:hover{border-color:#8a8f96}.dkv-b[aria-pressed=true]{background:#F4D23C;border-color:#F4D23C;color:#16191c}
@@ -72,12 +78,20 @@
 .dkv-bar .zoom{min-width:56px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
 .dkv-barva{width:24px;height:24px;border-radius:50%;border:2px solid #16191c;box-shadow:0 0 0 2px #3a3f45;cursor:pointer;padding:0}
 .dkv-barva[aria-pressed=true]{box-shadow:0 0 0 2px #fff}
-.dkv-side{background:#f4f4f1;overflow:auto;border-right:1px solid #ccc;min-height:0}
-.dkv-side h4{margin:10px 12px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#666}
-.dkv-side button{display:flex;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:7px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:#16191c}
-.dkv-side button:hover{background:#e8e6df}.dkv-side button.on{background:#F4D23C;font-weight:700}
-.dkv-side .dk-ik{width:32px;height:24px;font-size:9.5px;flex:none}
-.dkv-side span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dkv-side{background:#f4f4f1;border-right:1px solid #ccc;min-height:0;display:flex;flex-direction:column;position:relative}
+.dkv-sh{padding:10px 12px 8px;border-bottom:1px solid #ddd;display:flex;flex-direction:column;gap:7px}
+.dkv-sh b{font-size:13.5px;line-height:1.25;word-break:break-word}.dkv-sh small{color:#666;font-size:12px}
+.dkv-sh input{font:inherit;font-size:14px;padding:8px 10px;border:1px solid #ccc;border-radius:9px;width:100%;box-sizing:border-box;background:#fff}
+.dkv-sl{overflow:auto;flex:1;min-height:0;padding:4px 0 20px}
+.dkv-sl button{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;border:0;border-bottom:1px solid #e6e5df;background:none;padding:9px 12px;font:inherit;cursor:pointer;color:#16191c}
+.dkv-sl button:hover{background:#e8e6df}.dkv-sl button.on{background:#F4D23C}
+.dkv-sl .dk-ik{width:34px;height:24px;font-size:9.5px;flex:none;margin-top:1px}
+.dkv-sl .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dkv-sl .t b{font-size:13.5px;font-weight:600;line-height:1.3;word-break:break-word}.dkv-sl button.on .t b{font-weight:800}
+.dkv-sl .t small{font-size:11.5px;color:#666}.dkv-sl button.on .t small{color:#3a3a2a}
+.dkv-sl .nic{padding:14px 12px;color:#666;font-size:13px}
+.dkv-tah{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:2}
+.dkv-tah:hover,.dkv-tah.drz{background:rgba(244,210,60,.6)}
 .dkv-stage{position:relative;overflow:hidden;background:#5b5f64;touch-action:none;user-select:none;-webkit-user-select:none;min-height:0}
 .dkv-stage canvas,.dkv-stage svg.ann{position:absolute;left:0;top:0;transform-origin:0 0}
 .dkv-stage canvas.zakl{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.35);image-rendering:auto}
@@ -94,7 +108,16 @@
 .dkv-out h3{margin:0;font-size:18px}.dkv-out img{max-width:100%;max-height:calc(100vh - 230px);object-fit:contain;border:1px solid #ddd;border-radius:8px;align-self:center;background:#fff}
 .dkv-out .ak{display:flex;flex-wrap:wrap;gap:8px}.dkv-out .ak .dk-btn{font-size:14.5px}
 .dkv-out small{color:#666}
-@media (max-width:900px){.dkv{grid-template-columns:0 minmax(0,1fr)}.dkv-side{display:none}.dkv-bar .nm{max-width:40vw}}
+@media (max-width:900px){
+.dkv,.dkv.skryty{grid-template-columns:0 minmax(0,1fr)}
+.dkv-side{display:none;position:fixed;left:0;top:0;bottom:0;width:min(92vw,420px);z-index:3050;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+.dkv.seznam .dkv-side{display:flex}.dkv-tah{display:none}
+.dkv-bar{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:6px;padding:6px 8px calc(6px);padding-top:max(6px,env(safe-area-inset-top,0px))}
+.dkv-bar{min-width:0}.dkv-r1{display:flex;align-items:center;gap:6px;min-width:0}.dkv-r1{flex-wrap:wrap}.dkv-r1 .nm{order:5;flex-basis:100%;min-width:0;max-width:none;font-size:14px;margin:0 2px}.dkv-r1 .dkv-g{margin-left:auto}.dkv-r1 .dkv-g{padding:0;border:0}.dkv-r1 .dkv-g .zoom{display:none}.dkv-r1 .dkv-b{padding:0 9px}
+.dkv-r2{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+.dkv-r2::-webkit-scrollbar{display:none}.dkv-r2 .sp{display:none}.dkv-r2>*{flex:none}
+.dkv-g{padding:0 4px}.dkv-b{min-width:40px;height:40px}}
+.dkv-sz{display:none}@media (max-width:900px){.dkv-sz{display:block;margin-left:auto}}
 `;
   function styl() { if (document.getElementById('dk-styl')) return; const s = document.createElement('style'); s.id = 'dk-styl'; s.textContent = CSS; document.head.appendChild(s); }
 
@@ -496,11 +519,17 @@
     styl();
     if (V) zavri();
     const sour = deti(r.rodic || '').filter(x => x.typ === 'soubor' && lzeOtevrit(x.nazev)).sort((a, b) => cmp(a.nazev, b.nazev));
-    const el = document.createElement('div'); el.className = 'dkv' + (sour.length > 1 ? '' : ' bez-boku');
+    const slozkaNazev = r.rodic ? ((najdi(r.rodic) || {}).nazev || 'Složka') : 'Dokumentace';
+    const el = document.createElement('div'); el.className = 'dkv' + (sour.length > 1 ? (pam('cx-dkv-skryty') === '1' ? ' skryty' : '') : ' bez-boku');
+    const sw = Number(pam('cx-dkv-sirka')) || 0; if (sw >= 220 && sw <= 700) el.style.setProperty('--dkv-sw', sw + 'px');
     el.innerHTML = `
       <div class="dkv-bar">
+        <div class="dkv-r1">
         <button type="button" class="dkv-b" data-v="zavrit" title="Zavřít (Esc)">✕ Zavřít</button>
+        ${sour.length > 1 ? `<button type="button" class="dkv-b" data-v="seznam" title="Ukázat nebo skrýt seznam výkresů">☰ Výkresy</button>` : ''}
         <span class="nm" id="dkv-nm"></span>
+        ${sour.length > 1 ? `<span class="dkv-g"><button type="button" class="dkv-b" data-v="vpred" title="Předchozí výkres ve složce (Alt+↑)">▲</button><span class="zoom" id="dkv-poradi"></span><button type="button" class="dkv-b" data-v="vdal" title="Další výkres ve složce (Alt+↓)">▼</button></span>` : ''}
+        </div><div class="dkv-r2">
         <span class="dkv-g" id="dkv-str"><button type="button" class="dkv-b" data-v="pred" title="Předchozí list">‹</button><span class="zoom" id="dkv-list">1 / 1</span><button type="button" class="dkv-b" data-v="dal" title="Další list">›</button></span>
         <span class="dkv-g"><button type="button" class="dkv-b" data-v="minus" title="Zmenšit">−</button><span class="zoom" id="dkv-zoom">100 %</span><button type="button" class="dkv-b" data-v="plus" title="Zvětšit">+</button><button type="button" class="dkv-b" data-v="cele" title="Celý výkres na obrazovku">Celý</button></span>
         <span class="dkv-g" role="group" aria-label="Nástroj">
@@ -515,18 +544,37 @@
         <span class="sp"></span>
         <button type="button" class="dkv-b zl" data-n="vyrez" title="Označte myší obdélník – výřez jde zkopírovat, uložit nebo poslat ve zprávě">${IK.vyrez} Výřez</button>
         <button type="button" class="dkv-b" data-v="stahnout" title="Stáhnout původní soubor">⬇</button>
+        </div>
       </div>
-      <div class="dkv-side">${sour.length > 1 ? `<h4>Výkresy ve složce</h4>${sour.map(x => `<button type="button" data-f="${esc(x.id)}"><span class="dk-ik ${druh(x.nazev)}">${IKONA[druh(x.nazev)]}</span><span>${esc(x.nazev)}</span></button>`).join('')}` : ''}</div>
+      <div class="dkv-side">${sour.length > 1 ? `<div class="dkv-sh"><div style="display:flex;gap:8px;align-items:flex-start"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><b>${esc(slozkaNazev)}</b><small>${sour.length} ${sour.length < 5 ? 'výkresy' : 'výkresů'} ve složce</small></div><button type="button" class="dkv-b dkv-sz" data-v="seznam" style="background:#16191c">✕</button></div><input type="search" id="dkv-hl" placeholder="Hledat výkres (např. 2NP, vodovod)" autocomplete="off"></div>
+        <div class="dkv-sl" id="dkv-sl">${sour.map(x => `<button type="button" data-f="${esc(x.id)}" title="${esc(x.nazev)}"><span class="dk-ik ${druh(x.nazev)}">${IKONA[druh(x.nazev)]}</span><span class="t"><b>${esc(bezPripony(x.nazev))}</b><small>${[velTxt(x.vel), datTxt(x.kdy)].filter(Boolean).join(' · ')}</small></span></button>`).join('')}<div class="nic" hidden>Nic nenalezeno.</div></div><div class="dkv-tah" title="Táhnutím změníte šířku seznamu"></div>` : ''}</div>
       <div class="dkv-stage" data-n="posun"><canvas class="zakl"></canvas><canvas class="det" style="display:none"></canvas><svg class="ann" xmlns="http://www.w3.org/2000/svg"></svg><div class="vyb"></div><div class="dkv-msg" hidden></div><div class="dkv-hint" hidden></div></div>`;
     document.body.appendChild(el);
     const st = el.querySelector('.dkv-stage');
-    V = {el, st, zakl: st.querySelector('canvas.zakl'), det: st.querySelector('canvas.det'), svg: st.querySelector('svg.ann'), vyb: st.querySelector('.vyb'), msg: st.querySelector('.dkv-msg'), hint: st.querySelector('.dkv-hint'),
+    V = {sour, el, st, zakl: st.querySelector('canvas.zakl'), det: st.querySelector('canvas.det'), svg: st.querySelector('svg.ann'), vyb: st.querySelector('.vyb'), msg: st.querySelector('.dkv-msg'), hint: st.querySelector('.dkv-hint'),
       rec: null, typ: '', doc: null, img: null, str: 1, pocet: 1, w: 1, h: 1, s: 1, tx: 0, ty: 0, n: 'posun', barva: BARVY[0], kresby: {}, det0: null, detUloha: null, detT: 0, gen: 0, ptr: new Map()};
     el.querySelectorAll('[data-n]').forEach(b => b.onclick = () => nastroj(b.dataset.n));
     el.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { V.barva = b.dataset.b; el.querySelectorAll('[data-b]').forEach(x => x.setAttribute('aria-pressed', x === b)); if (V.n === 'posun' || V.n === 'vyrez') nastroj('tuzka'); });
     el.querySelector('[data-b]').setAttribute('aria-pressed', 'true');
-    el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { const x = najdi(b.dataset.f); if (x) nacti(x); });
+    el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { const x = najdi(b.dataset.f); el.classList.remove('seznam'); if (x) nacti(x); });
     el.querySelector('[data-v="zavrit"]').onclick = zavri;
+    // 4.54: seznam výkresů – celé názvy, hledání, posun po výkresech, šířka tažením, na mobilu výsuvný
+    const uzky = () => matchMedia('(max-width:900px)').matches;
+    el.querySelectorAll('[data-v="seznam"]').forEach(b => b.onclick = () => {
+      if (uzky()) { el.classList.toggle('seznam'); if (el.classList.contains('seznam')) { const on = el.querySelector('.dkv-sl .on'); if (on) on.scrollIntoView({block: 'center'}); } }
+      else { el.classList.toggle('skryty'); pamSet('cx-dkv-skryty', el.classList.contains('skryty') ? '1' : ''); setTimeout(() => { if (V) { prizpusob(); planujDetail(); } }, 60); }
+    });
+    el.querySelector('.dkv-side').addEventListener('click', e => { if (e.target === e.currentTarget) el.classList.remove('seznam'); });
+    const hl = el.querySelector('#dkv-hl');
+    if (hl) hl.oninput = () => { const q = bezDia(hl.value).split(/\s+/).filter(Boolean); let n = 0; el.querySelectorAll('#dkv-sl [data-f]').forEach(b => { const ok = q.every(w => bezDia(b.title).includes(w)); b.hidden = !ok; if (ok) n++; }); el.querySelector('#dkv-sl .nic').hidden = n > 0; };
+    const vp = el.querySelector('[data-v="vpred"]'), vd = el.querySelector('[data-v="vdal"]');
+    if (vp) vp.onclick = () => dalsiVykres(-1); if (vd) vd.onclick = () => dalsiVykres(1);
+    const tah = el.querySelector('.dkv-tah');
+    if (tah) tah.onpointerdown = e => {
+      e.preventDefault(); tah.setPointerCapture(e.pointerId); tah.classList.add('drz');
+      tah.onpointermove = m => { const w = Math.max(220, Math.min(700, m.clientX)); el.style.setProperty('--dkv-sw', w + 'px'); };
+      tah.onpointerup = () => { tah.onpointermove = tah.onpointerup = null; tah.classList.remove('drz'); pamSet('cx-dkv-sirka', parseInt(getComputedStyle(el).getPropertyValue('--dkv-sw')) || ''); naResize(); };
+    };
     el.querySelector('[data-v="plus"]').onclick = () => zoomKolem(1.4);
     el.querySelector('[data-v="minus"]').onclick = () => zoomKolem(1 / 1.4);
     el.querySelector('[data-v="cele"]').onclick = () => { prizpusob(); };
@@ -541,6 +589,7 @@
     window.addEventListener('resize', naResize);
     nacti(r);
   }
+  function dalsiVykres(o) { if (!V || !V.rec) return; const i = V.sour.findIndex(x => x.id === V.rec.id), x = V.sour[i + o]; if (x) nacti(x); }
   function zavri() {
     if (!V) return;
     document.removeEventListener('keydown', klavesy); window.removeEventListener('resize', naResize);
@@ -554,6 +603,8 @@
     else if (e.key === '+' || e.key === '=') zoomKolem(1.4);
     else if (e.key === '-') zoomKolem(1 / 1.4);
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') { e.preventDefault(); kresbyListu().pop(); kresliAnn(); }
+    else if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); dalsiVykres(1); }
+    else if (e.altKey && e.key === 'ArrowUp') { e.preventDefault(); dalsiVykres(-1); }
     else if (e.key === 'PageDown' || e.key === 'ArrowRight' && e.altKey) list(V.str + 1);
     else if (e.key === 'PageUp' || e.key === 'ArrowLeft' && e.altKey) list(V.str - 1);
   }
@@ -562,7 +613,7 @@
   function nastroj(n) {
     V.n = n; V.st.dataset.n = n;
     V.el.querySelectorAll('[data-n]').forEach(b => b.setAttribute('aria-pressed', b.dataset.n === n));
-    const t = {posun: 'Táhněte myší pro posun · kolečko myši zvětšuje · dvojklik = zvětšit', tuzka: 'Kreslete tužkou · kolečko myši zvětšuje', kolecko: 'Táhněte myší přes místo, které chcete zakroužkovat', sipka: 'Táhněte od začátku ke špičce šipky', text: 'Klikněte, kam chcete napsat text', vyrez: 'Označte myší obdélník výřezu (i s nakreslenými značkami)'}[n];
+    const t = dotyk() ? {posun: 'Posun prstem · dvěma prsty zvětšíte', tuzka: 'Kreslete prstem · dvěma prsty zvětšíte', kolecko: 'Táhněte prstem přes místo, které chcete zakroužkovat', sipka: 'Táhněte od začátku ke špičce šipky', text: 'Klepněte, kam chcete napsat text', vyrez: 'Táhněte prstem obdélník výřezu (i se značkami)'}[n] : {posun: 'Táhněte myší pro posun · kolečko myši zvětšuje · dvojklik = zvětšit', tuzka: 'Kreslete tužkou · kolečko myši zvětšuje', kolecko: 'Táhněte myší přes místo, které chcete zakroužkovat', sipka: 'Táhněte od začátku ke špičce šipky', text: 'Klikněte, kam chcete napsat text', vyrez: 'Označte myší obdélník výřezu (i s nakreslenými značkami)'}[n];
     napoveda(t);
   }
   let hintT = 0;
@@ -582,7 +633,9 @@
     try { V.doc && V.doc.destroy(); } catch (e) {}
     V.rec = r; V.doc = null; V.page = null; V.img = null; V.vektor = false; V.det0 = null; V.det.style.display = 'none'; V.str = 1; V.pocet = 1;
     V.el.querySelector('#dkv-nm').textContent = r.nazev; V.el.querySelector('#dkv-nm').title = r.nazev;
-    V.el.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === r.id));
+    V.el.querySelectorAll('[data-f]').forEach(b => { b.classList.toggle('on', b.dataset.f === r.id); if (b.dataset.f === r.id) b.scrollIntoView({block: 'nearest'}); });
+    { const i = V.sour.findIndex(x => x.id === r.id), po = V.el.querySelector('#dkv-poradi'); if (po) po.textContent = (i + 1) + ' / ' + V.sour.length;
+      const vp = V.el.querySelector('[data-v="vpred"]'), vd = V.el.querySelector('[data-v="vdal"]'); if (vp) vp.disabled = i <= 0; if (vd) vd.disabled = i >= V.sour.length - 1; }
     V.zakl.width = V.zakl.height = 1; V.det.width = V.det.height = 1; V.svg.innerHTML = '';
     zprava(`Otevírám <b>${esc(r.nazev)}</b>${r.vel ? ' (' + velTxt(r.vel) + ')' : ''}…`, 0);
     try {
@@ -610,7 +663,7 @@
       }
       await list(1, true);
       zprava('');
-      napoveda(V.n === 'posun' ? 'Kolečkem myši zvětšíte, tažením posunete. Výřez = žluté tlačítko vpravo nahoře.' : '', 5000);
+      napoveda(V.n === 'posun' ? (dotyk() ? 'Dvěma prsty zvětšíte, jedním posunete. Výřez = žluté tlačítko v liště.' : 'Kolečkem myši zvětšíte, tažením posunete. Výřez = žluté tlačítko vpravo nahoře.') : '', 5000);
     } catch (e) {
       if (!V || V.gen !== gen) return;
       console.error(e);
@@ -842,11 +895,11 @@
     o.innerHTML = `<div class="bx" role="dialog" aria-modal="true"><h3>Výřez z výkresu</h3><img src="${url}" alt="Výřez"><small>${esc(popis)}</small>
       <div class="ak">
         <button type="button" class="dk-btn hl" data-o="kop"><b>⧉</b> Kopírovat</button>
-        ${zpravaOk ? '<button type="button" class="dk-btn zl" data-o="zprava">Poslat ve zprávě (kolegům / firmě)</button>' : ''}
+        ${zpravaOk ? `<button type="button" class="dk-btn zl" data-o="zprava">${esc(H.zpravaText || 'Poslat ve zprávě (kolegům / firmě)')}</button>` : ''}
         ${ro() ? '' : '<button type="button" class="dk-btn" data-o="ulozit">Uložit do Dokumentace › Výřezy</button>'}
         <button type="button" class="dk-btn" data-o="stahnout">⬇ Stáhnout obrázek</button>
         <button type="button" class="dk-btn" data-o="zavrit">Zavřít</button>
-      </div><small>Zkopírovaný výřez vložíte kamkoli: do e-mailu, Wordu, WhatsAppu nebo do zápisu (Ctrl+V, na Macu ⌘+V).</small></div>`;
+      </div><small>${dotyk() ? 'Zkopírovaný výřez vložíte do WhatsAppu, e-mailu nebo zprávy (podržet prst → Vložit).' : 'Zkopírovaný výřez vložíte kamkoli: do e-mailu, Wordu, WhatsAppu nebo do zápisu (Ctrl+V, na Macu ⌘+V).'}</small></div>`;
     document.body.appendChild(o);
     const pryc = () => { o.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
     o.onclick = e => { if (e.target === o) pryc(); };

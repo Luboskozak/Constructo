@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-2qxBvZktC9EWQU3qzZIgrLpU6FamPl1in6rQuE/kby0=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-AJK2xNxaG/FDcWiuDfiDPh7x4z3af2MEl/b1p9FUPNI=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -98,9 +98,10 @@ main{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
 .banner button{margin-left:auto;border:0;background:rgba(0,0,0,.08);border-radius:10px;padding:8px 12px;font-weight:700;color:inherit}
 /* spodní lišta */
 body.pise .nav{display:none}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(3,1fr);background:var(--k);padding:10px max(6px,env(safe-area-inset-left,0px)) calc(12px + var(--sb));border-radius:24px 24px 0 0}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);background:var(--k);padding:10px max(6px,env(safe-area-inset-left,0px)) calc(12px + var(--sb));border-radius:24px 24px 0 0}
 .nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:#8d959c;padding:2px 0;position:relative}
 .nav svg{width:28px;height:28px}
+.mdok{padding:10px 12px calc(110px + var(--sb))}
 .nav button[aria-current="true"]{color:var(--y)}
 .nav .cam span{width:66px;height:66px;border-radius:20px;background:var(--y);color:var(--k);display:grid;place-items:center;margin-top:-30px;box-shadow:0 8px 20px -6px rgba(244,210,60,.75)}
 .nav .cam svg{width:28px;height:28px}
@@ -276,6 +277,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   <div id="view"></div>
   <nav class="nav" aria-label="Hlavní nabídka">
     <button type="button" data-v="ukoly"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7H4V5h11"/></svg>Úkoly<span class="cnt" id="cnt-ukoly" hidden></span></button>
+    <button type="button" data-v="vykresy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h7l2 2h9v12H3z"/><path d="M7 15h4M7 11h10"/></svg>Výkresy</button>
     <button type="button" data-v="hlaseni" class="cam"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Nové hlášení</button>
     <button type="button" data-v="archiv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/></svg>Archiv<span class="cnt" id="cnt-q" hidden></span></button>
   </nav>
@@ -287,9 +289,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="queue.js"></script>
 <script src="pc/qr.js"></script>
 <script src="pc/zprava.js"></script>
+<script src="pc/dokumentace.js"></script>
 <script>
 (() => {
-  const VERSION = '1.27';
+  const VERSION = '1.28';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -589,10 +592,47 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     $('#cnt-q').hidden = !waiting; $('#cnt-q').textContent = waiting;
     if (view === 'vedomi') { view = 'ukoly'; ufilter = 'info'; } if (view === 'odeslane') view = 'archiv';
     if (ro && view === 'hlaseni') view = 'archiv';
+    // 1.28: Výkresy = stejná Dokumentace jako v Managementu (jen prohlížení), výřez jde rovnou do nového hlášení
+    if (view === 'vykresy') { bgPending = false; vVykresy(); return; }
     const V = {archiv: vArchiv, ukoly: vUkoly, hlaseni: vHlaseni}[view] || vHlaseni;
     bgPending = false;
-    $('#view').innerHTML = V();
+    $('#view').dataset.v = view; $('#view').innerHTML = V();
     bind(); micUi();
+  }
+  let dokHost = null;
+  function vVykresy() {
+    const v = $('#view');
+    if (!window.CXDok) { v.innerHTML = headSmall('Výkresy') + '<div class="card" style="margin:14px">Výkresy se nenačetly. Zavřete a znovu otevřete aplikaci.</div>'; bind(); return; }
+    if (!dokHost) {
+      dokHost = {
+        seznam: () => ((D && D.dokumenty) || []).filter(r => !(D.tomb && D.tomb.dokumenty && D.tomb.dokumenty[r.id] >= (r._ts || 0))),
+        upsert: () => {}, smaz: () => {},
+        kdo: () => me || jaJmeno(),
+        pripojeno: () => !!conn,
+        ro: () => true,
+        toast: m => toast(m),
+        volej: async body => {
+          const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 120000);
+          try {
+            const r = await fetch(conn.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: conn.key}, body)), redirect: 'follow', signal: ctl.signal});
+            return JSON.parse(await r.text());
+          } catch (e) { throw new Error(e.name === 'AbortError' ? 'Google neodpověděl včas.' : navigator.onLine ? 'Google vrátil chybu.' : 'Bez signálu.'); }
+          finally { clearTimeout(tm); }
+        },
+      };
+      if (!ro) dokHost.zpravaText = '📷 Přidat do hlášení';
+      if (!ro) dokHost.zprava = async (dataUrl, popis) => {
+        try { const bl = await (await fetch(dataUrl)).blob(); F.result = null; F.photos.push(await shrink(bl)); }
+        catch (e) { toast('Výřez se nepodařilo přidat.'); return; }
+        go('hlaseni'); toast('Výřez výkresu je v hlášení jako fotka. Doplňte popis a komu.', 5000);
+      };
+      CXDok.pripoj(dokHost);
+    }
+    if (v.querySelector('.dk') && v.dataset.v === 'vykresy') { CXDok.obnov(); return; }
+    v.dataset.v = 'vykresy';
+    v.innerHTML = headSmall('Výkresy') + '<div class="mdok"><div id="m-dok"></div></div>';
+    bind();
+    CXDok.vykresli($('#m-dok'));
   }
   const netline = () => {
     const t = dataAt ? new Date(dataAt).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}) : '';
