@@ -70,8 +70,26 @@
 .rz-chk{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
 .rz-flt{background:var(--card,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 10px;gap:10px}.rz-fl-l{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--muted)}.rz-fl-l select{max-width:230px}.rz-sel.akt{border-color:#e0b400;background:#FFF4BF;color:#16191c}.rz-souhrn{font-size:13.5px;margin-left:auto}
 .rz-vyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:7px 12px;font-size:14px;color:#16191c}
-.rz-tab{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto;position:relative;height:calc(100vh - 150px);min-height:420px}
-.rz-hd,.rz-r{display:grid;grid-template-columns:var(--g);gap:0;align-items:stretch;padding:0 6px;min-width:var(--gw);width:max-content;min-width:100%}
+.rz-tab{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto;position:relative;height:calc(100vh - 150px);min-height:320px}
+.rz-bok{font-size:18px;padding:5px 11px;line-height:1}
+body:not(.rz-full) .rz-bok{display:none}
+body.rz-full .rz{gap:6px}
+body.rz-full .rz-top h2{font-size:17px}
+body.rz-full .rz-btn{padding:6px 11px;font-size:13.5px}
+body.rz-full .rz-sum{display:flex;flex-wrap:wrap;border-radius:10px}
+body.rz-full .rz-sum>div{flex:1 1 auto;padding:4px 12px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+body.rz-full .rz-sum .k{font-size:10.5px}body.rz-full .rz-sum .v{font-size:15px}body.rz-full .rz-sum .m{display:none}
+body.rz-full .rz-sum .rz-bar{flex:1 1 60px;min-width:60px;margin:0;align-self:center}
+body.rz-full .rz-tabs button{font-size:14px;padding:5px 13px}
+body.rz-full .rz-fil{gap:6px}
+body.rz-full .rz-flt{padding:4px 8px;gap:6px}
+body.rz-full .rz-fl-l>span{display:none}
+body.rz-full .rz-fl-l select{max-width:210px}
+body.rz-full .rz-sel,body.rz-full .rz-q{padding:5px 8px;font-size:13.5px}
+body.rz-full .rz-seg button{padding:5px 9px}
+body.rz-full .rz-napoveda{display:none}
+body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
+.rz-hd,.rz-r{display:grid;grid-template-columns:var(--g);gap:0;align-items:stretch;padding:0 6px;width:max(100%, var(--gw))}
 .rz-hd>span,.rz-r>span{padding:0 5px;display:flex;align-items:center;border-right:1px solid var(--soft);min-width:0}.rz-r>span.n,.rz-hd>span.n{justify-content:flex-end}
 .rz-r>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:${ROWH - 1}px}
 .rz-r .og{overflow:visible;padding:0;border-right:0}.rz-r .rn{color:var(--muted);font-size:11px;text-align:right;background:var(--soft)}
@@ -656,8 +674,11 @@
         <button type="button" data-p="fakturace" aria-pressed="${S.panel === 'fakturace'}">Fakturace${nf ? `<b${C.upoz ? ' class="cerv"' : ''}>${nf}</b>` : ''}</button>
       </div>${telo}</div>`;
     vazby();
-    if (S.panel === 'rozpocet') { const t = EL.querySelector('.rz-tab'); if (t) { t.scrollTop = SCROLL; kresliRadky(); } }
+    if (S.panel === 'rozpocet') { const t = EL.querySelector('.rz-tab'); if (t) { vyska(t); t.scrollTop = SCROLL; kresliRadky(); } }
   }
+  // tabulka vyplní obrazovku až dolů (Luboš 19. 11.: rozpočet je hlavní, má být vidět co nejvíc řádků)
+  function vyska(t) { t = t || (EL && EL.querySelector('.rz-tab')); if (!t || !t.isConnected) return; const top = t.getBoundingClientRect().top + window.scrollY; t.style.height = Math.max(320, window.innerHeight - top - 22) + 'px'; }
+  window.addEventListener('resize', () => { vyska(); if (EL && EL.querySelector('.rz-tab')) kresliRadky(); });
   function prazdne() {
     return `<div class="rz"><div class="rz-top"><h2>Rozpočet</h2></div>
       <div class="rz-empty"><b>Zatím tu není žádný rozpočet</b>
@@ -667,7 +688,6 @@
   }
   function skriptInfo() {
     if (!H.pripojeno()) return '<div class="rz-info">Bez připojení ke Googlu zůstane rozpočet jen v tomto počítači. Pro sdílení s kolegy zapněte Data → Automatická synchronizace.</div>';
-    if (S.verze && S.verze < SKRIPT_MIN) return '<div class="rz-info" style="font-size:12.5px">Skript Google má verzi ' + S.verze + ' (nová je ' + SKRIPT_MIN + '). Rozpočty se přesto propisují všem počítačům.' + (S.skrDuvod ? ' Automatická aktualizace skriptu se nepovedla: ' + esc(S.skrDuvod) : '') + '</div>';
     return '';
   }
   function hlava(list, rec, C) {
@@ -678,10 +698,10 @@
         <div><div class="k">Zbývá</div><div class="v">${kc0(C.roz - C.celkem)}</div></div>
         <div><div class="k">Upozornění</div><div class="v" style="color:${C.upoz || C.mimo ? 'var(--bad)' : '#2f7d4f'}">${C.upoz ? C.upoz + ' položek' : 'žádná'}</div>${C.mimo ? `<div style="font-size:12px;color:var(--bad)">mimo rozpočet ${kc0(C.mimo)}</div>` : ''}</div>
       </div>` : '';
-    return `<div class="rz-top">${sel}<span style="font-size:12.5px;color:var(--muted)">${esc(rec.soubor || '')}${rec.kdo ? ' · nahrál(a) ' + esc(rec.kdo) : ''}${rec.kdy ? ' ' + new Date(rec.kdy).toLocaleDateString('cs-CZ') : ''}${rec.gid ? '' : H.pripojeno() ? ' · <b style="color:#a96a00">ukládá se na Disk Google…</b>' : ''}</span><span class="sp"></span>
+    return `<div class="rz-top"><button type="button" class="rz-btn rz-bok" data-a="bok" title="Ukázat nebo schovat boční nabídku (Harmonogram, Úkoly…)" aria-label="Nabídka">☰</button>${sel}<span class="rz-inf" style="font-size:12.5px;color:var(--muted)">${esc(rec.soubor || '')}${rec.kdo ? ' · nahrál(a) ' + esc(rec.kdo) : ''}${rec.kdy ? ' ' + new Date(rec.kdy).toLocaleDateString('cs-CZ') : ''}${rec.gid ? '' : H.pripojeno() ? ' · <b style="color:#a96a00">ukládá se na Disk Google…</b>' : ''}</span><span class="sp"></span>
       <button type="button" class="rz-btn" data-a="xls-roz" title="Stáhnout rozpočet s čerpáním do Excelu (jen to, co je právě vyfiltrované)">⬇ Excel</button>
       <button type="button" class="rz-btn" data-a="menu-rp">Rozpočet ▾</button>
-      <button type="button" class="rz-btn zl" data-a="import"${ro() ? ' disabled' : ''}>⬆ Nahrát rozpočet z Excelu</button></div>${sum}${skriptInfo()}${S.chyba ? `<div class="rz-info">${esc(S.chyba)}</div>` : ''}`;
+      <button type="button" class="rz-btn zl" data-a="import"${ro() ? ' disabled' : ''}>⬆ Nahrát rozpočet z Excelu</button></div>${sum}${S.chyba ? `<div class="rz-info">${esc(S.chyba)}</div>` : ''}`;
   }
 
   /* ----- panel Rozpočet: stejná tabulka jako v Excelu (všechny sloupce, barvy, seskupení), kreslí se jen viditelné řádky ----- */
@@ -713,11 +733,13 @@
         // čísla se nesmí useknout: sloupec s čísly je aspoň tak široký, aby se vešla nejdelší hodnota
         let mx = 0; for (let i = 0; i < rows.length && i < 6000; i++) { const v = rows[i].c && rows[i].c[c]; if (typeof v === 'number') { const d = (li.dec || [])[c]; const t = d >= 0 ? v.toFixed(Math.min(d, 6)) : String(Math.round(v * 1000) / 1000); const l = t.length + Math.floor(t.split('.')[0].length / 3); if (l > mx) mx = l; } }
         if (mx) w = Math.max(w, mx * 7.6 + 14);
+        // krátké texty (číslo položky, P.č.) se také nesmí useknout – sloupec se rozšíří, nejvýš na 170 px
+        if (!(li.map && li.map.popis === c)) { let ml = 0; for (let i = 0; i < rows.length && i < 6000; i++) { const v = rows[i].c && rows[i].c[c]; if (typeof v === 'string' && v.length <= 22 && v.length > ml && rows[i].t === 'P') ml = v.length; } if (ml) w = Math.max(w, Math.min(170, ml * 7.4 + 14)); }
         if (li.map && li.map.popis === c) w = Math.max(w, 280);
-        cols.push({c, w: Math.max(26, Math.min(700, w)), n: (li.nazvy || [])[c] || sloupec(c + (li.odSl || 0)), dec: (li.dec || [])[c], fill: (li.colFill || [])[c] || ''});
+        cols.push({popis: !!(li.map && li.map.popis === c), c, w: Math.max(26, Math.min(700, w)), n: (li.nazvy || [])[c] || sloupec(c + (li.odSl || 0)), dec: (li.dec || [])[c], fill: (li.colFill || [])[c] || ''});
       }
     } else {
-      [['pc', 'PČ', 44], ['k', 'Kód', 100], ['d', 'Popis', 360], ['mj', 'MJ', 44], ['mn', 'Množství', 90], ['jc', 'J. cena', 90], ['cc', 'Celkem', 110]].forEach(([k, nm, w]) => cols.push({k, w, n: nm, dec: k === 'mn' ? -1 : k === 'pc' ? 0 : 2, fill: ''}));
+      [['pc', 'PČ', 44], ['k', 'Kód', 100], ['d', 'Popis', 360], ['mj', 'MJ', 44], ['mn', 'Množství', 90], ['jc', 'J. cena', 90], ['cc', 'Celkem', 110]].forEach(([k, nm, w]) => cols.push({popis: k === 'd', k, w, n: nm, dec: k === 'mn' ? -1 : k === 'pc' ? 0 : 2, fill: ''}));
     }
     Rx.cols = cols;
     const gut = 16 + Math.max(1, max) * 11;
@@ -785,7 +807,8 @@
     let vybKc = 0; if (nV) S.vyb.forEach(id => { const r = R.byId.get(id); if (r) vybKc += r.cc || 0; });
     const objs = OBJEKTY.concat(Object.keys(C.objSum).filter(o => o && !OBJEKTY.includes(o)));
     const urovne = []; for (let k = 1; k <= R.maxLv + 1; k++) urovne.push(k);
-    const g = R.grid.map(w => w + 'px').join(' ');
+    const pi = R.cols.findIndex(c => c.popis);   // sloupec s popisem dostane zbytek šířky obrazovky
+    const g = R.grid.map((w, i) => i === pi + 3 && pi >= 0 ? `minmax(${w}px, 1fr)` : w + 'px').join(' ');
     const sz = R.seznamy || {cast: [], dil: [], obor: []};
     const podl = [...new Set(Object.keys(C.mat).map(k => k.split('|')[0]))].filter(p => p !== '–').sort((x, y) => RADA_PODL(x) - RADA_PODL(y) || x.localeCompare(y));
     const opt = (v, t, akt) => `<option value="${esc(v)}"${akt === v ? ' selected' : ''}>${esc(t)}</option>`;
@@ -797,23 +820,21 @@
     const objOpts = objs.map(o => opt(o, 'Objekt ' + o, S.obj)).join('') + opt('-', 'Bez objektu', S.obj);
     const podOpts = podl.map(p => opt(p, p, S.pod)).join('') + opt('-', 'Bez podlaží', S.pod);
     const nF = [S.cast, S.dil, S.obor, S.kat, S.obj, S.pod].filter(Boolean).length;
-    return `<div class="rz-fil">
+    return `<div class="rz-fil rz-flt">
         <input class="rz-q" type="search" placeholder="Hledat v rozpočtu (kód, popis, např. krokve)…" value="${esc(S.q)}" data-a="q">
-        <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
-        <span class="sp" style="flex:1"></span>
-        <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
-        <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
-      </div>
-      <div class="rz-fil rz-flt">
         ${sz.cast.length > 1 ? selS('cast', 'Část projektu', 'Všechny části', sz.cast, S.cast) : ''}
         ${sz.dil.length ? selS('dil', 'Díl (nadpis)', 'Všechny díly', sz.dil, S.dil) : ''}
         ${R.oborN && sz.obor.length > 1 ? selS('obor', esc(R.oborN), 'Vše', sz.obor, S.obor) : ''}
         ${sel('kat', 'Druh prací / řemeslo', 'Všechna řemesla', katOpts, S.kat)}
         ${sel('obj', 'Objekt', 'Všechny objekty', objOpts, S.obj)}
         ${sel('pod', 'Podlaží', 'Všechna podlaží', podOpts, S.pod)}
+        <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
         ${filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Stáhne Excel jen s vyfiltrovanými položkami ve stejné podobě jako rozpočet, ale bez cen – k poslání firmě na poptávku">📨 Poptat vybrané (Excel bez cen)</button><button type="button" class="rz-btn mini" data-a="fak-filtr"${ro() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vybrané %…</button>` : ''}
         ${filtrAktivni() ? `<span class="rz-souhrn">Vybráno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : ''}
+        <span class="sp" style="flex:1"></span>
+        <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
+        <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
       </div>
       ${nV ? `<div class="rz-vyber"><b>Vybráno ${nf0.format(nV)} položek · ${kc0(vybKc)}</b>
         <button type="button" class="rz-btn mini" data-a="v-kat"${ro() ? ' disabled' : ''}>Zařadit do druhu prací…</button>
@@ -825,7 +846,7 @@
         <div class="rz-hd"><span></span><span></span><span><input type="checkbox" data-a="vyb-vse" title="Vybrat všechny zobrazené položky"></span>${R.cols.map(c => `<span class="${c.dec != null && c.dec !== -2 && /mno|cen|celk|vym|kc|pocet/i.test(bezDia(c.n)) ? 'n' : ''}" title="${esc(c.n)}">${esc(c.n)}</span>`).join('')}<span class="nx">Obj.</span><span class="n nx">Čerpáno Kč</span><span class="n nx">Zbývá Kč</span><span class="nx"></span></div>
         <div class="rz-in-tab" style="position:relative;height:${VIS.length * ROWH}px"></div>
       </div>
-      <div style="font-size:12.5px;color:var(--muted)">${filtrAktivni() ? `Nalezeno ${nf0.format(VIS.filter(i => R.rows[i].t === 'P').length)} položek. ` : ''}Tlačítka 1–${R.maxLv + 1} fungují jako čísla seskupení vlevo nahoře v Excelu. Klik na − schová skupinu řádků, klik na + ji zase ukáže. Zaškrtnutím vyberete položky – nadpis vybere vše pod ním.</div>`;
+      <div class="rz-napoveda" style="font-size:12.5px;color:var(--muted)">${filtrAktivni() ? `Nalezeno ${nf0.format(VIS.filter(i => R.rows[i].t === 'P').length)} položek. ` : ''}Tlačítka 1–${R.maxLv + 1} fungují jako čísla seskupení vlevo nahoře v Excelu. Klik na − schová skupinu řádků, klik na + ji zase ukáže. Zaškrtnutím vyberete položky – nadpis vybere vše pod ním.</div>`;
   }
   const svetla = hex => { const n = parseInt(hex, 16); return ((n >> 16) * 299 + ((n >> 8) & 255) * 587 + (n & 255) * 114) / 1000 > 140; };
   function bunka(v, col) {
@@ -948,6 +969,7 @@
     on('[data-a="znovu"]', 'click', () => { S.chyba = ''; prekresli(); });
     on('[data-a="rp"]', 'change', e => { S.rp = e.target.value; pamSet('rz-rp', S.rp); S.vyb.clear(); prekresli(); });
     on('[data-p]', 'click', e => { S.panel = e.currentTarget.dataset.p; pamSet('rz-panel', S.panel); prekresli(); });
+    on('[data-a="bok"]', 'click', () => H.bok && H.bok());
     on('[data-a="menu-rp"]', 'click', e => menuRozpoctu(e.currentTarget));
     on('[data-a="xls-roz"]', 'click', () => excelRozpocet());
     on('[data-ur]', 'click', e => { S.uroven = +e.currentTarget.dataset.ur || 0; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
