@@ -69,17 +69,25 @@
 .rz-chk{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
 .rz-vyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:7px 12px;font-size:14px;color:#16191c}
 .rz-tab{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto;position:relative;height:calc(100vh - 150px);min-height:420px}
-.rz-hd,.rz-r{display:grid;grid-template-columns:26px 24px 44px 100px minmax(200px,1fr) 44px 86px 92px 110px 38px 106px 106px 24px;gap:6px;align-items:center;padding:0 6px;min-width:1080px}
-.rz-hd{position:sticky;top:0;z-index:2;background:var(--panel);border-bottom:1px solid var(--line);height:34px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.rz-r{position:absolute;left:0;right:0;height:${ROWH}px;font-size:13.5px;border-bottom:1px solid var(--soft);white-space:nowrap}
+.rz-hd,.rz-r{display:grid;grid-template-columns:var(--g);gap:0;align-items:stretch;padding:0 6px;min-width:var(--gw);width:max-content;min-width:100%}
+.rz-hd>span,.rz-r>span{padding:0 5px;display:flex;align-items:center;border-right:1px solid var(--soft);min-width:0}.rz-r>span.n,.rz-hd>span.n{justify-content:flex-end}
+.rz-r>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:${ROWH - 1}px}
+.rz-r .og{overflow:visible;padding:0;border-right:0}.rz-r .rn{color:var(--muted);font-size:11px;text-align:right;background:var(--soft)}
+.rz-r .dot{display:inline-block;width:3px;height:3px;border-radius:2px;background:var(--muted);vertical-align:middle}
+.rz-hd .nx,.rz-r>span:nth-last-child(-n+4){background:color-mix(in srgb,#F4D23C 9%,var(--panel))}
+.rz-r .rz-ob{vertical-align:middle;height:18px;line-height:18px}
+.rz-r .kt{font-style:normal;color:#7c3fd6;margin-left:3px;font-size:10px}
+.rz-hd{position:sticky;top:0;z-index:2;background:var(--soft);border-bottom:2px solid var(--ink);height:34px;font-size:12px;color:var(--ink);font-weight:700}
+.rz-hd>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:32px}
+.rz-r{position:absolute;left:0;height:${ROWH}px;font-size:13px;border-bottom:1px solid var(--soft);white-space:nowrap}
 .rz-r>span{overflow:hidden;text-overflow:ellipsis}.rz-r .n{text-align:right;font-variant-numeric:tabular-nums}.rz-hd .n{text-align:right}
 .rz-r:hover{background:var(--soft)}
-.rz-r.L{background:#16191c;color:#fff;font-weight:800}.rz-r.L:hover{background:#26292d}
-.rz-r.S1{background:var(--soft);font-weight:800}.rz-r.S2{font-weight:700;background:color-mix(in srgb,var(--soft) 55%,var(--panel))}
-.rz-r.D{color:var(--muted);font-size:12.5px;background:repeating-linear-gradient(90deg,transparent 0 6px,color-mix(in srgb,var(--soft) 40%,transparent) 6px 7px)}
+.rz-r.L{background:#16191c;color:#fff;font-weight:800}.rz-r.L>span{background:#16191c !important;border-color:#16191c}.rz-r.L .tg{background:#fff;color:#16191c}
+.rz-r.S1{font-weight:800;font-size:14px}.rz-r.S2{font-weight:700}
+.rz-r.D{font-size:12px;color:color-mix(in srgb,var(--ink) 80%,#1f5fbf)}
 .rz-r.T{color:var(--muted);font-style:italic}
 .rz-r.vyb{background:#FFF4BF !important;color:#16191c}
-.rz-r .tg{border:0;background:none;font:inherit;cursor:pointer;color:inherit;width:24px;height:24px;border-radius:6px;padding:0;font-size:12px}
+.rz-r .tg{border:1px solid var(--muted);background:var(--panel);font:inherit;font-weight:800;cursor:pointer;color:var(--ink);width:15px;height:15px;border-radius:2px;padding:0;font-size:12px;line-height:12px;vertical-align:middle}
 .rz-r .tg:hover{background:rgba(127,127,127,.25)}
 .rz-r .sk{display:inline-block;font-size:10px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:5px;background:var(--soft);color:var(--muted);font-style:normal}
 .rz-ob{display:inline-grid;place-items:center;min-width:22px;height:20px;padding:0 4px;border-radius:5px;color:#fff;font-size:11.5px;font-weight:800}
@@ -267,7 +275,7 @@
     }
     const hl = h.r >= 0 ? rows[h.r] : [];
     const nazvy = []; for (let c = 0; c < nc; c++) nazvy.push(txt(hl[c]) || (h.dva ? txt((rows[h.r - 1] || [])[c]) : ''));
-    return {hlavicka: h.r, map, jak, nazvy, nc};
+    return {hlavicka: h.r, map, jak, nazvy, nc, dva: !!h.dva};
   }
 
   /* ---------- rozdělení řádků: L list, S1/S2 díl, P položka, D podrobnost (výkaz výměr, popis), T součet ---------- */
@@ -277,9 +285,12 @@
     const g = k => mp[k] == null ? '' : row[mp[k]];
     return {pc: txt(g('pc')), typ: txt(g('typ')).toUpperCase(), kod: txt(g('kod')), popis: txt(g('popis')), mj: txt(g('mj')), mn: cislo(g('mn')), jc: cislo(g('jc')), cc: cislo(g('cc')), prazdny: !row.some(v => v !== '' && v != null)};
   }
-  function druhRadku(x, list, mp, r) {
+  function druhRadku(x, list, mp, r, vPolozce) {
     if (x.prazdny) return '';
     const p = norm(x.popis);
+    const row = list.rows[r] || [];
+    // sloupec typu řádku s názvy (např. Obor: „Hlavní nadpis“, „Nadpis“)
+    for (let c = 0; c < Math.min(row.length, 4); c++) { const t = norm(row[c]); if (t === 'hlavni nadpis' || t === 'hlavni oddil') return 'S1'; if (t === 'nadpis' || t === 'oddil' || t === 'podnadpis') return 'S'; }
     if (x.typ && mp.typ != null) {
       if (x.typ === 'D') return 'S';
       if (TYP_D.test(x.typ) && x.typ !== 'P') return 'D';
@@ -287,7 +298,7 @@
     }
     const mjOk = x.mj && x.mj.length <= 14 && !/^\d/.test(x.mj);
     if (mjOk && (x.mn != null || x.jc != null || x.cc != null) && (x.popis || x.kod)) return 'P';
-    if (/^(celkem|soucet|mezisoucet|cena celkem|celkem za|celkem bez|rekapitulace|cena bez dph|dph|cena s dph|vrn celkem)/.test(p) && !mjOk) return 'T';
+    if (/^(celkem|soucet|mezisoucet|cena celkem|celkem za|celkem bez|rekapitulace|cena bez dph|dph|cena s dph|vrn celkem)/.test(p) && !mjOk) return vPolozce && x.cc == null ? 'D' : 'T';   // „Mezisoučet“ ve výkazu výměr patří k položce
     if (!mjOk && !x.popis && !x.kod && x.cc != null) return 'T';
     if (!mjOk && x.popis && (x.kod || x.cc != null || x.pc) && x.jc == null && !(list.skryto[r]) && !/^["'(=+*]|\d\s*[*x×]\s*\d/.test(x.popis)) return 'S';
     return 'D';
@@ -300,16 +311,17 @@
     listy.forEach((list, si) => {
       const ns = nastaveni[si]; if (!ns || !ns.zahrnout) return;
       const mp = ns.map;
-      const li = zapsatRadek(out, {id: uniq('L' + hash(list.n)), t: 'L', p: -1, s: si, x: 0, h: 0, pc: '', k: '', d: list.n, mj: '', mn: null, jc: null, cc: null});
+      const li = zapsatRadek(out, {id: uniq('L' + hash(list.n)), t: 'L', p: -1, s: si, x: 0, h: 0, pc: '', k: '', d: list.n, mj: '', mn: null, jc: null, cc: null, c: null, l: 0, f: null});
       let s1 = -1, s2 = -1, pol = -1, detN = 0;
       const sekce = [];
       for (let r = ns.hlavicka + 1; r < list.rows.length; r++) {
-        const x = radek(list, mp, r), t = druhRadku(x, list, mp, r);
+        const x = radek(list, mp, r), t0 = druhRadku(x, list, mp, r, pol >= 0), t = t0 === 'S1' ? 'S' : t0;
         if (!t) continue;
         if (ns.hlavicka >= 0 && r > ns.hlavicka + 2) { let shod = 0; ['popis', 'mj', 'mn', 'jc'].forEach(k => { if (mp[k] != null && roleZnazvu(txt((list.rows[r] || [])[mp[k]])) === k) shod++; }); if (shod >= 2) continue; }   // opakovaná hlavička na další stránce
-        const zakl = {s: si, x: list.od + r + 1, h: list.skryto[r] ? 1 : 0, pc: x.pc, k: x.kod, d: x.popis, mj: x.mj, mn: x.mn, jc: x.jc, cc: x.cc};
+        const bunky = (list.rows[r] || []).map(v => typeof v === 'number' ? v : v == null ? '' : String(v).trim()); while (bunky.length && bunky[bunky.length - 1] === '') bunky.pop();
+        const zakl = {s: si, x: list.od + r + 1, h: list.skryto[r] ? 1 : 0, pc: x.pc, k: x.kod, d: x.popis || bunky.filter(v => typeof v === 'string' && v).sort((a, b) => b.length - a.length)[0] || '', mj: x.mj, mn: x.mn, jc: x.jc, cc: x.cc, c: bunky, l: list.urov[r] || 0, f: list.barvy ? list.barvy[r] || null : null};
         if (t === 'S') {
-          const hl = /^(hsv|psv|m|vrn|on|ost|vedlejsi|ostatni)$/i.test(x.kod) || /^(prace a dodavky|vedlejsi rozpoctove|ostatni naklady|montaze|dodavky)/.test(norm(x.popis));
+          const hl = t0 === 'S1' || /^(hsv|psv|m|vrn|on|ost|vedlejsi|ostatni)$/i.test(x.kod) || /^(prace a dodavky|vedlejsi rozpoctove|ostatni naklady|montaze|dodavky)/.test(norm(x.popis));
           if (hl) { s1 = zapsatRadek(out, Object.assign({id: uniq('S' + hash(list.n + '|' + x.kod + '|' + norm(x.popis))), t: 'S1', p: li}, zakl)); s2 = -1; }
           else { s2 = zapsatRadek(out, Object.assign({id: uniq('S' + hash(list.n + '|' + x.kod + '|' + norm(x.popis))), t: 'S2', p: s1 >= 0 ? s1 : li}, zakl)); }
           pol = -1; sekce.push(1);
@@ -326,6 +338,13 @@
         }
       }
     });
+    return out;
+  }
+  // názvy sloupců z hlavičky (u dvouřádkové hlavičky spojené)
+  function hlavickaListu(l, ns) {
+    const h = ns.hlavicka; if (h < 0) return [];
+    const a = l.rows[h] || [], b = ns.dva ? l.rows[h - 1] || [] : [];
+    const out = []; for (let c = 0; c < Math.max(a.length, ns.nc || 0); c++) out.push([txt(b[c]), txt(a[c])].filter(Boolean).join(' '));
     return out;
   }
   function souhrnListu(list, ns) {
@@ -350,7 +369,7 @@
 
   /* ---------- host (Management) ---------- */
   let H = null, EL = null;
-  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', rezim: pam('rz-rezim') || 'pol', jenUpoz: false, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
+  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', uroven: 0, jenUpoz: false, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
   const toast = m => H && H.toast ? H.toast(m) : alert(m);
   const ro = () => !!(H && H.ro && H.ro());
   const kdo = () => (H && H.kdo && H.kdo()) || '';
@@ -410,9 +429,9 @@
     for (let od = mam; od < celkem; od += KUS) { const x = await volejOk({akce: 'dok_cti', id: rec.gid, od, do: Math.min(celkem, od + KUS) - 1}); dily.push(z64(x.data)); mam += dily[dily.length - 1].length; prubeh && prubeh(mam, celkem); }
     return new Blob(dily);
   }
-  const POLE = ['id', 't', 'p', 's', 'x', 'h', 'pc', 'k', 'd', 'mj', 'mn', 'jc', 'cc'];
+  const POLE = ['id', 't', 'p', 's', 'x', 'h', 'pc', 'k', 'd', 'mj', 'mn', 'jc', 'cc', 'c', 'l', 'f'];
   const naPole = rows => rows.map(r => POLE.map(k => r[k] === '' || r[k] == null ? (k === 'p' ? -1 : null) : r[k]));
-  const zPole = arr => arr.map(a => { const r = {}; POLE.forEach((k, i) => r[k] = a[i] == null ? (['pc', 'k', 'd', 'mj'].includes(k) ? '' : k === 'h' ? 0 : a[i]) : a[i]); return r; });
+  const zPole = arr => arr.map(a => { const r = {}; POLE.forEach((k, i) => r[k] = a[i] == null ? (['pc', 'k', 'd', 'mj'].includes(k) ? '' : k === 'h' || k === 'l' ? 0 : a[i] === undefined ? null : a[i]) : a[i]); return r; });
   // čekající nahrání (když Google zrovna nejde) se zkusí znovu při dalším otevření
   async function dokoncitNahrani() {
     if (!H || !H.pripojeno() || ro()) return;
@@ -549,24 +568,67 @@
       <button type="button" class="rz-btn zl" data-a="import"${ro() ? ' disabled' : ''}>⬆ Nahrát rozpočet z Excelu</button></div>${sum}${skriptInfo()}${S.chyba ? `<div class="rz-info">${esc(S.chyba)}</div>` : ''}`;
   }
 
-  /* ----- panel Rozpočet (tabulka s rozbalováním, jen viditelné řádky se kreslí) ----- */
+  /* ----- panel Rozpočet: stejná tabulka jako v Excelu (všechny sloupce, barvy, seskupení), kreslí se jen viditelné řádky ----- */
   let VIS = [];
-  function rozbaleno(r) {
-    if (S.zav.has(r.id)) return false;
-    if (S.otev.has(r.id)) return true;
-    if (S.rezim === 'vse') return true;
-    if (S.rezim === 'dily') return r.t === 'L' || r.t === 'S1';
-    return r.t !== 'P';   // položky: podrobnosti (výkaz výměr, skryté řádky) schované jako v Excelu
+  // úrovně seskupení: z Excelu (outline 1–7), a když je Excel nemá, podle dílů / položek / výkazu výměr
+  function obrys(Rx) {
+    const rows = Rx.rows, n = rows.length, lv = new Uint8Array(n), head = new Uint8Array(n), skr0 = new Uint8Array(n);
+    const maOutline = new Set(); rows.forEach(r => { if (r.t !== 'L' && r.l > 0) maOutline.add(r.s); });
+    rows.forEach((r, i) => { lv[i] = r.t === 'L' ? 0 : maOutline.has(r.s) ? Math.min(7, r.l || 0) : Math.max(0, Rx.hl[i] - 1); });
+    let max = 0;
+    for (let i = 0; i < n; i++) {
+      if (rows[i].t === 'L') continue;
+      if (lv[i] > max) max = lv[i];
+      const j = i + 1;
+      if (j < n && rows[j].t !== 'L' && lv[j] > lv[i]) { head[i] = 1; skr0[i] = maOutline.has(rows[i].s) ? (rows[j].h ? 1 : 0) : (rows[i].t === 'P' ? 1 : 0); }
+    }
+    Rx.lv = lv; Rx.head = head; Rx.skr0 = skr0; Rx.maxLv = max;
+    Rx.vicListu = rows.filter(r => r.t === 'L').length > 1;
+    // sloupce: podle prvního listu (u starších uložených rozpočtů bez buněk jen hlavní sloupce)
+    const L0 = rows.find(r => r.t === 'L'), li = (Rx.listy || [])[L0 ? L0.s : 0] || {};
+    Rx.v2 = rows.some(r => r.c);
+    let nc = 0;
+    if (Rx.v2) rows.forEach(r => { if (r.c && r.c.length > nc) nc = r.c.length; });
+    const cols = [];
+    if (Rx.v2) {
+      for (let c = 0; c < nc; c++) {
+        const cl = (li.cols || [])[c] || {}; if (cl.h) continue;
+        let w = Math.round((cl.w || 64) * 1.05);
+        // čísla se nesmí useknout: sloupec s čísly je aspoň tak široký, aby se vešla nejdelší hodnota
+        let mx = 0; for (let i = 0; i < rows.length && i < 6000; i++) { const v = rows[i].c && rows[i].c[c]; if (typeof v === 'number') { const d = (li.dec || [])[c]; const t = d >= 0 ? v.toFixed(Math.min(d, 6)) : String(Math.round(v * 1000) / 1000); const l = t.length + Math.floor(t.split('.')[0].length / 3); if (l > mx) mx = l; } }
+        if (mx) w = Math.max(w, mx * 7.6 + 14);
+        if (li.map && li.map.popis === c) w = Math.max(w, 280);
+        cols.push({c, w: Math.max(26, Math.min(700, w)), n: (li.nazvy || [])[c] || sloupec(c + (li.odSl || 0)), dec: (li.dec || [])[c], fill: (li.colFill || [])[c] || ''});
+      }
+    } else {
+      [['pc', 'PČ', 44], ['k', 'Kód', 100], ['d', 'Popis', 360], ['mj', 'MJ', 44], ['mn', 'Množství', 90], ['jc', 'J. cena', 90], ['cc', 'Celkem', 110]].forEach(([k, nm, w]) => cols.push({k, w, n: nm, dec: k === 'mn' ? -1 : k === 'pc' ? 0 : 2, fill: ''}));
+    }
+    Rx.cols = cols;
+    const gut = 16 + Math.max(1, max) * 11;
+    Rx.grid = [gut, 46, 24].concat(cols.map(c => c.w), [38, 104, 104, 24]);
+    Rx.gridW = Rx.grid.reduce((a, b) => a + b, 0) + 12;
+  }
+  function zavreno(i) {
+    const r = R.rows[i];
+    if (S.zav.has(r.id)) return true;
+    if (S.otev.has(r.id)) return false;
+    if (filtrAktivni()) return true;
+    if (S.uroven) { const j = i + 1; return j < R.rows.length && R.lv[j] >= S.uroven; }
+    return !!R.skr0[i];
   }
   function filtrAktivni() { return !!(S.q.trim() || S.obj || S.kat || S.jenUpoz); }
   function spocitejViditelne(C) {
     const rows = R.rows, out = [];
     if (!filtrAktivni()) {
-      const skryte = new Uint8Array(rows.length);
+      let skrList = false, hideLv = -1;
       for (let i = 0; i < rows.length; i++) {
         const r = rows[i];
-        if (r.p >= 0 && (skryte[r.p] || !rozbaleno(rows[r.p]))) { skryte[i] = 1; continue; }
+        if (r.t === 'L') { skrList = S.zav.has(r.id); hideLv = -1; if (R.vicListu) out.push(i); continue; }
+        if (skrList) continue;
+        if (hideLv >= 0) { if (R.lv[i] > hideLv) continue; hideLv = -1; }
+        if (S.uroven && R.lv[i] >= S.uroven && !S.otev.size && !S.zav.size) continue;
         out.push(i);
+        if (R.head[i] && zavreno(i)) hideLv = R.lv[i];
       }
       return out;
     }
@@ -583,25 +645,28 @@
     });
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
-      if (ok[i]) { out.push(i); continue; }
+      if (ok[i]) { if (r.t !== 'L' || R.vicListu) out.push(i); continue; }
       if (r.t === 'D' && ok[r.p] === 1 && S.otev.has(rows[r.p].id)) out.push(i);
     }
     return out;
   }
   function panelRozpocet(C) {
+    if (!R.lv) obrys(R);
     VIS = spocitejViditelne(C);
     const ks = kategorie(R.rec.id);
     const nV = S.vyb.size;
     let vybKc = 0; if (nV) S.vyb.forEach(id => { const r = R.byId.get(id); if (r) vybKc += r.cc || 0; });
     const objs = OBJEKTY.concat(Object.keys(C.objSum).filter(o => o && !OBJEKTY.includes(o)));
+    const urovne = []; for (let k = 1; k <= R.maxLv + 1; k++) urovne.push(k);
+    const g = R.grid.map(w => w + 'px').join(' ');
     return `<div class="rz-fil">
         <input class="rz-q" type="search" placeholder="Hledat v rozpočtu (kód, popis, např. krokve)…" value="${esc(S.q)}" data-a="q">
         <select class="rz-sel" data-a="obj" aria-label="Objekt"><option value="">Všechny objekty</option>${objs.map(o => `<option value="${esc(o)}"${S.obj === o ? ' selected' : ''}>Objekt ${esc(o)}</option>`).join('')}<option value="-"${S.obj === '-' ? ' selected' : ''}>Bez objektu</option></select>
         <select class="rz-sel" data-a="kat" aria-label="Druh prací"><option value="">Všechny druhy prací</option>${ks.map(k => `<option value="${esc(k.id)}"${S.kat === k.id ? ' selected' : ''}>${esc(k.nazev)}</option>`).join('')}</select>
         <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
         <span class="sp" style="flex:1"></span>
-        <span style="font-size:12.5px;color:var(--muted)">Zobrazit:</span>
-        <div class="rz-seg" role="group" aria-label="Rozbalení"><button type="button" data-rez="dily" aria-pressed="${S.rezim === 'dily'}" title="Jen listy a hlavní díly">Sbalit vše</button><button type="button" data-rez="pol" aria-pressed="${S.rezim === 'pol'}" title="Díly a položky, skryté řádky (výkaz výměr) schované">Položky</button><button type="button" data-rez="vse" aria-pressed="${S.rezim === 'vse'}" title="Všechno včetně řádků skrytých v Excelu">Rozbalit vše</button></div>
+        <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
+        <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
       </div>
       ${nV ? `<div class="rz-vyber"><b>Vybráno ${nf0.format(nV)} položek · ${kc0(vybKc)}</b>
         <button type="button" class="rz-btn mini" data-a="v-kat"${ro() ? ' disabled' : ''}>Zařadit do druhu prací…</button>
@@ -609,28 +674,49 @@
         <button type="button" class="rz-btn mini" data-a="v-obj"${ro() ? ' disabled' : ''}>Přiřadit objekt…</button>
         <button type="button" class="rz-btn mini" data-a="v-fak"${ro() ? ' disabled' : ''}>Vyfakturovat…</button>
         <span style="flex:1"></span><button type="button" class="rz-btn mini" data-a="v-zrus">Zrušit výběr</button></div>` : ''}
-      <div class="rz-tab" tabindex="0">
-        <div class="rz-hd"><span><input type="checkbox" data-a="vyb-vse" title="Vybrat všechny zobrazené položky"></span><span></span><span>PČ</span><span>Kód</span><span>Popis</span><span>MJ</span><span class="n">Množství</span><span class="n">J. cena</span><span class="n">Celkem Kč</span><span>Obj.</span><span class="n">Čerpáno Kč</span><span class="n">Zbývá Kč</span><span></span></div>
+      <div class="rz-tab" tabindex="0" style="--g:${g};--gw:${R.gridW}px">
+        <div class="rz-hd"><span></span><span></span><span><input type="checkbox" data-a="vyb-vse" title="Vybrat všechny zobrazené položky"></span>${R.cols.map(c => `<span class="${c.dec != null && c.dec !== -2 && /mno|cen|celk|vym|kc|pocet/i.test(bezDia(c.n)) ? 'n' : ''}" title="${esc(c.n)}">${esc(c.n)}</span>`).join('')}<span class="nx">Obj.</span><span class="n nx">Čerpáno Kč</span><span class="n nx">Zbývá Kč</span><span class="nx"></span></div>
         <div class="rz-in-tab" style="position:relative;height:${VIS.length * ROWH}px"></div>
       </div>
-      <div style="font-size:12.5px;color:var(--muted)">${filtrAktivni() ? `Nalezeno ${nf0.format(VIS.filter(i => R.rows[i].t === 'P').length)} položek. ` : ''}Klik na ▸ rozbalí řádek (díl, nebo u položky výkaz výměr a řádky skryté v Excelu), další klik ho zase schová. Zaškrtnutím vyberete položky – díl nebo list vybere vše pod ním.</div>`;
+      <div style="font-size:12.5px;color:var(--muted)">${filtrAktivni() ? `Nalezeno ${nf0.format(VIS.filter(i => R.rows[i].t === 'P').length)} položek. ` : ''}Tlačítka 1–${R.maxLv + 1} fungují jako čísla seskupení vlevo nahoře v Excelu. Klik na − schová skupinu řádků, klik na + ji zase ukáže. Zaškrtnutím vyberete položky – nadpis vybere vše pod ním.</div>`;
+  }
+  const svetla = hex => { const n = parseInt(hex, 16); return ((n >> 16) * 299 + ((n >> 8) & 255) * 587 + (n & 255) * 114) / 1000 > 140; };
+  function bunka(v, col) {
+    if (v === '' || v == null) return '';
+    if (typeof v === 'number') { const d = col.dec; return d >= 0 ? v.toLocaleString('cs-CZ', {minimumFractionDigits: Math.min(d, 6), maximumFractionDigits: Math.min(d, 6)}) : nf3.format(v); }
+    return esc(v);
   }
   function radekHtml(i, C) {
-    const r = R.rows[i], d = R.deti[i].length, hl = R.hl[i];
-    const ind = Math.max(0, hl - 1) * 14;
-    const tg = d ? `<button type="button" class="tg" data-tg="${i}" aria-label="${rozbaleno(r) ? 'Schovat' : 'Rozbalit'}">${rozbaleno(r) && !(filtrAktivni() && r.t === 'P' && !S.otev.has(r.id)) ? '▾' : '▸'}</button>` : '';
-    const vyb = r.t === 'P' ? S.vyb.has(r.id) : false;
-    if (r.t === 'L' || r.t === 'S1' || r.t === 'S2') {
-      const cer = C.sum[i], roz = R.sum[i];
-      return `<div class="rz-r ${r.t}" style="top:${VIS._pos[i] * ROWH}px"><span><input type="checkbox" data-vs="${i}"></span><span>${tg}</span><span>${esc(r.pc)}</span><span title="${esc(r.k)}">${esc(r.k)}</span><span style="padding-left:${ind}px" title="${esc(r.d)}">${esc(r.d)}${r.t === 'L' && R.rec.obj && R.rec.obj[r.id] ? '' : ''}</span><span></span><span></span><span></span><span class="n">${kc(roz)}</span><span>${r.t === 'L' || (R.rec.obj || {})[r.id] ? obBadge(objPolozky(R, r)) : ''}</span><span class="n">${cer ? kc(cer) : ''}</span><span class="n">${cer ? kc(roz - cer) : ''}</span><span></span></div>`;
+    const r = R.rows[i], top = VIS._pos[i] * ROWH;
+    if (r.t === 'L') {
+      const sk = S.zav.has(r.id);
+      return `<div class="rz-r L" style="top:${top}px"><span><button type="button" class="tg" data-tg="${i}">${sk ? '+' : '−'}</button></span><span></span><span><input type="checkbox" data-vs="${i}"></span><span style="grid-column:4 / span ${R.cols.length}">List „${esc(r.d)}“ · ${kc(R.sum[i])} Kč</span><span>${obBadge(objPolozky(R, r))}</span><span class="n">${C.sum[i] ? kc(C.sum[i]) : ''}</span><span class="n">${C.sum[i] ? kc(R.sum[i] - C.sum[i]) : ''}</span><span></span></div>`;
     }
+    const lv = R.lv[i], hd = R.head[i] && !(filtrAktivni() && r.t !== 'P');
+    const tg = hd || (filtrAktivni() && r.t === 'P' && R.deti[i].length) ? `<button type="button" class="tg" data-tg="${i}" style="margin-left:${lv * 11}px" aria-label="${zavreno(i) ? 'Ukázat skupinu' : 'Schovat skupinu'}">${zavreno(i) ? '+' : '−'}</button>` : `<i class="dot" style="margin-left:${lv * 11 + 9}px"></i>`;
+    const fr = {}; if (r.f) r.f.forEach(([c, col]) => fr[c] = col);
+    const sek = r.t === 'S1' || r.t === 'S2';
+    const cells = R.cols.map(col => {
+      let v, bg = '';
+      if (R.v2) { v = r.c ? r.c[col.c] : ''; bg = fr[col.c] || col.fill; } else v = r[col.k];
+      const num = typeof v === 'number';
+      const st = bg ? ` style="background:#${bg};color:${svetla(bg) ? '#16191c' : '#fff'}"` : '';
+      const t = !num && v ? ` title="${esc(v)}"` : '';
+      return `<span class="${num ? 'n' : ''}"${st}${t}>${bunka(v, col)}</span>`;
+    }).join('');
+    const vyb = r.t === 'P' && S.vyb.has(r.id);
+    let pr = '<span></span><span class="n"></span><span class="n"></span><span></span>';
     if (r.t === 'P') {
-      const x = C.pol.get(r.id), o = C.obj[i];
+      const x = C.pol.get(r.id);
       const w = x ? [x.nad ? `překročeno množství: vyfakturováno ${mnT(x.mn)} ${r.mj}, v rozpočtu ${mnT(r.mn)}` : '', x.nadKc ? 'vyfakturováno víc Kč než v rozpočtu' : '', x.cena ? 've fakturaci jiná jednotková cena než v rozpočtu' : ''].filter(Boolean) : [];
-      const kats = C.katPol.get(r.id);
-      return `<div class="rz-r P${vyb ? ' vyb' : ''}" style="top:${VIS._pos[i] * ROWH}px" data-ri="${i}"><span><input type="checkbox" data-vp="${i}"${vyb ? ' checked' : ''}></span><span>${tg}</span><span>${esc(r.pc)}</span><span title="${esc(r.k)}">${esc(r.k)}</span><span style="padding-left:${ind}px" title="${esc(r.d)}${kats ? '\nDruh prací: ' + esc(kats.map(k => (kategorie(R.rec.id).find(z => z.id === k) || {}).nazev).join(', ')) : ''}">${kats ? '<span class="rz-tag">' + esc(kats.map(k => (kategorie(R.rec.id).find(z => z.id === k) || {}).nazev || '').join(', ')) + '</span>' : ''}${esc(r.d)}${r.h ? '<span class="sk">skryto v Excelu</span>' : ''}</span><span>${esc(r.mj)}</span><span class="n">${mnT(r.mn)}</span><span class="n">${kc(r.jc)}</span><span class="n">${kc(r.cc)}</span><span>${obBadge(o)}</span><span class="n">${x ? kc(x.kc) : ''}</span><span class="n">${x ? kc((r.cc || 0) - x.kc) : ''}</span><span>${w.length ? `<span class="rz-war${x.nad || x.nadKc ? '' : ' o'}" title="${esc(w.join('\n'))}">⚠</span>` : x ? '<span class="rz-ok" title="Fakturace v pořádku">✓</span>' : ''}</span></div>`;
+      const kats = C.katPol.get(r.id), kt = kats ? kats.map(k => (kategorie(R.rec.id).find(z => z.id === k) || {}).nazev || '').join(', ') : '';
+      pr = `<span title="${esc(kt ? 'Druh prací: ' + kt : '')}">${obBadge(C.obj[i])}${kats ? '<i class="kt" title="' + esc('Druh prací: ' + kt) + '">●</i>' : ''}</span><span class="n">${x ? kc(x.kc) : ''}</span><span class="n">${x ? kc((r.cc || 0) - x.kc) : ''}</span><span>${w.length ? `<span class="rz-war${x.nad || x.nadKc ? '' : ' o'}" title="${esc(w.join('\n'))}">⚠</span>` : x ? '<span class="rz-ok" title="Fakturace v pořádku">✓</span>' : ''}</span>`;
+    } else if (sek) {
+      const cer = C.sum[i];
+      pr = `<span>${(R.rec.obj || {})[r.id] ? obBadge(objPolozky(R, r)) : ''}</span><span class="n">${cer ? kc(cer) : ''}</span><span class="n">${cer ? kc(R.sum[i] - cer) : ''}</span><span></span>`;
     }
-    return `<div class="rz-r ${r.t}" style="top:${VIS._pos[i] * ROWH}px"><span></span><span>${tg}</span><span>${esc(r.pc)}</span><span>${esc(r.k)}</span><span style="padding-left:${ind}px" title="${esc(r.d)}">${esc(r.d)}${r.h ? '<span class="sk">skryto</span>' : ''}</span><span>${esc(r.mj)}</span><span class="n">${mnT(r.mn)}</span><span class="n">${kc(r.jc)}</span><span class="n">${kc(r.cc)}</span><span></span><span></span><span></span><span></span></div>`;
+    const chk = r.t === 'P' ? `<input type="checkbox" data-vp="${i}"${vyb ? ' checked' : ''}>` : sek ? `<input type="checkbox" data-vs="${i}">` : '';
+    return `<div class="rz-r ${r.t}${vyb ? ' vyb' : ''}" style="top:${top}px"><span class="og">${tg}</span><span class="rn">${r.x || ''}</span><span>${chk}</span>${cells}${pr}</div>`;
   }
   const obBadge = o => o ? `<span class="rz-ob" style="background:${objBarva(o)}">${esc(o.length > 3 ? o.slice(0, 3) : o)}</span>` : '';
   let rafK = 0;
@@ -710,7 +796,7 @@
     on('[data-p]', 'click', e => { S.panel = e.currentTarget.dataset.p; pamSet('rz-panel', S.panel); prekresli(); });
     on('[data-a="menu-rp"]', 'click', e => menuRozpoctu(e.currentTarget));
     on('[data-a="xls-roz"]', 'click', () => excelRozpocet());
-    on('[data-rez]', 'click', e => { S.rezim = e.currentTarget.dataset.rez; pamSet('rz-rezim', S.rezim); S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
+    on('[data-ur]', 'click', e => { S.uroven = +e.currentTarget.dataset.ur || 0; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
     const q = EL.querySelector('[data-a="q"]');
     if (q) { let t = 0; q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { S.q = q.value; SCROLL = 0; const pos = q.selectionStart; prekresli(); const n = EL.querySelector('[data-a="q"]'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 250); }); }
     on('[data-a="obj"]', 'change', e => { S.obj = e.target.value; SCROLL = 0; prekresli(); });
@@ -727,7 +813,7 @@
       tab.addEventListener('scroll', () => { if (rafK) return; rafK = requestAnimationFrame(() => { rafK = 0; SCROLL = tab.scrollTop; kresliRadky(); }); });
       tab.addEventListener('click', e => {
         const tg = e.target.closest('[data-tg]');
-        if (tg) { const r = R.rows[+tg.dataset.tg]; const ted = rozbaleno(r) && !(filtrAktivni() && r.t === 'P' && !S.otev.has(r.id)); if (ted) { S.otev.delete(r.id); S.zav.add(r.id); } else { S.zav.delete(r.id); S.otev.add(r.id); } SCROLL = tab.scrollTop; prekresli(); return; }
+        if (tg) { const i = +tg.dataset.tg, r = R.rows[i]; const skryto = r.t === 'L' ? S.zav.has(r.id) : zavreno(i); if (!skryto) { S.otev.delete(r.id); S.zav.add(r.id); } else { S.zav.delete(r.id); S.otev.add(r.id); } SCROLL = tab.scrollTop; prekresli(); return; }
       });
       tab.addEventListener('change', e => {
         const vp = e.target.closest('[data-vp]'), vs = e.target.closest('[data-vs]');
@@ -938,7 +1024,7 @@
       rows.forEach(r => { if (r.t === 'L') { const o = nast[r.s].obj; if (o) obj[r.id] = o; else if (!stary) delete obj[r.id]; } });
       const ids = new Set(rows.map(r => r.id)); Object.keys(obj).forEach(k => { if (!ids.has(k)) delete obj[k]; });
       const pol = rows.filter(r => r.t === 'P');
-      const data = {v: 1, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout})), rows: naPole(rows)};
+      const data = {v: 2, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout, nazvy: hlavickaListu(l, nast[i]), cols: l.cols || [], dec: l.dec || [], colFill: l.colFill || [], hlBarvy: nast[i].hlavicka >= 0 && l.barvy ? l.barvy[nast[i].hlavicka] : null})), rows: naPole(rows)};
       w.text('Komprimuji ' + nf0.format(rows.length) + ' řádků…', 40);
       const gz = await gzip(JSON.stringify(data));
       await idbPut('r:' + id + ':' + rev, {gz, kdy: Date.now()});
@@ -1096,17 +1182,20 @@
   }
   function excelRozpocet() {
     if (!R) return;
+    if (!R.lv) obrys(R);
     const C = spocti(R), vis = filtrAktivni() ? spocitejViditelne(C) : R.rows.map((r, i) => i);
-    const rows = [['Řádek v Excelu', 'Typ', 'PČ', 'Kód', 'Popis', 'MJ', 'Množství', 'J. cena', 'Celkem Kč', 'Objekt', 'Druh prací', 'Vyfakturováno MJ', 'Vyfakturováno Kč', 'Zbývá Kč', 'Upozornění']], urov = [0];
-    const nm = {L: 'list', S1: 'díl', S2: 'díl', P: 'položka', D: 'podrobnost', T: 'součet'};
     const ks = kategorie(R.rec.id);
+    const hl = R.cols.map(c => c.n).concat(['Objekt', 'Druh prací', 'Vyfakturováno MJ', 'Vyfakturováno Kč', 'Zbývá Kč', 'Upozornění']);
+    const rows = [hl], urov = [0];
     vis.forEach(i => {
       const r = R.rows[i], x = C.pol.get(r.id);
-      const sek = r.t === 'L' || r.t[0] === 'S';
-      rows.push([r.x || '', nm[r.t], r.pc, r.k, r.d, r.mj, r.mn, r.jc, sek ? Math.round(R.sum[i] * 100) / 100 : r.cc, r.t === 'P' ? C.obj[i] : '', r.t === 'P' ? (C.katPol.get(r.id) || []).map(k => (ks.find(z => z.id === k) || {}).nazev).join(', ') : '', x ? x.mn : null, x ? Math.round(x.kc * 100) / 100 : sek && C.sum[i] ? Math.round(C.sum[i] * 100) / 100 : null, x ? Math.round(((r.cc || 0) - x.kc) * 100) / 100 : sek && C.sum[i] ? Math.round((R.sum[i] - C.sum[i]) * 100) / 100 : null, x ? [x.nad ? 'překročeno množství' : '', x.cena ? 'jiná cena' : ''].filter(Boolean).join(', ') : '']);
-      urov.push(Math.min(7, Math.max(0, R.hl[i] - 1)));
+      if (r.t === 'L') { if (R.vicListu) { rows.push(['List: ' + r.d]); urov.push(0); } return; }
+      const sek = r.t[0] === 'S';
+      const b = R.cols.map(c => R.v2 ? (r.c ? r.c[c.c] : '') : r[c.k]);
+      rows.push(b.concat([r.t === 'P' ? C.obj[i] : '', r.t === 'P' ? (C.katPol.get(r.id) || []).map(k => (ks.find(z => z.id === k) || {}).nazev).join(', ') : '', x ? x.mn : null, x ? Math.round(x.kc * 100) / 100 : sek && C.sum[i] ? Math.round(C.sum[i] * 100) / 100 : null, x ? Math.round(((r.cc || 0) - x.kc) * 100) / 100 : sek && C.sum[i] ? Math.round((R.sum[i] - C.sum[i]) * 100) / 100 : null, x ? [x.nad ? 'překročeno množství' : '', x.cena ? 'jiná cena' : ''].filter(Boolean).join(', ') : '']));
+      urov.push(R.lv[i]);
     });
-    ulozExcel(R.rec.nazev + (filtrAktivni() ? ' – výběr' : '') + ' – čerpání', [{n: 'Rozpočet', rows, urov, sirky: [8, 9, 6, 14, 60, 6, 11, 11, 14, 7, 18, 12, 14, 14, 20]}]);
+    ulozExcel(R.rec.nazev + (filtrAktivni() ? ' – výběr' : '') + ' – čerpání', [{n: 'Rozpočet', rows, urov, sirky: R.cols.map(c => Math.round(c.w / 7)).concat([7, 18, 12, 14, 14, 20])}]);
   }
   function excelFaktura(F) {
     const fi = (H.firmy() || []).find(z => z.id === F.firma);

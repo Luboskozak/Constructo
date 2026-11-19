@@ -6,17 +6,36 @@ self.onmessage = e => {
   const m = e.data || {};
   try {
     if (m.akce === 'cti') {
-      const wb = XLSX.read(new Uint8Array(m.buf), {type: 'array', cellStyles: true, cellFormula: false, cellHTML: false, cellNF: false, cellText: false, sheetStubs: false});
+      const wb = XLSX.read(new Uint8Array(m.buf), {type: 'array', cellStyles: true, cellFormula: false, cellHTML: false, cellNF: true, cellText: false, sheetStubs: true});
       const listy = wb.SheetNames.map(n => {
         const ws = wb.Sheets[n];
-        if (!ws || !ws['!ref']) return {n, rows: [], skryto: [], urov: [], od: 0, skrytyList: false};
+        if (!ws || !ws['!ref']) return {n, rows: [], skryto: [], urov: [], barvy: [], cols: [], dec: [], colFill: [], od: 0, odSl: 0, skrytyList: false};
         const rg = XLSX.utils.decode_range(ws['!ref']);
         const rows = XLSX.utils.sheet_to_json(ws, {header: 1, raw: true, defval: '', blankrows: true});
         const ri = ws['!rows'] || [], skryto = [], urov = [];
         for (let i = 0; i < rows.length; i++) { const r = ri[rg.s.r + i]; skryto.push(r && r.hidden ? 1 : 0); urov.push(r && r.level ? r.level : 0); }
         // sloupce v řádku začínají prvním sloupcem oblasti listu – kvůli písmenům sloupců si pamatujeme posun
         const st = (wb.Workbook && wb.Workbook.Sheets || []).find(s => s.name === n);
-        return {n, rows, skryto, urov, od: rg.s.r, odSl: rg.s.c, skrytyList: !!(st && st.Hidden)};
+        // vzhled jako v Excelu: šířky a skryté sloupce, desetinná místa podle formátu, barvy výplně buněk
+        const nc = rg.e.c - rg.s.c + 1, ci = ws['!cols'] || [];
+        const cols = [], dec = [], decN = [], barvy = [], colCnt = [];
+        for (let c = 0; c < nc; c++) { const x = ci[rg.s.c + c] || {}; cols.push({w: x.wpx || (x.wch ? Math.round(x.wch * 7) : 64), h: x.hidden ? 1 : 0}); decN.push({}); colCnt.push({}); }
+        for (let i = 0; i < rows.length; i++) {
+          let f = null;
+          for (let c = 0; c < nc; c++) {
+            const cell = ws[XLSX.utils.encode_cell({r: rg.s.r + i, c: rg.s.c + c})];
+            if (!cell) continue;
+            if (cell.t === 'n' && cell.z && i < 4000) { const m = /\.(0+)/.exec(String(cell.z)); const d = m ? m[1].length : /^(General|0)$/i.test(cell.z) ? -1 : 0; decN[c][d] = (decN[c][d] || 0) + 1; }
+            const s = cell.s, rgb = s && s.patternType && s.patternType !== 'none' && s.fgColor && s.fgColor.rgb;
+            if (rgb && !/^(FFFFFF|000000)$/i.test(String(rgb).slice(-6))) { const col = String(rgb).slice(-6).toUpperCase(); (f ||= []).push([c, col]); colCnt[c][col] = (colCnt[c][col] || 0) + 1; }
+          }
+          barvy.push(f);
+        }
+        decN.forEach(o => { let best = -1, bn = 0; Object.keys(o).forEach(k => { if (o[k] > bn) { bn = o[k]; best = +k; } }); dec.push(best); });
+        // barva, kterou má skoro celý sloupec (např. žlutý sloupec cen), se uloží jen jednou pro sloupec
+        const colFill = colCnt.map(o => { let best = '', bn = 0; Object.keys(o).forEach(k => { if (o[k] > bn) { bn = o[k]; best = k; } }); return bn > rows.length * 0.5 ? best : ''; });
+        for (let i = 0; i < barvy.length; i++) if (barvy[i]) { barvy[i] = barvy[i].filter(([c, col]) => colFill[c] !== col); if (!barvy[i].length) barvy[i] = null; }
+        return {n, rows, skryto, urov, barvy, cols, dec, colFill, od: rg.s.r, odSl: rg.s.c, skrytyList: !!(st && st.Hidden)};
       });
       self.postMessage({ok: true, listy});
     } else if (m.akce === 'zapis') {
