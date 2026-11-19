@@ -68,6 +68,7 @@
 .rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;border-right:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 11px;cursor:pointer}
 .rz-seg button:last-child{border-right:0}.rz-seg button[aria-pressed=true]{background:#16191c;color:#fff}
 .rz-chk{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
+.rz-flt{background:var(--card,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 10px;gap:10px}.rz-fl-l{display:flex;flex-direction:column;gap:2px;font-size:11.5px;color:var(--muted)}.rz-fl-l select{max-width:230px}.rz-sel.akt{border-color:#e0b400;background:#FFF4BF;color:#16191c}.rz-souhrn{font-size:13.5px;margin-left:auto}
 .rz-vyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:7px 12px;font-size:14px;color:#16191c}
 .rz-tab{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto;position:relative;height:calc(100vh - 150px);min-height:420px}
 .rz-hd,.rz-r{display:grid;grid-template-columns:var(--g);gap:0;align-items:stretch;padding:0 6px;min-width:var(--gw);width:max-content;min-width:100%}
@@ -370,7 +371,7 @@
 
   /* ---------- host (Management) ---------- */
   let H = null, EL = null;
-  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', uroven: 0, jenUpoz: false, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
+  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
   const toast = m => H && H.toast ? H.toast(m) : alert(m);
   const ro = () => !!(H && H.ro && H.ro());
   const kdo = () => (H && H.kdo && H.kdo()) || '';
@@ -388,7 +389,7 @@
     try { const r = await H.volej({akce: 'verze'}); S.verze = Number(r && r.verze) || 0; } catch (e) {}
     if (S.verze && S.verze < SKRIPT_MIN && H.aktualizujSkript && Date.now() - S.aktT > 180000) {
       S.aktT = Date.now();
-      H.aktualizujSkript().then(r => { if (r && r.ok) { S.verze = 0; S.verzeT = 0; prekresli(); } }).catch(() => {});
+      H.aktualizujSkript().then(r => { if (r && r.ok) { S.verze = 0; S.verzeT = 0; S.skrDuvod = ''; } else if (r) S.skrDuvod = String(r.duvod || ''); prekresli(); }).catch(e => { S.skrDuvod = e.message || String(e); prekresli(); });
     }
     return S.verze;
   }
@@ -445,6 +446,26 @@
       } catch (e) { S.chyba = 'Rozpočet se zatím nepodařilo uložit na Disk Google: ' + e.message + ' Zkusím to znovu.'; }
     }
   }
+  // 4.58: rozpočet uložený v tomto počítači (IndexedDB), který v seznamu chybí (např. ho starší skript Google nepropsal), se vrátí do seznamu
+  let OBNOVA = false;
+  async function obnovZPocitace() {
+    if (OBNOVA || !H || ro()) return; OBNOVA = true;
+    try {
+      const d = await db();
+      const klice = await new Promise((res, rej) => { const q = d.transaction('d').objectStore('d').getAllKeys(); q.onsuccess = () => res(q.result || []); q.onerror = () => rej(q.error); });
+      const mam = new Set(sez('rozpocty').map(r => r.id)), nejnovejsi = new Map();
+      klice.forEach(k => { const m = /^r:([^:]+):(\d+)$/.exec(String(k)); if (!m || mam.has(m[1]) || (H.smazano && H.smazano('rozpocty', m[1]))) return; const rev = Number(m[2]); if (!(nejnovejsi.get(m[1]) >= rev)) nejnovejsi.set(m[1], rev); });
+      const nove = [];
+      for (const [id, rev] of nejnovejsi) {
+        const c = await idbGet('r:' + id + ':' + rev); if (!c || !c.gz) continue;
+        let data; try { data = JSON.parse(await gunzip(c.gz)); } catch (e) { continue; }
+        const rows = zPole(data.rows || []), pol = rows.filter(r => r.t === 'P');
+        const L = (data.listy || [])[0] || {};
+        nove.push({id, nazev: data.nazev || 'Rozpočet' + (L.n ? ' – ' + L.n : ''), soubor: data.soubor || '', rev, gid: '', vel: c.gz.size, pocet: rows.length, polozek: pol.length, celkem: Math.round(pol.reduce((a, r) => a + (r.cc || 0), 0) * 100) / 100, kdo: kdo(), pc: pcId(), kdy: new Date(rev).toISOString(), obj: {}});
+      }
+      if (nove.length) { H.upsert('rozpocty', nove); toast('Rozpočet obnoven z tohoto počítače a posílá se kolegům.'); dokoncitNahrani(); }
+    } catch (e) {} finally { OBNOVA = false; }
+  }
   function pcId() { let x = pam('rz-pc'); if (!x) { x = uid(); pamSet('rz-pc', x); } return x; }
 
   async function nactiRozpocet(rec) {
@@ -498,27 +519,53 @@
     const sek = r.p >= 0 && rows[r.p].t !== 'L' ? rows[r.p].d : '';
     return sek ? String(sek).replace(/\s+-\s+.*$/, '').slice(0, 60) : 'Ostatní';
   }
+  const RX_NP = /(?:^|[^\d.,])(\d{1,2})\s?\.?\s?(NP|PP)\b/;   // podlaží: 1.NP, 2.PP, „Skladby podlah 1PP“
+  const RX_PODL2 = /podla[žz][ií]\s+(\d{1,2})\b/i;   // „sekce A podlaží 5“
+  const podlZTextu = t => { const m = RX_NP.exec(String(t || '')); if (m) return Number(m[1]) + '.' + m[2]; const n = RX_PODL2.exec(String(t || '')); return n ? Number(n[1]) + '.NP' : ''; };
+  const RX_CAST = /^((?:D|SO|IO|PS|E|F|B|C)[\s.\-_]?\d[\w.\-_]*)\s*-\s*\S/;   // část projektu: D.1.1 - Architektonicko…, IO.411 - Přeložka…, PS.01 - Trafostanice
+  const RADA_PODL = p => { const m = /^(\d+)\.(NP|PP)$/.exec(p); return m ? (m[2] === 'PP' ? -Number(m[1]) : Number(m[1])) : 99; };
   function analyza(Rx) {
     if (Rx.vv) return;
-    const rows = Rx.rows, vv = new Array(rows.length), txtO = new Array(rows.length).fill(''), cin = new Array(rows.length).fill('');
+    const rows = Rx.rows, n = rows.length, vv = new Array(n), txtO = new Array(n).fill(''), txtP = new Array(n).fill(''), cin = new Array(n).fill(''), dil = new Array(n).fill(''), cast = new Array(n).fill(''), obor = new Array(n).fill('');
+    // sloupec s obory / řemesly (např. sloupec B „Obor“: Zakládání, S.K Konstrukce …) – textový sloupec s málo různými hodnotami u položek
+    const L0 = rows.find(r => r.t === 'L'), li = (Rx.listy || [])[L0 ? L0.s : 0] || {}, mp = li.map || {}, role = new Set(Object.values(mp));
+    let oborSl = -1, oborN = '';
+    if (rows.some(r => r.c)) {
+      const st = {};
+      Rx.polozky.forEach(r => (r.c || []).forEach((v, c) => { if (role.has(c) || typeof v !== 'string' || !v || v.length > 40) return; (st[c] ||= new Map()).set(v, ((st[c].get(v)) || 0) + 1); }));
+      let best = 0;
+      Object.entries(st).forEach(([c, m]) => { const cov = [...m.values()].reduce((a, b) => a + b, 0) / Math.max(1, Rx.polozky.length); if (m.size >= 2 && m.size <= 200 && cov > 0.6 && cov * 100 - m.size > best) { best = cov * 100 - m.size; oborSl = +c; } });
+      if (oborSl >= 0) oborN = (li.nazvy || [])[oborSl] || 'Obor';
+    }
+    let akt = '';
+    for (let i = 0; i < n; i++) { const r = rows[i]; if (r.t === 'L') akt = ''; else if (r.t !== 'D' && r.t !== 'P') { const m = RX_CAST.exec(String(r.d || '')); if (m) akt = String(r.d).slice(0, 80); } cast[i] = akt; }
     Rx.polozky.forEach(r => {
-      // objekt uvedený v textu položky nebo v nadpisech nad ní
-      let o = objZTextu(r.d), p = r.p; while (!o && p >= 0) { o = objZTextu(rows[p].d); p = rows[p].p; }
-      txtO[r.i] = o;
-      // výkaz výměr: řádky po štítku „křídlo A“ patří objektu A, dokud nepřijde další štítek
-      const m = {}; let cur = '', nasel = false;
+      // objekt a podlaží uvedené v textu položky nebo v nadpisech nad ní
+      let o = objZTextu(r.d), pd = podlZTextu(r.d), p = r.p;
+      while ((!o || !pd) && p >= 0) { if (!o) o = objZTextu(rows[p].d); if (!pd) pd = podlZTextu(rows[p].d); p = rows[p].p; }
+      txtO[r.i] = o; txtP[r.i] = pd;
+      // výkaz výměr: řádky po štítku „křídlo A“ / „1.NP“ patří tomu objektu / podlaží, dokud nepřijde další štítek
+      const m = new Map(); let co = '', cp = '', nasel = false;
       for (const di of Rx.deti[r.i]) {
         const d = rows[di]; if (d.t !== 'D') continue;
-        const oo = objZTextu(d.d); if (oo) { cur = oo; nasel = true; }
+        const oo = objZTextu(d.d); if (oo) { co = oo; nasel = true; }
+        const pp = podlZTextu(d.d); if (pp) { cp = pp; nasel = true; }
         if (d.mn == null || RX_SOUCET.test(norm(d.d))) continue;
-        m[cur] = (m[cur] || 0) + d.mn;
+        const k = co + '|' + cp; m.set(k, (m.get(k) || 0) + d.mn);
       }
-      if (nasel) vv[r.i] = Object.entries(m).filter(([, q]) => Math.abs(q) > EPS);
+      if (nasel) vv[r.i] = [...m.entries()].filter(([, q]) => Math.abs(q) > EPS).map(([k, q]) => { const [a, b] = k.split('|'); return [a, b, q]; });
       cin[r.i] = cinnost(r, rows);
+      // díl = nejbližší nadpis nad položkou (ÚRS díl s číslem má přednost: 2 Zakládání, 3 Svislé a kompletní konstrukce)
+      let x = r.p, prvni = '';
+      while (x >= 0 && rows[x].t !== 'L') { const s = rows[x]; if (s.t === 'S2') { const nm = ((s.k ? s.k + ' ' : '') + s.d).slice(0, 70); if (!prvni) prvni = nm; if (/^\d{1,3}$/.test(String(s.k).trim())) { prvni = nm; break; } } x = s.p; }
+      dil[r.i] = prvni;
+      if (oborSl >= 0) obor[r.i] = r.c && typeof r.c[oborSl] === 'string' ? r.c[oborSl] : '';
     });
-    Rx.vv = vv; Rx.objTxt = txtO; Rx.cin = cin;
+    Object.assign(Rx, {vv, objTxt: txtO, podlTxt: txtP, cin, dil, cast, obor, oborN});
     const cm = new Map(); Rx.polozky.forEach(r => { const a = cm.get(cin[r.i]) || []; a.push(r.id); cm.set(cin[r.i], a); });
-    Rx.cinnosti = [...cm.entries()].sort((a, b) => a[0].localeCompare(b[0], 'cs')).map(([n, pol]) => ({id: 'c:' + n, nazev: n, pol, virt: true}));
+    Rx.cinnosti = [...cm.entries()].sort((a, b) => a[0].localeCompare(b[0], 'cs')).map(([nm, pol]) => ({id: 'c:' + nm, nazev: nm, pol, virt: true}));
+    const sezn = arr => { const m = new Map(); Rx.polozky.forEach(r => { const v = arr[r.i]; if (v) m.set(v, (m.get(v) || 0) + (r.cc || 0)); }); return [...m.entries()].map(([v, kc]) => ({v, kc})); };
+    Rx.seznamy = {cast: sezn(cast), dil: sezn(dil).sort((a, b) => a.v.localeCompare(b.v, 'cs', {numeric: true})), obor: sezn(obor).sort((a, b) => b.kc - a.kc)};
   }
   // druhy prací = vlastní (uložené) + automatické činnosti
   const vsechnyKat = rp => kategorie(rp).concat(R && R.rec.id === rp && R.cinnosti ? R.cinnosti : []);
@@ -526,19 +573,19 @@
   const obBadges = pod => (pod || []).filter(x => x[0]).map(x => obBadge(x[0])).join('');
   const obText = pod => (pod || []).filter(x => x[0]).map(x => x[0] + (pod.length > 1 ? ' ' + Math.round(x[1] * 100) + ' %' : '')).join(', ');
   function objPolozky(Rx, r) { const o = Rx.rec.obj || {}; let x = r; while (x) { if (o[x.id]) return o[x.id]; x = x.p >= 0 ? Rx.rows[x.p] : null; } return ''; }
-  // podíl položky na objektech: ruční přiřazení položky > výkaz výměr (křídlo A / D …) > ruční přiřazení nadpisu či listu > text
+  // podíl položky na objektech a podlažích [[objekt, podlaží, podíl]]: ruční přiřazení položky > výkaz výměr (křídlo A, 1.NP …) > ruční přiřazení nadpisu či listu > text
   function podilObjektu(Rx, r) {
-    const ruc = (Rx.rec.obj || {})[r.id]; if (ruc) return [[ruc, 1]];
-    const vys = objPolozky(Rx, r);
+    const ruc = (Rx.rec.obj || {})[r.id], vys = objPolozky(Rx, r);
+    const zo = ruc || vys || Rx.objTxt[r.i] || '', zp = Rx.podlTxt[r.i] || '';
     const v = Rx.vv[r.i];
     if (v && v.length) {
-      const zbytek = vys || Rx.objTxt[r.i] || '';
-      const m = {}; v.forEach(([o, q]) => { const k = o || zbytek; m[k] = (m[k] || 0) + q; });
-      const sum = Object.values(m).reduce((a, b) => a + b, 0);
-      if (sum > EPS) return Object.entries(m).map(([o, q]) => [o, q / sum, q]).sort((a, b) => b[1] - a[1]);
+      const m = new Map(); v.forEach(([o, pd, q]) => { const k = (ruc || o || zo) + '|' + (pd || zp); m.set(k, (m.get(k) || 0) + q); });
+      const sum = [...m.values()].reduce((a, b) => a + b, 0);
+      if (sum > EPS) return [...m.entries()].map(([k, q]) => { const [o, pd] = k.split('|'); return [o, pd, q / sum]; }).sort((a, b) => b[2] - a[2]);
     }
-    return [[vys || Rx.objTxt[r.i] || '', 1]];
+    return [[zo, zp, 1]];
   }
+  const souhrnObj = j => { const m = new Map(); j.forEach(([o, , sh]) => m.set(o, (m.get(o) || 0) + sh)); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
   function spocti(Rx) {
     const fs = faktury(Rx.rec.id), ks = kategorie(Rx.rec.id);
     const sig = Rx.rec.id + Rx.rec.rev + '|' + JSON.stringify(Rx.rec.obj || {}).length + '|' + fs.map(f => f.id + (f._ts || 0)).join(',') + '|' + ks.map(k => k.id + (k._ts || 0)).join(',');
@@ -555,12 +602,13 @@
       const r = Rx.byId.get(l.r); if (r.jc != null && Math.abs((Number(l.jc) || 0) - r.jc) > 0.005) x.cena = true;
       pol.set(l.r, x);
     }));
-    const sum = new Float64Array(Rx.rows.length), obj = new Array(Rx.rows.length).fill(null);
-    const objSum = {};
+    const sum = new Float64Array(Rx.rows.length), obj = new Array(Rx.rows.length).fill(null), jo = new Array(Rx.rows.length).fill(null);
+    const objSum = {}, mat = {};
     Rx.polozky.forEach(r => {
-      const pod = podilObjektu(Rx, r); obj[r.i] = pod;
+      const j = podilObjektu(Rx, r); jo[r.i] = j; const pod = souhrnObj(j); obj[r.i] = pod;
       const x = pol.get(r.id);
       pod.forEach(([o, sh]) => { const os = objSum[o] ||= {roz: 0, cer: 0, n: 0}; os.roz += (r.cc || 0) * sh; os.n++; if (x) os.cer += x.kc * sh; });
+      j.forEach(([o, pd, sh]) => { const k = (pd || '–') + '|' + (o || '–'); mat[k] = (mat[k] || 0) + (r.cc || 0) * sh; });
       if (!x) return;
       x.nad = r.mn != null && x.mn > r.mn + Math.max(EPS, Math.abs(r.mn) * 1e-9);
       x.nadKc = r.cc != null && x.kc > r.cc + 0.5;
@@ -570,7 +618,7 @@
     const katPol = new Map(), katSum = {};
     ks.concat(Rx.cinnosti || []).forEach(k => { const s = katSum[k.id] = {roz: 0, cer: 0, n: 0}; (k.pol || []).forEach(id => { const r = Rx.byId.get(id); if (!r || r.t !== 'P') return; s.n++; s.roz += r.cc || 0; const x = pol.get(id); if (x) s.cer += x.kc; const a = katPol.get(id) || []; a.push(k.id); katPol.set(id, a); }); });
     let roz = 0; Rx.polozky.forEach(r => roz += r.cc || 0);
-    CERP = {R: Rx, pol, sum, obj, objSum, katPol, katSum, celkem, mimo, upoz, roz};
+    CERP = {R: Rx, pol, sum, obj, jo, mat, objSum, katPol, katSum, celkem, mimo, upoz, roz};
     CERP_SIG = sig;
     return CERP;
   }
@@ -619,7 +667,7 @@
   }
   function skriptInfo() {
     if (!H.pripojeno()) return '<div class="rz-info">Bez připojení ke Googlu zůstane rozpočet jen v tomto počítači. Pro sdílení s kolegy zapněte Data → Automatická synchronizace.</div>';
-    if (S.verze && S.verze < SKRIPT_MIN) return '<div class="rz-info">Skript Google se právě aktualizuje na verzi ' + SKRIPT_MIN + ' (zvládne sám). Do té doby se druhy prací a fakturace kolegům nepropíšou.</div>';
+    if (S.verze && S.verze < SKRIPT_MIN) return '<div class="rz-info" style="font-size:12.5px">Skript Google má verzi ' + S.verze + ' (nová je ' + SKRIPT_MIN + '). Rozpočty se přesto propisují všem počítačům.' + (S.skrDuvod ? ' Automatická aktualizace skriptu se nepovedla: ' + esc(S.skrDuvod) : '') + '</div>';
     return '';
   }
   function hlava(list, rec, C) {
@@ -684,7 +732,13 @@
     if (S.uroven) { const j = i + 1; return j < R.rows.length && R.lv[j] >= S.uroven; }
     return !!R.skr0[i];
   }
-  function filtrAktivni() { return !!(S.q.trim() || S.obj || S.kat || S.jenUpoz); }
+  function filtrAktivni() { return !!(S.q.trim() || S.obj || S.kat || S.jenUpoz || S.pod || S.dil || S.cast || S.obor); }
+  // podíl položky, který odpovídá vybranému objektu a podlaží (např. 40 % výkazu výměr je v křídle A)
+  function podilVyberu(C, r) {
+    if (!S.obj && !S.pod) return 1;
+    let sh = 0; (C.jo[r.i] || [['', '', 1]]).forEach(([o, pd, x]) => { if (S.obj && (o || '-') !== S.obj) return; if (S.pod && (pd || '-') !== S.pod) return; sh += x; });
+    return sh;
+  }
   function spocitejViditelne(C) {
     const rows = R.rows, out = [];
     if (!filtrAktivni()) {
@@ -704,13 +758,18 @@
     const kat = S.kat && (najdiKat(R.rec.id, S.kat) || {pol: []});
     const katSet = kat ? new Set(kat.pol || []) : null;
     const ok = new Uint8Array(rows.length);
+    let kc = 0, np = 0; const ids = [];
     R.polozky.forEach(r => {
-      if (S.obj && !(C.obj[r.i] || []).some(x => (x[0] || '-') === S.obj)) return;
+      if (S.cast && R.cast[r.i] !== S.cast) return;
+      if (S.dil && R.dil[r.i] !== S.dil) return;
+      if (S.obor && R.obor[r.i] !== S.obor) return;
+      const sh = podilVyberu(C, r); if (sh <= EPS) return;
       if (katSet && !katSet.has(r.id)) return;
       if (S.jenUpoz) { const x = C.pol.get(r.id); if (!x || !(x.nad || x.cena || x.nadKc)) return; }
       if (slova.length) { const h = r._h || (r._h = norm(r.pc + ' ' + r.k + ' ' + r.d + ' ' + r.mj)); if (!slova.every(s => h.includes(s))) { const ph = norm(rows[r.p] ? rows[r.p].d : ''); if (!slova.every(s => h.includes(s) || ph.includes(s))) return; } }
-      ok[r.i] = 1; let p = r.p; while (p >= 0 && ok[p] !== 1) { ok[p] = 2; p = rows[p].p; }
+      ok[r.i] = 1; kc += (r.cc || 0) * sh; np++; ids.push([r.id, sh]); let p = r.p; while (p >= 0 && ok[p] !== 1) { ok[p] = 2; p = rows[p].p; }
     });
+    out._kc = kc; out._n = np; out._ids = ids;
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
       if (ok[i]) { if (r.t !== 'L' || R.vicListu) out.push(i); continue; }
@@ -727,14 +786,34 @@
     const objs = OBJEKTY.concat(Object.keys(C.objSum).filter(o => o && !OBJEKTY.includes(o)));
     const urovne = []; for (let k = 1; k <= R.maxLv + 1; k++) urovne.push(k);
     const g = R.grid.map(w => w + 'px').join(' ');
+    const sz = R.seznamy || {cast: [], dil: [], obor: []};
+    const podl = [...new Set(Object.keys(C.mat).map(k => k.split('|')[0]))].filter(p => p !== '–').sort((x, y) => RADA_PODL(x) - RADA_PODL(y) || x.localeCompare(y));
+    const opt = (v, t, akt) => `<option value="${esc(v)}"${akt === v ? ' selected' : ''}>${esc(t)}</option>`;
+    const sel = (k, lab, vse, items, akt) => `<label class="rz-fl-l"><span>${lab}</span><select class="rz-sel${akt ? ' akt' : ''}" data-fk="${k}" aria-label="${lab}"><option value="">${vse}</option>${items}</select></label>`;
+    const zk = t => t.length > 60 ? t.slice(0, 58) + '…' : t;
+    const sKc = x => opt(x.v, zk(x.v) + ' · ' + kc0(x.kc), null);
+    const selS = (k, lab, vse, list, akt) => sel(k, lab, vse, list.map(x => opt(x.v, zk(x.v) + ' · ' + kc0(x.kc), akt)).join(''), akt);
+    const katOpts = (ks.length ? `<optgroup label="Moje druhy prací">${ks.map(k => opt(k.id, k.nazev, S.kat)).join('')}</optgroup>` : '') + `<optgroup label="Řemesla – poznáno automaticky z kódu ÚRS a textu">${cs.map(k => opt(k.id, k.nazev + ' (' + k.pol.length + ')', S.kat)).join('')}</optgroup>`;
+    const objOpts = objs.map(o => opt(o, 'Objekt ' + o, S.obj)).join('') + opt('-', 'Bez objektu', S.obj);
+    const podOpts = podl.map(p => opt(p, p, S.pod)).join('') + opt('-', 'Bez podlaží', S.pod);
+    const nF = [S.cast, S.dil, S.obor, S.kat, S.obj, S.pod].filter(Boolean).length;
     return `<div class="rz-fil">
         <input class="rz-q" type="search" placeholder="Hledat v rozpočtu (kód, popis, např. krokve)…" value="${esc(S.q)}" data-a="q">
-        <select class="rz-sel" data-a="obj" aria-label="Objekt"><option value="">Všechny objekty</option>${objs.map(o => `<option value="${esc(o)}"${S.obj === o ? ' selected' : ''}>Objekt ${esc(o)}</option>`).join('')}<option value="-"${S.obj === '-' ? ' selected' : ''}>Bez objektu</option></select>
-        <select class="rz-sel" data-a="kat" aria-label="Druh prací nebo činnost"><option value="">Všechny druhy prací a činnosti</option>${ks.length ? `<optgroup label="Moje druhy prací">${ks.map(k => `<option value="${esc(k.id)}"${S.kat === k.id ? ' selected' : ''}>${esc(k.nazev)}</option>`).join('')}</optgroup>` : ''}<optgroup label="Činnosti (řemesla) – automaticky">${cs.map(k => `<option value="${esc(k.id)}"${S.kat === k.id ? ' selected' : ''}>${esc(k.nazev)} (${k.pol.length})</option>`).join('')}</optgroup></select>
         <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
         <span class="sp" style="flex:1"></span>
         <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
         <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
+      </div>
+      <div class="rz-fil rz-flt">
+        ${sz.cast.length > 1 ? selS('cast', 'Část projektu', 'Všechny části', sz.cast, S.cast) : ''}
+        ${sz.dil.length ? selS('dil', 'Díl (nadpis)', 'Všechny díly', sz.dil, S.dil) : ''}
+        ${R.oborN && sz.obor.length > 1 ? selS('obor', esc(R.oborN), 'Vše', sz.obor, S.obor) : ''}
+        ${sel('kat', 'Druh prací / řemeslo', 'Všechna řemesla', katOpts, S.kat)}
+        ${sel('obj', 'Objekt', 'Všechny objekty', objOpts, S.obj)}
+        ${sel('pod', 'Podlaží', 'Všechna podlaží', podOpts, S.pod)}
+        ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
+        ${filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Stáhne Excel jen s vyfiltrovanými položkami ve stejné podobě jako rozpočet, ale bez cen – k poslání firmě na poptávku">📨 Poptat vybrané (Excel bez cen)</button><button type="button" class="rz-btn mini" data-a="fak-filtr"${ro() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vybrané %…</button>` : ''}
+        ${filtrAktivni() ? `<span class="rz-souhrn">Vybráno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : ''}
       </div>
       ${nV ? `<div class="rz-vyber"><b>Vybráno ${nf0.format(nV)} položek · ${kc0(vybKc)}</b>
         <button type="button" class="rz-btn mini" data-a="v-kat"${ro() ? ' disabled' : ''}>Zařadit do druhu prací…</button>
@@ -874,8 +953,10 @@
     on('[data-ur]', 'click', e => { S.uroven = +e.currentTarget.dataset.ur || 0; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
     const q = EL.querySelector('[data-a="q"]');
     if (q) { let t = 0; q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { S.q = q.value; SCROLL = 0; const pos = q.selectionStart; prekresli(); const n = EL.querySelector('[data-a="q"]'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 250); }); }
-    on('[data-a="obj"]', 'change', e => { S.obj = e.target.value; SCROLL = 0; prekresli(); });
-    on('[data-a="kat"]', 'change', e => { S.kat = e.target.value; SCROLL = 0; prekresli(); });
+    on('[data-fk]', 'change', e => { S[e.currentTarget.dataset.fk] = e.currentTarget.value; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
+    on('[data-a="poptat"]', 'click', () => excelPoptavka());
+    on('[data-a="fak-filtr"]', 'click', () => { const C = spocti(R), v = spocitejViditelne(C); novaFakturace({polozky: v._ids.map(x => x[0]), podil: new Map(v._ids), kat: S.kat, popis: popisFiltru()}); });
+    on('[data-a="f-zrus"]', 'click', () => { Object.assign(S, {cast: '', dil: '', obor: '', kat: '', obj: '', pod: ''}); S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
     on('[data-a="upoz"]', 'change', e => { S.jenUpoz = e.target.checked; SCROLL = 0; prekresli(); });
     on('[data-a="v-zrus"]', 'click', () => { S.vyb.clear(); prekresli(); });
     on('[data-a="v-kat"]', 'click', () => zaraditDoDruhu([...S.vyb]));
@@ -1106,7 +1187,7 @@
       rows.forEach(r => { if (r.t === 'L') { const o = nast[r.s].obj; if (o) obj[r.id] = o; else if (!stary) delete obj[r.id]; } });
       const ids = new Set(rows.map(r => r.id)); Object.keys(obj).forEach(k => { if (!ids.has(k)) delete obj[k]; });
       const pol = rows.filter(r => r.t === 'P');
-      const data = {v: 2, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout, nazvy: hlavickaListu(l, nast[i]), cols: l.cols || [], dec: l.dec || [], colFill: l.colFill || [], hlBarvy: nast[i].hlavicka >= 0 && l.barvy ? l.barvy[nast[i].hlavicka] : null})), rows: naPole(rows)};
+      const data = {v: 2, nazev, soubor: f.name, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout, nazvy: hlavickaListu(l, nast[i]), cols: l.cols || [], dec: l.dec || [], colFill: l.colFill || [], hlBarvy: nast[i].hlavicka >= 0 && l.barvy ? l.barvy[nast[i].hlavicka] : null})), rows: naPole(rows)};
       w.text('Komprimuji ' + nf0.format(rows.length) + ' řádků…', 40);
       const gz = await gzip(JSON.stringify(data));
       await idbPut('r:' + id + ':' + rev, {gz, kdy: Date.now()});
@@ -1133,7 +1214,8 @@
     if (!R) return;
     const f = {id: 'fa' + uid(), rp: R.rec.id, cislo: '', firma: '', kat: o.kat || '', od: '', do: '', datum: new Date().toISOString().slice(0, 10), pozn: '', stav: 'rozpracovano', pol: [], kdo: kdo(), kdy: new Date().toISOString()};
     const n = faktury(R.rec.id).length + 1; f.cislo = 'F' + String(n).padStart(2, '0');
-    (o.polozky || []).forEach(id => { const r = R.byId.get(id); if (r && r.t === 'P') f.pol.push({r: id, mn: 0, jc: r.jc || 0}); });
+    if (o.popis) f.pozn = o.popis;
+    (o.polozky || []).forEach(id => { const r = R.byId.get(id); if (!r || r.t !== 'P') return; const l = {r: id, mn: 0, jc: r.jc || 0}; const p = o.podil && o.podil.get(id); if (p != null && p < 0.9999) l.p = Math.round(p * 10000) / 10000; f.pol.push(l); });
     S.vyb.clear();
     editorFaktury(null, f);
   }
@@ -1156,6 +1238,10 @@
         <label>Stav<select data-f="stav"><option value="rozpracovano"${F.stav !== 'schvaleno' ? ' selected' : ''}>rozpracováno</option><option value="schvaleno"${F.stav === 'schvaleno' ? ' selected' : ''}>schváleno</option></select></label>
         <label>Poznámka<input data-f="pozn" value="${esc(F.pozn)}"></label></div>
       <div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat>+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-soupis>⬆ Načíst soupis prací z Excelu</button><button type="button" class="rz-btn" data-mimo>+ Položka mimo rozpočet</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>
+      <div class="rz-fil rz-pct"><b>Fakturovat procentem:</b> <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
+        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">tato fakturace = % z rozpočtu</button>
+        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">hotovo celkem % (odečte dřívější)</button>
+        <span style="font-size:12.5px;color:var(--muted)">Platí pro všechny položky v této fakturaci. Jednotlivé řádky jde potom upravit ručně.</span></div>
       <div id="rz-fw"></div>
       <div class="rz-list rz-fl"><table><thead><tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Tato fakturace</th><th class="n">J. cena</th><th class="n">Celkem Kč</th><th class="n">Zbývá MJ</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
       `${nova ? '' : '<button type="button" class="rz-btn del" data-smaz>Smazat fakturaci</button>'}<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn zl" data-ok>Uložit fakturaci</button>`, 'siroky');
@@ -1177,7 +1263,7 @@
         const {r, w, zb} = kontrola(l), cl = (Number(l.mn) || 0) * (Number(l.jc) || 0); sum += cl;
         if (!r) mimo++; if (w.some(x => !x[0])) nad++; else if (w.some(x => x[0] === 'o' && r)) cena++;
         return `<tr class="${w.some(x => !x[0]) ? 'nad' : w.length ? 'cena' : ''}" data-i="${i}"><td>${esc(r ? r.k : '')}</td><td>${r ? esc(r.d) + (C0.obj[r.i] ? ' ' + obBadges(C0.obj[r.i]) : '') : `<input class="t" data-l="t" value="${esc(l.t || '')}" placeholder="popis práce">`}</td><td>${r ? esc(r.mj) : `<input class="t" style="min-width:50px" data-l="mj" value="${esc(l.mj || '')}">`}</td>
-          <td class="n">${r ? mnT(r.mn) : ''}</td><td class="n">${r ? mnT(jinde.get(l.r) || 0) : ''}</td><td class="n"><input data-l="mn" inputmode="decimal" value="${esc(l.mn === 0 ? '' : String(l.mn).replace('.', ','))}" placeholder="0"></td><td class="n"><input data-l="jc" inputmode="decimal" value="${esc(String(l.jc).replace('.', ','))}"></td><td class="n"><b>${kc(cl)}</b></td><td class="n">${zb == null ? '' : `<span style="color:${zb < -EPS ? 'var(--bad)' : 'inherit'}">${mnT(zb)}</span>`}</td>
+          <td class="n">${r ? mnT(r.mn) + (l.p ? `<div style="font-size:11.5px;color:var(--muted)" title="Výběr podle objektu/podlaží: patří sem jen tento podíl z výkazu výměr">z toho výběr ${mnT(r.mn * l.p)} (${Math.round(l.p * 100)} %)</div>` : '') : ''}</td><td class="n">${r ? mnT(jinde.get(l.r) || 0) : ''}</td><td class="n"><input data-l="mn" inputmode="decimal" value="${esc(l.mn === 0 ? '' : String(l.mn).replace('.', ','))}" placeholder="0"></td><td class="n"><input data-l="jc" inputmode="decimal" value="${esc(String(l.jc).replace('.', ','))}"></td><td class="n"><b>${kc(cl)}</b></td><td class="n">${zb == null ? '' : `<span style="color:${zb < -EPS ? 'var(--bad)' : 'inherit'}">${mnT(zb)}</span>`}</td>
           <td>${w.length ? w.map(x => `<div class="w${x[0] ? ' o' : ''}">⚠ ${esc(x[1])}</div>`).join('') : (Number(l.mn) ? '<span class="rz-ok">✓</span>' : '')}</td><td><button type="button" class="rz-btn mini" data-del="${i}" title="Odebrat řádek">✕</button></td></tr>`;
       }).join('') || '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:20px">Zatím žádné položky. Klikněte <b>+ Přidat položky z rozpočtu</b> nebo <b>Načíst soupis prací z Excelu</b>.</td></tr>';
       ov.querySelector('#rz-fs').innerHTML = `Celkem <b>${kc(sum)} Kč</b> · ${F.pol.length} položek`;
@@ -1196,6 +1282,13 @@
     });
     tb.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset.l) { e.preventDefault(); const all = [...tb.querySelectorAll('[data-l="mn"]')], k = all.indexOf(e.target); e.target.dispatchEvent(new Event('change', {bubbles: true})); const n = [...tb.querySelectorAll('[data-l="mn"]')][k + 1]; if (n) n.focus(); } });
     tb.addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d) { F.pol.splice(+d.dataset.del, 1); kresli(); } });
+    ov.querySelectorAll('[data-pct]').forEach(b => b.onclick = () => {
+      const p = cislo(ov.querySelector('#rz-pct').value);
+      if (p == null || p < 0) return toast('Zadejte procento, např. 30.');
+      let n = 0;
+      F.pol.forEach(l => { const r = l.r && R.byId.get(l.r); if (!r || r.mn == null) return; const zakl = r.mn * (l.p || 1); let v = zakl * p / 100; if (b.dataset.pct === 'celkem') v = Math.max(0, v - (jinde.get(l.r) || 0)); l.mn = Math.round(v * 1000) / 1000; n++; });
+      kresli(); toast(`Nastaveno u ${n} položek.`);
+    });
     ov.querySelector('[data-mimo]').onclick = () => { F.pol.push({r: '', t: '', mj: '', mn: 0, jc: 0}); kresli(); };
     ov.querySelector('[data-pridat]').onclick = () => vyberPolozek(F, ids => { ids.forEach(id => { if (F.pol.some(l => l.r === id)) return; const r = R.byId.get(id); F.pol.push({r: id, mn: 0, jc: r.jc || 0}); }); kresli(); });
     ov.querySelector('[data-soupis]').onclick = () => vyberSoubor('soupis', (f, listy, nast) => soupisDoFaktury(F, f, listy, nast, kresli));
@@ -1279,6 +1372,33 @@
     });
     ulozExcel(R.rec.nazev + (filtrAktivni() ? ' – výběr' : '') + ' – čerpání', [{n: 'Rozpočet', rows, urov, sirky: R.cols.map(c => Math.round(c.w / 7)).concat([7, 18, 12, 14, 14, 20])}]);
   }
+  function popisFiltru() {
+    const k = S.kat && najdiKat(R.rec.id, S.kat);
+    return [S.cast, S.dil, S.obor, k ? k.nazev : '', S.obj ? (S.obj === '-' ? 'bez objektu' : 'objekt ' + S.obj) : '', S.pod ? (S.pod === '-' ? 'bez podlaží' : S.pod) : '', S.q.trim() ? '„' + S.q.trim() + '“' : ''].filter(Boolean).join(' · ');
+  }
+  // poptávka: vyfiltrované položky ve stejných sloupcích jako nahraný rozpočet, s nadpisy a výkazem výměr, ale bez cen
+  function excelPoptavka() {
+    if (!R) return;
+    if (!R.lv) obrys(R);
+    const C = spocti(R), v = spocitejViditelne(C), sh = new Map(v._ids), rows = R.rows;
+    const ok = new Uint8Array(rows.length);
+    v._ids.forEach(([id]) => { const r = R.byId.get(id); ok[r.i] = 1; R.deti[r.i].forEach(d => ok[d] = 1); let p = r.p; while (p >= 0) { ok[p] = 1; p = rows[p].p; } });
+    const cenaSl = new Set();
+    (R.listy || []).forEach(li => { const m = li.map || {}; if (m.jc != null) cenaSl.add(m.jc); if (m.cc != null) cenaSl.add(m.cc); });
+    R.cols.forEach(c => { if (/cen|kc\b|celk/i.test(bezDia(c.n)) && !/^mno/i.test(bezDia(c.n))) cenaSl.add(R.v2 ? c.c : c.k); });
+    const dilek = S.obj || S.pod;
+    const hl = R.cols.map(c => c.n).concat(dilek ? ['Množství pro výběr'] : []);
+    const out = [['Poptávka – ' + R.rec.nazev], ['Výběr: ' + (popisFiltru() || 'celý rozpočet')], ['Ceny prosíme doplnit. Položek: ' + v._ids.length], [], hl], urov = [0, 0, 0, 0, 0];
+    for (let i = 0; i < rows.length; i++) {
+      if (!ok[i]) continue;
+      const r = rows[i];
+      if (r.t === 'L') { if (R.vicListu) { out.push(['List: ' + r.d]); urov.push(0); } continue; }
+      const b = R.cols.map(c => { const key = R.v2 ? c.c : c.k, x = R.v2 ? (r.c ? r.c[c.c] : '') : r[c.k]; return cenaSl.has(key) && typeof x === 'number' ? null : x; });
+      if (dilek) b.push(r.t === 'P' && r.mn != null ? Math.round(r.mn * (sh.get(r.id) || 0) * 1000) / 1000 : null);
+      out.push(b); urov.push(R.lv[i]);
+    }
+    ulozExcel('Poptávka – ' + (popisFiltru() || R.rec.nazev).slice(0, 80), [{n: 'Poptávka', rows: out, urov, sirky: R.cols.map(c => Math.round(c.w / 7)).concat(dilek ? [14] : [])}]);
+  }
   function excelFaktura(F) {
     const fi = (H.firmy() || []).find(z => z.id === F.firma);
     const rows = [['Fakturace', F.cislo], ['Firma', fi ? fi.firma : ''], ['Období', [F.od, F.do].filter(Boolean).join(' – ')], ['Rozpočet', R.rec.nazev], [], ['Kód', 'Popis', 'MJ', 'V rozpočtu', 'Tato fakturace', 'J. cena', 'Celkem Kč', 'Cena v rozpočtu', 'Upozornění']];
@@ -1290,7 +1410,7 @@
 
   /* ---------- rozhraní pro Management ---------- */
   window.CXRozp = {
-    pripoj(h) { H = h; setTimeout(() => { verzeSkriptu().then(() => prekresli()); dokoncitNahrani(); }, 2500); },
+    pripoj(h) { H = h; setTimeout(() => { verzeSkriptu().then(() => prekresli()); obnovZPocitace().then(dokoncitNahrani); }, 2500); },
     vykresli(el) { EL = el; vykresli(); verzeSkriptu().then(v => { if (v && v < SKRIPT_MIN) prekresli(); }); },
     obnov() {
       if (!EL || !EL.isConnected) return;
