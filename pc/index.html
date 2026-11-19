@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-blTeDlGOcvJYq7JXGcrkvUq3z6Yi7hGMhDa4gF/y9dE=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-06ZKafcjW1sgZjGoddGkT/VUqS2LoSm4G0gLfCJ4kqc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <script src="qr.js"></script>
 <script src="zprava.js"></script>
+<script src="dokumentace.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
 <style>
 /* Layout: stavební deník jako nástroj — souhrn nahoře, lidé, pak seznam úkolů po odpovědných osobách nebo harmonogram */
@@ -733,6 +734,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .zh-side .miss{background:#FFF4BF;border-color:#e0b100}.zh-warn{font-size:12px;color:#a35a00;font-weight:600}
 @media (max-width:760px){.zh-row{grid-template-columns:24px minmax(0,1fr) 30px}.zh-side{grid-column:2}}
 /* 4.28: Kalendář úkolů (jen k nahlédnutí) */
+#v-dok{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M8 13h8M8 16h5'/%3E%3C/svg%3E")}
 #v-kal{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
 .kl-top select,.kl-top input{font-size:13px;padding:6px 8px}.kl-top input[type=date]{width:140px}
 .kl-top .seg button{padding:6px 11px;font-size:13px;font-weight:600}.kl-top .seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
@@ -945,6 +947,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
+      <button type="button" id="v-dok" aria-pressed="false">Dokumentace</button>
     </div>
   </nav>
   <div class="grow"></div>
@@ -1170,7 +1173,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.50';
+  const APP_VERSION = '4.52';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1237,7 +1240,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     const x = Object.assign({version:1, project:clone(SEED.project), hmgInfo:clone(SEED.hmgInfo), hmg:[], hmgGroups:[], tasks:[], diary:[], log:[], zavady:[], tomb:{}}, d || {});
     if (!x.tomb || typeof x.tomb !== 'object') x.tomb = {};
     if (!x.project) x.project = clone(SEED.project); if (!x.hmgInfo) x.hmgInfo = clone(SEED.hmgInfo);
-    ['hmg','hmgGroups','tasks','diary','log','zavady'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
+    ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
     x.tasks.forEach(t => { t.id ||= uid(); t.hmg = (t.hmg || []).map(String); });
     // stejný úkol z porady může přijít dvakrát (zabudovaná data + sdílení) – nechat novější
     const bySrc = new Map();
@@ -1249,9 +1252,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return x;
   };
   /* ---------- slučování dat (stejný kód běží i na serveru Google) ---------- */
-  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id};
+  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id};
   function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {
@@ -1315,7 +1318,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy','kal'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
@@ -2384,9 +2387,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (peopleV2()) toast('Lidé sjednoceni na tým projektu');
     document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
-    ['list','diary','hmg','zavady','odeslane','firmy','kal'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
-    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal'].includes(S.view);
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů'}[S.view];
+    ['list','diary','hmg','zavady','odeslane','firmy','kal','dok'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
+    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal', 'dok'].includes(S.view);
+    $('#summary').style.display = $('.section-people').style.display = S.view === 'dok' ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
@@ -2402,7 +2406,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
     { const t = hledejInfo(S.q), el = $('#q-hint'); if (el) { el.textContent = t ? 'Hledám i: ' + t : ''; el.hidden = !t; } }
     if (S.view !== 'diary' && $('#j-text')) dGrab();
-    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
+    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
   renderList = (f => function () { f(); personSimpleBox(); })(renderList);
@@ -3123,6 +3127,38 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <span class="kl-li">${gs.length < late.length ? gs.length + ' různých úkolů · ' : ''}nejstarší od ${fmtD(old)} (${dayDiff(old, today)} ${dn(dayDiff(old, today))})</span><span class="sp"></span><span class="kl-lb">${open ? 'Skrýt seznam ▴' : 'Zobrazit seznam ▾'}</span></button>
       <div class="kl-lp">${ppl.map(([n, c]) => `<button type="button" data-ko="${esc(n)}" aria-pressed="${KL.osoba === n}" title="${KL.osoba === n ? 'Zrušit výběr osoby' : 'Ukázat jen úkoly této osoby'}">${esc(n)}<b>${c}</b>${KL.osoba === n ? ' ✕' : ''}</button>`).join('')}</div>
       ${open ? `<div class="kl-ll">${rows}</div>` : ''}</div>`;
+  }
+  /* ---------- 4.52: Dokumentace (projektová dokumentace, prohlížeč výkresů) – kód v dokumentace.js, data D.dokumenty ---------- */
+  let dokHost = null;
+  function dokPripoj() {
+    if (dokHost || !window.CXDok) return;
+    dokHost = {
+      seznam: () => D.dokumenty || [],
+      upsert: recs => { const m = new Map((D.dokumenty || []).map(r => [r.id, r])); recs.forEach(r => m.set(r.id, r)); D.dokumenty = [...m.values()]; commit(); },
+      smaz: ids => { const x = new Set(ids); D.dokumenty = (D.dokumenty || []).filter(r => !x.has(r.id)); commit(); },
+      kdo: () => me(),
+      pripojeno: () => !!SY && STAVBA === DEF_STAVBA,
+      ro: () => RO(),
+      toast: m => toast(m),
+      // nahrávání a stahování po dílech trvá déle než běžná synchronizace, proto vlastní volání s delším limitem
+      volej: async body => {
+        const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 180000);
+        try {
+          const r = await fetch(SY.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: SY.key}, body)), signal: ctl.signal, redirect: 'follow'});
+          const t = await r.text();
+          try { return JSON.parse(t); } catch (e) { throw new Error(/<html|<!doctype/i.test(t) ? 'Google vrátil stránku místo dat (zkuste znovu).' : 'Neplatná odpověď serveru.'); }
+        } catch (e) { throw new Error(e.name === 'AbortError' ? 'Google neodpověděl včas.' : e.message || 'Bez připojení.'); }
+        finally { clearTimeout(tm); }
+      },
+      zprava: dataUrl => { if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu. Výřez si zatím zkopírujte nebo stáhněte.'); return; } NZ.fotky = NZ.fotky.concat([dataUrl]).slice(-12); novaZprava(); toast('Výřez je ve zprávě mezi fotkami. Vyberte komu a napište text.'); },
+    };
+    CXDok.pripoj(dokHost);
+  }
+  function renderDok() {
+    const v = $('#view');
+    if (!window.CXDok) { v.innerHTML = '<div class="sl"><p style="padding:20px">Chybí část programu pro Dokumentaci. Obnovte stránku (F5).</p></div>'; return; }
+    dokPripoj();
+    if (v.querySelector('.dk')) CXDok.obnov(); else CXDok.vykresli(v);
   }
   function renderKal() {
     const v = $('#view'), [od, dd] = klRange(), all = klItems(), its = all.filter(x => x.end >= od && x.end <= dd);
@@ -4282,10 +4318,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 12
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 13
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 12;
+const SKRIPT_VERZE = 13;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -4295,6 +4331,10 @@ function doPost(e) {
 function doPost_(e) {
   let b = {};
   try { b = JSON.parse(e.postData.contents); } catch (x) {}
+  if (b.akce === 'dok_start') return dokStart_(b);
+  if (b.akce === 'dok_cast') return dokCast_(b);
+  if (b.akce === 'dok_cti') return dokCti_(b);
+  if (b.akce === 'dok_smaz') return dokSmaz_(b);
   if (b.akce === 'foto' || b.akce === 'mail' || b.akce === 'zapis') {
     const lock = LockService.getScriptLock();
     lock.waitLock(25000);
@@ -4333,6 +4373,86 @@ function foto_(b) {
   try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
   const id = f.getId();
   return json_({id: id, url: 'https://drive.google.com/file/d/' + id + '/view', thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800'});
+}
+// 13: Dokumentace – velké soubory (PDF, DWG) se nahrávají po dílech přímo na Disk Google (složka „Constructo – dokumentace“
+// se stejnými podsložkami jako v aplikaci) a po dílech se i stahují. Používá Drive API přes UrlFetch (oprávnění drive už skript má).
+function dokSlozka_(cesta) {
+  let s = slozka_(DriveApp.getRootFolder(), 'Constructo – dokumentace');
+  (Array.isArray(cesta) ? cesta : []).slice(0, 30).forEach(n => { n = String(n || '').trim().slice(0, 200); if (n) s = slozka_(s, n); });
+  return s;
+}
+function dokStart_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const sl = dokSlozka_(b.cesta), mime = String(b.mime || 'application/octet-stream');
+  const meta = {name: String(b.nazev || 'soubor').slice(0, 250), parents: [sl.getId()], mimeType: mime};
+  const r = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id', {
+    method: 'post', contentType: 'application/json; charset=UTF-8', payload: JSON.stringify(meta), muteHttpExceptions: true,
+    headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(Number(b.vel) || 0)}});
+  if (r.getResponseCode() !== 200) { const t = r.getContentText(); if (r.getResponseCode() === 403 && /accessNotConfigured|has not been used|is disabled/.test(t)) dokZapnoutDrive_(); return json_({error: 'Disk Google ' + r.getResponseCode() + ': ' + t.slice(0, 300)}); }
+  const h = r.getHeaders(), loc = h.Location || h.location;
+  if (!loc) return json_({error: 'Disk Google nevrátil adresu pro nahrání.'});
+  const up = Utilities.getUuid();
+  CacheService.getScriptCache().put('dokup:' + up, loc, 21600);
+  return json_({up: up});
+}
+function dokCast_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const loc = CacheService.getScriptCache().get('dokup:' + b.up);
+  if (!loc) return json_({restart: true});
+  const od = Number(b.od) || 0, celkem = Number(b.celkem) || 0, data = b.data ? Utilities.base64Decode(b.data) : [];
+  const o = {method: 'put', muteHttpExceptions: true, followRedirects: false, contentType: 'application/octet-stream', headers: {}};
+  if (data.length) { o.payload = data; o.headers['Content-Range'] = 'bytes ' + od + '-' + (od + data.length - 1) + '/' + celkem; }
+  else o.headers['Content-Range'] = 'bytes */' + celkem;
+  const r = UrlFetchApp.fetch(loc, o), kod = r.getResponseCode();
+  if (kod === 308) { const rg = String(r.getHeaders().Range || r.getHeaders().range || ''); const m = rg.split('-')[1]; return json_({ok: true, dalsi: m ? Number(m) + 1 : 0}); }
+  if (kod === 200 || kod === 201) {
+    const id = JSON.parse(r.getContentText()).id;
+    try { DriveApp.getFileById(id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+    CacheService.getScriptCache().remove('dokup:' + b.up);
+    return json_({id: id, url: 'https://drive.google.com/file/d/' + id + '/view'});
+  }
+  if (kod === 404 || kod === 410) return json_({restart: true});
+  return json_({error: 'Disk Google ' + kod + ': ' + r.getContentText().slice(0, 300)});
+}
+function dokCti_(b) {
+  const ro = !!b.key && b.key === PropertiesService.getScriptProperties().getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const id = String(b.id || '').replace(/[^A-Za-z0-9_-]/g, '');
+  const r = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media&supportsAllDrives=true', {
+    muteHttpExceptions: true, headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), Range: 'bytes=' + (Number(b.od) || 0) + '-' + (Number(b.do) || 0)}});
+  const kod = r.getResponseCode();
+  if (kod !== 200 && kod !== 206) return json_({error: 'Disk Google ' + kod + ': ' + r.getContentText().slice(0, 200)});
+  const cr = String(r.getHeaders()['Content-Range'] || r.getHeaders()['content-range'] || ''), bytes = r.getContent();
+  return json_({data: Utilities.base64Encode(bytes), celkem: cr ? Number(cr.split('/')[1]) : bytes.length});
+}
+// Když Google hlásí, že Drive API není pro skript zapnuté, zapne ho skript sám (přidá službu Drive do appsscript.json přes Apps Script API).
+function dokZapnoutDrive_() {
+  const c = CacheService.getScriptCache();
+  if (c.get('dokdrive')) return; c.put('dokdrive', '1', 21600);
+  try {
+    const api = 'https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId();
+    const vol = (metoda, cesta, telo) => {
+      const o = {method: metoda, headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken()}, muteHttpExceptions: true};
+      if (telo) { o.contentType = 'application/json'; o.payload = JSON.stringify(telo); }
+      const x = UrlFetchApp.fetch(api + cesta, o);
+      if (x.getResponseCode() >= 300) throw new Error('API ' + x.getResponseCode());
+      return x.getContentText() ? JSON.parse(x.getContentText()) : {};
+    };
+    const soubory = (vol('get', '/content').files || []).map(f => ({name: f.name, type: f.type, source: f.source}));
+    const man = soubory.filter(f => f.type === 'JSON' && f.name === 'appsscript')[0];
+    if (!man) return;
+    const m = JSON.parse(man.source), dep = m.dependencies || {}, sl = dep.enabledAdvancedServices || [];
+    if (sl.some(x => x.serviceId === 'drive')) return;
+    sl.push({userSymbol: 'Drive', serviceId: 'drive', version: 'v3'}); dep.enabledAdvancedServices = sl; m.dependencies = dep;
+    man.source = JSON.stringify(m, null, 2);
+    vol('put', '/content', {files: soubory});
+  } catch (x) {}
+}
+function dokSmaz_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  let n = 0;
+  (Array.isArray(b.ids) ? b.ids : []).slice(0, 500).forEach(id => { try { DriveApp.getFileById(String(id)).setTrashed(true); n++; } catch (x) {} });
+  return json_({ok: true, smazano: n});
 }
 // Zvací kódy: administrátor v programu vytvoří krátký kód pro kolegu, aplikace ho tady vymění za připojení.
 // Kód platí 14 dní a dá se použít nejvýš na 20 zařízeních.
@@ -6761,6 +6881,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
     $('#pp-mail').onclick = () => ppMail(null);
   })();
 
+  setTimeout(() => { try { dokPripoj(); } catch (e) {} }, 1500);   // rozpracované nahrávání dokumentace pokračuje i mimo záložku
   /* ---------- napojení ---------- */
   const menu = $('#menu-pop');
   const toggleMenu = on => { menu.hidden = !on; $('#btn-menu').setAttribute('aria-expanded', on); };
@@ -6825,7 +6946,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   const setView = v => { if (v === 'list' && S.view !== 'list') S.ukSrc = 'all'; S.view = v; store.set('hyb-view', v); render();
     const sec = $('#view-title').closest('section'), r = sec.getBoundingClientRect();
     if (r.top > innerHeight * .55 || r.top < 0) window.scrollTo({top: scrollY + r.top - (innerWidth > 900 ? 0 : $('.side').offsetHeight) - 8, behavior: 'smooth'}); };
-  ['list','diary','hmg','zavady','odeslane','firmy','kal'].forEach(k => $('#v-' + k).onclick = () => setView(k));
+  ['list','diary','hmg','zavady','odeslane','firmy','kal','dok'].forEach(k => $('#v-' + k).onclick = () => setView(k));
   zavadyGo = (o) => { Object.assign(ZF, o || {}); setView('zavady'); };
   firmyGo = () => setView('firmy');
   $('#uk-src').querySelectorAll('[data-uk]').forEach(b => b.onclick = () => { S.ukSrc = b.dataset.uk; store.set('hyb-uksrc', S.ukSrc); render(); });

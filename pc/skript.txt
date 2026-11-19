@@ -1,7 +1,7 @@
-// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 12
+// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 13
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 12;
+const SKRIPT_VERZE = 13;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -11,6 +11,10 @@ function doPost(e) {
 function doPost_(e) {
   let b = {};
   try { b = JSON.parse(e.postData.contents); } catch (x) {}
+  if (b.akce === 'dok_start') return dokStart_(b);
+  if (b.akce === 'dok_cast') return dokCast_(b);
+  if (b.akce === 'dok_cti') return dokCti_(b);
+  if (b.akce === 'dok_smaz') return dokSmaz_(b);
   if (b.akce === 'foto' || b.akce === 'mail' || b.akce === 'zapis') {
     const lock = LockService.getScriptLock();
     lock.waitLock(25000);
@@ -49,6 +53,86 @@ function foto_(b) {
   try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
   const id = f.getId();
   return json_({id: id, url: 'https://drive.google.com/file/d/' + id + '/view', thumb: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800'});
+}
+// 13: Dokumentace – velké soubory (PDF, DWG) se nahrávají po dílech přímo na Disk Google (složka „Constructo – dokumentace“
+// se stejnými podsložkami jako v aplikaci) a po dílech se i stahují. Používá Drive API přes UrlFetch (oprávnění drive už skript má).
+function dokSlozka_(cesta) {
+  let s = slozka_(DriveApp.getRootFolder(), 'Constructo – dokumentace');
+  (Array.isArray(cesta) ? cesta : []).slice(0, 30).forEach(n => { n = String(n || '').trim().slice(0, 200); if (n) s = slozka_(s, n); });
+  return s;
+}
+function dokStart_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const sl = dokSlozka_(b.cesta), mime = String(b.mime || 'application/octet-stream');
+  const meta = {name: String(b.nazev || 'soubor').slice(0, 250), parents: [sl.getId()], mimeType: mime};
+  const r = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id', {
+    method: 'post', contentType: 'application/json; charset=UTF-8', payload: JSON.stringify(meta), muteHttpExceptions: true,
+    headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(Number(b.vel) || 0)}});
+  if (r.getResponseCode() !== 200) { const t = r.getContentText(); if (r.getResponseCode() === 403 && /accessNotConfigured|has not been used|is disabled/.test(t)) dokZapnoutDrive_(); return json_({error: 'Disk Google ' + r.getResponseCode() + ': ' + t.slice(0, 300)}); }
+  const h = r.getHeaders(), loc = h.Location || h.location;
+  if (!loc) return json_({error: 'Disk Google nevrátil adresu pro nahrání.'});
+  const up = Utilities.getUuid();
+  CacheService.getScriptCache().put('dokup:' + up, loc, 21600);
+  return json_({up: up});
+}
+function dokCast_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const loc = CacheService.getScriptCache().get('dokup:' + b.up);
+  if (!loc) return json_({restart: true});
+  const od = Number(b.od) || 0, celkem = Number(b.celkem) || 0, data = b.data ? Utilities.base64Decode(b.data) : [];
+  const o = {method: 'put', muteHttpExceptions: true, followRedirects: false, contentType: 'application/octet-stream', headers: {}};
+  if (data.length) { o.payload = data; o.headers['Content-Range'] = 'bytes ' + od + '-' + (od + data.length - 1) + '/' + celkem; }
+  else o.headers['Content-Range'] = 'bytes */' + celkem;
+  const r = UrlFetchApp.fetch(loc, o), kod = r.getResponseCode();
+  if (kod === 308) { const rg = String(r.getHeaders().Range || r.getHeaders().range || ''); const m = rg.split('-')[1]; return json_({ok: true, dalsi: m ? Number(m) + 1 : 0}); }
+  if (kod === 200 || kod === 201) {
+    const id = JSON.parse(r.getContentText()).id;
+    try { DriveApp.getFileById(id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+    CacheService.getScriptCache().remove('dokup:' + b.up);
+    return json_({id: id, url: 'https://drive.google.com/file/d/' + id + '/view'});
+  }
+  if (kod === 404 || kod === 410) return json_({restart: true});
+  return json_({error: 'Disk Google ' + kod + ': ' + r.getContentText().slice(0, 300)});
+}
+function dokCti_(b) {
+  const ro = !!b.key && b.key === PropertiesService.getScriptProperties().getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const id = String(b.id || '').replace(/[^A-Za-z0-9_-]/g, '');
+  const r = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media&supportsAllDrives=true', {
+    muteHttpExceptions: true, headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), Range: 'bytes=' + (Number(b.od) || 0) + '-' + (Number(b.do) || 0)}});
+  const kod = r.getResponseCode();
+  if (kod !== 200 && kod !== 206) return json_({error: 'Disk Google ' + kod + ': ' + r.getContentText().slice(0, 200)});
+  const cr = String(r.getHeaders()['Content-Range'] || r.getHeaders()['content-range'] || ''), bytes = r.getContent();
+  return json_({data: Utilities.base64Encode(bytes), celkem: cr ? Number(cr.split('/')[1]) : bytes.length});
+}
+// Když Google hlásí, že Drive API není pro skript zapnuté, zapne ho skript sám (přidá službu Drive do appsscript.json přes Apps Script API).
+function dokZapnoutDrive_() {
+  const c = CacheService.getScriptCache();
+  if (c.get('dokdrive')) return; c.put('dokdrive', '1', 21600);
+  try {
+    const api = 'https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId();
+    const vol = (metoda, cesta, telo) => {
+      const o = {method: metoda, headers: {Authorization: 'Bearer ' + ScriptApp.getOAuthToken()}, muteHttpExceptions: true};
+      if (telo) { o.contentType = 'application/json'; o.payload = JSON.stringify(telo); }
+      const x = UrlFetchApp.fetch(api + cesta, o);
+      if (x.getResponseCode() >= 300) throw new Error('API ' + x.getResponseCode());
+      return x.getContentText() ? JSON.parse(x.getContentText()) : {};
+    };
+    const soubory = (vol('get', '/content').files || []).map(f => ({name: f.name, type: f.type, source: f.source}));
+    const man = soubory.filter(f => f.type === 'JSON' && f.name === 'appsscript')[0];
+    if (!man) return;
+    const m = JSON.parse(man.source), dep = m.dependencies || {}, sl = dep.enabledAdvancedServices || [];
+    if (sl.some(x => x.serviceId === 'drive')) return;
+    sl.push({userSymbol: 'Drive', serviceId: 'drive', version: 'v3'}); dep.enabledAdvancedServices = sl; m.dependencies = dep;
+    man.source = JSON.stringify(m, null, 2);
+    vol('put', '/content', {files: soubory});
+  } catch (x) {}
+}
+function dokSmaz_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  let n = 0;
+  (Array.isArray(b.ids) ? b.ids : []).slice(0, 500).forEach(id => { try { DriveApp.getFileById(String(id)).setTrashed(true); n++; } catch (x) {} });
+  return json_({ok: true, smazano: n});
 }
 // Zvací kódy: administrátor v programu vytvoří krátký kód pro kolegu, aplikace ho tady vymění za připojení.
 // Kód platí 14 dní a dá se použít nejvýš na 20 zařízeních.
@@ -135,7 +219,7 @@ function uloz_(p, d) {
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {

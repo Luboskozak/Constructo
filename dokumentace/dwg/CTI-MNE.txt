@@ -1,0 +1,5 @@
+Převod výkresů DWG/DXF na obrázek v prohlížeči (Dokumentace v Constructu).
+Knihovna @mlightcad/libredwg-web 0.9.0 (na základě GNU LibreDWG), licence GPL-3.0-or-later.
+Zdrojový kód: https://github.com/mlightcad/libredwg-web a https://www.gnu.org/software/libredwg/
+Soubory jsou beze změny z balíčku npm (dist/libredwg-web.js, wasm/libredwg-web.js, wasm/libredwg-web.wasm).
+Spouští se jen v samostatném vlákně (dokumentace/dwg-worker.js), když uživatel otevře DWG nebo DXF.

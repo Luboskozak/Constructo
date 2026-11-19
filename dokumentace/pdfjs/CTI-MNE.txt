@@ -1,0 +1,2 @@
+PDF.js 5.4.624 (Mozilla, licence Apache-2.0, viz LICENSE), sestavení „legacy“ kvůli starším Safari.
+Beze změny z balíčku npm pdfjs-dist. Používá ho prohlížeč výkresů v Dokumentaci (pc/dokumentace.js).

@@ -13,6 +13,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET' || u.origin !== location.origin) return;
+  if (u.pathname.startsWith('/dokumentace/')) return;   // Dokumentace (velké PDF/DWG knihovny) jde vždy rovnou ze sítě, bez 5s limitu a bez ukládání
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     try {

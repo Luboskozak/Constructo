@@ -1,0 +1,858 @@
+/* Constructo – Dokumentace: projektová dokumentace (složky, soubory, výkresy PDF/DWG) a prohlížeč výkresů
+   se zvětšením, kreslením (tužka, kolečko, šipka, text) a výřezem, který jde zkopírovat, uložit nebo poslat ve zprávě.
+   Používá Management (/pc/, záložka Dokumentace) i Deník (/dokumentace/ uvnitř Deníku). Data = D.dokumenty (synchronizace
+   jako ostatní data), soubory na Disku Google ve složce „Constructo – dokumentace“ (skript Google od verze 13: akce dok_*),
+   kopie otevřených souborů v prohlížeči (IndexedDB), aby se velké výkresy podruhé otevřely hned. */
+(() => {
+  'use strict';
+  const BASE = '/dokumentace/';
+  const KUS = 5 * 1024 * 1024;               // velikost dílu při nahrávání/stahování přes skript Google (násobek 256 KiB)
+  const SKRIPT_MIN = 13;
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  const pripona = n => { const m = /\.([a-z0-9]{1,6})$/i.exec(n || ''); return m ? m[1].toLowerCase() : ''; };
+  const velTxt = b => !b && b !== 0 ? '' : b < 1024 ? b + ' B' : b < 1048576 ? Math.round(b / 1024) + ' kB' : b < 1073741824 ? (b / 1048576).toFixed(b < 10485760 ? 1 : 0).replace('.', ',') + ' MB' : (b / 1073741824).toFixed(2).replace('.', ',') + ' GB';
+  const datTxt = s => { if (!s) return ''; const d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric'}); };
+  const cmp = (a, b) => String(a).localeCompare(String(b), 'cs', {numeric: true, sensitivity: 'base'});
+  const bezDia = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const druh = n => { const p = pripona(n); return p === 'pdf' ? 'pdf' : p === 'dwg' ? 'dwg' : p === 'dxf' ? 'dxf' : /^(jpe?g|png|gif|webp|bmp)$/.test(p) ? 'obr' : /^(docx?|odt|rtf|txt)$/.test(p) ? 'text' : /^(xlsx?|ods|csv)$/.test(p) ? 'tab' : /^(zip|rar|7z)$/.test(p) ? 'zip' : 'jiny'; };
+  const IKONA = {slozka: '📁', pdf: 'PDF', dwg: 'DWG', dxf: 'DXF', obr: 'IMG', text: 'DOC', tab: 'XLS', zip: 'ZIP', jiny: '…'};
+  const lzeOtevrit = n => ['pdf', 'dwg', 'dxf', 'obr'].includes(druh(n));
+
+  /* ---------- styl ---------- */
+  const CSS = `
+.dk{display:flex;flex-direction:column;gap:10px;position:relative}
+.dk-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dk-top .sp{flex:1}
+.dk-cesta{display:flex;flex-wrap:wrap;gap:2px;align-items:center;font-size:15px;font-weight:700;min-height:36px}
+.dk-cesta button{border:0;background:none;font:inherit;padding:4px 6px;border-radius:6px;cursor:pointer;color:var(--ink)}
+.dk-cesta button:hover{background:var(--soft)}.dk-cesta .sep{color:var(--muted);font-weight:400}
+.dk-cesta button:last-child{background:var(--accent,#F4D23C);color:#16191c}
+.dk-q{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:8px 11px;min-width:220px;background:var(--panel);color:var(--ink)}
+.dk-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);border-radius:10px;padding:8px 13px;background:var(--panel);color:var(--ink);cursor:pointer;white-space:nowrap}
+.dk-btn:hover{border-color:#16191c}.dk-btn.hl{background:#16191c;color:#fff;border-color:#16191c}.dk-btn.hl b{background:#F4D23C;color:#16191c;border-radius:5px;width:20px;height:20px;display:inline-grid;place-items:center}
+.dk-btn.zl{background:#F4D23C;border-color:#F4D23C;color:#16191c}.dk-btn[disabled]{opacity:.45;cursor:default}
+.dk-btn.mini{font-size:12.5px;padding:5px 9px;font-weight:600}
+.dk-drop{border:2px dashed var(--line);border-radius:14px;padding:14px;text-align:center;color:var(--muted);font-size:13.5px;background:var(--panel)}
+.dk.tahne .dk-drop{border-color:#16191c;background:#FFF8D6;color:#16191c}
+.dk-tahne-pl{display:none;position:absolute;inset:0;z-index:5;border:3px dashed #16191c;border-radius:16px;background:rgba(244,210,60,.25);place-items:center;font-size:20px;font-weight:800;color:#16191c;pointer-events:none}
+.dk.tahne .dk-tahne-pl{display:grid}
+.dk-list{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.dk-hd,.dk-row{display:grid;grid-template-columns:44px minmax(0,1fr) 96px 150px 96px 150px;gap:10px;align-items:center;padding:7px 12px}
+.dk-hd{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);font-weight:700}
+.dk-hd button{border:0;background:none;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;padding:0;text-align:left}
+.dk-row{border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}.dk-row:last-child{border-bottom:0}
+.dk-row:hover{background:var(--soft)}
+.dk-ik{width:38px;height:30px;border-radius:7px;display:grid;place-items:center;font-size:10.5px;font-weight:800;letter-spacing:.02em;background:#eceae3;color:#16191c}
+.dk-ik.slozka{background:none;font-size:24px}.dk-ik.pdf{background:#e34b3f;color:#fff}.dk-ik.dwg,.dk-ik.dxf{background:#2f6fb5;color:#fff}.dk-ik.obr{background:#6aa84f;color:#fff}.dk-ik.tab{background:#1f7a46;color:#fff}.dk-ik.text{background:#3b5da8;color:#fff}
+.dk-n b{display:block;font-weight:600;word-break:break-word}.dk-n small{display:block;color:var(--muted);font-size:12px}
+.dk-m{font-size:12.5px;color:var(--muted)}
+.dk-a{display:flex;gap:4px;justify-content:flex-end}
+.dk-a button{border:1px solid transparent;background:none;border-radius:7px;padding:4px 7px;cursor:pointer;font-size:14px;color:var(--ink)}
+.dk-a button:hover{border-color:var(--line);background:var(--panel)}
+.dk-row.ceka{opacity:.65;cursor:default}
+.dk-empty{padding:34px 16px;text-align:center;color:var(--muted)}.dk-empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.dk-fronta{position:fixed;right:18px;bottom:18px;z-index:1500;width:min(400px,calc(100vw - 36px));background:#16191c;color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:13.5px}
+.dk-fronta b{display:block;font-size:14px;margin-bottom:6px}.dk-fronta .bar{height:6px;border-radius:3px;background:#3a3f45;overflow:hidden;margin:6px 0}
+.dk-fronta .bar i{display:block;height:100%;background:#F4D23C;width:0;transition:width .3s}.dk-fronta small{color:#c9c9c9;display:block}
+.dk-fronta button{background:none;border:1px solid #555;color:#fff;border-radius:8px;padding:3px 9px;font:inherit;font-size:12.5px;cursor:pointer;margin-top:6px}
+.dk-info{font-size:13px;color:#7a5600;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:8px 12px}
+@media (max-width:900px){.dk-hd{display:none}.dk-row{grid-template-columns:44px minmax(0,1fr) auto}.dk-row .dk-m{display:none}}
+/* prohlížeč */
+.dkv{position:fixed;inset:0;z-index:3000;background:#2a2d31;display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:250px minmax(0,1fr);font-family:inherit;color:#16191c}
+.dkv.bez-boku{grid-template-columns:0 minmax(0,1fr)}
+.dkv-bar{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;background:#16191c;color:#fff}
+.dkv-bar .nm{font-weight:700;font-size:14.5px;max-width:28vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 6px}
+.dkv-bar .sp{flex:1}
+.dkv-b{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:38px;height:38px;padding:0 10px;border-radius:9px;border:1px solid #3a3f45;background:#24282d;color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.dkv-b:hover{border-color:#8a8f96}.dkv-b[aria-pressed=true]{background:#F4D23C;border-color:#F4D23C;color:#16191c}
+.dkv-b.zl{background:#F4D23C;border-color:#F4D23C;color:#16191c}.dkv-b[disabled]{opacity:.4;cursor:default}
+.dkv-b svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.dkv-g{display:flex;gap:4px;align-items:center;padding:0 6px;border-left:1px solid #3a3f45}
+.dkv-bar .zoom{min-width:56px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.dkv-barva{width:24px;height:24px;border-radius:50%;border:2px solid #16191c;box-shadow:0 0 0 2px #3a3f45;cursor:pointer;padding:0}
+.dkv-barva[aria-pressed=true]{box-shadow:0 0 0 2px #fff}
+.dkv-side{background:#f4f4f1;overflow:auto;border-right:1px solid #ccc;min-height:0}
+.dkv-side h4{margin:10px 12px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#666}
+.dkv-side button{display:flex;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:7px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:#16191c}
+.dkv-side button:hover{background:#e8e6df}.dkv-side button.on{background:#F4D23C;font-weight:700}
+.dkv-side .dk-ik{width:32px;height:24px;font-size:9.5px;flex:none}
+.dkv-side span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dkv-stage{position:relative;overflow:hidden;background:#5b5f64;touch-action:none;user-select:none;-webkit-user-select:none;min-height:0}
+.dkv-stage canvas,.dkv-stage svg.ann{position:absolute;left:0;top:0;transform-origin:0 0}
+.dkv-stage canvas.zakl{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.35);image-rendering:auto}
+.dkv-stage .vyb{position:absolute;border:2px dashed #F4D23C;background:rgba(244,210,60,.15);pointer-events:none;display:none;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}
+.dkv-stage[data-n=posun]{cursor:grab}.dkv-stage[data-n=posun].drz{cursor:grabbing}
+.dkv-stage[data-n=tuzka],.dkv-stage[data-n=kolecko],.dkv-stage[data-n=sipka],.dkv-stage[data-n=vyrez]{cursor:crosshair}.dkv-stage[data-n=text]{cursor:text}
+.dkv-msg{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:16px;text-align:center;padding:20px}
+.dkv-msg .bx{background:#16191c;border-radius:14px;padding:20px 24px;max-width:520px;line-height:1.5}
+.dkv-msg .bar{height:8px;border-radius:4px;background:#3a3f45;overflow:hidden;margin-top:12px}.dkv-msg .bar i{display:block;height:100%;background:#F4D23C;width:0}
+.dkv-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:rgba(22,25,28,.9);color:#fff;border-radius:10px;padding:7px 13px;font-size:13px;pointer-events:none;white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+.dkv-txt{position:absolute;z-index:3;font:inherit;font-size:16px;padding:4px 7px;border:2px solid #F4D23C;border-radius:6px;min-width:160px;background:#fff}
+.dkv-out{position:fixed;inset:0;z-index:3100;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:16px}
+.dkv-out .bx{background:#fff;border-radius:16px;padding:16px;max-width:min(920px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;gap:12px;color:#16191c}
+.dkv-out h3{margin:0;font-size:18px}.dkv-out img{max-width:100%;max-height:calc(100vh - 230px);object-fit:contain;border:1px solid #ddd;border-radius:8px;align-self:center;background:#fff}
+.dkv-out .ak{display:flex;flex-wrap:wrap;gap:8px}.dkv-out .ak .dk-btn{font-size:14.5px}
+.dkv-out small{color:#666}
+@media (max-width:900px){.dkv{grid-template-columns:0 minmax(0,1fr)}.dkv-side{display:none}.dkv-bar .nm{max-width:40vw}}
+`;
+  function styl() { if (document.getElementById('dk-styl')) return; const s = document.createElement('style'); s.id = 'dk-styl'; s.textContent = CSS; document.head.appendChild(s); }
+
+  /* ---------- úložiště souborů v prohlížeči (IndexedDB) ---------- */
+  let dbP = null;
+  function idb() {
+    if (dbP) return dbP;
+    dbP = new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open('cx-dokumentace', 1);
+        r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains('soubory')) d.createObjectStore('soubory'); if (!d.objectStoreNames.contains('fronta')) d.createObjectStore('fronta'); };
+        r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+      } catch (e) { rej(e); }
+    });
+    dbP.catch(() => { dbP = null; });
+    return dbP;
+  }
+  async function idbOp(st, mode, fn) {
+    const d = await idb();
+    return new Promise((res, rej) => { const t = d.transaction(st, mode), s = t.objectStore(st); const r = fn(s); t.oncomplete = () => res(r && 'result' in r ? r.result : undefined); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); });
+  }
+  const cacheGet = k => idbOp('soubory', 'readonly', s => s.get(k)).then(x => x || null).catch(() => null);
+  const cachePut = (k, blob) => idbOp('soubory', 'readwrite', s => s.put({blob, kdy: Date.now(), vel: blob.size}, k)).then(() => uklidCache()).catch(() => {});
+  const cacheDel = k => idbOp('soubory', 'readwrite', s => s.delete(k)).catch(() => {});
+  let uklidT = 0;
+  async function uklidCache() {   // drží nejvýš ~1,5 GB naposledy otevřených souborů (místní soubory bez Disku se nemažou)
+    if (Date.now() - uklidT < 60000) return; uklidT = Date.now();
+    try {
+      const d = await idb(), vse = [];
+      await new Promise(res => { const c = d.transaction('soubory').objectStore('soubory').openCursor(); c.onsuccess = () => { const x = c.result; if (!x) return res(); vse.push({k: x.key, kdy: x.value.kdy, vel: x.value.vel || 0}); x.continue(); }; c.onerror = () => res(); });
+      let sum = vse.reduce((a, x) => a + x.vel, 0);
+      vse.filter(x => !String(x.k).startsWith('mistni:')).sort((a, b) => a.kdy - b.kdy).forEach(x => { if (sum > 1.5e9) { sum -= x.vel; cacheDel(x.k); } });
+    } catch (e) {}
+  }
+  const frontaVse = () => idb().then(d => new Promise(res => { const out = []; const c = d.transaction('fronta').objectStore('fronta').openCursor(); c.onsuccess = () => { const x = c.result; if (!x) return res(out); out.push(x.value); x.continue(); }; c.onerror = () => res(out); })).catch(() => []);
+  const frontaPut = q => idbOp('fronta', 'readwrite', s => s.put(q, q.qid));
+  const frontaDel = qid => idbOp('fronta', 'readwrite', s => s.delete(qid)).catch(() => {});
+
+  const b64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
+  const z64 = s => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+
+  /* ---------- stav modulu ---------- */
+  let H = null, EL = null;
+  const S = {slozka: '', q: '', raz: 'nazev', smer: 1, fronta: [], bezi: false, verze: 0, verzeT: 0, chyba: '', prubeh: null};
+  const seznam = () => (H && H.seznam() || []).filter(r => r && r.id);
+  const najdi = id => seznam().find(r => r.id === id);
+  const deti = id => seznam().filter(r => (r.rodic || '') === (id || ''));
+  const cestaZaznamu = id => { const out = []; let r = najdi(id), n = 0; while (r && n++ < 50) { out.unshift(r); r = r.rodic ? najdi(r.rodic) : null; } return out; };
+  function potomci(id) { const out = [], fr = [id]; while (fr.length) { const x = fr.shift(); deti(x).forEach(r => { out.push(r); if (r.typ === 'slozka') fr.push(r.id); }); } return out; }
+  const kdo = () => (H && H.kdo && H.kdo()) || '';
+  const toast = m => H && H.toast ? H.toast(m) : console.log(m);
+  const ro = () => !!(H && H.ro && H.ro());
+
+  function ulozZaznamy(recs) { if (!recs.length) return; H.upsert(recs.map(r => Object.assign({}, r))); }
+  function zalozSlozku(nazev, rodic) {
+    nazev = String(nazev || '').trim().slice(0, 200); if (!nazev) return null;
+    const ex = deti(rodic).find(r => r.typ === 'slozka' && bezDia(r.nazev) === bezDia(nazev));
+    if (ex) return ex;
+    const r = {id: 'dk' + uid(), typ: 'slozka', nazev, rodic: rodic || '', kdo: kdo(), kdy: new Date().toISOString()};
+    ulozZaznamy([r]);
+    return najdi(r.id) || r;
+  }
+
+  /* ---------- skript Google ---------- */
+  async function verzeSkriptu() {
+    if (!H.pripojeno()) return 0;
+    if (S.verze >= SKRIPT_MIN || Date.now() - S.verzeT < 120000) return S.verze;
+    S.verzeT = Date.now();
+    try { const r = await H.volej({akce: 'verze'}); S.verze = Number(r && r.verze) || 0; } catch (e) {}
+    return S.verze;
+  }
+  async function volejOk(body, pokusu) {
+    let posl = null;
+    for (let i = 0; i < (pokusu || 4); i++) {
+      try { const r = await H.volej(body); if (r && !r.error) return r; posl = new Error(r && r.error ? String(r.error) : 'Bez odpovědi'); if (r && r.error === 'heslo') break; }
+      catch (e) { posl = e; }
+      await new Promise(res => setTimeout(res, 1500 * (i + 1)));
+    }
+    throw posl || new Error('Nepodařilo se spojit s Googlem.');
+  }
+
+  /* ---------- nahrávání (fronta v prohlížeči, přežije zavření okna) ---------- */
+  async function pridejDoFronty(polozky) {   // polozky: [{file, rodic, nahradit}]
+    if (ro()) { toast('Jen prohlížení: nahrávat nejde.'); return; }
+    for (const p of polozky) {
+      const q = {qid: 'q' + uid(), nazev: p.file.name, vel: p.file.size, mime: p.file.type || '', rodic: p.rodic || '', nahradit: p.nahradit || '', blob: p.file, kdo: kdo(), kdy: new Date().toISOString(), hotovo: 0, up: '', chyba: ''};
+      try { await frontaPut(q); } catch (e) { q.jenPamet = true; }
+      S.fronta.push(q);
+    }
+    prekresli(); zpracujFrontu();
+  }
+  async function zpracujFrontu() {
+    if (S.bezi || !H) return;
+    S.bezi = true;
+    try {
+      while (S.fronta.length) {
+        const q = S.fronta[0];
+        const misto = !H.pripojeno() || H.zkouska;
+        if (!misto && (await verzeSkriptu()) < SKRIPT_MIN) { S.chyba = 'Čekám, až se skript Google sám aktualizuje na verzi ' + SKRIPT_MIN + ' (stává se jednou po nasazení). Soubory zůstávají ve frontě a nahrají se samy.'; prekresliFrontu(); await new Promise(res => setTimeout(res, 60000)); continue; }
+        S.chyba = ''; S.prubeh = q; prekresliFrontu();
+        try {
+          let gid = '', url = '';
+          if (!misto) {
+            if (!q.up) {
+              const cesta = q.rodic ? cestaZaznamu(q.rodic).map(r => r.nazev) : [];
+              const r = await volejOk({akce: 'dok_start', nazev: q.nazev, mime: q.mime || 'application/octet-stream', vel: q.vel, cesta});
+              q.up = r.up; q.hotovo = 0; if (!q.jenPamet) frontaPut(q).catch(() => {});
+            }
+            if (q.vel === 0) { const r = await volejOk({akce: 'dok_cast', up: q.up, od: 0, celkem: 0, data: ''}); gid = r.id; url = r.url; }
+            while (!gid) {
+              const kus = q.blob.slice(q.hotovo, Math.min(q.vel, q.hotovo + KUS));
+              const r = await volejOk({akce: 'dok_cast', up: q.up, od: q.hotovo, celkem: q.vel, data: await b64(kus)});
+              if (r.restart) { q.up = ''; throw new Error('Nahrávání vypršelo, začínám znovu.'); }
+              if (r.id) { gid = r.id; url = r.url; q.hotovo = q.vel; }
+              else { q.hotovo = r.dalsi != null ? Number(r.dalsi) : q.hotovo + kus.size; }
+              if (!q.jenPamet) frontaPut(q).catch(() => {});
+              prekresliFrontu();
+            }
+          }
+          // hotovo: záznam do dat (nebo nová verze stávajícího souboru)
+          const zaklad = {nazev: q.nazev, vel: q.vel, mime: q.mime, kdo: q.kdo, kdy: new Date().toISOString(), gid, url};
+          let rec;
+          const st = q.nahradit && najdi(q.nahradit);
+          if (st) {
+            const starsi = (st.starsi || []).concat(st.gid || st.mistni ? [{gid: st.gid || '', url: st.url || '', kdo: st.kdo, kdy: st.kdy, vel: st.vel, verze: st.verze || 1}] : []).slice(-20);
+            rec = Object.assign({}, st, zaklad, {verze: (st.verze || 1) + 1, starsi});
+          } else rec = Object.assign({id: 'dk' + uid(), typ: 'soubor', rodic: q.rodic || ''}, zaklad);
+          if (misto) rec.mistni = H.zkouska ? 'zkouska' : 'pc';
+          else delete rec.mistni;
+          await cachePut(gid ? 'g:' + gid : 'mistni:' + rec.id, q.blob);
+          ulozZaznamy([rec]);
+          S.fronta.shift(); frontaDel(q.qid);
+        } catch (e) {
+          q.chyba = String(e && e.message || e); S.chyba = 'Soubor ' + q.nazev + ': ' + q.chyba + ' Zkusím to znovu za chvíli.';
+          if (!q.jenPamet) frontaPut(q).catch(() => {});
+          prekresliFrontu();
+          if (/heslo/.test(q.chyba)) { S.chyba = 'Heslo synchronizace nesedí. Nahrávání je pozastavené.'; break; }
+          await new Promise(res => setTimeout(res, 20000));
+        }
+      }
+    } finally { S.bezi = false; S.prubeh = null; prekresli(); }
+  }
+  function prekresliFrontu() {
+    let el = document.getElementById('dk-fronta');
+    if (!S.fronta.length) { if (el) el.remove(); return; }
+    if (!el) { el = document.createElement('div'); el.id = 'dk-fronta'; el.className = 'dk-fronta'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    const q = S.fronta[0], celk = S.fronta.reduce((a, x) => a + x.vel, 0), hot = S.fronta.reduce((a, x) => a + (x.hotovo || 0), 0);
+    const pct = celk ? Math.round(hot / celk * 100) : 0;
+    el.innerHTML = `<b>Nahrávám dokumentaci · zbývá ${S.fronta.length} ${S.fronta.length === 1 ? 'soubor' : S.fronta.length < 5 ? 'soubory' : 'souborů'}</b>
+      <small>${esc(q.nazev)} · ${velTxt(q.hotovo || 0)} z ${velTxt(q.vel)}</small><div class="bar"><i style="width:${pct}%"></i></div>
+      <small>${S.chyba ? esc(S.chyba) : 'Okno nechte otevřené, můžete mezitím pracovat. Když ho zavřete, nahrávání pokračuje při dalším otevření.'}</small>`;
+  }
+
+  /* ---------- stažení souboru (z prohlížeče, nebo po dílech z Disku Google) ---------- */
+  const klicCache = r => r.gid ? 'g:' + r.gid : 'mistni:' + r.id;
+  async function nactiSoubor(r, prubeh) {
+    const c = await cacheGet(klicCache(r));
+    if (c && c.blob) return c.blob;
+    if (!r.gid) throw new Error(r.mistni === 'zkouska' ? 'Soubor je jen ve zkušební verzi na počítači, kde se nahrál.' : 'Soubor se ještě nenahrál na Disk Google (je jen v počítači, odkud ho nahrál ' + (r.kdo || 'kolega') + ').');
+    if (!H.pripojeno()) throw new Error('Pro otevření je potřeba připojení ke Googlu (Data → Automatická synchronizace).');
+    const prvni = await volejOk({akce: 'dok_cti', id: r.gid, od: 0, do: KUS - 1});
+    const celkem = Number(prvni.celkem) || r.vel || 0;
+    const dily = [z64(prvni.data || '')];
+    let mam = dily[0].length; prubeh && prubeh(mam, celkem);
+    const zbyva = [];
+    for (let od = mam; od < celkem; od += KUS) zbyva.push(od);
+    const vysl = new Array(zbyva.length);
+    let i = 0;
+    const pracovnik = async () => { while (i < zbyva.length) { const k = i++, od = zbyva[k]; const x = await volejOk({akce: 'dok_cti', id: r.gid, od, do: Math.min(celkem, od + KUS) - 1}); vysl[k] = z64(x.data || ''); mam += vysl[k].length; prubeh && prubeh(mam, celkem); } };
+    await Promise.all([pracovnik(), pracovnik(), pracovnik()]);
+    const blob = new Blob(dily.concat(vysl), {type: r.mime || ''});
+    cachePut(klicCache(r), blob);
+    return blob;
+  }
+  async function stahnout(r) {
+    toast('Připravuji ' + r.nazev + '…');
+    try { const b = await nactiSoubor(r); const u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = r.nazev; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }
+    catch (e) { if (r.url) window.open(r.url, '_blank', 'noopener'); else toast(e.message); }
+  }
+
+  /* ---------- výběr souborů a složek (tlačítka i přetažení) ---------- */
+  function vyberSoubory(slozky) {
+    const i = document.createElement('input'); i.type = 'file'; i.multiple = true;
+    if (slozky) { i.webkitdirectory = true; i.setAttribute('webkitdirectory', ''); i.setAttribute('directory', ''); }
+    i.style.display = 'none'; document.body.appendChild(i);   // Safari a některé prohlížeče chtějí pole v dokumentu
+    i.onchange = () => { const f = [...i.files].map(file => ({file, cesta: slozky ? (file.webkitRelativePath || file.name).split('/').slice(0, -1) : []})); i.remove(); prijmi(f); };
+    i.click();
+  }
+  async function zPretazeni(dt) {
+    const out = [];
+    const items = [...(dt.items || [])].filter(x => x.kind === 'file');
+    const entries = items.map(x => x.webkitGetAsEntry ? x.webkitGetAsEntry() : null);
+    if (!entries.some(Boolean)) return [...(dt.files || [])].map(file => ({file, cesta: []}));
+    const soubor = en => new Promise((res, rej) => en.file(res, rej));
+    const cti = rd => new Promise((res, rej) => rd.readEntries(res, rej));
+    async function projdi(en, cesta) {
+      if (!en) return;
+      if (en.isFile) { try { out.push({file: await soubor(en), cesta}); } catch (e) {} return; }
+      if (en.isDirectory) {
+        const rd = en.createReader(); let davka;
+        do { davka = await cti(rd); for (const x of davka) await projdi(x, cesta.concat(en.name)); } while (davka.length);
+      }
+    }
+    for (const en of entries) await projdi(en, []);
+    return out;
+  }
+  async function prijmi(seznamSouboru) {
+    const f = seznamSouboru.filter(x => x.file && !/^(\.DS_Store|Thumbs\.db|desktop\.ini)$/i.test(x.file.name) && !x.file.name.startsWith('~$'));
+    if (!f.length) return;
+    if (ro()) { toast('Jen prohlížení: nahrávat nejde.'); return; }
+    // podsložky založit hned (stejná struktura jako na disku)
+    const mapa = new Map();
+    const slozkaPro = cesta => { let rod = S.slozka; let k = ''; for (const n of cesta) { k += '/' + n; if (!mapa.has(k)) { const s = zalozSlozku(n, rod); mapa.set(k, s ? s.id : rod); } rod = mapa.get(k); } return rod; };
+    const polozky = f.map(x => ({file: x.file, rodic: slozkaPro(x.cesta)}));
+    const dup = polozky.filter(p => deti(p.rodic).some(r => r.typ === 'soubor' && r.nazev === p.file.name) || S.fronta.some(q => q.rodic === p.rodic && q.nazev === p.file.name));
+    const celk = polozky.reduce((a, p) => a + p.file.size, 0);
+    const pokracuj = rezim => {
+      const vyb = polozky.filter(p => {
+        const st = deti(p.rodic).find(r => r.typ === 'soubor' && r.nazev === p.file.name);
+        if (!st) return !S.fronta.some(q => q.rodic === p.rodic && q.nazev === p.file.name);
+        if (rezim === 'preskocit') return false;
+        p.nahradit = st.id; return true;
+      });
+      if (!vyb.length) { toast('Nic nového k nahrání.'); prekresli(); return; }
+      pridejDoFronty(vyb);
+      toast(`Nahrávám ${vyb.length} ${vyb.length === 1 ? 'soubor' : vyb.length < 5 ? 'soubory' : 'souborů'} (${velTxt(vyb.reduce((a, p) => a + p.file.size, 0))}).`);
+    };
+    if (dup.length) {
+      dialog('Některé soubory už v Dokumentaci jsou', `<p>${dup.length} ${dup.length === 1 ? 'soubor se stejným názvem už ve složce je' : 'souborů se stejným názvem už ve složkách je'}${dup.length <= 6 ? ': <b>' + dup.map(p => esc(p.file.name)).join(', ') + '</b>' : ''}.</p><p><b>Nahradit novou verzí</b> = otevře se nový soubor, předchozí verze zůstanou uložené u souboru.</p>`,
+        [['Nahradit novou verzí', () => pokracuj('nahradit'), 'hl'], ['Přeskočit stejné', () => pokracuj('preskocit')], ['Zrušit', () => prekresli()]]);
+    } else pokracuj('');
+    prekresli();
+    if (celk > 2e9) toast('Pozor, je to hodně dat (' + velTxt(celk) + '). Nahrávání potrvá déle.');
+  }
+
+  /* ---------- jednoduché dialogy ---------- */
+  function dialog(nadpis, html, tlac) {
+    const o = document.createElement('div'); o.className = 'dkv-out';
+    o.innerHTML = `<div class="bx" role="dialog" aria-modal="true"><h3>${esc(nadpis)}</h3><div>${html}</div><div class="ak">${tlac.map((t, i) => `<button type="button" class="dk-btn ${t[2] || ''}" data-i="${i}">${esc(t[0])}</button>`).join('')}</div></div>`;
+    document.body.appendChild(o);
+    o.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { const t = tlac[Number(b.dataset.i)]; if (t[1] && t[1](o) === 'keep') return; o.remove(); });
+    o.onclick = e => { if (e.target === o) o.remove(); };
+    const inp = o.querySelector('input'); if (inp) { inp.focus(); inp.select(); inp.onkeydown = e => { if (e.key === 'Enter') o.querySelector('[data-i="0"]').click(); }; }
+    return o;
+  }
+  function zadejText(nadpis, popis, hodnota, ok) {
+    dialog(nadpis, `<label style="display:block;font-size:13px;margin-bottom:6px">${esc(popis)}</label><input class="dk-q" style="width:100%;min-width:300px" value="${esc(hodnota || '')}">`,
+      [['Uložit', o => { const v = o.querySelector('input').value.trim(); if (!v) return 'keep'; ok(v); }, 'hl'], ['Zrušit', null]]);
+  }
+
+  /* ---------- seznam ---------- */
+  function prekresli() { if (EL && EL.isConnected) vykresli(); prekresliFrontu(); }
+  function vykresli() {
+    styl();
+    if (S.slozka && !najdi(S.slozka)) S.slozka = '';
+    const vse = seznam(), q = bezDia(S.q.trim());
+    let polozky;
+    if (q) polozky = vse.filter(r => bezDia(r.nazev).includes(q));
+    else polozky = deti(S.slozka);
+    const raz = (a, b) => (a.typ === b.typ ? 0 : a.typ === 'slozka' ? -1 : 1) || S.smer * (S.raz === 'vel' ? (a.vel || 0) - (b.vel || 0) : S.raz === 'kdy' ? String(a.kdy || '').localeCompare(String(b.kdy || '')) : cmp(a.nazev, b.nazev));
+    polozky = polozky.slice().sort(raz);
+    const cekaji = q ? [] : S.fronta.filter(x => x.rodic === S.slozka && !x.nahradit);
+    const cesta = cestaZaznamu(S.slozka);
+    const pocet = id => { const p = potomci(id).filter(r => r.typ === 'soubor'); return p.length; };
+    const pripoj = H.pripojeno(), ri = ro();
+    const zk = H.zkouska ? '<div class="dk-info">Zkušební verze: soubory se ukládají jen v tomto prohlížeči (na Disk Google se nic neposílá). Vyzkoušejte nahrání, složky i prohlížeč výkresů.</div>'
+      : !pripoj ? '<div class="dk-info">Tento počítač není připojený ke sdíleným datům. Soubory se uloží jen v tomto prohlížeči. Připojení: Data → Automatická synchronizace.</div>' : '';
+    const sipka = k => S.raz === k ? (S.smer > 0 ? ' ▲' : ' ▼') : '';
+    EL.innerHTML = `<div class="dk">
+      <div class="dk-tahne-pl">Pusťte soubory nebo složky sem</div>
+      <div class="dk-top">
+        <div class="dk-cesta" aria-label="Složka"><button type="button" data-cesta="">Dokumentace</button>${cesta.map(r => `<span class="sep">›</span><button type="button" data-cesta="${esc(r.id)}">${esc(r.nazev)}</button>`).join('')}</div>
+        <span class="sp"></span>
+        <input class="dk-q" type="search" placeholder="Hledat v celé dokumentaci" value="${esc(S.q)}" aria-label="Hledat v dokumentaci">
+        ${ri ? '' : `<button type="button" class="dk-btn" data-a="slozka">+ Nová složka</button>
+        <button type="button" class="dk-btn" data-a="nahratSlozku" title="Nahraje celou složku i s podsložkami">+ Nahrát složku</button>
+        <button type="button" class="dk-btn hl" data-a="nahrat"><b>+</b> Nahrát soubory</button>`}
+      </div>
+      ${zk}
+      ${ri ? '' : '<div class="dk-drop">Soubory i celé složky (s podsložkami) sem můžete <b>přetáhnout myší</b> z počítače, nebo použijte tlačítka <b>+ Nahrát</b>. Velké PDF a DWG nevadí.</div>'}
+      <div class="dk-list" role="table">
+        <div class="dk-hd" role="row"><span></span><button type="button" data-raz="nazev">Název${sipka('nazev')}</button><button type="button" data-raz="vel">Velikost${sipka('vel')}</button><span>Nahrál</span><button type="button" data-raz="kdy">Datum${sipka('kdy')}</button><span></span></div>
+        ${S.slozka && !q ? `<div class="dk-row" data-nahoru="1" role="row"><span class="dk-ik slozka">↩</span><div class="dk-n"><b>.. o úroveň výš</b></div><span></span><span></span><span></span><span></span></div>` : ''}
+        ${polozky.map(r => {
+          const d = r.typ === 'slozka' ? 'slozka' : druh(r.nazev), n = r.typ === 'slozka' ? pocet(r.id) : 0;
+          const kde = q && r.rodic ? cestaZaznamu(r.rodic).map(x => x.nazev).join(' › ') : '';
+          return `<div class="dk-row" role="row" data-id="${esc(r.id)}" title="${r.typ === 'slozka' ? 'Otevřít složku' : lzeOtevrit(r.nazev) ? 'Otevřít v prohlížeči výkresů' : 'Stáhnout'}">
+            <span class="dk-ik ${d}">${IKONA[d]}</span>
+            <div class="dk-n"><b>${esc(r.nazev)}</b>${r.typ === 'slozka' ? `<small>${n} ${n === 1 ? 'soubor' : n > 1 && n < 5 ? 'soubory' : 'souborů'}</small>` : ''}${kde ? `<small>${esc(kde)}</small>` : ''}${r.verze > 1 ? `<small>verze ${r.verze}</small>` : ''}${r.mistni && !H.zkouska ? '<small>jen v počítači, kde se nahrál</small>' : ''}</div>
+            <span class="dk-m">${r.typ === 'slozka' ? '' : velTxt(r.vel)}</span><span class="dk-m">${esc(r.kdo || '')}</span><span class="dk-m">${datTxt(r.kdy)}</span>
+            <span class="dk-a">${r.typ === 'soubor' ? `<button type="button" data-st="${esc(r.id)}" title="Stáhnout">⬇</button>` : ''}${ri ? '' : `<button type="button" data-pr="${esc(r.id)}" title="Přejmenovat">✎</button><button type="button" data-sm="${esc(r.id)}" title="Smazat">🗑</button>`}</span>
+          </div>`;
+        }).join('')}
+        ${cekaji.map(x => `<div class="dk-row ceka" role="row"><span class="dk-ik ${druh(x.nazev)}">${IKONA[druh(x.nazev)]}</span><div class="dk-n"><b>${esc(x.nazev)}</b><small>nahrává se…</small></div><span class="dk-m">${velTxt(x.vel)}</span><span class="dk-m">${esc(x.kdo || '')}</span><span></span><span></span></div>`).join('')}
+        ${!polozky.length && !cekaji.length ? `<div class="dk-empty">${q ? '<b>Nic nenalezeno</b>Zkuste jiné slovo.' : S.slozka ? '<b>Složka je prázdná</b>Přetáhněte sem soubory nebo klikněte na + Nahrát soubory.' : '<b>Zatím žádná dokumentace</b>Přetáhněte sem složku s projektovou dokumentací (třeba celou „DPS“ i s podsložkami), nebo klikněte na + Nahrát.'}</div>` : ''}
+      </div>
+    </div>`;
+    EL.querySelectorAll('[data-cesta]').forEach(b => b.onclick = () => { S.slozka = b.dataset.cesta; S.q = ''; vykresli(); });
+    const qi = EL.querySelector('.dk-q'); qi.oninput = () => { S.q = qi.value; const pos = qi.selectionStart; vykresli(); const n = EL.querySelector('.dk-q'); n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} };
+    EL.querySelectorAll('[data-raz]').forEach(b => b.onclick = () => { if (S.raz === b.dataset.raz) S.smer = -S.smer; else { S.raz = b.dataset.raz; S.smer = b.dataset.raz === 'nazev' ? 1 : -1; } vykresli(); });
+    EL.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      const a = b.dataset.a;
+      if (a === 'nahrat') vyberSoubory(false);
+      else if (a === 'nahratSlozku') vyberSoubory(true);
+      else if (a === 'slozka') zadejText('Nová složka', 'Název složky' + (S.slozka ? ' (vytvoří se uvnitř „' + (najdi(S.slozka) || {}).nazev + '“)' : ''), '', v => { zalozSlozku(v, S.slozka); prekresli(); });
+    });
+    const up = EL.querySelector('[data-nahoru]'); if (up) up.onclick = () => { const r = najdi(S.slozka); S.slozka = r ? r.rodic || '' : ''; vykresli(); };
+    EL.querySelectorAll('.dk-row[data-id]').forEach(row => row.onclick = e => {
+      if (e.target.closest('.dk-a')) return;
+      const r = najdi(row.dataset.id); if (!r) return;
+      if (r.typ === 'slozka') { S.slozka = r.id; S.q = ''; vykresli(); }
+      else if (lzeOtevrit(r.nazev)) otevri(r);
+      else stahnout(r);
+    });
+    EL.querySelectorAll('[data-st]').forEach(b => b.onclick = () => { const r = najdi(b.dataset.st); if (r) stahnout(r); });
+    EL.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => { const r = najdi(b.dataset.pr); if (!r) return; zadejText('Přejmenovat', 'Nový název', r.nazev, v => { if (r.typ === 'soubor' && pripona(r.nazev) && !pripona(v)) v += '.' + pripona(r.nazev); ulozZaznamy([Object.assign({}, r, {nazev: v})]); prekresli(); }); });
+    EL.querySelectorAll('[data-sm]').forEach(b => b.onclick = () => smazat(najdi(b.dataset.sm)));
+    napojTazeni();
+  }
+  // přetažení z počítače: kamkoli do okna, když je otevřená Dokumentace (jinak by prohlížeč soubor sám otevřel)
+  let tazeniOk = false, hloubka = 0;
+  function napojTazeni() {
+    if (tazeniOk) return; tazeniOk = true;
+    const aktivni = () => EL && EL.isConnected && !V && !ro();
+    const jeSoubor = e => [...((e.dataTransfer && e.dataTransfer.types) || [])].includes('Files');
+    const zvyrazni = on => { const r = EL && EL.querySelector('.dk'); if (r) r.classList.toggle('tahne', on); };
+    window.addEventListener('dragenter', e => { if (!jeSoubor(e) || !aktivni()) return; e.preventDefault(); hloubka++; zvyrazni(true); });
+    window.addEventListener('dragover', e => { if (!jeSoubor(e) || !aktivni()) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+    window.addEventListener('dragleave', () => { if (--hloubka <= 0) { hloubka = 0; zvyrazni(false); } });
+    window.addEventListener('drop', async e => {
+      if (!jeSoubor(e) || !aktivni()) return;
+      e.preventDefault(); hloubka = 0; zvyrazni(false);
+      const p = zPretazeni(e.dataTransfer);   // položky se musí přečíst hned při puštění
+      toast('Načítám přetažené soubory…');
+      prijmi(await p);
+    });
+  }
+  function smazat(r) {
+    if (!r) return;
+    const pod = r.typ === 'slozka' ? potomci(r.id) : [], soubory = pod.filter(x => x.typ === 'soubor').length;
+    dialog(r.typ === 'slozka' ? 'Smazat složku?' : 'Smazat soubor?', `<p><b>${esc(r.nazev)}</b>${r.typ === 'slozka' ? ` i se vším uvnitř (${soubory} ${soubory === 1 ? 'soubor' : soubory > 1 && soubory < 5 ? 'soubory' : 'souborů'})` : ''} zmizí z Dokumentace u všech kolegů i v Deníku.</p><p>Na Disku Google se soubory přesunou do koše, odkud je jde 30 dní obnovit.</p>`,
+      [['Smazat', () => {
+        const vse = [r].concat(pod), gidy = [];
+        vse.forEach(x => { if (x.gid) gidy.push(x.gid); (x.starsi || []).forEach(s => s.gid && gidy.push(s.gid)); cacheDel(klicCache(x)); });
+        H.smaz(vse.map(x => x.id));
+        if (gidy.length && H.pripojeno() && !H.zkouska) H.volej({akce: 'dok_smaz', ids: gidy}).catch(() => {});
+        toast('Smazáno.'); prekresli();
+      }, 'hl'], ['Zrušit', null]]);
+  }
+
+  /* =================================================================================================
+     PROHLÍŽEČ VÝKRESŮ
+     ================================================================================================= */
+  const IK = {
+    posun: '<svg viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-8a1.5 1.5 0 0 1 3 0V12M14 5.5a1.5 1.5 0 0 1 3 0V12M17 7.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L4.3 15a1.6 1.6 0 0 1 2.6-1.8L8 15"/></svg>',
+    tuzka: '<svg viewBox="0 0 24 24"><path d="M17 3l4 4L8 20H4v-4z"/><path d="M14 6l4 4"/></svg>',
+    kolecko: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="7"/></svg>',
+    sipka: '<svg viewBox="0 0 24 24"><path d="M5 19L19 5M9 5h10v10"/></svg>',
+    text: '<svg viewBox="0 0 24 24"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>',
+    vyrez: '<svg viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>',
+    zpet: '<svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',
+  };
+  const BARVY = ['#e0201b', '#1f5fd1', '#11873a', '#16191c', '#f2b705'];
+  let V = null;   // stav otevřeného prohlížeče
+
+  function otevri(r) {
+    styl();
+    if (V) zavri();
+    const sour = deti(r.rodic || '').filter(x => x.typ === 'soubor' && lzeOtevrit(x.nazev)).sort((a, b) => cmp(a.nazev, b.nazev));
+    const el = document.createElement('div'); el.className = 'dkv' + (sour.length > 1 ? '' : ' bez-boku');
+    el.innerHTML = `
+      <div class="dkv-bar">
+        <button type="button" class="dkv-b" data-v="zavrit" title="Zavřít (Esc)">✕ Zavřít</button>
+        <span class="nm" id="dkv-nm"></span>
+        <span class="dkv-g" id="dkv-str"><button type="button" class="dkv-b" data-v="pred" title="Předchozí list">‹</button><span class="zoom" id="dkv-list">1 / 1</span><button type="button" class="dkv-b" data-v="dal" title="Další list">›</button></span>
+        <span class="dkv-g"><button type="button" class="dkv-b" data-v="minus" title="Zmenšit">−</button><span class="zoom" id="dkv-zoom">100 %</span><button type="button" class="dkv-b" data-v="plus" title="Zvětšit">+</button><button type="button" class="dkv-b" data-v="cele" title="Celý výkres na obrazovku">Celý</button></span>
+        <span class="dkv-g" role="group" aria-label="Nástroj">
+          <button type="button" class="dkv-b" data-n="posun" title="Posun (táhnout myší)">${IK.posun}</button>
+          <button type="button" class="dkv-b" data-n="tuzka" title="Tužka">${IK.tuzka}</button>
+          <button type="button" class="dkv-b" data-n="kolecko" title="Kolečko – zakroužkovat">${IK.kolecko}</button>
+          <button type="button" class="dkv-b" data-n="sipka" title="Šipka">${IK.sipka}</button>
+          <button type="button" class="dkv-b" data-n="text" title="Text">${IK.text}</button>
+        </span>
+        <span class="dkv-g" role="group" aria-label="Barva">${BARVY.map(b => `<button type="button" class="dkv-barva" data-b="${b}" style="background:${b}" title="Barva"></button>`).join('')}</span>
+        <span class="dkv-g"><button type="button" class="dkv-b" data-v="zpet" title="Vrátit poslední čáru">${IK.zpet}</button><button type="button" class="dkv-b" data-v="smazat" title="Smazat všechno nakreslené na tomto listu">Smazat kresbu</button></span>
+        <span class="sp"></span>
+        <button type="button" class="dkv-b zl" data-n="vyrez" title="Označte myší obdélník – výřez jde zkopírovat, uložit nebo poslat ve zprávě">${IK.vyrez} Výřez</button>
+        <button type="button" class="dkv-b" data-v="stahnout" title="Stáhnout původní soubor">⬇</button>
+      </div>
+      <div class="dkv-side">${sour.length > 1 ? `<h4>Výkresy ve složce</h4>${sour.map(x => `<button type="button" data-f="${esc(x.id)}"><span class="dk-ik ${druh(x.nazev)}">${IKONA[druh(x.nazev)]}</span><span>${esc(x.nazev)}</span></button>`).join('')}` : ''}</div>
+      <div class="dkv-stage" data-n="posun"><canvas class="zakl"></canvas><canvas class="det" style="display:none"></canvas><svg class="ann" xmlns="http://www.w3.org/2000/svg"></svg><div class="vyb"></div><div class="dkv-msg" hidden></div><div class="dkv-hint" hidden></div></div>`;
+    document.body.appendChild(el);
+    const st = el.querySelector('.dkv-stage');
+    V = {el, st, zakl: st.querySelector('canvas.zakl'), det: st.querySelector('canvas.det'), svg: st.querySelector('svg.ann'), vyb: st.querySelector('.vyb'), msg: st.querySelector('.dkv-msg'), hint: st.querySelector('.dkv-hint'),
+      rec: null, typ: '', doc: null, img: null, str: 1, pocet: 1, w: 1, h: 1, s: 1, tx: 0, ty: 0, n: 'posun', barva: BARVY[0], kresby: {}, det0: null, detUloha: null, detT: 0, gen: 0, ptr: new Map()};
+    el.querySelectorAll('[data-n]').forEach(b => b.onclick = () => nastroj(b.dataset.n));
+    el.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { V.barva = b.dataset.b; el.querySelectorAll('[data-b]').forEach(x => x.setAttribute('aria-pressed', x === b)); if (V.n === 'posun' || V.n === 'vyrez') nastroj('tuzka'); });
+    el.querySelector('[data-b]').setAttribute('aria-pressed', 'true');
+    el.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { const x = najdi(b.dataset.f); if (x) nacti(x); });
+    el.querySelector('[data-v="zavrit"]').onclick = zavri;
+    el.querySelector('[data-v="plus"]').onclick = () => zoomKolem(1.4);
+    el.querySelector('[data-v="minus"]').onclick = () => zoomKolem(1 / 1.4);
+    el.querySelector('[data-v="cele"]').onclick = () => { prizpusob(); };
+    el.querySelector('[data-v="pred"]').onclick = () => list(V.str - 1);
+    el.querySelector('[data-v="dal"]').onclick = () => list(V.str + 1);
+    el.querySelector('[data-v="zpet"]').onclick = () => { const k = kresbyListu(); k.pop(); kresliAnn(); };
+    el.querySelector('[data-v="smazat"]').onclick = () => { V.kresby[klicListu()] = []; kresliAnn(); };
+    el.querySelector('[data-v="stahnout"]').onclick = () => V.rec && stahnout(V.rec);
+    napojUdalosti();
+    nastroj('posun');
+    document.addEventListener('keydown', klavesy);
+    window.addEventListener('resize', naResize);
+    nacti(r);
+  }
+  function zavri() {
+    if (!V) return;
+    document.removeEventListener('keydown', klavesy); window.removeEventListener('resize', naResize);
+    try { if (V.doc) V.doc.destroy(); } catch (e) {}
+    if (V.imgUrl) URL.revokeObjectURL(V.imgUrl);
+    V.el.remove(); V = null;
+  }
+  function klavesy(e) {
+    if (!V || e.target.closest('input,textarea')) return;
+    if (e.key === 'Escape') { if (document.querySelector('.dkv-out')) return; zavri(); }
+    else if (e.key === '+' || e.key === '=') zoomKolem(1.4);
+    else if (e.key === '-') zoomKolem(1 / 1.4);
+    else if ((e.metaKey || e.ctrlKey) && e.key === 'z') { e.preventDefault(); kresbyListu().pop(); kresliAnn(); }
+    else if (e.key === 'PageDown' || e.key === 'ArrowRight' && e.altKey) list(V.str + 1);
+    else if (e.key === 'PageUp' || e.key === 'ArrowLeft' && e.altKey) list(V.str - 1);
+  }
+  let resT = 0;
+  function naResize() { clearTimeout(resT); resT = setTimeout(() => { if (V) { pozice(); planujDetail(); } }, 120); }
+  function nastroj(n) {
+    V.n = n; V.st.dataset.n = n;
+    V.el.querySelectorAll('[data-n]').forEach(b => b.setAttribute('aria-pressed', b.dataset.n === n));
+    const t = {posun: 'Táhněte myší pro posun · kolečko myši zvětšuje · dvojklik = zvětšit', tuzka: 'Kreslete tužkou · kolečko myši zvětšuje', kolecko: 'Táhněte myší přes místo, které chcete zakroužkovat', sipka: 'Táhněte od začátku ke špičce šipky', text: 'Klikněte, kam chcete napsat text', vyrez: 'Označte myší obdélník výřezu (i s nakreslenými značkami)'}[n];
+    napoveda(t);
+  }
+  let hintT = 0;
+  function napoveda(t, ms) { if (!V) return; V.hint.textContent = t; V.hint.hidden = !t; clearTimeout(hintT); if (t) hintT = setTimeout(() => { if (V) V.hint.hidden = true; }, ms || 4000); }
+  function zprava(html, pct) { V.msg.hidden = !html; V.msg.innerHTML = html ? `<div class="bx">${html}${pct != null ? `<div class="bar"><i style="width:${pct}%"></i></div>` : ''}</div>` : ''; }
+
+  /* ---------- načtení souboru do prohlížeče ---------- */
+  let pdfjsP = null;
+  function pdfjs() {
+    if (!pdfjsP) pdfjsP = import(BASE + 'pdfjs/pdf.min.mjs').then(m => { m.GlobalWorkerOptions.workerSrc = BASE + 'pdfjs/pdf.worker.min.mjs'; return m; });
+    pdfjsP.catch(() => { pdfjsP = null; });
+    return pdfjsP;
+  }
+  async function nacti(r) {
+    const gen = ++V.gen;
+    [V.zaklUloha, V.detUloha].forEach(u => { try { u && u.cancel(); } catch (e) {} }); clearTimeout(V.detT);
+    try { V.doc && V.doc.destroy(); } catch (e) {}
+    V.rec = r; V.doc = null; V.page = null; V.img = null; V.vektor = false; V.det0 = null; V.det.style.display = 'none'; V.str = 1; V.pocet = 1;
+    V.el.querySelector('#dkv-nm').textContent = r.nazev; V.el.querySelector('#dkv-nm').title = r.nazev;
+    V.el.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === r.id));
+    V.zakl.width = V.zakl.height = 1; V.det.width = V.det.height = 1; V.svg.innerHTML = '';
+    zprava(`Otevírám <b>${esc(r.nazev)}</b>${r.vel ? ' (' + velTxt(r.vel) + ')' : ''}…`, 0);
+    try {
+      const blob = await nactiSoubor(r, (m, c) => { if (V && V.gen === gen) zprava(`Stahuji <b>${esc(r.nazev)}</b><br>${velTxt(m)} z ${velTxt(c)}<br><small>Podruhé se otevře hned (zůstane uložený v tomto prohlížeči).</small>`, c ? Math.round(m / c * 100) : 0); });
+      if (!V || V.gen !== gen) return;
+      const d = druh(r.nazev);
+      V.typ = d;
+      if (d === 'pdf') {
+        zprava('Připravuji výkres…');
+        const lib = await pdfjs();
+        const data = new Uint8Array(await blob.arrayBuffer());
+        V.doc = await lib.getDocument({data, standardFontDataUrl: BASE + 'pdfjs/standard_fonts/', wasmUrl: BASE + 'pdfjs/wasm/', isEvalSupported: false}).promise;
+        if (!V || V.gen !== gen) return;
+        V.pocet = V.doc.numPages;
+      } else if (d === 'obr') {
+        V.imgUrl && URL.revokeObjectURL(V.imgUrl); V.imgUrl = URL.createObjectURL(blob);
+        V.img = await nactiObr(V.imgUrl);
+      } else if (d === 'dwg' || d === 'dxf') {
+        zprava(`Převádím ${d.toUpperCase()} na obrázek…<br><small>Velké výkresy to může trvat i minutu. Program pro DWG se stahuje jen poprvé.</small>`);
+        const svg = await dwgNaSvg(blob, d);
+        if (!V || V.gen !== gen) return;
+        V.imgUrl && URL.revokeObjectURL(V.imgUrl);
+        V.imgUrl = URL.createObjectURL(new Blob([svg.svg], {type: 'image/svg+xml'}));
+        V.img = await nactiObr(V.imgUrl); V.img.w = svg.w; V.img.h = svg.h; V.vektor = true;
+      }
+      await list(1, true);
+      zprava('');
+      napoveda(V.n === 'posun' ? 'Kolečkem myši zvětšíte, tažením posunete. Výřez = žluté tlačítko vpravo nahoře.' : '', 5000);
+    } catch (e) {
+      if (!V || V.gen !== gen) return;
+      console.error(e);
+      const dwg = /^(dwg|dxf)$/.test(druh(r.nazev));
+      zprava(`<b>${esc(r.nazev)}</b> se nepodařilo otevřít.<br><small>${esc(e && e.message || e)}</small>${dwg ? '<br><br><small>Tip: u DWG je nejjistější nahrát vedle i PDF vytištěné z AutoCADu. Původní DWG můžete stáhnout tlačítkem ⬇ a otevřít v programu (např. DWG TrueView).</small>' : ''}`);
+    }
+  }
+  const nactiObr = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('Obrázek se nepodařilo načíst.')); i.src = src; });
+  function dwgNaSvg(blob, d) {
+    return new Promise(async (res, rej) => {
+      let w;
+      try { w = new Worker(BASE + 'dwg-worker.js', {type: 'module'}); } catch (e) { rej(new Error('Prohlížeč neumí spustit převod DWG.')); return; }
+      const t = setTimeout(() => { w.terminate(); rej(new Error('Převod trval příliš dlouho.')); }, 180000);
+      w.onmessage = e => { clearTimeout(t); w.terminate(); e.data && e.data.svg ? res(e.data) : rej(new Error((e.data && e.data.chyba) || 'Převod se nepovedl.')); };
+      w.onerror = e => { clearTimeout(t); w.terminate(); rej(new Error('Převod DWG selhal' + (e && e.message ? ': ' + e.message : '.'))); };
+      w.postMessage({data: await blob.arrayBuffer(), druh: d, zaklad: new URL(BASE + 'dwg/', location.href).href});
+    });
+  }
+  async function list(n, prvni) {
+    if (!V) return;
+    n = Math.max(1, Math.min(V.pocet, n));
+    if (n === V.str && !prvni) return;
+    V.str = n;
+    V.el.querySelector('#dkv-str').style.display = V.pocet > 1 ? '' : 'none';
+    V.el.querySelector('#dkv-list').textContent = n + ' / ' + V.pocet;
+    if (V.doc) {
+      const gen = V.gen, page = await V.doc.getPage(n);
+      if (!V || V.gen !== gen) return;
+      V.page = page; const vp = page.getViewport({scale: 1});
+      V.w = vp.width; V.h = vp.height;
+      // základní obrázek celého listu (rozmazaný při velkém zvětšení, ostrý detail se dokreslí)
+      const k = Math.min(2600 / Math.max(V.w, V.h), 4);
+      const c = V.zakl; c.width = Math.round(V.w * k); c.height = Math.round(V.h * k);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      if (V.zaklUloha) { try { V.zaklUloha.cancel(); } catch (e) {} }
+      V.zaklUloha = page.render({canvas: c, canvasContext: g, viewport: page.getViewport({scale: k})});
+      prizpusob();
+      try { await V.zaklUloha.promise; } catch (e) {}
+    } else if (V.img) {
+      V.w = V.img.w || V.img.naturalWidth || 1000; V.h = V.img.h || V.img.naturalHeight || 1000;
+      const k = Math.min(V.vektor ? 3000 / Math.max(V.w, V.h) : 1, 4096 / Math.max(V.w, V.h));
+      const c = V.zakl; c.width = Math.max(1, Math.round(V.w * k)); c.height = Math.max(1, Math.round(V.h * k));
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(V.img, 0, 0, c.width, c.height);
+      prizpusob();
+    }
+    kresliAnn();
+  }
+  /* ---------- zvětšení a posun ---------- */
+  function prizpusob() {
+    const r = V.st.getBoundingClientRect(), m = 16;
+    V.s = V.fit = Math.max(0.0001, Math.min((r.width - 2 * m) / V.w, (r.height - 2 * m) / V.h));
+    V.tx = (r.width - V.w * V.s) / 2; V.ty = (r.height - V.h * V.s) / 2;
+    pozice(); planujDetail();
+  }
+  function zoomKolem(f, cx, cy) {
+    const r = V.st.getBoundingClientRect();
+    if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+    const min = (V.fit || V.s) * 0.5, max = (V.fit || V.s) * 120;
+    const ns = Math.max(min, Math.min(max, V.s * f)), k = ns / V.s;
+    V.tx = cx - (cx - V.tx) * k; V.ty = cy - (cy - V.ty) * k; V.s = ns;
+    pozice(); planujDetail();
+  }
+  function pozice() {
+    const t = `translate(${V.tx}px,${V.ty}px)`;
+    V.zakl.style.width = V.w * V.s + 'px'; V.zakl.style.height = V.h * V.s + 'px'; V.zakl.style.transform = t;
+    V.svg.setAttribute('viewBox', `0 0 ${V.w} ${V.h}`); V.svg.style.width = V.w * V.s + 'px'; V.svg.style.height = V.h * V.s + 'px'; V.svg.style.transform = t;
+    V.el.querySelector('#dkv-zoom').textContent = Math.round(V.s / (V.fit || V.s) * 100) + ' %';
+    // ostrý detail z minula posunout/zvětšit podle nového pohledu, než se překreslí
+    if (V.det0) { const k = V.s / V.det0.s; V.det.style.transform = `translate(${V.tx - V.det0.tx * k}px,${V.ty - V.det0.ty * k}px) scale(${k})`; }
+  }
+  function planujDetail() { clearTimeout(V.detT); V.detT = setTimeout(kresliDetail, 180); }
+  async function kresliDetail() {
+    if (!V) return;
+    const r = V.st.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // když je celý list vidět v rozlišení základního obrázku, detail není potřeba
+    const kZakl = V.zakl.width / V.w;
+    if (V.s * dpr <= kZakl * 1.05 && !V.vektor) { V.det.style.display = 'none'; V.det0 = null; return; }
+    const W = Math.ceil(r.width * dpr), Ht = Math.ceil(r.height * dpr);
+    const c = document.createElement('canvas'); c.width = W; c.height = Ht;
+    const g = c.getContext('2d');
+    const pohled = {s: V.s, tx: V.tx, ty: V.ty};
+    if (V.page) {
+      if (V.detUloha) { try { V.detUloha.cancel(); } catch (e) {} }
+      const vp = V.page.getViewport({scale: V.s * dpr});
+      g.fillStyle = '#fff'; g.fillRect(V.tx * dpr, V.ty * dpr, V.w * V.s * dpr, V.h * V.s * dpr);
+      V.detUloha = V.page.render({canvas: c, canvasContext: g, viewport: vp, transform: [1, 0, 0, 1, V.tx * dpr, V.ty * dpr], background: 'rgba(0,0,0,0)'});
+      try { await V.detUloha.promise; } catch (e) { return; }
+    } else if (V.img) {
+      g.setTransform(V.s * dpr, 0, 0, V.s * dpr, V.tx * dpr, V.ty * dpr);
+      g.fillStyle = '#fff'; g.fillRect(0, 0, V.w, V.h);
+      g.drawImage(V.img, 0, 0, V.w, V.h);
+    }
+    if (!V || V.s !== pohled.s || V.tx !== pohled.tx || V.ty !== pohled.ty) return;
+    V.det.width = W; V.det.height = Ht; V.det.getContext('2d').drawImage(c, 0, 0);
+    V.det.style.width = r.width + 'px'; V.det.style.height = r.height + 'px'; V.det.style.transform = 'none'; V.det.style.display = '';
+    V.det0 = pohled;
+  }
+  /* ---------- kresba (souřadnice v jednotkách listu, takže drží při zvětšení i ve výřezu) ---------- */
+  const klicListu = () => (V.rec ? V.rec.id : '') + ':' + V.str;
+  const kresbyListu = () => (V.kresby[klicListu()] ||= []);
+  function tvarSvg(k) {
+    const w = k.w, b = esc(k.b);
+    if (k.t === 'tuzka') return `<polyline points="${k.p.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" fill="none" stroke="${b}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if (k.t === 'kolecko') { const [x0, y0, x1, y1] = k.r; return `<ellipse cx="${(x0 + x1) / 2}" cy="${(y0 + y1) / 2}" rx="${Math.abs(x1 - x0) / 2}" ry="${Math.abs(y1 - y0) / 2}" fill="none" stroke="${b}" stroke-width="${w}"/>`; }
+    if (k.t === 'sipka') { const [x0, y0, x1, y1] = k.r, a = Math.atan2(y1 - y0, x1 - x0), L = w * 5; const h1 = [x1 - L * Math.cos(a - 0.45), y1 - L * Math.sin(a - 0.45)], h2 = [x1 - L * Math.cos(a + 0.45), y1 - L * Math.sin(a + 0.45)];
+      return `<path d="M${x0},${y0}L${x1},${y1}M${h1[0]},${h1[1]}L${x1},${y1}L${h2[0]},${h2[1]}" fill="none" stroke="${b}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`; }
+    if (k.t === 'text') return `<text x="${k.x}" y="${k.y}" font-size="${k.v}" font-family="Hanken Grotesk, Arial, sans-serif" font-weight="700" fill="${b}" stroke="#fff" stroke-width="${k.v / 8}" paint-order="stroke">${esc(k.s)}</text>`;
+    return '';
+  }
+  function kresliAnn(navic) { if (!V) return; V.svg.innerHTML = kresbyListu().map(tvarSvg).join('') + (navic ? tvarSvg(navic) : ''); }
+  function kresliNaCanvas(g, k) {
+    g.save(); g.strokeStyle = g.fillStyle = k.b; g.lineWidth = k.w; g.lineCap = g.lineJoin = 'round';
+    if (k.t === 'tuzka') { g.beginPath(); k.p.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.stroke(); }
+    else if (k.t === 'kolecko') { const [x0, y0, x1, y1] = k.r; g.beginPath(); g.ellipse((x0 + x1) / 2, (y0 + y1) / 2, Math.abs(x1 - x0) / 2 || 0.01, Math.abs(y1 - y0) / 2 || 0.01, 0, 0, Math.PI * 2); g.stroke(); }
+    else if (k.t === 'sipka') { const [x0, y0, x1, y1] = k.r, a = Math.atan2(y1 - y0, x1 - x0), L = k.w * 5; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.moveTo(x1 - L * Math.cos(a - 0.45), y1 - L * Math.sin(a - 0.45)); g.lineTo(x1, y1); g.lineTo(x1 - L * Math.cos(a + 0.45), y1 - L * Math.sin(a + 0.45)); g.stroke(); }
+    else if (k.t === 'text') { g.font = `700 ${k.v}px "Hanken Grotesk", Arial, sans-serif`; g.lineWidth = k.v / 8; g.strokeStyle = '#fff'; g.strokeText(k.s, k.x, k.y); g.fillText(k.s, k.x, k.y); }
+    g.restore();
+  }
+  const naList = (cx, cy) => [(cx - V.tx) / V.s, (cy - V.ty) / V.s];
+  function napojUdalosti() {
+    const st = V.st;
+    let akce = null;
+    const bod = e => { const r = st.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    st.addEventListener('wheel', e => {
+      e.preventDefault();
+      const [cx, cy] = bod(e);
+      const mys = e.deltaMode === 1 || (Math.abs(e.deltaY) >= 50 && e.deltaX === 0 && Number.isInteger(e.deltaY));
+      if (e.ctrlKey || e.metaKey || mys) zoomKolem(Math.exp(-e.deltaY * (e.ctrlKey && !mys ? 0.01 : 0.0022)), cx, cy);
+      else { V.tx -= e.deltaX; V.ty -= e.deltaY; pozice(); planujDetail(); }
+    }, {passive: false});
+    st.addEventListener('dblclick', e => { if (V.n !== 'posun') return; const [cx, cy] = bod(e); zoomKolem(e.shiftKey ? 1 / 2 : 2, cx, cy); });
+    st.addEventListener('pointerdown', e => {
+      if (e.button > 1) return;
+      st.setPointerCapture(e.pointerId);
+      V.ptr.set(e.pointerId, bod(e));
+      if (V.ptr.size === 2) {   // dva prsty = zvětšení a posun (iPad, dotyková obrazovka)
+        if (akce && akce.tvar) { /* rozkreslené zahodit */ }
+        const [a, b] = [...V.ptr.values()]; akce = {pinch: true, d: Math.hypot(a[0] - b[0], a[1] - b[1]), c: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]}; kresliAnn(); return;
+      }
+      const [cx, cy] = bod(e), p = naList(cx, cy), n = e.button === 1 ? 'posun' : V.n;
+      if (n === 'posun') { akce = {posun: true, x: cx, y: cy}; st.classList.add('drz'); }
+      else if (n === 'tuzka') akce = {tvar: {t: 'tuzka', b: V.barva, w: 3 / V.s, p: [p]}};
+      else if (n === 'kolecko' || n === 'sipka') akce = {tvar: {t: n, b: V.barva, w: 3.5 / V.s, r: [p[0], p[1], p[0], p[1]]}};
+      else if (n === 'vyrez') { akce = {vyrez: true, x: cx, y: cy}; Object.assign(V.vyb.style, {display: 'block', left: cx + 'px', top: cy + 'px', width: '0px', height: '0px'}); }
+      else if (n === 'text') { e.preventDefault(); textNa(cx, cy); }
+    });
+    st.addEventListener('pointermove', e => {
+      if (!V.ptr.has(e.pointerId)) return;
+      V.ptr.set(e.pointerId, bod(e));
+      if (!akce) return;
+      const [cx, cy] = bod(e);
+      if (akce.pinch && V.ptr.size >= 2) {
+        const [a, b] = [...V.ptr.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), c = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        V.tx += c[0] - akce.c[0]; V.ty += c[1] - akce.c[1]; akce.c = c;
+        if (akce.d > 0) zoomKolem(d / akce.d, c[0], c[1]); akce.d = d; return;
+      }
+      if (akce.posun) { V.tx += cx - akce.x; V.ty += cy - akce.y; akce.x = cx; akce.y = cy; pozice(); planujDetail(); return; }
+      const p = naList(cx, cy);
+      if (akce.tvar) {
+        if (akce.tvar.t === 'tuzka') { const l = akce.tvar.p[akce.tvar.p.length - 1]; if (Math.hypot(p[0] - l[0], p[1] - l[1]) * V.s > 1.5) akce.tvar.p.push(p); }
+        else { akce.tvar.r[2] = p[0]; akce.tvar.r[3] = p[1]; }
+        kresliAnn(akce.tvar); return;
+      }
+      if (akce.vyrez) { Object.assign(V.vyb.style, {left: Math.min(cx, akce.x) + 'px', top: Math.min(cy, akce.y) + 'px', width: Math.abs(cx - akce.x) + 'px', height: Math.abs(cy - akce.y) + 'px'}); }
+    });
+    const konec = e => {
+      V.ptr.delete(e.pointerId);
+      if (!akce) return;
+      st.classList.remove('drz');
+      if (akce.pinch) { if (V.ptr.size < 2) akce = null; return; }
+      if (akce.tvar) {
+        const t = akce.tvar, mal = t.t === 'tuzka' ? t.p.length < 2 : Math.hypot(t.r[2] - t.r[0], t.r[3] - t.r[1]) * V.s < 6;
+        if (t.t === 'tuzka' && t.p.length === 1) t.p.push([t.p[0][0] + 0.5 / V.s, t.p[0][1]]);
+        if (!mal || t.t === 'tuzka') kresbyListu().push(t);
+        kresliAnn();
+      }
+      if (akce.vyrez) {
+        const [cx, cy] = bod(e); V.vyb.style.display = 'none';
+        const a = naList(Math.min(cx, akce.x), Math.min(cy, akce.y)), b = naList(Math.max(cx, akce.x), Math.max(cy, akce.y));
+        const x0 = Math.max(0, a[0]), y0 = Math.max(0, a[1]), x1 = Math.min(V.w, b[0]), y1 = Math.min(V.h, b[1]);
+        if ((x1 - x0) * V.s > 8 && (y1 - y0) * V.s > 8) vytvorVyrez([x0, y0, x1, y1]);
+        else napoveda('Výřez je moc malý – táhněte myší přes větší plochu.');
+      }
+      akce = null;
+    };
+    st.addEventListener('pointerup', konec); st.addEventListener('pointercancel', konec);
+  }
+  function textNa(cx, cy) {
+    const st = V.st, inp = document.createElement('input'); inp.className = 'dkv-txt'; inp.placeholder = 'Napište text a Enter';
+    inp.style.left = cx + 'px'; inp.style.top = (cy - 18) + 'px'; inp.style.color = V.barva;
+    st.appendChild(inp); inp.focus(); setTimeout(() => inp.focus(), 0);
+    const p = naList(cx, cy + 8), vel = 18 / V.s;
+    let hotovo = false;
+    const ok = () => { if (hotovo) return; hotovo = true; const s = inp.value.trim(); inp.remove(); if (s && V) { kresbyListu().push({t: 'text', b: V.barva, x: p[0], y: p[1], v: vel, s}); kresliAnn(); } };
+    inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') ok(); if (e.key === 'Escape') { hotovo = true; inp.remove(); } };
+    inp.onblur = ok;
+    inp.onpointerdown = e => e.stopPropagation();
+  }
+
+  /* ---------- výřez ---------- */
+  async function vytvorVyrez(obl) {
+    const [x0, y0, x1, y1] = obl, w = x1 - x0, h = y1 - y0;
+    // rozlišení: ostré i při malém výřezu, nejvýš ~3000 px na delší straně
+    const k = Math.max(1, Math.min(3000 / Math.max(w, h), Math.max(V.s * 2, 2400 / Math.max(w, h)), 12));
+    const W = Math.round(w * k), Hh = Math.round(h * k), pata = Math.max(26, Math.round(W / 55));
+    const c = document.createElement('canvas'); c.width = W; c.height = Hh + pata;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+    napoveda('Připravuji výřez…', 2500);
+    try {
+      if (V.page) await V.page.render({canvas: c, canvasContext: g, viewport: V.page.getViewport({scale: k}), transform: [1, 0, 0, 1, -x0 * k, -y0 * k]}).promise;
+      else if (V.img) { g.save(); g.beginPath(); g.rect(0, 0, W, Hh); g.clip(); g.setTransform(k, 0, 0, k, -x0 * k, -y0 * k); g.drawImage(V.img, 0, 0, V.w, V.h); g.restore(); }
+    } catch (e) { toast('Výřez se nepodařilo připravit.'); return; }
+    g.save(); g.beginPath(); g.rect(0, 0, W, Hh); g.clip(); g.setTransform(k, 0, 0, k, -x0 * k, -y0 * k); kresbyListu().forEach(t => kresliNaCanvas(g, t)); g.restore();
+    // popisek dole: odkud výřez je
+    g.fillStyle = '#16191c'; g.fillRect(0, Hh, W, pata);
+    g.fillStyle = '#F4D23C'; g.fillRect(0, Hh, Math.round(pata * 0.35), pata);
+    g.fillStyle = '#fff'; g.font = `600 ${Math.round(pata * 0.5)}px "Hanken Grotesk", Arial, sans-serif`; g.textBaseline = 'middle';
+    const popis = `${V.rec.nazev}${V.pocet > 1 ? ' · list ' + V.str : ''} · výřez ${new Date().toLocaleDateString('cs-CZ')}${kdo() ? ' · ' + kdo() : ''}`;
+    let t = popis; while (g.measureText(t).width > W - pata && t.length > 10) t = t.slice(0, -2);
+    g.fillText(t === popis ? t : t + '…', Math.round(pata * 0.7), Hh + pata / 2);
+    const blob = await new Promise(res => c.toBlob(res, 'image/png'));
+    vyrezDialog(c, blob, popis);
+  }
+  function vyrezDialog(c, blob, popis) {
+    const url = URL.createObjectURL(blob);
+    const jmeno = 'vyrez-' + (V.rec.nazev || 'vykres').replace(/\.[^.]+$/, '').replace(/[^\wÀ-ſ-]+/g, '-').slice(0, 50) + (V.pocet > 1 ? '-list' + V.str : '') + '-' + new Date().toISOString().slice(0, 10) + '.png';
+    const o = document.createElement('div'); o.className = 'dkv-out';
+    const zpravaOk = H && typeof H.zprava === 'function';
+    o.innerHTML = `<div class="bx" role="dialog" aria-modal="true"><h3>Výřez z výkresu</h3><img src="${url}" alt="Výřez"><small>${esc(popis)}</small>
+      <div class="ak">
+        <button type="button" class="dk-btn hl" data-o="kop"><b>⧉</b> Kopírovat</button>
+        ${zpravaOk ? '<button type="button" class="dk-btn zl" data-o="zprava">Poslat ve zprávě (kolegům / firmě)</button>' : ''}
+        ${ro() ? '' : '<button type="button" class="dk-btn" data-o="ulozit">Uložit do Dokumentace › Výřezy</button>'}
+        <button type="button" class="dk-btn" data-o="stahnout">⬇ Stáhnout obrázek</button>
+        <button type="button" class="dk-btn" data-o="zavrit">Zavřít</button>
+      </div><small>Zkopírovaný výřez vložíte kamkoli: do e-mailu, Wordu, WhatsAppu nebo do zápisu (Ctrl+V, na Macu ⌘+V).</small></div>`;
+    document.body.appendChild(o);
+    const pryc = () => { o.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
+    o.onclick = e => { if (e.target === o) pryc(); };
+    o.querySelector('[data-o="zavrit"]').onclick = pryc;
+    o.querySelector('[data-o="kop"]').onclick = async () => {
+      try { await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]); toast('Výřez je zkopírovaný – vložte ho kamkoli (Ctrl+V / ⌘+V).'); }
+      catch (e) { toast('Kopírování tento prohlížeč nedovolil. Použijte Stáhnout obrázek.'); }
+    };
+    o.querySelector('[data-o="stahnout"]').onclick = () => { const a = document.createElement('a'); a.href = url; a.download = jmeno; document.body.appendChild(a); a.click(); a.remove(); };
+    const ul = o.querySelector('[data-o="ulozit"]');
+    if (ul) ul.onclick = () => {
+      const s = zalozSlozku('Výřezy', '');
+      pridejDoFronty([{file: new File([blob], jmeno, {type: 'image/png'}), rodic: s ? s.id : ''}]);
+      toast('Výřez se ukládá do Dokumentace › Výřezy. Uvidí ho i kolegové.'); pryc();
+    };
+    const zp = o.querySelector('[data-o="zprava"]');
+    if (zp) zp.onclick = () => {
+      // do zprávy jako JPEG (menší e-mail), nejvýš 1800 px
+      const k = Math.min(1, 1800 / Math.max(c.width, c.height)), j = document.createElement('canvas'); j.width = Math.round(c.width * k); j.height = Math.round(c.height * k);
+      const g = j.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, j.width, j.height); g.drawImage(c, 0, 0, j.width, j.height);
+      const dataUrl = j.toDataURL('image/jpeg', 0.85);
+      pryc(); zavri(); H.zprava(dataUrl, popis);
+    };
+  }
+
+  /* ---------- veřejné rozhraní ---------- */
+  window.CXDok = {
+    // host: {seznam(), upsert(recs), smaz(ids), kdo(), volej(body)→Promise, pripojeno(), ro(), toast(m), zprava?(dataUrl, popis), zkouska?}
+    async pripoj(host) {
+      H = host; styl();
+      if (!S.fronta.length) { try { S.fronta = (await frontaVse()).sort((a, b) => String(a.kdy).localeCompare(String(b.kdy))); } catch (e) {} }
+      if (S.fronta.length) { prekresliFrontu(); zpracujFrontu(); }
+    },
+    vykresli(el) { EL = el; vykresli(); },
+    nahraj(soubory) { return prijmi(soubory || []); },   // [{file, cesta: ['Složka', 'Podsložka']}] do právě otevřené složky
+    obnov() { if (EL && EL.isConnected && !document.querySelector('.dkv-out')) { const q = EL.querySelector('.dk-q'), f = q && document.activeElement === q; if (!f) vykresli(); } prekresliFrontu(); },
+    otevri(id) { const r = najdi(id); if (r) otevri(r); },
+    zavri,
+    get otevreno() { return !!V; },
+  };
+})();
