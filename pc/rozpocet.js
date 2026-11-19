@@ -389,7 +389,7 @@
     try { const r = await H.volej({akce: 'verze'}); S.verze = Number(r && r.verze) || 0; } catch (e) {}
     if (S.verze && S.verze < SKRIPT_MIN && H.aktualizujSkript && Date.now() - S.aktT > 180000) {
       S.aktT = Date.now();
-      H.aktualizujSkript().then(r => { if (r && r.ok) { S.verze = 0; S.verzeT = 0; prekresli(); } }).catch(() => {});
+      H.aktualizujSkript().then(r => { if (r && r.ok) { S.verze = 0; S.verzeT = 0; S.skrDuvod = ''; } else if (r) S.skrDuvod = String(r.duvod || ''); prekresli(); }).catch(e => { S.skrDuvod = e.message || String(e); prekresli(); });
     }
     return S.verze;
   }
@@ -445,6 +445,26 @@
         if (gid) { const akt = sez('rozpocty').find(x => x.id === rec.id); if (akt && akt.rev === rec.rev) H.upsert('rozpocty', [Object.assign({}, akt, {gid})]); }
       } catch (e) { S.chyba = 'Rozpočet se zatím nepodařilo uložit na Disk Google: ' + e.message + ' Zkusím to znovu.'; }
     }
+  }
+  // 4.58: rozpočet uložený v tomto počítači (IndexedDB), který v seznamu chybí (např. ho starší skript Google nepropsal), se vrátí do seznamu
+  let OBNOVA = false;
+  async function obnovZPocitace() {
+    if (OBNOVA || !H || ro()) return; OBNOVA = true;
+    try {
+      const d = await db();
+      const klice = await new Promise((res, rej) => { const q = d.transaction('d').objectStore('d').getAllKeys(); q.onsuccess = () => res(q.result || []); q.onerror = () => rej(q.error); });
+      const mam = new Set(sez('rozpocty').map(r => r.id)), nejnovejsi = new Map();
+      klice.forEach(k => { const m = /^r:([^:]+):(\d+)$/.exec(String(k)); if (!m || mam.has(m[1]) || (H.smazano && H.smazano('rozpocty', m[1]))) return; const rev = Number(m[2]); if (!(nejnovejsi.get(m[1]) >= rev)) nejnovejsi.set(m[1], rev); });
+      const nove = [];
+      for (const [id, rev] of nejnovejsi) {
+        const c = await idbGet('r:' + id + ':' + rev); if (!c || !c.gz) continue;
+        let data; try { data = JSON.parse(await gunzip(c.gz)); } catch (e) { continue; }
+        const rows = zPole(data.rows || []), pol = rows.filter(r => r.t === 'P');
+        const L = (data.listy || [])[0] || {};
+        nove.push({id, nazev: data.nazev || 'Rozpočet' + (L.n ? ' – ' + L.n : ''), soubor: data.soubor || '', rev, gid: '', vel: c.gz.size, pocet: rows.length, polozek: pol.length, celkem: Math.round(pol.reduce((a, r) => a + (r.cc || 0), 0) * 100) / 100, kdo: kdo(), pc: pcId(), kdy: new Date(rev).toISOString(), obj: {}});
+      }
+      if (nove.length) { H.upsert('rozpocty', nove); toast('Rozpočet obnoven z tohoto počítače a posílá se kolegům.'); dokoncitNahrani(); }
+    } catch (e) {} finally { OBNOVA = false; }
   }
   function pcId() { let x = pam('rz-pc'); if (!x) { x = uid(); pamSet('rz-pc', x); } return x; }
 
@@ -647,7 +667,7 @@
   }
   function skriptInfo() {
     if (!H.pripojeno()) return '<div class="rz-info">Bez připojení ke Googlu zůstane rozpočet jen v tomto počítači. Pro sdílení s kolegy zapněte Data → Automatická synchronizace.</div>';
-    if (S.verze && S.verze < SKRIPT_MIN) return '<div class="rz-info">Skript Google se právě aktualizuje na verzi ' + SKRIPT_MIN + ' (zvládne sám). Do té doby se druhy prací a fakturace kolegům nepropíšou.</div>';
+    if (S.verze && S.verze < SKRIPT_MIN) return '<div class="rz-info" style="font-size:12.5px">Skript Google má verzi ' + S.verze + ' (nová je ' + SKRIPT_MIN + '). Rozpočty se přesto propisují všem počítačům.' + (S.skrDuvod ? ' Automatická aktualizace skriptu se nepovedla: ' + esc(S.skrDuvod) : '') + '</div>';
     return '';
   }
   function hlava(list, rec, C) {
@@ -1167,7 +1187,7 @@
       rows.forEach(r => { if (r.t === 'L') { const o = nast[r.s].obj; if (o) obj[r.id] = o; else if (!stary) delete obj[r.id]; } });
       const ids = new Set(rows.map(r => r.id)); Object.keys(obj).forEach(k => { if (!ids.has(k)) delete obj[k]; });
       const pol = rows.filter(r => r.t === 'P');
-      const data = {v: 2, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout, nazvy: hlavickaListu(l, nast[i]), cols: l.cols || [], dec: l.dec || [], colFill: l.colFill || [], hlBarvy: nast[i].hlavicka >= 0 && l.barvy ? l.barvy[nast[i].hlavicka] : null})), rows: naPole(rows)};
+      const data = {v: 2, nazev, soubor: f.name, listy: listy.map((l, i) => ({n: l.n, map: nast[i].map, hlavicka: nast[i].hlavicka, zahrnout: nast[i].zahrnout, nazvy: hlavickaListu(l, nast[i]), cols: l.cols || [], dec: l.dec || [], colFill: l.colFill || [], hlBarvy: nast[i].hlavicka >= 0 && l.barvy ? l.barvy[nast[i].hlavicka] : null})), rows: naPole(rows)};
       w.text('Komprimuji ' + nf0.format(rows.length) + ' řádků…', 40);
       const gz = await gzip(JSON.stringify(data));
       await idbPut('r:' + id + ':' + rev, {gz, kdy: Date.now()});
@@ -1390,7 +1410,7 @@
 
   /* ---------- rozhraní pro Management ---------- */
   window.CXRozp = {
-    pripoj(h) { H = h; setTimeout(() => { verzeSkriptu().then(() => prekresli()); dokoncitNahrani(); }, 2500); },
+    pripoj(h) { H = h; setTimeout(() => { verzeSkriptu().then(() => prekresli()); obnovZPocitace().then(dokoncitNahrani); }, 2500); },
     vykresli(el) { EL = el; vykresli(); verzeSkriptu().then(v => { if (v && v < SKRIPT_MIN) prekresli(); }); },
     obnov() {
       if (!EL || !EL.isConnected) return;
