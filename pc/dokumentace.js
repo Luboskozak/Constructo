@@ -138,7 +138,7 @@
 
   /* ---------- stav modulu ---------- */
   let H = null, EL = null;
-  const S = {slozka: '', q: '', raz: 'nazev', smer: 1, fronta: [], bezi: false, verze: 0, verzeT: 0, chyba: '', prubeh: null};
+  const S = {slozka: '', q: '', raz: 'nazev', smer: 1, fronta: [], bezi: false, verze: 0, verzeT: 0, chyba: '', skript: '', hotovo: 0, aktT: 0, aktDuvod: ''};
   const seznam = () => (H && H.seznam() || []).filter(r => r && r.id);
   const najdi = id => seznam().find(r => r.id === id);
   const deti = id => seznam().filter(r => (r.rodic || '') === (id || ''));
@@ -186,68 +186,100 @@
     }
     prekresli(); zpracujFrontu();
   }
-  async function zpracujFrontu() {
-    if (S.bezi || !H) return;
-    S.bezi = true;
+  // 4.53: nahrává se 3 soubory najednou; malé soubory jedním voláním (dok_maly). Dokud skript Google není ve verzi 13,
+  // nahrávají se soubory do 20 MB přes starou akci „foto“ (umí ji i skript 12) a Management mezitím skript sám aktualizuje.
+  const SOUBEH = 3, MALY = 6 * 1024 * 1024, FOTO_MAX = 20 * 1024 * 1024;
+  const spi = ms => new Promise(res => setTimeout(res, ms));
+  function dalsiVeFronte(rezim) {
+    const t = Date.now();
+    const q = S.fronta.find(x => !x.bezi && !(x.pauza > t) && !(rezim === 'foto' && x.vel > FOTO_MAX));
+    if (q) q.bezi = true;
+    return q || null;
+  }
+  async function nahrajJeden(q, rezim) {
     try {
-      while (S.fronta.length) {
-        const q = S.fronta[0];
-        const misto = !H.pripojeno() || H.zkouska;
-        if (!misto && (await verzeSkriptu()) < SKRIPT_MIN) { S.chyba = 'Čekám, až se skript Google sám aktualizuje na verzi ' + SKRIPT_MIN + ' (stává se jednou po nasazení). Soubory zůstávají ve frontě a nahrají se samy.'; prekresliFrontu(); await new Promise(res => setTimeout(res, 60000)); continue; }
-        S.chyba = ''; S.prubeh = q; prekresliFrontu();
-        try {
-          let gid = '', url = '';
-          if (!misto) {
-            if (!q.up) {
-              const cesta = q.rodic ? cestaZaznamu(q.rodic).map(r => r.nazev) : [];
-              const r = await volejOk({akce: 'dok_start', nazev: q.nazev, mime: q.mime || 'application/octet-stream', vel: q.vel, cesta});
-              q.up = r.up; q.hotovo = 0; if (!q.jenPamet) frontaPut(q).catch(() => {});
-            }
-            if (q.vel === 0) { const r = await volejOk({akce: 'dok_cast', up: q.up, od: 0, celkem: 0, data: ''}); gid = r.id; url = r.url; }
-            while (!gid) {
-              const kus = q.blob.slice(q.hotovo, Math.min(q.vel, q.hotovo + KUS));
-              const r = await volejOk({akce: 'dok_cast', up: q.up, od: q.hotovo, celkem: q.vel, data: await b64(kus)});
-              if (r.restart) { q.up = ''; throw new Error('Nahrávání vypršelo, začínám znovu.'); }
-              if (r.id) { gid = r.id; url = r.url; q.hotovo = q.vel; }
-              else { q.hotovo = r.dalsi != null ? Number(r.dalsi) : q.hotovo + kus.size; }
-              if (!q.jenPamet) frontaPut(q).catch(() => {});
-              prekresliFrontu();
-            }
-          }
-          // hotovo: záznam do dat (nebo nová verze stávajícího souboru)
-          const zaklad = {nazev: q.nazev, vel: q.vel, mime: q.mime, kdo: q.kdo, kdy: new Date().toISOString(), gid, url};
-          let rec;
-          const st = q.nahradit && najdi(q.nahradit);
-          if (st) {
-            const starsi = (st.starsi || []).concat(st.gid || st.mistni ? [{gid: st.gid || '', url: st.url || '', kdo: st.kdo, kdy: st.kdy, vel: st.vel, verze: st.verze || 1}] : []).slice(-20);
-            rec = Object.assign({}, st, zaklad, {verze: (st.verze || 1) + 1, starsi});
-          } else rec = Object.assign({id: 'dk' + uid(), typ: 'soubor', rodic: q.rodic || ''}, zaklad);
-          if (misto) rec.mistni = H.zkouska ? 'zkouska' : 'pc';
-          else delete rec.mistni;
-          await cachePut(gid ? 'g:' + gid : 'mistni:' + rec.id, q.blob);
-          ulozZaznamy([rec]);
-          S.fronta.shift(); frontaDel(q.qid);
-        } catch (e) {
-          q.chyba = String(e && e.message || e); S.chyba = 'Soubor ' + q.nazev + ': ' + q.chyba + ' Zkusím to znovu za chvíli.';
+      let gid = '', url = '';
+      if (rezim === 'foto') {
+        const r = await volejOk({akce: 'foto', name: q.qid + '-' + q.nazev, mime: q.mime || 'application/octet-stream', den: new Date().toISOString().slice(0, 10), data: await b64(q.blob)});
+        gid = r.id; url = r.url; q.hotovo = q.vel;
+      } else if (rezim === 'dok' && q.vel <= MALY && !q.up) {
+        const cesta = q.rodic ? cestaZaznamu(q.rodic).map(r => r.nazev) : [];
+        const r = await volejOk({akce: 'dok_maly', nazev: q.nazev, mime: q.mime || 'application/octet-stream', cesta, data: await b64(q.blob)});
+        gid = r.id; url = r.url; q.hotovo = q.vel;
+      } else if (rezim === 'dok') {
+        if (!q.up) {
+          const cesta = q.rodic ? cestaZaznamu(q.rodic).map(r => r.nazev) : [];
+          const r = await volejOk({akce: 'dok_start', nazev: q.nazev, mime: q.mime || 'application/octet-stream', vel: q.vel, cesta});
+          q.up = r.up; q.hotovo = 0; if (!q.jenPamet) frontaPut(q).catch(() => {});
+        }
+        if (q.vel === 0) { const r = await volejOk({akce: 'dok_cast', up: q.up, od: 0, celkem: 0, data: ''}); gid = r.id; url = r.url; }
+        while (!gid) {
+          const kus = q.blob.slice(q.hotovo, Math.min(q.vel, q.hotovo + KUS));
+          const r = await volejOk({akce: 'dok_cast', up: q.up, od: q.hotovo, celkem: q.vel, data: await b64(kus)});
+          if (r.restart) { q.up = ''; throw new Error('Nahrávání vypršelo, začínám znovu.'); }
+          if (r.id) { gid = r.id; url = r.url; q.hotovo = q.vel; }
+          else { q.hotovo = r.dalsi != null ? Number(r.dalsi) : q.hotovo + kus.size; }
           if (!q.jenPamet) frontaPut(q).catch(() => {});
           prekresliFrontu();
-          if (/heslo/.test(q.chyba)) { S.chyba = 'Heslo synchronizace nesedí. Nahrávání je pozastavené.'; break; }
-          await new Promise(res => setTimeout(res, 20000));
         }
       }
-    } finally { S.bezi = false; S.prubeh = null; prekresli(); }
+      // hotovo: záznam do dat (nebo nová verze stávajícího souboru)
+      const zaklad = {nazev: q.nazev, vel: q.vel, mime: q.mime, kdo: q.kdo, kdy: new Date().toISOString(), gid, url};
+      let rec;
+      const st = q.nahradit && najdi(q.nahradit);
+      if (st) {
+        const starsi = (st.starsi || []).concat(st.gid || st.mistni ? [{gid: st.gid || '', url: st.url || '', kdo: st.kdo, kdy: st.kdy, vel: st.vel, verze: st.verze || 1}] : []).slice(-20);
+        rec = Object.assign({}, st, zaklad, {verze: (st.verze || 1) + 1, starsi});
+      } else rec = Object.assign({id: 'dk' + uid(), typ: 'soubor', rodic: q.rodic || ''}, zaklad);
+      if (rezim === 'mistni') rec.mistni = H.zkouska ? 'zkouska' : 'pc';
+      else delete rec.mistni;
+      await cachePut(gid ? 'g:' + gid : 'mistni:' + rec.id, q.blob);
+      ulozZaznamy([rec]);
+      S.fronta = S.fronta.filter(x => x !== q); frontaDel(q.qid);
+      S.hotovo++; S.chyba = '';
+    } catch (e) {
+      q.chyba = String(e && e.message || e); q.pauza = Date.now() + 20000;
+      S.chyba = 'Soubor ' + q.nazev + ': ' + q.chyba + ' Zkusím to znovu za chvíli.';
+      if (/heslo/.test(q.chyba)) { S.chyba = 'Heslo synchronizace nesedí. Nahrávání je pozastavené.'; S.stop = true; }
+      if (!q.jenPamet) frontaPut(Object.assign({}, q, {bezi: false})).catch(() => {});
+    } finally { q.bezi = false; prekresliFrontu(); }
+  }
+  async function zpracujFrontu() {
+    if (S.bezi || !H) return;
+    S.bezi = true; S.stop = false;
+    try {
+      while (S.fronta.length && !S.stop) {
+        let rezim = 'mistni';
+        if (H.pripojeno() && !H.zkouska) {
+          const v = await verzeSkriptu();
+          if (v >= SKRIPT_MIN) { rezim = 'dok'; S.skript = ''; }
+          else {
+            rezim = 'foto';
+            S.skript = 'Skript Google se aktualizuje na verzi ' + SKRIPT_MIN + '. Zatím nahrávám soubory do 20 MB náhradní cestou' + (S.aktDuvod ? ' (aktualizace zatím neprošla: ' + S.aktDuvod + ')' : '') + '.';
+            if (H.aktualizujSkript && Date.now() - (S.aktT || 0) > 180000) {
+              S.aktT = Date.now();
+              H.aktualizujSkript().then(r => { if (r && r.ok) { S.verze = 0; S.verzeT = 0; S.aktDuvod = ''; } else if (r && r.duvod) S.aktDuvod = String(r.duvod).slice(0, 160); prekresliFrontu(); }).catch(() => {});
+            }
+          }
+        }
+        prekresliFrontu();
+        const prace = async () => { for (;;) { if (S.stop) return; const q = dalsiVeFronte(rezim); if (!q) return; await nahrajJeden(q, rezim); if (rezim === 'foto' && Date.now() - S.verzeT > 120000) return; } };
+        await Promise.all(Array.from({length: SOUBEH}, prace));
+        if (S.fronta.length && !S.stop && !S.fronta.some(x => !(x.pauza > Date.now()) && !(rezim === 'foto' && x.vel > FOTO_MAX))) { await spi(rezim === 'foto' ? 30000 : 5000); S.verzeT = 0; }
+      }
+    } finally { S.bezi = false; prekresli(); }
   }
   function prekresliFrontu() {
     let el = document.getElementById('dk-fronta');
-    if (!S.fronta.length) { if (el) el.remove(); return; }
+    if (!S.fronta.length) { if (el) el.remove(); S.hotovo = 0; return; }
     if (!el) { el = document.createElement('div'); el.id = 'dk-fronta'; el.className = 'dk-fronta'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
-    const q = S.fronta[0], celk = S.fronta.reduce((a, x) => a + x.vel, 0), hot = S.fronta.reduce((a, x) => a + (x.hotovo || 0), 0);
-    const pct = celk ? Math.round(hot / celk * 100) : 0;
-    el.innerHTML = `<b>Nahrávám dokumentaci · zbývá ${S.fronta.length} ${S.fronta.length === 1 ? 'soubor' : S.fronta.length < 5 ? 'soubory' : 'souborů'}</b>
-      <small>${esc(q.nazev)} · ${velTxt(q.hotovo || 0)} z ${velTxt(q.vel)}</small><div class="bar"><i style="width:${pct}%"></i></div>
-      <small>${S.chyba ? esc(S.chyba) : 'Okno nechte otevřené, můžete mezitím pracovat. Když ho zavřete, nahrávání pokračuje při dalším otevření.'}</small>`;
+    const bezi = S.fronta.filter(x => x.bezi), celk = S.fronta.reduce((a, x) => a + x.vel, 0), hot = S.fronta.reduce((a, x) => a + (x.hotovo || 0), 0);
+    const n = S.fronta.length, pct = celk ? Math.round(hot / celk * 100) : 0;
+    const vel = S.fronta.filter(x => x.vel > FOTO_MAX).length;
+    el.innerHTML = `<b>Nahrávám dokumentaci · zbývá ${n} ${n === 1 ? 'soubor' : n < 5 ? 'soubory' : 'souborů'} (${velTxt(celk)})${S.hotovo ? ' · hotovo ' + S.hotovo : ''}</b>
+      <small>${bezi.length ? bezi.map(q => esc(q.nazev)).join('<br>') : 'Připravuji…'}</small><div class="bar"><i style="width:${pct}%"></i></div>
+      <small>${S.chyba ? esc(S.chyba) : S.skript ? esc(S.skript) + (vel ? ` ${vel} větších souborů počká na aktualizaci.` : '') : 'Okno nechte otevřené, můžete mezitím pracovat. Když ho zavřete, nahrávání pokračuje při dalším otevření.'}</small>`;
   }
-
   /* ---------- stažení souboru (z prohlížeče, nebo po dílech z Disku Google) ---------- */
   const klicCache = r => r.gid ? 'g:' + r.gid : 'mistni:' + r.id;
   async function nactiSoubor(r, prubeh) {
@@ -845,7 +877,7 @@
     // host: {seznam(), upsert(recs), smaz(ids), kdo(), volej(body)→Promise, pripojeno(), ro(), toast(m), zprava?(dataUrl, popis), zkouska?}
     async pripoj(host) {
       H = host; styl();
-      if (!S.fronta.length) { try { S.fronta = (await frontaVse()).sort((a, b) => String(a.kdy).localeCompare(String(b.kdy))); } catch (e) {} }
+      if (!S.fronta.length) { try { S.fronta = (await frontaVse()).sort((a, b) => String(a.kdy).localeCompare(String(b.kdy))); S.fronta.forEach(q => { q.bezi = false; q.pauza = 0; }); } catch (e) {} }
       if (S.fronta.length) { prekresliFrontu(); zpracujFrontu(); }
     },
     vykresli(el) { EL = el; vykresli(); },

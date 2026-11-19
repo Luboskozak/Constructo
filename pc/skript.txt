@@ -12,6 +12,7 @@ function doPost_(e) {
   let b = {};
   try { b = JSON.parse(e.postData.contents); } catch (x) {}
   if (b.akce === 'dok_start') return dokStart_(b);
+  if (b.akce === 'dok_maly') return dokMaly_(b);
   if (b.akce === 'dok_cast') return dokCast_(b);
   if (b.akce === 'dok_cti') return dokCti_(b);
   if (b.akce === 'dok_smaz') return dokSmaz_(b);
@@ -57,9 +58,25 @@ function foto_(b) {
 // 13: Dokumentace – velké soubory (PDF, DWG) se nahrávají po dílech přímo na Disk Google (složka „Constructo – dokumentace“
 // se stejnými podsložkami jako v aplikaci) a po dílech se i stahují. Používá Drive API přes UrlFetch (oprávnění drive už skript má).
 function dokSlozka_(cesta) {
-  let s = slozka_(DriveApp.getRootFolder(), 'Constructo – dokumentace');
-  (Array.isArray(cesta) ? cesta : []).slice(0, 30).forEach(n => { n = String(n || '').trim().slice(0, 200); if (n) s = slozka_(s, n); });
-  return s;
+  // 3 soubory se nahrávají najednou: složky zakládat pod zámkem (jinak by vznikly dvě stejné) a pamatovat si je
+  const jm = (Array.isArray(cesta) ? cesta : []).slice(0, 30).map(n => String(n || '').trim().slice(0, 200)).filter(Boolean);
+  const c = CacheService.getScriptCache(), k = 'dokslozka:' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(jm), Utilities.Charset.UTF_8));
+  const id = c.get(k);
+  if (id) { try { return DriveApp.getFolderById(id); } catch (x) {} }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    let s = slozka_(DriveApp.getRootFolder(), 'Constructo – dokumentace');
+    jm.forEach(n => { s = slozka_(s, n); });
+    c.put(k, s.getId(), 21600);
+    return s;
+  } finally { lock.releaseLock(); }
+}
+function dokMaly_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const f = dokSlozka_(b.cesta).createFile(Utilities.newBlob(Utilities.base64Decode(b.data || ''), String(b.mime || 'application/octet-stream'), String(b.nazev || 'soubor').slice(0, 250)));
+  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (x) {}
+  return json_({id: f.getId(), url: 'https://drive.google.com/file/d/' + f.getId() + '/view'});
 }
 function dokStart_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
