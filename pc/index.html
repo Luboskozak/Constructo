@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-qOVwDoBcMVgIh2z9imrdf5AfxXJTkEg5MdiHxscotZY=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8Ar+ERjqS/C9WAgVfsCAtrHWLqwhKbyFGw1MZQgutTc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1183,7 +1183,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.60';
+  const APP_VERSION = '4.61';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1436,6 +1436,18 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return [...rep.map(a => ({a, rep: true})), ...list.filter(x => !rep.includes(x.a)).map(x => ({a: x.a, rep: false}))];
   }
   const ACCESS = {zapisuje: 'Zapisuje (může měnit)', nahlizi: 'Jen nahlíží'};
+  // 4.61: oprávnění osoby – zaškrtává správce v kartě osoby; správce smí vše
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí']];
+  const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
+  const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false}, 'Mistr': {rozp: false, fakt: false, fakU: false}};
+  function pravaOf(n) {
+    if (n && ADMINS().includes(n)) return {rozp: true, fakt: true, fakU: true};
+    const p = n ? personOf(n) : {}, x = Object.assign({}, PRAVA_VYCH, p.prava || {});
+    if (p.access === 'nahlizi') { x.fakt = false; x.fakU = false; }
+    if (x.fakU) x.fakt = true; if (x.fakt) x.rozp = true;
+    return x;
+  }
+  const smi = (k, n) => !!pravaOf(n === undefined ? me() : n)[k];
   function personDialog(n) {
     const p = n ? personOf(n) : {};
     if (!isAdmin()) {
@@ -1454,9 +1466,11 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <div class="fld"><label for="pd-comp">Za firmu (podpis závad v mobilu)</label><select id="pd-comp"><option value="">– neuvedeno –</option>${[...new Set(['Subterra a.s.', 'Auböck', ...(p.company ? [p.company] : [])])].map(c => `<option${p.company === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></div>
       <div class="fld"><label>E-maily</label><div class="pd-mails" id="pd-mails">${mails.map(row).join('')}</div><button type="button" class="pd-addm" id="pd-addm">+ Přidat další e-mail</button></div>
       <div class="fld"><label>Přístup do aplikace</label><div class="iv-roles">${Object.entries(ACCESS).map(([k, l]) => `<label><input type="radio" name="pd-acc" value="${k}"${acc === k ? ' checked' : ''}${adm && k === 'nahlizi' ? ' disabled' : ''}>${l}<span>${k === 'zapisuje' ? 'zadává úkoly, píše zápisy' : adm ? 'správce musí zapisovat' : 'na svém zařízení jen prohlíží'}</span></label>`).join('')}</div></div>
+      <div class="fld"><label>Oprávnění</label>${adm ? '<p class="hcap" style="margin:0">Správce projektu smí všechno (vidí rozpočet, připravuje i uzavírá faktury).</p>' : `<div class="iv-roles pd-prava">${PRAVA.map(([k, l, d]) => `<label><input type="checkbox" data-pr="${k}"${pravaOf(n)[k] ? ' checked' : ''}>${l}<span>${d}</span></label>`).join('')}</div><p class="hcap" style="margin:4px 0 0">Výběr pozice zaškrtne obvyklá oprávnění, pak je jde upravit.</p>`}</div>
       <p class="hcap" style="margin:0">${n ? 'Změna jména se promítne do všech úkolů a zápisů této osoby. Reporty (zápisy z porad, úkoly, pondělní přehled) chodí jen na zaškrtnuté adresy.' : 'Osoba se objeví mezi Lidmi a půjde jí přidělovat úkoly.'}</p>`, n ? 'Uložit' : 'Přidat osobu', () => {
         const name = $('#pd-name').value.trim().replace(/\s+/g, ' '), role = $('#pd-role').value, phone = $('#pd-phone').value.trim(), company = $('#pd-comp').value;
         const access = (document.querySelector('input[name="pd-acc"]:checked') || {}).value === 'nahlizi' && !adm ? 'nahlizi' : 'zapisuje';
+        const prava = adm ? undefined : Object.fromEntries(PRAVA.map(([k]) => [k, !!(document.querySelector(`.pd-prava [data-pr="${k}"]`) || {}).checked]));
         const list = [...document.querySelectorAll('#pd-mails .pd-mail')].map(r => ({a: r.querySelector('input[type=email]').value.trim(), rep: r.querySelector('input[type=checkbox]').checked})).filter(x => x.a);
         if (!name) { toast('Vyplňte jméno.'); $('#pd-name').focus(); return 'keep'; }
         const bad = list.find(x => !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(x.a)); if (bad) { toast('E-mail nevypadá správně: ' + bad.a); return 'keep'; }
@@ -1465,11 +1479,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const key = n ? name : (exists || name);
         if (n && name !== n) { if (exists && exists !== n) { toast(`${exists} už v projektu je. Sloučení udělejte v Data → Přejmenovat nebo sloučit osobu.`); return 'keep'; } renameOwner(n, name); if (S.owner === n) S.owner = name; }
         const pp = Object.assign({}, D.project.people || {}); if (n && n !== key) { delete pp[n]; smazano('people', n); smazano('team', n); }
-        pp[key] = Object.assign({}, pp[key] || {}, {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role, phone, access, company});
+        pp[key] = Object.assign({}, pp[key] || {}, {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role, phone, access, company}, prava ? {prava} : {});
         D.project.people = pp;
         if (!teamList().includes(key)) D.project.team = [...teamList(), key];
         commit(); toast(n ? 'Uloženo' : exists ? `${exists} už v projektu je, údaje jsou doplněné` : 'Osoba přidána: ' + key);
       });
+    { const rs = $('#pd-role'); if (rs && !adm) rs.addEventListener('change', () => { const pr = PRAVA_ROLE[rs.value]; if (pr) PRAVA.forEach(([k]) => { const c = document.querySelector(`.pd-prava [data-pr="${k}"]`); if (c) c.checked = pr[k]; }); });
+      const sync = () => { const g = k => document.querySelector(`.pd-prava [data-pr="${k}"]`); if (!g('rozp')) return; if (g('fakU').checked) g('fakt').checked = true; if (g('fakt').checked) g('rozp').checked = true; };
+      document.querySelectorAll('.pd-prava input').forEach(c => c.addEventListener('change', e => { const k = e.target.dataset.pr, g = x => document.querySelector(`.pd-prava [data-pr="${x}"]`); if (!e.target.checked && k === 'rozp') { g('fakt').checked = false; g('fakU').checked = false; } if (!e.target.checked && k === 'fakt') g('fakU').checked = false; sync(); })); }
     const box = $('#pd-mails');
     box.onclick = e => { const x = e.target.closest('.pd-x'); if (!x) return; if (box.children.length > 1) x.parentNode.remove(); else { box.querySelector('input[type=email]').value = ''; } };
     $('#pd-addm').onclick = () => { box.insertAdjacentHTML('beforeend', row({a: '', rep: true}, box.children.length)); box.lastElementChild.querySelector('input').focus(); };
@@ -2426,6 +2443,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function render() {
     if (peopleV2()) toast('Lidé sjednoceni na tým projektu');
     document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
+    if (S.view === 'rozp' && !smi('rozp')) S.view = 'list';
+    $('#v-rozp').hidden = !smi('rozp');
     document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
@@ -3217,6 +3236,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       smazano: (k, id) => !!(D.tomb && D.tomb[k] && D.tomb[k][id]),
       bok: () => document.body.classList.toggle('side-open'),
       domu: () => setView('list'),
+      smi: k => smi(k),
+      schvalovatele: () => owners().filter(n => n !== me() && smi('fakU', n)).map(n => ({n, email: String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || ''})),
       projekt: () => D.project || {},
       udajeFaktury: () => (D.project && D.project.fakturace) || {},
       ulozUdajeFaktury: o => { D.project.fakturace = o; commit(); },
