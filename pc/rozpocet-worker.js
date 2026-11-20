@@ -6,7 +6,12 @@ self.onmessage = e => {
   const m = e.data || {};
   try {
     if (m.akce === 'cti') {
-      const wb = XLSX.read(new Uint8Array(m.buf), {type: 'array', cellStyles: true, cellFormula: false, cellHTML: false, cellNF: true, cellText: false, sheetStubs: true});
+      const u8 = new Uint8Array(m.buf), opt = {cellStyles: true, cellFormula: false, cellHTML: false, cellNF: true, cellText: false, sheetStubs: true};
+      // CSV/text (ne ZIP ani starý Excel): UTF-8, jinak české Windows-1250 – diakritika zůstane správně
+      const bin = (u8[0] === 0x50 && u8[1] === 0x4B) || (u8[0] === 0xD0 && u8[1] === 0xCF);
+      let wb;
+      if (!bin && u8.length) { let str; try { str = new TextDecoder('utf-8', {fatal: true}).decode(u8); } catch (er) { str = new TextDecoder('windows-1250').decode(u8); } if (str.charCodeAt(0) === 0xFEFF) str = str.slice(1); wb = XLSX.read(str, Object.assign({type: 'string', raw: true}, opt)); }
+      else wb = XLSX.read(u8, Object.assign({type: 'array'}, opt));
       const listy = wb.SheetNames.map(n => {
         const ws = wb.Sheets[n];
         if (!ws || !ws['!ref']) return {n, rows: [], skryto: [], urov: [], barvy: [], cols: [], dec: [], colFill: [], od: 0, odSl: 0, skrytyList: false};
