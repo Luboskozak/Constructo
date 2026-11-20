@@ -1,7 +1,7 @@
 /* Constructo – samostatná stránka Dokumentace (zobrazuje ji Deník v menu Dokumentace). Stejná data jako záložka Dokumentace
    v Managementu: D.dokumenty přes skript Google (připojení „hyb-sync“ z Managementu na tomto počítači). */
 (() => {
-  const VERZE = '4.63';
+  const VERZE = '4.64';
   const ls = {get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
   const par = new URLSearchParams(location.search);
   if (window.self !== window.top || par.get('vlozeno')) document.body.classList.add('vlozeno');

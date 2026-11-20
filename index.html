@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-WlMnn236XLE3jS+P47PRxujOLUl4xYpn+js9+MSXKwA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-4uKESeok87/XGT3g8mlehVRkIlbz3YJ5INUyYnlDFDw=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -292,7 +292,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/dokumentace.js"></script>
 <script>
 (() => {
-  const VERSION = '1.30';
+  const VERSION = '1.31';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1930,7 +1930,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     if (c.cropB64 || c.crop) ph.push({b64: c.cropB64 || await b64Blob(c.crop.blob), thumb: c.thumb});
     c.fotky.forEach(x => ph.push(x));
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...to].sort((a, b) => a.localeCompare(b, 'cs')), info: true, end: '', obj: /[A-G]/.test(c.room[0] || '') ? c.room[0] : '',
+    const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...to].sort((a, b) => a.localeCompare(b, 'cs')), info: true, end: '', obj: /[A-G]/.test(c.room[0] || '') ? c.room[0] : '', supplier: c.f ? c.f.firma : '',
       text: `Závada poslaná firmě ${c.f ? c.f.firma : ''}: ${c.pred}\n\n${c.zpr}`, photos: ph.slice(0, 7), att: [], state: 'wait'};
     it.formWait = true;
     try { await CXQ.put(it); } catch (e) { toast('Sdílení se nepodařilo uložit. Zkuste to znovu.'); z.sdileno = false; return; }

@@ -52,7 +52,7 @@ const CXQ = (() => {
     const title = (it.text || '').trim() || 'Foto ze stavby bez popisu';
     const att = (it.att || []).filter(Boolean);
     const tasks = [], log = [];
-    const base = {kind: 'simple', title, start: day, note: '', obj: it.obj || '', supplier: '', hmg: [], createdAt: at, createdBy: by, updatedAt: at, updatedBy: by, from: 'mobil', grp: it.cid, att, _ts: ts};
+    const base = {kind: 'simple', title, start: day, note: '', obj: it.obj || '', supplier: it.supplier || ((/^Závada poslaná firmě\s+(.+?):\s/.exec(title) || [])[1] || '').trim(), hmg: [], createdAt: at, createdBy: by, updatedAt: at, updatedBy: by, from: 'mobil', grp: it.cid, att, _ts: ts};
     const lg = (id, i, comment, status, done) => log.push({id: 'l' + it.cid + '-' + i, taskId: id, at, by, done, status, comment, title, _ts: ts});
     const foto = att.length ? ` (${att.length} ${att.length === 1 ? 'fotka' : att.length < 5 ? 'fotky' : 'fotek'})` : '';
     if (it.info) {
