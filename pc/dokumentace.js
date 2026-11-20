@@ -1126,8 +1126,23 @@
   }
 
   /* ---------- veřejné rozhraní ---------- */
+  // všechny strany PDF (soubor z Disku Google podle id) jako obrázky – Detail zprávy
+  async function pdfStrany(r, max) {
+    const blob = await nactiSoubor(r), lib = await pdfjs();
+    const doc = await lib.getDocument({data: new Uint8Array(await blob.arrayBuffer()), standardFontDataUrl: BASE + 'pdfjs/standard_fonts/', wasmUrl: BASE + 'pdfjs/wasm/', isEvalSupported: false}).promise;
+    const out = [];
+    try {
+      for (let n = 1; n <= Math.min(doc.numPages, 12); n++) {
+        const pg = await doc.getPage(n), v1 = pg.getViewport({scale: 1}), k = (max || 1100) / Math.max(v1.width, v1.height), vp = pg.getViewport({scale: k});
+        const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+        await pg.render({canvas: c, canvasContext: g, viewport: vp}).promise; out.push(c.toDataURL('image/jpeg', 0.82));
+      }
+    } finally { try { doc.destroy(); } catch (e) {} }
+    return out;
+  }
   window.CXDok = {
-    schranka, pdfNaObrazek,
+    schranka, pdfNaObrazek, pdfStrany,
     // host: {seznam(), upsert(recs), smaz(ids), kdo(), volej(body)→Promise, pripojeno(), ro(), toast(m), zprava?(dataUrl, popis), zkouska?}
     async pripoj(host) {
       H = host; styl();

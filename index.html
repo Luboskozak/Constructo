@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-42rJkdbq905RX/TIh1w6q/bMmDnKl2Ox9m3TRUtW2y0=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-WlMnn236XLE3jS+P47PRxujOLUl4xYpn+js9+MSXKwA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -292,7 +292,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/dokumentace.js"></script>
 <script>
 (() => {
-  const VERSION = '1.29';
+  const VERSION = '1.30';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1721,7 +1721,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
             html: zHtml(), text: zSOdkazem(String(Z.formal).trim()), pdfJmeno: zSoubor(), od: jaJmeno(), odpovedet: mujEmail()};
           obr = {}; F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; }); if (s.cropB64) obr.vyrez = s.cropB64;
           fmP = kreslitFormular();
-          rec = zRec('mail', true, s.oba); thumb = Z.thumb || (F.photos[0] && F.photos[0].thumb) || ''; ft = (F.photos[0] && F.photos[0].b64) || s.cropB64 || '';
+          rec = zRec('mail', true, s.oba); thumb = Z.thumb || (F.photos[0] && F.photos[0].thumb) || ''; ft = F.photos.map(x => x.b64).concat(s.cropB64 ? [s.cropB64] : []).filter(Boolean);
           zHistZapis('mail', true); if (s.oba) zHistZapis('wa', false);
         });
         const fm = await fmP;
@@ -1874,8 +1874,8 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const z0 = Z; z0.zaznam = true;
     try {
       // 1.24: všechno z formuláře se vezme hned – aplikace se mezitím vrací na začátek
-      const rec = zRec(via, server, oba), fmP = zFormular().catch(() => null), ft = F.photos[0] ? F.photos[0].b64 : '', crop = Z.crop;
-      await zZaznamUloz(rec, await fmP, ft || (crop ? await b64Blob(crop.blob) : ''));
+      const rec = zRec(via, server, oba), fmP = zFormular().catch(() => null), ft = F.photos.map(x => x.b64), crop = Z.crop;
+      await zZaznamUloz(rec, await fmP, ft.concat(crop ? [await b64Blob(crop.blob)] : []).filter(Boolean));
       await loadQ(); kick();
     } catch (e) { z0.zaznam = false; }
   }
@@ -1888,7 +1888,8 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
   async function zZaznamUloz(rec, fm, ft) {
     const files = [];
     if (fm) files.push({k: 'pdf', b64: await b64Blob(fm.pdf), mime: 'application/pdf', name: rec.cislo + '.pdf'});
-    if (ft) files.push({k: 'foto', b64: ft, mime: 'image/jpeg', name: rec.cislo + '-foto.jpg'});
+    // 1.30: všechny fotky (a výřez z půdorysu) – dřív jen první; v Managementu jsou pak všechny v Detailu zprávy
+    (Array.isArray(ft) ? ft : ft ? [ft] : []).slice(0, 12).forEach((b, i) => files.push({k: i ? 'f' + i : 'foto', b64: b, mime: 'image/jpeg', name: rec.cislo + '-foto' + (i ? '-' + (i + 1) : '') + '.jpg'}));
     await CXQ.put({cid: 'zav-' + rec.id, kind: 'zavada', at: rec.at, day: todayS(), by: rec.by, rec, files, state: 'wait'});
   }
   // po odeslání firmě: sdílet závadu s kolegy (uvidí ji v Constructu Na vědomí a přijde jim e-mail)

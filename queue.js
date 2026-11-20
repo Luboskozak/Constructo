@@ -163,9 +163,12 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
             const r = await post(conn, {key: conn.key, akce: 'foto', name: f.name, mime: f.mime, den: it.day || it.at.slice(0, 10), data: f.b64});
             if (r.error) throw new Error(errTxt(r.error));
             if (!r.id) throw new Error('Skript na Googlu je potřeba aktualizovat.');
-            rec[f.k] = {id: r.id, url: r.url, thumb: f.k === 'foto' ? r.thumb : ''};
+            const x = {id: r.id, url: r.url, thumb: f.k === 'pdf' ? '' : r.thumb || ''};
+            if (f.k === 'pdf') rec.pdf = x;
+            else { if (f.k === 'foto') rec.foto = x; rec.fotky = rec.fotky || []; rec.fotky[f.k === 'foto' ? 0 : Number(f.k.slice(1))] = x; }
             f.done = true; f.b64 = ''; await put(it);
           }
+          if (rec.fotky) { rec.fotky = rec.fotky.filter(Boolean); if (rec.fotky.length < 2) delete rec.fotky; }
           const r = await post(conn, {key: conn.key, rev: 0, data: {zavady: [Object.assign({}, rec, {_ts: Date.now()})]}});
           if (r.error) throw new Error(errTxt(r.error));
           if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
