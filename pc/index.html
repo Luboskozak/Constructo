@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-zLw58iLg+Rzf2cyhFRqWDvfYeOGdmF0z7ib8uS1Zi5s=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-50f8RyPFO91OqaeqQ9wg+2XNcWV5bihaZh0R4DOGQwE=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -940,6 +940,21 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 .dsave{width:100%;justify-content:center;min-height:52px;font-size:16px}
 #j-ukq button.on{background:var(--accent);border-color:var(--accent)}
 .dfil{margin-top:4px}
+/* 4.65: větší pole na zápis a na fotky, Vložit z PD */
+.dform #j-text{min-height:340px;font-size:16px;line-height:1.5}
+.dmedia{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.dphotos{min-height:150px;padding:10px;border:2px dashed var(--line);border-radius:12px;background:var(--bg);align-content:flex-start}
+.dph{width:128px;height:128px}
+.dph.add{font-size:13px;font-weight:600;color:var(--ink)}.dph.add span:first-child{font-size:30px}
+.dph.add.pd{border:2px solid var(--accent);background:#FFF4BF}
+.dph.add img{width:100%;height:78px;object-fit:cover;border-radius:5px 5px 0 0}
+.zv-co{display:flex;gap:8px;padding:12px 14px 0;flex-wrap:wrap}
+.zv-co button{font-size:15px;font-weight:700;padding:10px 18px;border-radius:999px;border:2px solid var(--line);background:var(--panel);cursor:pointer}
+.zv-co button[aria-pressed="true"]{background:var(--k,#16191c);border-color:var(--k,#16191c);color:#fff}
+.zv-co .cnt{margin-left:6px}
+.za-feed{padding:12px 14px;display:flex;flex-direction:column;gap:14px}
+#dk-cil{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:900;background:#16191c;color:#fff;border-radius:14px;padding:12px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.35);max-width:min(860px,calc(100vw - 32px));font-size:14px}
+#dk-cil b{color:#F4D23C}#dk-cil button{flex:none}
 @media (max-width:900px){.dgrid,.dmedia{grid-template-columns:1fr}}
 </style>
 </head>
@@ -955,7 +970,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
       <button type="button" id="v-list" aria-pressed="true">Úkoly</button>
       <button type="button" id="v-diary" aria-pressed="false">Denní zápisy</button>
-      <button type="button" id="v-zavady" aria-pressed="false">Zprávy</button>
+      <button type="button" id="v-zavady" aria-pressed="false">Zprávy, zápisy</button>
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
@@ -1186,7 +1201,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.64';
+  const APP_VERSION = '4.65';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1541,7 +1556,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#eyebrow').textContent = `${D.project.company || ''}`;
     { const pn = String(D.project.name || ''), sh = pn.split(',')[0].replace(/^Rekonstrukce( objektu)?\s*/i, '') || pn, rest = pn.slice(pn.split(',')[0].length).replace(/^,\s*/, '');
       $('#app-h1').innerHTML = esc(sh).replace(/(\s[\d/]+)$/, '<span>$1</span>'); $('#side-proj').textContent = sh; $('#side-ver').textContent = 'Constructo ' + APP_VERSION; $('#side-co').textContent = [D.project.ulice, D.project.mesto].filter(Boolean).join(', ') || rest || ''; }
-    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní zápisy',hmg:'Harmonogram'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
+    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní zápisy',hmg:'Harmonogram',zavady:'Zprávy, zápisy'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
     $('#foot').innerHTML = `<span>Constructo ${APP_VERSION} · samostatná aplikace, data jsou uložená v tomto prohlížeči${fileHandle ? ' a v souboru ' + esc(fileName) : ''}</span><span>HMG: ${esc(D.hmgInfo.source || '')}, stav ke dni ${hmgDateTxt()}</span><span>${SY ? 'Synchronizace zapnutá' : 'Bez synchronizace'}</span><span>Naposledy uloženo ${D.savedAt ? new Date(D.savedAt).toLocaleString('cs-CZ') : '–'}</span>`;
   }
 
@@ -1940,9 +1955,6 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function renderDiary() {
     const v = $('#view');
     // nové od minula: co kolegové napsali od mé poslední návštěvy (zvýraznění drží, dokud stránku neobnovím)
-    if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
-    if (me()) store.set(dSeenKey(), new Date().toISOString());
-    const seen = dSeen0;
     dGrab();
     const d = dDraft(), ed = d.edit ? D.diary.find(e => e.id === d.edit) : null;
     if (d.edit && !ed) { diaryDraft = null; return renderDiary(); }
@@ -1959,8 +1971,9 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
             <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = uložit</span></div>
             <textarea id="j-text" aria-label="Co se dnes dělo" placeholder="Co se dnes dělo… např. Akant dokončil štuky 4. NP dvorní fasáda, zítra lešení 3. NP. Chybí 2 lidi.">${esc(d.text)}</textarea>
             <div class="dmedia">
+              <div class="fld"><label>Fotky a výkresy</label><div class="dphotos" id="j-drop">${d.att.map((a, i) => `<span class="dph"><img src="${esc(attThumb(a))}" alt="Fotka"><button type="button" data-phx="${i}" aria-label="Odebrat fotku">✕</button></span>`).join('')}<label class="dph add"><span>📷</span><span>Přidat fotky</span><input type="file" id="j-file" accept="image/*" multiple hidden></label><button type="button" class="dph add pd" id="j-pd" title="Otevře Dokumentaci – vyberete výkres, uděláte výřez a vložíte ho sem"><span>📐</span><span>Vložit z PD</span></button>${(sch => sch ? `<button type="button" class="dph add" id="j-sch" title="${esc(sch.popis)}"><img src="${sch.dataUrl}" alt=""><span>📋 Poslední výřez</span></button>` : '')(window.CXDok && CXDok.schranka && CXDok.schranka())}</div><span class="hcap">Fotku můžete i vložit (Ctrl+V) nebo přetáhnout sem. „Vložit z PD“ otevře výkresy v Dokumentaci.</span></div>
               <div class="fld"><label>Místo na stavbě</label>${d.misto && d.misto.img ? `<div class="dmisto">${mistoMini(d.misto, 150, 100, .12)}<div><b>${esc(mistoTxt(d.misto))}</b><div class="drow"><button type="button" class="btn" id="j-pin">Změnit</button><button type="button" class="del" id="j-pin-x">odebrat</button></div></div></div>` : '<button type="button" class="btn" id="j-pin">📍 Označit místo na půdorysu</button>'}</div>
-              <div class="fld"><label>Fotky</label><div class="dphotos" id="j-drop">${d.att.map((a, i) => `<span class="dph"><img src="${esc(attThumb(a))}" alt="Fotka"><button type="button" data-phx="${i}" aria-label="Odebrat fotku">✕</button></span>`).join('')}<label class="dph add"><span>📷</span><span>Přidat fotky</span><input type="file" id="j-file" accept="image/*" multiple hidden></label></div><span class="hcap">Fotku můžete i vložit (Ctrl+V) nebo přetáhnout sem.</span></div>
+              
             </div>
           </div>
           <div class="dside">
@@ -1976,18 +1989,27 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
           </div>
         </div>
       </form>`;
-    // co nás čeká: termíny prací a úkoly ze zápisů na nejbližší 3 týdny
+    v.innerHTML = `<div class="diary">${form}</div>`;
+    bindDiary(v, d, ed);
+  }
+  // 4.65: archiv denních zápisů – všechny zápisy (D.diary) beze změny dat, jen se zobrazují tady místo pod formulářem
+  const zaHledej = (e) => (!ZF.osoba || [e.by, e.owner, ...(e.komu || []), e.ukKomu].some(n => n && foldName(n) === foldName(ZF.osoba)))
+    && hledej(ZF.q || '', e.text, e.owner, e.by, e.taskTitle, e.obj, (e.komu || []), e.ukKomu, mistoTxt(e.misto), dRepl(e.id).map(r => r.text + ' ' + r.by));
+  function renderZapisyArchiv(v, coHtml) {
+    if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
+    if (me()) store.set(dSeenKey(), new Date().toISOString());
+    const seen = dSeen0, all = D.diary.filter(isZapis);
     const lim = addD(today, 21);
-    const up = []
-      .concat(D.diary.filter(e => isZapis(e) && e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
-        .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].replace(/^\s*(•|-|\d+\.)\s+/, '').slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today})))
+    const up = all.filter(e => e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
+      .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].replace(/^\s*(•|-|\d+\.)\s+/, '').slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today}))
       .sort((a, b) => a.d.localeCompare(b.d)).slice(0, 8);
     const upHtml = up.length ? `<div class="day dup"><div class="day-h">Co nás čeká<span class="cnt">úkoly ze zápisů na 3 týdny</span></div>${up.map(x => `<button type="button" class="uprow" data-go="${esc(x.e.id)}"><span class="num${x.late ? ' late' : ''}">${esc(x.w)}</span><span>${x.h}</span></button>`).join('')}</div>` : '';
-    const all = D.diary.filter(isZapis), nMe = all.filter(e => dForMe(e) && (!e.ukolId || eff(D.tasks.find(x => x.id === e.ukolId) || {}) !== 'done')).length, nProb = all.filter(e => e.typ === 'problem' && !e.vyreseno).length, nNew = all.filter(e => dIsNew(e, seen)).length;
+    const nMe = all.filter(e => dForMe(e) && (!e.ukolId || eff(D.tasks.find(x => x.id === e.ukolId) || {}) !== 'done')).length, nProb = all.filter(e => e.typ === 'problem' && !e.vyreseno).length, nNew = all.filter(e => dIsNew(e, seen)).length;
     const fil = `<div class="dfil no-print">${[['', 'Vše', 0], ['new', 'Nové od minula', nNew], ['me', 'Pro mě', nMe], ['problem', 'Problémy', nProb], ['term', 'Úkoly', 0]].map(([k, l, n]) => `<button type="button" class="chip" data-fil="${k}" aria-pressed="${(S.dFil || '') === k}">${l}${n ? ` <b>${n}</b>` : ''}</button>`).join('')}</div>`;
-    const list = filteredDiary();
+    const list = all.filter(e => (S.dFil !== 'me' || dForMe(e)) && (S.dFil !== 'problem' || (e.typ === 'problem' && !e.vyreseno)) && (S.dFil !== 'term' || !!e.ukolId) && (S.dFil !== 'new' || dIsNew(e, seen)) && zaHledej(e));
+    const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(e => e.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     let feed = '';
-    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${all.length ? 'Filtru neodpovídá žádný zápis.' : 'Zatím žádné zápisy.'}</strong>${all.length ? 'Zvolte „Vše“ nebo zrušte filtr.' : 'První zápis přidáte formulářem vlevo.'}</div></div>`;
+    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${all.length ? 'Výběru neodpovídá žádný zápis.' : 'Zatím žádné zápisy.'}</strong>${all.length ? 'Zvolte „Vše“, jinou osobu nebo smažte hledání.' : 'Nový zápis napíšete v záložce Denní zápisy.'}</div></div>`;
     else {
       const days = {}; list.forEach(e => (days[e.date] ||= []).push(e));
       feed = Object.keys(days).sort().reverse().map(dte => {
@@ -1996,8 +2018,68 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         return `<div class="day"><div class="day-h">${esc(label)}${dte === today ? ' · dnes' : ''}<span class="cnt">${es.length} ${es.length === 1 ? 'zápis' : es.length < 5 ? 'zápisy' : 'zápisů'}</span><button type="button" class="btn no-print" data-copy="${dte}" title="Text dne k vložení do Buildary">Zkopírovat den</button></div>${es.map(e => entryHtml(e, seen)).join('')}</div>`;
       }).join('');
     }
-    v.innerHTML = `<div class="diary">${form}<div>${upHtml}${fil}${feed}</div></div>`;
-    bindDiary(v, d, ed);
+    v.innerHTML = `<div class="sl">${coHtml}<div class="sl-top zv-top">
+      <select id="za-osoba" aria-label="Osoba"><option value="">Všichni</option>${osoby.map(n => `<option value="${esc(n)}"${ZF.osoba && foldName(ZF.osoba) === foldName(n) ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>
+      <input id="za-q" type="search" placeholder="Hledat v zápisech" value="${esc(ZF.q)}" aria-label="Hledat v zápisech">
+      <span class="sp"></span><span>${list.length === all.length ? list.length : `${list.length} z ${all.length}`} ${list.length === 1 ? 'zápis' : list.length > 1 && list.length < 5 ? 'zápisy' : 'zápisů'}</span>
+      ${RO() ? '' : '<button type="button" class="btn primary no-print" id="za-novy">+ Nový zápis</button>'}</div>
+      <div class="za-feed">${upHtml}${fil}${feed}</div></div>`;
+    $('#za-osoba').onchange = e => { ZF.osoba = e.target.value; renderZavady(); };
+    $('#za-q').oninput = e => { ZF.q = e.target.value; const p = e.target.selectionStart; renderZavady(); const i = $('#za-q'); i.focus(); try { i.setSelectionRange(p, p); } catch (x) {} };
+    const nb = $('#za-novy'); if (nb) nb.onclick = () => setView('diary');
+    bindDiaryFeed(v);
+  }
+  function bindDiaryFeed(v) {
+    v.querySelectorAll('[data-zco]').forEach(b => b.onclick = () => { ZF.co = b.dataset.zco; store.set('hyb-zco', ZF.co); render(); });
+    v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; renderZavady(); });
+    v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (!v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`)) { S.dFil = ''; ZF.q = ''; ZF.osoba = ''; renderZavady(); } const x = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
+    v.querySelectorAll('[data-task]').forEach(b => b.onclick = () => quickDone(b.dataset.task, b));
+    v.querySelectorAll('[data-pinv]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.pinv); if (e && e.misto) planViewer(e.misto, true); });
+    v.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyDay(b.dataset.copy));
+    v.querySelectorAll('[data-solve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.solve); if (!e) return; if (!me()) { whoDialog(); return; } e.vyreseno = {at: new Date().toISOString(), by: me()}; commit(); toast('Označeno jako vyřešené'); });
+    v.querySelectorAll('[data-unsolve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.unsolve); if (!e) return; delete e.vyreseno; commit(); });
+    v.querySelectorAll('[data-rf]').forEach(f => f.onsubmit = e => {
+      e.preventDefault(); const inp = f.querySelector('input'), text = inp.value.trim(); if (!text) return;
+      if (!me()) { whoDialog(); toast('Nejdřív vyberte, kdo píše.'); return; }
+      D.diary.push({id: uid(), kind: 'odpoved', parent: f.dataset.rf, date: today, at: new Date().toISOString(), by: me(), text});
+      commit(); toast('Odpověď odeslána');
+    });
+    v.querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmModal('Smazat odpověď?', '', 'Smazat', () => { D.diary = D.diary.filter(x => x.id !== b.dataset.rdel); commit(); }));
+    v.querySelectorAll('[data-del]').forEach(b => { let armed = null; b.onclick = () => {
+      if (!armed) { b.classList.add('armed'); b.textContent = 'Opravdu smazat?'; armed = setTimeout(() => { armed = null; b.classList.remove('armed'); b.textContent = 'Smazat'; }, 4000); return; }
+      clearTimeout(armed); const id = b.dataset.del;
+      D.diary = D.diary.filter(e => e.id !== id && !(e.kind === 'odpoved' && e.parent === id)); if (diaryDraft && diaryDraft.edit === id) diaryDraft = null; commit(); toast('Zápis smazán');
+    }; });
+    v.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+      const e = D.diary.find(x => x.id === b.dataset.edit); if (!e) return;
+      diaryDraft = {edit: e.id, date: e.date, typ: e.typ || 'prace', text: e.text || '', komu: (e.komu || []).slice(), akce: e.akce || 'zapis', misto: e.misto || null, att: (e.att || []).slice(), ukEnd: '', ukKomu: '', task: '', done: ''};
+      setView('diary'); $('#j-text').focus(); toast('Upravujete zápis. Po uložení ho najdete zase ve Zprávy, zápisy.');
+    });
+  }
+  // 4.65: Vložit z PD – otevře Dokumentaci, výřez z výkresu se vloží do rozepsaného zápisu
+  let dokCil = null;
+  function dkCilLista() {
+    let el = $('#dk-cil');
+    const on = S.view === 'dok' && dokCil === 'zapis';
+    if (!on) { if (el) el.remove(); if (S.view !== 'dok') dokCil = null; return; }
+    if (el) return;
+    el = document.createElement('div'); el.id = 'dk-cil'; el.className = 'no-print'; el.setAttribute('role', 'status');
+    el.innerHTML = '<span><b>Vložit z PD do denního zápisu:</b> otevřete výkres → <b>Výřez</b> → táhněte myší přes místo → <b>Vložit do denního zápisu</b>.</span><button type="button" class="btn">Zpět do zápisu</button>';
+    el.querySelector('button').onclick = () => { dokCil = null; setView('diary'); };
+    document.body.appendChild(el);
+  }
+  function shrinkSrc(src, max, q) {
+    return new Promise((res, rej) => { const i = new Image();
+      i.onload = () => { const k = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas'); c.width = Math.round(i.width * k); c.height = Math.round(i.height * k); const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(i, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); };
+      i.onerror = () => rej(new Error('obrázek')); i.src = src; });
+  }
+  async function vlozDoZapisu(dataUrl) {
+    dokCil = null;
+    const d = dDraft();
+    try { d.att.push({thumb: await shrinkSrc(dataUrl, 640, .7), big: SY ? dataUrl : ''}); }
+    catch (e) { toast('Výřez se nepodařilo vložit. Zkuste to znovu.'); return; }
+    setView('diary');
+    toast('Výřez z výkresu je vložený v zápisu. Dopište text a dejte Uložit zápis.', 7000);
   }
   function bindDiary(v, d, ed) {
     const re = () => { dGrab(); renderDiary(); };
@@ -2018,6 +2100,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if ($('#j-pin-x')) $('#j-pin-x').onclick = () => { d.misto = null; re(); };
     // fotky: výběr, vložení ze schránky, přetažení
     $('#j-file').onchange = e => addPhotos(e.target.files);
+    $('#j-pd').onclick = () => { if (!window.CXDok) { toast('Obnovte stránku (F5).'); return; } dGrab(); dokCil = 'zapis'; setView('dok'); toast('Otevřete výkres, dejte Výřez a táhněte myší přes místo. Pak „Vložit do denního zápisu“.', 8000); };
+    if ($('#j-sch')) $('#j-sch').onclick = () => { const x = CXDok.schranka(); if (!x) return; dGrab(); if (d.att.some(a => a.big === x.dataUrl || a.src === x.dataUrl)) { toast('Tento výřez už v zápisu je.'); return; } vlozDoZapisu(x.dataUrl); };
     v.querySelectorAll('[data-phx]').forEach(b => b.onclick = () => { d.att.splice(+b.dataset.phx, 1); re(); });
     const form = $('#j-form');
     form.onpaste = e => { const fs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type)); if (fs.length) { e.preventDefault(); addPhotos(fs); } };
@@ -2027,31 +2111,6 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if ($('#j-cancel')) $('#j-cancel').onclick = () => { diaryDraft = null; renderDiary(); };
     form.onsubmit = e => { e.preventDefault(); saveEntry(); };
     $('#j-text').onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEntry(); } else zListKey(e); };
-    // přehled
-    v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; re(); });
-    v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const el = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (!el) { S.dFil = ''; S.q = ''; S.owner = ''; S.obj = ''; render(); } const x = v.ownerDocument.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
-    v.querySelectorAll('[data-task]').forEach(b => b.onclick = () => quickDone(b.dataset.task, b));
-    v.querySelectorAll('[data-pinv]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.pinv); if (e && e.misto) planViewer(e.misto, true); });
-    v.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyDay(b.dataset.copy));
-    v.querySelectorAll('[data-solve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.solve); if (!e) return; if (!me()) { whoDialog(); return; } e.vyreseno = {at: new Date().toISOString(), by: me()}; dGrab(); commit(); toast('Označeno jako vyřešené'); });
-    v.querySelectorAll('[data-unsolve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.unsolve); if (!e) return; delete e.vyreseno; dGrab(); commit(); });
-    v.querySelectorAll('[data-rf]').forEach(f => f.onsubmit = e => {
-      e.preventDefault(); const inp = f.querySelector('input'), text = inp.value.trim(); if (!text) return;
-      if (!me()) { whoDialog(); toast('Nejdřív vyberte, kdo píše.'); return; }
-      D.diary.push({id: uid(), kind: 'odpoved', parent: f.dataset.rf, date: today, at: new Date().toISOString(), by: me(), text});
-      dGrab(); commit(); toast('Odpověď odeslána');
-    });
-    v.querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmModal('Smazat odpověď?', '', 'Smazat', () => { D.diary = D.diary.filter(x => x.id !== b.dataset.rdel); dGrab(); commit(); }));
-    v.querySelectorAll('[data-del]').forEach(b => { let armed = null; b.onclick = () => {
-      if (!armed) { b.classList.add('armed'); b.textContent = 'Opravdu smazat?'; armed = setTimeout(() => { armed = null; b.classList.remove('armed'); b.textContent = 'Smazat'; }, 4000); return; }
-      clearTimeout(armed); const id = b.dataset.del;
-      D.diary = D.diary.filter(e => e.id !== id && !(e.kind === 'odpoved' && e.parent === id)); if (d.edit === id) diaryDraft = null; dGrab(); commit(); toast('Zápis smazán');
-    }; });
-    v.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
-      const e = D.diary.find(x => x.id === b.dataset.edit); if (!e) return;
-      diaryDraft = {edit: e.id, date: e.date, typ: e.typ || 'prace', text: e.text || '', komu: (e.komu || []).slice(), akce: e.akce || 'zapis', misto: e.misto || null, att: (e.att || []).slice(), ukEnd: '', ukKomu: '', task: '', done: ''};
-      renderDiary(); $('#j-text').focus(); window.scrollTo({top: $('#j-form').getBoundingClientRect().top + scrollY - 20, behavior: 'smooth'});
-    });
   }
   // fotky se zmenší (rychlé nahrávání), při sdílení se nahrají na Disk Google stejně jako fotky z mobilu
   function shrinkImg(file, max, q) {
@@ -2090,7 +2149,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (d.edit) {
       const e = D.diary.find(x => x.id === d.edit);
       if (e) Object.assign(e, base, {editedAt: at, editedBy: m});
-      diaryDraft = null; commit(); toast(e ? 'Zápis upraven' : 'Zápis mezitím někdo smazal'); return;
+      diaryDraft = null; commit(); toast(e ? 'Zápis upraven. Najdete ho v záložce Zprávy, zápisy.' : 'Zápis mezitím někdo smazal', 6000); return;
     }
     const entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce}, base);
     if (d.akce === 'ukol') {
@@ -2103,7 +2162,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     D.diary.push(entry);
     store.set('hyb-me-owner', m);
     diaryDraft = null; commit();
-    toast(d.akce === 'ukol' ? 'Zápis uložen, úkol zadán: ' + d.ukKomu : 'Zápis uložen');
+    toast((d.akce === 'ukol' ? 'Zápis uložen, úkol zadán: ' + d.ukKomu : 'Zápis uložen') + '. Najdete ho v záložce Zprávy, zápisy.', 6000);
   }
   // text dne pro oficiální stavební deník (Buildary)
   function copyDay(dte) {
@@ -2459,12 +2518,13 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
-    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
+    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
     $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy, zápisy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
-    { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
+    { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = (S.view === 'zavady' && ZF.co === 'zapisy') || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').textContent = 'Denní zápisy'; $('#v-zavady').innerHTML = 'Zprávy, zápisy' + (n ? `<span class="cnt" title="Nové denní zápisy od minula">${n}</span>` : ''); }
+    dkCilLista();
     $('#uk-src').hidden = $('#f-osoba').hidden = S.view !== 'list';
     { const fo = $('#f-osoba'), ppl = [...new Set([...owners(), ...D.tasks.filter(t => !t.info).flatMap(taskPeople)])].filter(n => n !== 'Bez přiřazení').sort((a, b) => a.localeCompare(b, 'cs'));
       const opts = '<option value="">Všechny osoby</option>' + ppl.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + '<option value="Bez přiřazení">Bez přiřazení</option>';
@@ -3224,7 +3284,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         } catch (e) { throw new Error(e.name === 'AbortError' ? 'Google neodpověděl včas.' : e.message || 'Bez připojení.'); }
         finally { clearTimeout(tm); }
       },
-      zprava: dataUrl => { if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu. Výřez si zatím zkopírujte nebo stáhněte.'); return; } NZ.fotky = NZ.fotky.concat([dataUrl]).slice(-12); novaZprava(); toast('Výřez je ve zprávě mezi fotkami. Vyberte komu a napište text.'); },
+      get zpravaText() { return dokCil === 'zapis' ? '✚ Vložit do denního zápisu' : undefined; },
+      zprava: dataUrl => { if (dokCil === 'zapis') { vlozDoZapisu(dataUrl); return; } if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu. Výřez si zatím zkopírujte nebo stáhněte.'); return; } NZ.fotky = NZ.fotky.concat([dataUrl]).slice(-12); novaZprava(); toast('Výřez je ve zprávě mezi fotkami. Vyberte komu a napište text.'); },
     };
     CXDok.pripoj(dokHost);
   }
@@ -3455,7 +3516,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
 
   /* ---------- záložka Zprávy pro firmy: všechny zprávy (závady, reklamace, úklid…) poslané firmám z mobilu (D.zavady) ---------- */
-  const ZF = {firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
+  const ZF = {co: store.get('hyb-zco') === 'zapisy' ? 'zapisy' : 'zpravy', firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
   /* 4.36: zprávy v kolektivu = úkoly a Na vědomí poslané z mobilu (úkoly se stejnou skupinou grp). Každá dostane PDF a e-mail; výsledek je v t.zprava. */
   const KOL = 'V kolektivu';
   function kolZpravy() {
@@ -3565,7 +3626,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       // 4.60: výřez z Dokumentace, vložení ze schránky (Ctrl+V), přetažení souboru, PDF → první strana
       const tx = $('#nz-text'); if (tx) tx.oninput = () => { NZ.text = tx.value; };
       const sc = $('#nz-sch'); if (sc) sc.onclick = () => { const x = CXDok.schranka(); if (!x) return; if (NZ.fotky.includes(x.dataUrl)) { toast('Tento výřez už ve zprávě je.'); return; } NZ.fotky.push(x.dataUrl); prekresli(); toast('Výřez vložen do zprávy.'); };
-      const vy = $('#nz-vyrez'); if (vy) vy.onclick = () => { ulozPole(); const c = $('#m-cancel'); if (c) c.click(); S.view = 'dok'; store.set('hyb-view', 'dok'); render(); toast('Otevřete výkres, klikněte Výřez a označte místo. Pak dejte „Poslat ve zprávě“ – vrátíte se do této zprávy.'); };
+      const vy = $('#nz-vyrez'); if (vy) vy.onclick = () => { dokCil = null; ulozPole(); const c = $('#m-cancel'); if (c) c.click(); S.view = 'dok'; store.set('hyb-view', 'dok'); render(); toast('Otevřete výkres, klikněte Výřez a označte místo. Pak dejte „Poslat ve zprávě“ – vrátíte se do této zprávy.'); };
       ov.onpaste = e => { const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter(f => /^image\/|pdf/.test(f.type)); if (!fs.length) return; e.preventDefault(); nzPridej(fs); };
       const fb = $('#nz-fotky'); if (fb) { fb.ondragover = e => { e.preventDefault(); fb.classList.add('drop'); }; fb.ondragleave = () => fb.classList.remove('drop'); fb.ondrop = e => { e.preventDefault(); fb.classList.remove('drop'); nzPridej([...e.dataTransfer.files]); }; }
     }
@@ -3707,11 +3768,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return a.sort((x, y) => (ZF.sort === 'firma' ? (x.kol ? 1 : 0) - (y.kol ? 1 : 0) : 0) || String(x[k] || '~').localeCompare(String(y[k] || '~'), 'cs') || byDate(x, y));
   }
   function renderZavady() {
+    const nZap = D.diary.filter(isZapis).length, nZpr = ZAV().length + kolZpravy().length;
+    const coHtml = `<div class="zv-co no-print" role="group" aria-label="Archiv"><button type="button" data-zco="zpravy" aria-pressed="${ZF.co !== 'zapisy'}">Zprávy firmám a kolegům<span class="cnt">${nZpr}</span></button><button type="button" data-zco="zapisy" aria-pressed="${ZF.co === 'zapisy'}">Denní zápisy<span class="cnt">${nZap}</span></button></div>`;
+    if (ZF.co === 'zapisy') return renderZapisyArchiv($('#view'), coHtml);
     const v = $('#view'), all = ZAV().concat(kolZpravy()), rows = zavadyVyber(), admin = isAdmin(), firmRows = rows.filter(z => !z.kol);
     const firmyN = [...new Map([...firmyList().map(f => f.firma), ...all.map(z => z.firma)].filter(Boolean).map(n => [zFirmaKey(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(z => z.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const opt = (list, val, all0) => `<option value="">${all0}</option>` + list.map(n => `<option value="${esc(n)}"${val && foldName(val) === foldName(n) ? ' selected' : ''}>${esc(n)}</option>`).join('');
-    let html = `<div class="sl"><div class="sl-top zv-top">
+    let html = `<div class="sl">${coHtml}<div class="sl-top zv-top">
       <select id="zv-firma" aria-label="Firma">${opt(firmyN, ZF.firma, 'Všechny firmy')}</select>
       <select id="zv-osoba" aria-label="Kdo poslal">${opt(osoby, ZF.osoba, 'Všichni, kdo posílali')}</select>
       <select id="zv-stav" aria-label="Stav">${[['', 'Všechny stavy'], ['otevrene', 'Neuzavřené'], ...Object.entries(ZSTAV)].map(([k, l]) => `<option value="${k}"${ZF.stav === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
@@ -3753,6 +3817,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     }
     v.innerHTML = html + '</div>';
     const nzb = $('#zv-nova'); if (nzb) nzb.onclick = novaZprava;
+    v.querySelectorAll('[data-zco]').forEach(b => b.onclick = () => { ZF.co = b.dataset.zco; store.set('hyb-zco', ZF.co); render(); });
     const up = $('#zv-upd'); if (up) up.onclick = () => { ZF.ver = undefined; scriptUpdateDialog(); };
     $('#zv-firma').onchange = e => { ZF.firma = e.target.value; renderZavady(); };
     $('#zv-osoba').onchange = e => { ZF.osoba = e.target.value; renderZavady(); };
