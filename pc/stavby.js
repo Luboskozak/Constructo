@@ -24,7 +24,9 @@
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const SY = () => { const s = jsn(ls.get('hyb-sync'), null); return s && s.url && s.key ? s : null; };
+  // mobil 1.32: telefon má spojení v IndexedDB (ne v hyb-sync) – předá ho přes CXStavby.spojeni(conn)
+  let spoj = null;
+  const SY = () => { if (spoj) return spoj; const s = jsn(ls.get('hyb-sync'), null); return s && s.url && s.key ? s : null; };
   const ro = () => { const s = SY(); return ls.get('hyb-ro') === '1' || !!(s && /^cteni-/.test(s.key)); };
 
   /* ---------- slučování dat: stejný kód jako mergeData v Managementu (pc/index.html) a ve skriptu Google ---------- */
@@ -467,5 +469,6 @@
 
   window.CXStavby = {HYB, HYB_NAZEV, KEY_BASE, STAV, aktivni, seznam, info, nazevHyb, obnovSeznam, prevezmi, zaloz, uprav, stahni, posli, prenesMistni,
     ulozMistne, nactiMistne, uklidLocalStorage, pripravOtevreni, lsKlic, menu, formular, prepni, cekani, mergeData, otisk, verzeSkriptu,
-    naZmenu: f => { posluchaci.add(f); return () => posluchaci.delete(f); }};
+    naZmenu: f => { posluchaci.add(f); return () => posluchaci.delete(f); },
+    spojeni: c => { spoj = c && c.url && c.key ? {url: c.url, key: c.key} : null; }};
 })();

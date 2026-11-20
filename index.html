@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-4uKESeok87/XGT3g8mlehVRkIlbz3YJ5INUyYnlDFDw=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-sHEEO0WJ97Z/dQUBoX7+aAFfRqZa0bo3XVWY+SbbFLo=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -62,6 +62,13 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:calc(var(--st
 .track i{position:absolute;inset:0 auto 0 0;border-radius:9px;background:var(--y)}
 .head.small{padding-bottom:14px;border-radius:0 0 22px 22px}
 .head.small h2{margin:0;font-size:24px;font-weight:900;letter-spacing:-.03em}
+.stv-chip{display:flex;align-items:center;gap:8px;max-width:100%;margin:0;align-self:flex-start;height:38px;padding:0 14px;border-radius:19px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:15px;font-weight:700;text-align:left}
+.stv-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.stv-chip i{font-style:normal;color:var(--y)}
+.stv-list{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto}
+.stv-r{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--line,#ddd);background:#fff;color:var(--ink,#16191c);font:inherit;font-size:16px}
+.stv-r b{display:block;font-weight:800}.stv-r small{display:block;margin-top:2px;color:var(--mut,#6b7279);font-size:13px}
+.stv-r[aria-current="true"]{border:2px solid var(--y);background:#fffbe6}
+.stv-g{margin:8px 2px 0;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut,#6b7279)}
 .netline{font-size:12.5px;color:#9aa2a9;display:flex;align-items:center;gap:6px}
 .netline b{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block}
 .netline.off b{background:#e0a63a}
@@ -290,9 +297,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/qr.js"></script>
 <script src="pc/zprava.js"></script>
 <script src="pc/dokumentace.js"></script>
+<script src="pc/stavby.js"></script>
 <script>
 (() => {
-  const VERSION = '1.31';
+  const VERSION = '1.32';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -311,6 +319,12 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   const LOGO = '<div class="logo"><svg viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span>Constructo</span></div>';
 
   let conn = null, me = '', D = null, dataAt = 0, online = navigator.onLine, lastErr = '', Q = [];
+  // 1.32: více staveb – stejný seznam staveb jako v Managementu a Deníku; telefon si pamatuje vybranou stavbu (IndexedDB „stavba“)
+  const CXS = window.CXStavby || null, HYB = CXQ.HYB;
+  let SID = HYB;
+  const jeHyb = () => SID === HYB;
+  const stavbaJm = () => (CXS && (CXS.info(SID) || {}).name) || (D && D.project && D.project.name) || (jeHyb() ? 'Hybernská 1000/8' : 'Stavba');
+  const spojit = () => { if (CXS) CXS.spojeni(conn); };
   let view = ({prehled: 'hlaseni', '': 'hlaseni', vedomi: 'ukoly', odeslane: 'archiv'})[ls.get('cx-view')] || ls.get('cx-view'), ufilter = ({zadal: 'moje'})[ls.get('cx-uf')] || ls.get('cx-uf') || 'moje';
   // pozvaný „jen nahlíží“: vidí stavbu, nic neposílá ani nemění (server mu změny stejně nepřijme)
   let ro = ls.get('cx-ro') === '1';
@@ -341,7 +355,14 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 
   /* ---------- start ---------- */
   async function boot() {
-    try { conn = await CXQ.kvGet('conn'); me = (await CXQ.kvGet('me')) || ls.get('cx-me'); const c = await CXQ.kvGet('data'); if (c) { D = c.data; dataAt = c.at; } } catch (e) { conn = null; }
+    try {
+      conn = await CXQ.kvGet('conn'); me = (await CXQ.kvGet('me')) || ls.get('cx-me');
+      SID = (CXS && await CXQ.kvGet('stavba')) || HYB; CXQ.stavba(SID);
+      // záznamy ve frontě z doby před 1.32 patří Hybernské
+      for (const x of await CXQ.all()) if (!x.sid) { x.sid = HYB; await CXQ.put(x); }
+      const c = await CXQ.kvGet(CXQ.dk(SID)); if (c) { D = c.data; dataAt = c.at; }
+    } catch (e) { conn = null; }
+    spojit();
     const code = parseCode(decodeURIComponent(location.hash || ''));
     if (code) { conn = code; await CXQ.kvSet('conn', conn); history.replaceState(null, '', location.pathname + location.search); }
     // 1.13: pozvánka je odkaz …/?k=K7M2QX – počítač jde rovnou do verze pro PC, telefon se připojí sám
@@ -532,10 +553,56 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   }
   let installEvt = null;
 
+  let regAt = 0;
   async function refresh(first) {
     if (!conn) return false;
-    try { const r = await CXQ.get(conn); if (r.data) { D = r.data; dataAt = Date.now(); fixMe(); } online = true; lastErr = ''; setTimeout(sdilejFirmy, 0); if (!first) renderBg(); return true; }
+    spojit();
+    const sid = SID;
+    try {
+      const r = await CXQ.getS(conn, sid);
+      if (sid !== SID) return true;   // mezitím přepnuto na jinou stavbu
+      if (r.data) { D = r.data; dataAt = Date.now(); fixMe(); }
+      // seznam staveb: u Hybernské se vezme z jejích dat (bez dalšího dotazu), u ostatních jednou za minutu ze serveru
+      if (CXS) {
+        if (jeHyb() && D) CXS.prevezmi(D, r.rev);
+        else if (Date.now() - regAt > 60000) { regAt = Date.now(); CXS.obnovSeznam().then(() => { if (!jeHyb() && !CXS.info(SID)) prepniStavbu(HYB, 'Stavba už v seznamu není – otevřena Hybernská.'); else renderBg(); }).catch(() => {}); }
+      }
+      online = true; lastErr = ''; setTimeout(sdilejFirmy, 0); if (!first) renderBg(); return true;
+    }
     catch (e) { lastErr = e.message; if (e.message === 'OFFLINE') online = false; if (!first) renderBg(); return false; }
+  }
+  // 1.32: výběr stavby (stejný seznam jako v Managementu a Deníku); rozepsané hlášení zůstane a odejde do nově vybrané stavby
+  function stavbySheet() {
+    if (!CXS) return;
+    const kresli = h => {
+      const q = fold(h || ''), a = CXS.seznam().filter(x => !q || fold(x.name + ' ' + [(x.project || {}).ulice, (x.project || {}).mesto].join(' ')).includes(q));
+      const ot = a.filter(x => (x.project || {}).stav !== 'dokoncena'), ho = a.filter(x => (x.project || {}).stav === 'dokoncena');
+      ot.sort((x, y) => (x.sid === HYB ? -1 : y.sid === HYB ? 1 : 0) || x.name.localeCompare(y.name, 'cs', {numeric: true}));
+      ho.sort((x, y) => x.name.localeCompare(y.name, 'cs', {numeric: true}));
+      const radek = x => { const P = x.project || {}, sub = [[P.ulice, P.mesto].filter(Boolean).join(', '), P.stav && P.stav !== 'aktivni' && CXS.STAV[P.stav] ? CXS.STAV[P.stav] : ''].filter(Boolean).join(' · ');
+        return `<button type="button" class="stv-r" data-stv="${esc(x.sid)}" aria-current="${x.sid === SID}"><b>${esc(x.name)}</b>${sub || x.sid === SID ? `<small>${x.sid === SID ? 'otevřená' + (sub ? ' · ' : '') : ''}${esc(sub)}</small>` : ''}</button>`; };
+      return (ot.map(radek).join('') + (ho.length ? `<p class="stv-g">Dokončené</p>${ho.map(radek).join('')}` : '')) || '<p class="hint">Žádná stavba neodpovídá hledání.</p>';
+    };
+    const sh = sheet(`<h3>Vyberte stavbu</h3>
+      ${CXS.seznam().length > 6 ? '<input id="stv-q" class="date" type="search" placeholder="Hledat stavbu…" autocomplete="off">' : ''}
+      <div class="stv-list" id="stv-list">${kresli('')}</div>
+      <p class="hint" style="margin:4px 0 0">Novou stavbu založíte na počítači (Management nebo Deník). Tady se objeví sama.</p>
+      <button type="button" class="big" data-close>Zpět</button>`);
+    const bindL = () => sh.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => { closeSheet(); if (b.dataset.stv !== SID) prepniStavbu(b.dataset.stv); });
+    bindL();
+    const q = sh.querySelector('#stv-q'); if (q) q.oninput = () => { sh.querySelector('#stv-list').innerHTML = kresli(q.value); bindL(); };
+    sh.querySelector('[data-close]').onclick = closeSheet;
+    CXS.obnovSeznam().then(() => { const l = sh.querySelector('#stv-list'); if (l && l.isConnected) { l.innerHTML = kresli(q ? q.value : ''); bindL(); } }).catch(() => {});
+  }
+  async function prepniStavbu(sid, msg) {
+    SID = sid || HYB; CXQ.stavba(SID); await CXQ.kvSet('stavba', SID).catch(() => {});
+    const c = await CXQ.kvGet(CXQ.dk(SID)).catch(() => null);
+    D = c && c.data ? c.data : null; dataAt = c && c.data ? c.at : 0; regAt = 0;
+    zMistoPryc(); F.obj = new Set(); F.to = new Set(); AR.firma = ''; AR.autor = ''; AR.open = null;
+    if (dokHost && window.CXDok && CXDok.obnov) { try { CXDok.obnov(); } catch (e) {} }
+    render(); scrollTo(0, 0);
+    toast(msg || 'Otevřena stavba ' + stavbaJm(), 3000);
+    await refresh(); render();
   }
   // Překreslení z pozadí (načtení dat každých 30 s, fronta, signál) by smazalo rozepsané pole a na iPhonu
   // zavřelo klávesnici. Dokud člověk píše, počká se, a překreslí se, až pole opustí.
@@ -563,7 +630,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     try { const r = await CXQ.process(); await afterQueue(r); } finally { pumping = false; }
   }
   async function afterQueue(r) {
-    const c = await CXQ.kvGet('data').catch(() => null); if (c && c.at >= dataAt) { D = c.data; dataAt = c.at; }
+    const c = await CXQ.kvGet(CXQ.dk(SID)).catch(() => null); if (c && c.data && c.at >= dataAt) { D = c.data; dataAt = c.at; }
     await loadQ();
     if (r && r.err && r.err !== 'OFFLINE') lastErr = r.err;
     if (r && r.sent && F.result && F.result.cid && Q.some(x => x.cid === F.result.cid && x.state === 'sent')) F.result.sent = true;
@@ -638,7 +705,9 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const t = dataAt ? new Date(dataAt).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}) : '';
     return online && !lastErr ? `<div class="netline"><b></b>Aktuální · ${t}</div>` : `<div class="netline off"><b></b>${online ? 'Spojení s Googlem nejde' : 'Bez signálu'}${t ? ' · data z ' + t : ''}</div>`;
   };
-  const headSmall = title => `<header class="head small"><div class="r">${LOGO}<button type="button" class="zavrit-top" data-act="zavrit">✕ Zavřít</button><button type="button" class="me" data-act="settings" aria-label="Nastavení">${esc(initials(me))}</button></div><div class="r"><h2>${esc(title)}</h2>${netline()}</div></header>`;
+  // 1.32: pod nadpisem otevřená stavba – klepnutím výběr jiné (jen když je staveb víc než jedna)
+  const stavbaChip = () => CXS && CXS.seznam().length > 1 ? `<button type="button" class="stv-chip" data-act="stavba" aria-label="Vybrat stavbu"><span>${esc(stavbaJm())}</span><i>▾</i></button>` : '';
+  const headSmall = title => `<header class="head small"><div class="r">${LOGO}<button type="button" class="zavrit-top" data-act="zavrit">✕ Zavřít</button><button type="button" class="me" data-act="settings" aria-label="Nastavení">${esc(initials(me))}</button></div><div class="r"><h2>${esc(title)}</h2>${netline()}</div>${stavbaChip()}</header>`;
   function taskCard(t, opts) {
     const st = eff(t), late = st === 'late', who = people(t).join(', ') || 'Bez přiřazení', att = t.att || [];
     const canDone = false;  // v telefonu se úkoly jen prohlížejí, plní se na počítači
@@ -775,6 +844,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         <div class="zroom">${Z.room ? `Místnost <b>${esc(Z.room)}</b>` : 'Číslo místnosti nenalezeno'} · ${esc(p ? p.name : '')}</div>
         ${Z.alts.length > 1 ? `<p class="hint">Je to jinde? Klepněte na správné číslo:</p><div class="chips">${Z.alts.map(r => `<button type="button" class="chip all" data-zr="${esc(r)}" aria-pressed="${r === Z.room}">${esc(r)}</button>`).join('')}</div>` : ''}
         <div class="row2"><button type="button" class="big" data-act="plan">Změnit místo</button><button type="button" class="big" data-act="planx">Bez místa</button></div>`
+      : !jeHyb() ? `<input id="z-misto" class="date" placeholder="Místo (např. 2. NP, byt 5, fasáda)" value="${esc(Z.room)}" autocomplete="off">`
       : `<button type="button" class="big pri zpin" data-act="plan">📍 Označit místo na půdorysu</button>
         <p class="hint" style="margin:6px 0 4px">Nebo jen objekt:</p><div class="objs">${'ABCDEFG'.split('').map(c => `<button type="button" class="obj" data-obj="${c}" aria-pressed="${F.obj.has(c)}">${c}</button>`).join('')}</div>`}
       <p class="lbl">5 · Komu <em>(kolegové)</em></p>
@@ -793,6 +863,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     v.querySelectorAll('[data-done]').forEach(b => b.onclick = e => { e.stopPropagation(); markDone(b.dataset.done); });
     v.querySelectorAll('.task[data-t]').forEach(c => c.onclick = () => detail(c.dataset.t));
     v.querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b.dataset.act));
+    const zm = v.querySelector('#z-misto'); if (zm) zm.oninput = () => { Z.room = zm.value; };
     v.querySelectorAll('[data-z]').forEach(c => c.onclick = () => zDetail(c.dataset.z));
     v.querySelectorAll('[data-ar]').forEach(c => c.onclick = () => { const [k, ...r] = c.dataset.ar.split(':'); arDetail(k, r.join(':')); });
     v.querySelectorAll('[data-arby]').forEach(b => b.onclick = () => { AR.by = b.dataset.arby; AR.open = null; ls.set('cx-ar-by', AR.by); render(); });
@@ -826,6 +897,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'install') installSheet();
     else if (a === 'settings') settings();
     else if (a === 'plan') planViewer();
+    else if (a === 'stavba') stavbySheet();
     else if (a === 'firmy') firmyDlg();
     else if (a === 'prijemci') prijemciDlg();
     else if (a === 'prtoggle') { Z.prOpen = !Z.prOpen; render(); }
@@ -954,7 +1026,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   async function send() {
     if (!F.to.size) { toast('Vyberte, komu hlášení patří.'); return; }
     const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const misto = Z.pin && Z.crop ? zMisto() : '', obj = Z.pin && /[A-G]/.test((Z.room || '')[0] || '') ? Z.room[0] : [...F.obj].sort().join('');
+    const misto = Z.pin && Z.crop ? zMisto() : !jeHyb() ? (Z.room || '').trim() : '', obj = Z.pin && /[A-G]/.test((Z.room || '')[0] || '') ? Z.room[0] : [...F.obj].sort().join('');
     let photos = F.photos.slice();
     if (misto && Z.crop) { try { const u = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(Z.crop.blob); }); photos.push({b64: String(u).split(',')[1], thumb: Z.thumb || u, plan: true}); } catch (e) {} }
     const it = {cid, kind: 'report', at: new Date().toISOString(), day: todayS(), by: me, to: [...F.to].sort((a, b) => a.localeCompare(b, 'cs')), info: F.info, end: F.info ? '' : F.end, obj, misto, text: F.text.trim(), photos, att: [], state: 'wait'};
@@ -974,7 +1046,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const nt = Object.assign({}, t, {status: 'done', done: 100, doneAt: now, doneBy: me, updatedAt: now, updatedBy: me, _ts: ts});
     const lg = {id: 'l' + ts.toString(36) + Math.random().toString(36).slice(2, 6), taskId: id, at: now, by: me, done: 100, status: 'done', comment: 'Splněno (z telefonu)', title: t.title, _ts: ts};
     D.tasks = tasks().map(x => x.id === id ? nt : x); D.log = (D.log || []).concat(lg);
-    dataAt = Date.now(); await CXQ.kvSet('data', {rev: 0, data: D, at: dataAt}).catch(() => {});
+    dataAt = Date.now(); await CXQ.kvSet(CXQ.dk(SID), {rev: jeHyb() ? 0 : '', data: D, at: dataAt}).catch(() => {});
     await CXQ.put({cid: 'u' + ts.toString(36), kind: 'upd', at: now, data: {tasks: [nt], log: [lg]}, state: 'wait'});
     toast('Splněno: ' + t.title); closeSheet(); await loadQ(); render(); kick();
   }
@@ -1137,13 +1209,14 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     if (s) { s = s[0].toUpperCase() + s.slice(1); if (!/[.!?]$/.test(s)) s += '.'; }
     return s;
   }
-  const stavba = () => (D && D.project && D.project.name) || 'Rekonstrukce objektu Hybernská 1000/8, Praha 1';
+  const stavba = () => (D && D.project && D.project.name) || (jeHyb() ? 'Rekonstrukce objektu Hybernská 1000/8, Praha 1' : stavbaJm());
   function zMisto() {
+    if (!jeHyb()) return (Z.room || '').trim();
     const p = planOf(Z.pin && Z.pin.floor), o = (Z.room || '')[0], a = [];
     if (Z.room) a.push('místnost ' + Z.room); if (p) a.push(p.name); if (/[A-G]/.test(o || '')) a.push('objekt ' + o);
     return a.join(', ');
   }
-  const zPredmet = () => `${zTyp().s}${Z.room ? ' – místnost ' + Z.room : ''} – ${D ? projShort() : 'Hybernská 1000/8'}`;
+  const zPredmet = () => `${zTyp().s}${Z.room ? (jeHyb() ? ' – místnost ' : ' – ') + Z.room : ''} – ${D ? projShort() : stavbaJm()}`;
   // tón zprávy podle typu: nepořádek vlídněji, reklamace a BOZP rázně
   const ZTON = {kvalita: 'věcný a rázný', reklamace: 'formální a důrazný, jde o uplatnění práva z vadného plnění', neuklizeno: 'vlídný, ale jasný', poskozeni: 'důrazný, s požadavkem na vyjádření a opravu na náklady způsobitele', nedodelek: 'věcný a pevný', bozp: 'velmi důrazný, náprava ihned, upozornit na možné smluvní sankce', jine: 'věcný a zdvořilý'};
   const MOJE_FIRMY = ['Subterra a.s.', 'Auböck'];
@@ -1197,6 +1270,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
         <p class="hint">Je to jinde? Klepněte na správné číslo:</p>
         <div class="chips">${Z.alts.map(r => `<button type="button" class="chip all" data-zr="${esc(r)}" aria-pressed="${r === Z.room}">${esc(r)}</button>`).join('')}<button type="button" class="chip all" data-zr="">Napsat jiné…</button></div>
         <button type="button" class="big" data-act="plan">Změnit místo na půdorysu</button>`
+      : !jeHyb() ? `<input id="z-misto" class="date" placeholder="Místo (např. 2. NP, byt 5, fasáda)" value="${esc(Z.room)}" autocomplete="off">`
       : `<button type="button" class="big pri zpin" data-act="plan">📍 Označit místo na půdorysu</button>`}
       <p class="lbl">5 · Komu <em>(firma, TDS, investor…)</em></p>
       ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— bez firmy (jen další příjemci) —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
@@ -1639,7 +1713,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const btn = $('#z-mail'); if (btn) { btn.disabled = true; btn.lastChild.textContent = `Odesílám firmě ${f.firma}…`; }
     const obr = {logo: fm.logo}; if (Z.crop) obr.vyrez = await b64Blob(Z.crop.blob);
     F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; });
-    const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: `Constructo · ${stavba()} – ${subj.replace(' – ' + (D ? projShort() : 'Hybernská 1000/8'), '')}`, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
+    const body = {key: conn.key, akce: 'zavada', cid: Z.id + '-' + Date.now().toString(36), komu: f.email, predmet: `Constructo · ${stavba()} – ${subj.replace(' – ' + (D ? projShort() : stavbaJm()), '')}`, html: zHtml(), text, pdf: await b64Blob(fm.pdf), pdfJmeno: zSoubor(), obr, od: jaJmeno(), odpovedet: mujEmail()};
     let r = null, detail = '';
     try {
       const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);
@@ -1717,7 +1791,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
         let fmP, mail, obr, rec, thumb, ft;
         zS(s, () => {
           const f = firma(), subj = zPredmet();
-          mail = {key: conn.key, akce: 'zavada', cid: s.id + '-m', komu: (f && f.email) || it.email, predmet: `Constructo · ${stavba()} – ${subj.replace(' – ' + (D ? projShort() : 'Hybernská 1000/8'), '')}`,
+          mail = {key: conn.key, akce: 'zavada', cid: s.id + '-m', komu: (f && f.email) || it.email, predmet: `Constructo · ${stavba()} – ${subj.replace(' – ' + (D ? projShort() : stavbaJm()), '')}`,
             html: zHtml(), text: zSOdkazem(String(Z.formal).trim()), pdfJmeno: zSoubor(), od: jaJmeno(), odpovedet: mujEmail()};
           obr = {}; F.photos.slice(0, 6).forEach((x, i) => { obr['f' + i] = x.b64; }); if (s.cropB64) obr.vyrez = s.cropB64;
           fmP = kreslitFormular();
@@ -1726,8 +1800,8 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
         });
         const fm = await fmP;
         mail.pdf = await b64Blob(fm.pdf); obr.logo = fm.logo; mail.obr = obr;
-        await CXQ.put({cid: 'zml-' + s.id, kind: 'zmail', at: it.at, day: it.day, by: it.by, firma: it.firma, predmet: zS(s, zPredmet), body: mail, photos: thumb ? [{thumb}] : [], state: 'wait'});
-        await zZaznamUloz(rec, fm, ft);
+        await CXQ.put({cid: 'zml-' + s.id, sid: it.sid, kind: 'zmail', at: it.at, day: it.day, by: it.by, firma: it.firma, predmet: zS(s, zPredmet), body: mail, photos: thumb ? [{thumb}] : [], state: 'wait'});
+        await zZaznamUloz(rec, fm, ft, it.sid);
         await CXQ.del(it.cid); nove = true;
       }
     } catch (e) { /* zkusí se znovu při dalším pokusu o odeslání */ }
@@ -1885,12 +1959,12 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       patro: p ? p.name : '', room: Z.room || '', komu: f ? komuTxt(f) : '', predmet: zPredmet(), popis: (Z.text || '').trim(), text: (Z.formal || odborne()).trim(),
       via: oba && via === 'mail' ? ['mail', 'wa'] : [via], server: !!server, tok: Z.tok, odEmail: mujEmail() || '', stav: 'odeslano', kopie: (Z.kopie || []).slice()};
   }
-  async function zZaznamUloz(rec, fm, ft) {
+  async function zZaznamUloz(rec, fm, ft, sid) {
     const files = [];
     if (fm) files.push({k: 'pdf', b64: await b64Blob(fm.pdf), mime: 'application/pdf', name: rec.cislo + '.pdf'});
     // 1.30: všechny fotky (a výřez z půdorysu) – dřív jen první; v Managementu jsou pak všechny v Detailu zprávy
     (Array.isArray(ft) ? ft : ft ? [ft] : []).slice(0, 12).forEach((b, i) => files.push({k: i ? 'f' + i : 'foto', b64: b, mime: 'image/jpeg', name: rec.cislo + '-foto' + (i ? '-' + (i + 1) : '') + '.jpg'}));
-    await CXQ.put({cid: 'zav-' + rec.id, kind: 'zavada', at: rec.at, day: todayS(), by: rec.by, rec, files, state: 'wait'});
+    await CXQ.put({cid: 'zav-' + rec.id, sid: sid || SID, kind: 'zavada', at: rec.at, day: todayS(), by: rec.by, rec, files, state: 'wait'});
   }
   // po odeslání firmě: sdílet závadu s kolegy (uvidí ji v Constructu Na vědomí a přijde jim e-mail)
   // 1.25: kolegy „na vědomí“ zaškrtnuté ve formuláři dostanou kopii hned; jinak se jako dřív zeptá „Sdílet s kolegy?“
@@ -2015,7 +2089,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     if (sdilim || !a.length || !conn || ro) return;
     sdilim = true;
     try {
-      const g = await CXQ.get(conn), cur = (g && g.data) || D || {};
+      const sid = SID, g = await CXQ.getS(conn, sid), cur = (g && g.data) || D || {};
       const pr = Object.assign({}, cur.project || {}), sp = Array.isArray(pr.firmy) ? pr.firmy.slice() : [];
       let zmena = false;
       a.forEach(x => {
@@ -2033,9 +2107,8 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       });
       if (zmena) {
         pr.firmy = sp; pr._ts = Date.now();
-        const r = await CXQ.post(conn, {key: conn.key, rev: 0, data: {project: pr}});
-        if (!r || r.error) throw new Error(String((r && r.error) || 'neuloženo'));
-        if (r.data) { D = r.data; dataAt = Date.now(); await CXQ.kvSet('data', {rev: r.rev, data: r.data, at: dataAt}).catch(() => {}); }
+        const r = await CXQ.postS(conn, sid, {project: pr});
+        if (r.data && sid === SID) { D = r.data; dataAt = Date.now(); }
       }
       // firmy jsou teď ve společném seznamu – z telefonu je smazat, ať nejsou dvakrát
       const jm = new Set(spolecneFirmy().map(y => fold(y.firma)));
@@ -2181,14 +2254,15 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
       if (have) { toast(have + ' už v Lidech je.'); return makeInvite(have, false); }
       ok.disabled = true; ok.textContent = 'Ukládám…';
       try {
-        const g = await CXQ.get(conn), cur = (g && g.data) || D || {};
+        const sid = SID, g = await CXQ.getS(conn, sid), cur = (g && g.data) || D || {};
         const pr = Object.assign({}, cur.project || {}), pp = Object.assign({}, pr.people || {});
         const emails = mail ? [{a: mail, rep: true}] : [];
         pp[name] = Object.assign({}, pp[name] || {}, {emails, email: mail, role, phone, access: 'zapisuje', company: ''});
         pr.people = pp; pr.team = [...new Set([...(Array.isArray(pr.team) ? pr.team : []), name])]; pr._ts = Date.now();
-        const r = await CXQ.post(conn, {key: conn.key, rev: 0, data: {project: pr}});
-        if (!r || r.error) throw new Error(r && r.error === 'heslo' ? 'Telefon nemá oprávnění měnit Lidi.' : String((r && r.error) || 'Uložení se nepovedlo.'));
-        if (r.data) { D = r.data; dataAt = Date.now(); await CXQ.kvSet('data', {rev: r.rev, data: r.data, at: dataAt}); }
+        let r;
+        try { r = await CXQ.postS(conn, sid, {project: pr}); }
+        catch (e) { throw new Error(/Kód připojení nesedí/.test(e.message) ? 'Telefon nemá oprávnění měnit Lidi.' : e.message || 'Uložení se nepovedlo.'); }
+        if (r.data && sid === SID) { D = r.data; dataAt = Date.now(); }
         toast('Přidáno do Lidí: ' + name);
         makeInvite(name, false);
       } catch (e) { ok.disabled = false; ok.textContent = 'Přidat a pozvat'; toast(e.message === 'OFFLINE' ? 'Telefon je bez internetu.' : e.message); }
@@ -2240,7 +2314,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     $('#st-ref').onclick = async () => { toast('Načítám…'); const ok = await refresh(); toast(ok ? 'Načteno' : 'Bez spojení'); closeSheet(); };
     const off = $('#st-off'); off.onclick = async () => {
       if (!off.dataset.arm) { off.dataset.arm = 1; off.textContent = 'Opravdu odpojit?'; return; }
-      await CXQ.kvSet('conn', null); await CXQ.kvSet('data', null); conn = null; D = null; setRo(false); closeSheet(); setupCode();
+      await CXQ.kvSet('conn', null); await CXQ.kvSet('data', null); await CXQ.kvSet('stavba', null); SID = HYB; CXQ.stavba(HYB); conn = null; D = null; setRo(false); closeSheet(); setupCode();
     };
   }
 

@@ -15,7 +15,12 @@ const CXQ = (() => {
   const kvGet = async k => rq((await st('kv', 'readonly')).get(k));
   const kvSet = async (k, v) => rq((await st('kv', 'readwrite')).put(v, k));
   const all = async () => rq((await st('q', 'readonly')).getAll());
-  const put = async r => rq((await st('q', 'readwrite')).put(r));
+  // 1.32: více staveb – každý záznam ve frontě patří stavbě, ve které vznikl (stará data = Hybernská)
+  const HYB = 'hybernska';
+  let CUR = HYB;
+  const sidOf = it => (it && it.sid) || HYB;
+  const dk = sid => !sid || sid === HYB ? 'data' : 'data:' + sid;
+  const put = async r => { if (r && !r.sid) r.sid = CUR; return rq((await st('q', 'readwrite')).put(r)); };
   const del = async cid => rq((await st('q', 'readwrite')).delete(cid));
 
   async function post(conn, body, ms) {
@@ -45,6 +50,34 @@ const CXQ = (() => {
     return res;
   }
   const errTxt = e => e === 'heslo' ? 'Kód připojení nesedí se skriptem na Googlu.' : String(e);
+  // data jiné stavby než Hybernské jdou přes CXStavby (pc/stavby.js – jen ve stránce; service worker je nechá stránce)
+  const SX = () => (typeof self !== 'undefined' && self.CXStavby) || null;
+  async function getS(conn, sid) {
+    if (!sid || sid === HYB) return get(conn);
+    const X = SX(); if (!X) throw new Error('STRANKA');
+    const c0 = await kvGet(dk(sid)).catch(() => null);
+    let r;
+    try { r = await X.stahni(sid, c0 && c0.data ? c0.rev : ''); }
+    catch (e) { throw new Error(navigator.onLine === false || /Failed to fetch|NetworkError|neodpověděl|Load failed/i.test(e.message || '') ? 'OFFLINE' : e.message); }
+    if (r.same && c0 && c0.data) { c0.at = Date.now(); await kvSet(dk(sid), c0); return {rev: c0.rev, data: c0.data, same: true}; }
+    const data = r.data || (c0 && c0.data) || {};
+    await kvSet(dk(sid), {rev: r.rev, data, at: Date.now()});
+    return {rev: r.rev, data};
+  }
+  async function postS(conn, sid, data) {
+    if (!sid || sid === HYB) {
+      const r = await post(conn, {key: conn.key, rev: 0, data});
+      if (r.error) throw new Error(errTxt(r.error));
+      if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+      return r;
+    }
+    const X = SX(); if (!X) throw new Error('STRANKA');
+    let r;
+    try { r = await X.posli(sid, data); }
+    catch (e) { throw new Error(navigator.onLine === false || /Failed to fetch|NetworkError|neodpověděl|Load failed/i.test(e.message || '') ? 'OFFLINE' : e.message); }
+    if (r && r.data) await kvSet(dk(sid), {rev: r.rev, data: r.data, at: Date.now()});
+    return r || {};
+  }
 
   // z hlášení udělá záznamy pro program: úkol pro každého vybraného, nebo jedno „Na vědomí“ pro všechny vybrané
   function build(it) {
@@ -104,7 +137,8 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       fotky: proPdf ? (it.photos || []).slice(0, 12).map(p => p && p.b64 ? 'data:image/jpeg;base64,' + p.b64 : '') : null});
   }
   async function zpravaMail(conn, it) {
-    const c = await kvGet('data').catch(() => null), stavba = (c && c.data && c.data.project && c.data.project.name) || 'Stavba';
+    const c = await kvGet(dk(sidOf(it))).catch(() => null), X = SX(), inf = X && sidOf(it) !== HYB ? X.info(sidOf(it)) : null;
+    const stavba = (c && c.data && c.data.project && c.data.project.name) || (inf && inf.name) || 'Stavba';
     if (it.form && it.form.pdf) {
       // formulář PDF a e-mail připravil telefon (stejný vzhled jako zprávy pro firmy): PDF na Disk, e-mail s fotkami a PDF v příloze
       const lide = (c && c.data && c.data.project && c.data.project.people) || {};
@@ -137,12 +171,11 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
     return {at: new Date().toISOString(), sent: Number(r && r.sent) || (r && r.opakovane ? (it.to || []).length : 0), missing: (r && r.missing) || [], error: (r && r.error) || '', pdf};
   }
   async function zapisVysledek(conn, it) {
-    const m = it.mail || {}, g = await get(conn), cur = (g && g.data) || null; if (!cur) return;
+    const m = it.mail || {}, g = await getS(conn, sidOf(it)), cur = (g && g.data) || null; if (!cur) return;
     const ts = Date.now(), komu = it.to || [];
     const tk = (cur.tasks || []).filter(t => t.grp === it.cid).map(t => Object.assign({}, t, {_ts: ts, zprava: {at: m.at || new Date().toISOString(), komu, sent: m.sent || 0, missing: m.missing || [], error: m.error || '', pdf: m.pdf || null}}));
     if (!tk.length) return;
-    const r = await post(conn, {key: conn.key, rev: 0, data: {tasks: tk}});
-    if (r && r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+    await postS(conn, sidOf(it), {tasks: tk});
   }
 
   let running = null;
@@ -151,7 +184,8 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
     const conn = await kvGet('conn'); if (!conn) return {sent: 0};
     // hlášení, kterému telefon ještě kreslí formulář PDF, počká (nejvýš 3 minuty, pak odejde i bez něj)
     // 1.24: 'zai' = hlášení pro firmu, kterému telefon ještě připravuje text a formulář (dělá to stránka, ne fronta)
-    const items = (await all()).filter(x => x.state !== 'sent' && x.kind !== 'zai' && !(x.formWait && Date.now() - Date.parse(x.at) < 180000)).sort((a, b) => a.at.localeCompare(b.at));
+    const items = (await all()).filter(x => x.state !== 'sent' && x.kind !== 'zai' && !(x.formWait && Date.now() - Date.parse(x.at) < 180000))
+      .filter(x => sidOf(x) === HYB || SX()).sort((a, b) => a.at.localeCompare(b.at));   // jiné stavby odešle stránka (service worker nemá CXStavby)
     let sent = 0;
     for (const it of items) {
       try {
@@ -169,9 +203,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
             f.done = true; f.b64 = ''; await put(it);
           }
           if (rec.fotky) { rec.fotky = rec.fotky.filter(Boolean); if (rec.fotky.length < 2) delete rec.fotky; }
-          const r = await post(conn, {key: conn.key, rev: 0, data: {zavady: [Object.assign({}, rec, {_ts: Date.now()})]}});
-          if (r.error) throw new Error(errTxt(r.error));
-          if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+          await postS(conn, sidOf(it), {zavady: [Object.assign({}, rec, {_ts: Date.now()})]});
           await del(it.cid); sent++; continue;
         }
         if (it.kind === 'zmail') {
@@ -186,7 +218,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
           // změna úkolu z telefonu (Splněno): nejdřív aktuální stav ze stavby. Úkol smazaný na počítači se zpátky NEPOŠLE
           // (jinak by se smazaný úkol vrátil) a ostatní úpravy z počítače zůstanou – z telefonu se mění jen splnění.
           let data = it.data;
-          const g = await get(conn), cur = (g && g.data) || null;
+          const g = await getS(conn, sidOf(it)), cur = (g && g.data) || null;
           if (cur) {
             const byId = new Map((cur.tasks || []).map(t => [t.id, t])), ts = Date.now();
             const KS = ['status', 'done', 'doneAt', 'doneBy', 'updatedAt', 'updatedBy'];
@@ -194,9 +226,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
             if (!tk.length) { await del(it.cid); sent++; continue; }
             data = {tasks: tk, log: (it.data.log || []).filter(l => byId.has(l.taskId)).map(l => Object.assign({}, l, {_ts: ts}))};
           }
-          const r = await post(conn, {key: conn.key, rev: 0, data});
-          if (r.error) throw new Error(errTxt(r.error));
-          if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+          await postS(conn, sidOf(it), data);
           await del(it.cid); sent++; continue;
         }
         it.att = it.att || [];
@@ -210,9 +240,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
           await put(it);
         }
         if (!it.saved) {
-          const r = await post(conn, {key: conn.key, rev: 0, data: build(it)});
-          if (r.error) throw new Error(errTxt(r.error));
-          if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+          await postS(conn, sidOf(it), build(it));
           it.saved = true; await put(it);
         }
         if (!it.mailed) {
@@ -237,6 +265,6 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
     }
     return {sent};
   }
-  return {kvGet, kvSet, all, put, del, get, post, process, build};
+  return {kvGet, kvSet, all, put, del, get, post, process, build, getS, postS, dk, HYB, sidOf, stavba: sid => { CUR = sid || HYB; }};
 })();
 if (typeof self !== 'undefined') self.CXQ = CXQ;
