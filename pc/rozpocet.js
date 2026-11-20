@@ -145,6 +145,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
 .rz-map label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:var(--muted)}
 .rz-map select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 6px;background:var(--panel);color:var(--ink)}
+.rz-sks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:10px}
+.rz-sk{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel);display:flex;flex-direction:column;gap:6px}
+.rz-sk.ma{border-color:#9fd1b3;background:#f2faf5}
+.rz-sk.otaz{border:2px solid #F4D23C;background:#fffbe6}
+.rz-sk-h{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-size:14px}.rz-sk-h span{font-size:12.5px;color:var(--muted)}.rz-sk-h i{font-style:normal;margin-left:auto}
+.rz-sk ul{margin:0;padding:6px 8px;list-style:none;background:rgba(0,0,0,.035);border-radius:8px;font-size:13px;min-height:60px}.rz-sk li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0}.rz-sk li.pr{color:var(--muted)}
+.rz-sk select{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--panel);color:var(--ink)}
 .rz-map select.ok{border-color:#2f7d4f;box-shadow:0 0 0 1px #2f7d4f}.rz-map select.chybi{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
 .rz-nah{overflow:auto;border:1px solid var(--line);border-radius:8px;max-height:260px}
 .rz-nah table{border-collapse:collapse;font-size:12px;white-space:nowrap}
@@ -200,16 +207,16 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     ['mj', 'Měrná jednotka (MJ)'], ['mn', 'Množství / výměra'], ['jc', 'Jednotková cena'], ['cc', 'Cena celkem']];
   const ROLE_NAZ = Object.fromEntries(ROLE);
   const RX = {
-    pc: /^(p\.? ?c\.?|por\.? ?c\.?|poradove cislo|poradi|c\.|c|cis\.?|#|r\.? ?c\.?|pol\.? ?c\.?|c\. ?pol\.?|cislo radku|radek|poz\.?|pozice)$/,
+    pc: /^(p\.? ?c\.?|por\.? ?c\.?|poradove cislo|poradi|c\.|c|cis\.?|#|r\.? ?c\.?|pol\.? ?c\.?|c\. ?pol\.?|cislo radku|radek|poz\.?|pozice|p\.? ?c\.? ?pol\.?|no\.?|item no\.?|pos\.?|nr\.?|pol\.?)$/,
     typ: /^(typ|typ radku|t|druh radku)$/,
-    kod: /(^kod|kod polozky|cislo polozky|^c\. ?polozky|oznaceni|polozka c|cenova polozka|^ozn\.?$|^kcn$|katalog)/,
-    popis: /(popis|nazev|^text|specifikace|predmet|^polozka$|^polozky$|^prace$|^nazev prace|^description)/,
-    mj: /^(m\.? ?j\.?|mj\.?|mer\.? ?j\.?|jedn\.?|jednotka|merna jednotka|jed\.?|jednotky|j\.)$/,
-    mn: /(mnozstvi|vymer|^pocet|^mn\.?|mnoz\.?|^qty|^kusu?)/,
-    jc: /(jednotkov\w* cen|jedn\.? ?cen|^j\.? ?cen|cena ?\/ ?m\.? ?j|cena za m\.? ?j|cena za jedn|^jc\.?$|kc ?\/ ?m\.? ?j|^j\.? ?c\.?$|cena jedn|^cena\/j)/,
-    cc: /(cena celkem|^celkem|celkova cena|^cena$|^cena (kc|czk|bez dph)|kc celkem|^castka|^cena celk|celkem (kc|czk|bez dph)|^celk\.)/,
+    kod: /(^kod|kod polozky|cislo polozky|^c\. ?polozky|^cis\.? ?pol|oznaceni|polozka c|cenova polozka|^ozn\.?$|^kcn$|katalog|^cenik|^urs$|^rts$|^cenova soustava|^item code|^code$|^art\.? ?c|^cislo vyrobku)/,
+    popis: /(popis|nazev|^text|specifikace|predmet|^polozka$|^polozky$|^prace$|^nazev prace|^description|^item$|^name$|^oznaceni prace|^druh prace$|^cinnost$|^prace a dodavky$)/,
+    mj: /^(m\.? ?j\.?|mj\.?|mer\.? ?j\.?|mer\.? ?jedn\.?|jedn\.?|jednotka|merna jednotka|jed\.?|jednotky|j\.|unit|uom|mj \S+)$/,
+    mn: /(mnozstvi|vymer|^pocet|^mn\.?|mnoz\.?|^qty|^kusu?|^quantity|^mnoz$|^vym\.?$)/,
+    jc: /(jednotkov\w* cen|jedn\.? ?cen|^j\.? ?cen|cena ?\/ ?m\.? ?j|cena za m\.? ?j|cena za jedn|^jc\.?$|kc ?\/ ?m\.? ?j|^j\.? ?c\.?$|cena jedn|^cena\/j|^cena m\.? ?j|^cena za ks|^unit ?price|^rate$|^price$|^cena ?\/ ?ks|^j\.? ?cena)/,
+    cc: /(cena celkem|^celkem|celkova cena|^cena$|^cena (kc|czk|bez dph)|kc celkem|^castka|^cena celk|celkem (kc|czk|bez dph)|^celk\.|^total|^amount|^naklady celkem|^cena za polozku)/,
   };
-  const JEDNOTKY = /^(m|m2|m3|m²|m³|bm|km|mm|cm|ks|kus|kusy|t|kg|g|l|kpl|komplet|soub|soubor|hod|h|den|dny|mes|měs|ha|ar|sada|pár|par|bal|%|kč|kc|m\/s|mj|ks\/m|tun|tuna|úsek|usek|bod|místo|misto|osoba|celek|kmpl|kpt|m2\/t|lhůta)$/i;
+  const JEDNOTKY = /^(m|m2|m3|m²|m³|bm|km|mm|cm|ks|kus|kusy|t|kg|g|l|kpl|komplet|soub|soubor|hod|h|den|dny|mes|měs|ha|ar|sada|pár|par|bal|%|kč|kc|m\/s|mj|ks\/m|tun|tuna|úsek|usek|bod|místo|misto|osoba|celek|kmpl|kpt|m2\/t|lhůta|paušál|pausal|nh|rok|tis\.? ?ks|lm|cm2|dm3|mm2|m'|kwh|kw|hr|pcs|pc|ea|set|lot|mth|day|týd|tyd|vrt|otvor|okno|dveře|kpl\.)$/i;
   function roleZnazvu(t) {
     const s = norm(t); if (!s || s.length > 45) return '';
     for (const r of ['jc', 'cc', 'mn', 'mj', 'typ', 'pc', 'kod', 'popis']) if (RX[r].test(s)) return r;
@@ -296,6 +303,113 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const hl = h.r >= 0 ? rows[h.r] : [];
     const nazvy = []; for (let c = 0; c < nc; c++) nazvy.push(txt(hl[c]) || (h.dva ? txt((rows[h.r - 1] || [])[c]) : ''));
     return {hlavicka: h.r, map, jak, nazvy, nc, dva: !!h.dva};
+  }
+
+  /* ---------- 4.67: jistota rozpoznání, dotaz „Co je v tomto sloupci?“ a zapamatovaná přiřazení ---------- */
+  // vrátí role, u kterých si Constructo není jisté (prázdné pole = vše sedí)
+  function jistota(l, ns) {
+    const nej = new Set(), mp = ns.map, jak = ns.jak || {};
+    if (jak._sablona || jak._rucne) return [];
+    ['popis', 'mn', 'mj'].forEach(k => { if (mp[k] == null) nej.add(k); });
+    if (mp.jc == null && mp.cc == null) { nej.add('jc'); nej.add('cc'); }
+    const P = (ns.souhrn ? ns.souhrn.rows : []).filter(r => r.t === 'P');
+    if (P.length < 3) ['popis', 'mj', 'mn', 'jc'].forEach(k => nej.add(k));
+    if (mp.mn != null && mp.jc != null && mp.cc != null && P.length) {
+      let n = 0, ok = 0; P.forEach(r => { if (r.mn != null && r.jc != null && r.cc != null && Math.abs(r.cc) > EPS && r.x) { const row = l.rows[r.x - l.od - 1] || []; if (cislo(row[mp.cc]) == null) return; n++; if (Math.abs(r.mn * r.jc - r.cc) <= Math.max(0.6, Math.abs(r.cc) * 0.002)) ok++; } });
+      if (n >= 3 && ok / n < 0.7) ['mn', 'jc', 'cc'].forEach(k => nej.add(k));
+    }
+    if (jak.mn === 'obsah' && jak.jc === 'obsah' && !(jak.mj === 'nazev')) { nej.add('mn'); nej.add('jc'); }
+    ['popis', 'mj'].forEach(k => { if (jak[k] === 'obsah') nej.add(k); });
+    if (mp.mj != null && P.length >= 3) { const u = P.filter(r => JEDNOTKY.test(String(r.mj).replace(/\.$/, ''))).length; if (u / P.length < 0.6) nej.add('mj'); }
+    if (mp.popis != null && P.length >= 3) { const d = P.reduce((a, r) => a + String(r.d || '').length, 0) / P.length; if (d < 8) nej.add('popis'); }
+    return ROLE.map(x => x[0]).filter(k => nej.has(k));
+  }
+  // podpis hlavičky = stejné názvy sloupců → stejný program/šablona
+  const podpis = (l, ns) => {
+    if (ns.hlavicka >= 0) return 'h' + hash(hlavickaListu(l, ns).map(norm).join('|') + '#' + ns.nc);
+    // bez hlavičky: podle druhu obsahu sloupců (čísla / jednotky / krátký / dlouhý text)
+    const {st} = statistikaSloupcu(l.rows, 0);
+    return 'b' + hash(st.map(x => !x.cnt ? '_' : x.num > 0.8 ? 'n' : x.jed > 0.5 ? 'u' : x.dl > 20 ? 'T' : 't').join('') + '#' + ns.nc);
+  };
+  function sablony() {
+    let loc = {}; try { loc = JSON.parse(pam('rz-sablony') || '{}') || {}; } catch (e) {}
+    rozpocty().forEach(r => (r.mapy || []).forEach(m => { if (m && m.sig && m.map && !loc[m.sig]) loc[m.sig] = {map: m.map}; }));
+    return loc;
+  }
+  function pouzijSablonu(l, ns) {
+    const sig = podpis(l, ns); if (!sig) return false;
+    const t = sablony()[sig]; if (!t || !t.map) return false;
+    const map = {}; Object.keys(t.map).forEach(k => { const c = t.map[k]; if (ROLE_NAZ[k] && Number.isInteger(c) && c >= 0 && c < ns.nc) map[k] = c; });
+    if (map.popis == null) return false;
+    ns.map = map; ns.jak = {_sablona: 1}; return true;
+  }
+  function ulozSablony(listy, nast) {
+    let loc = {}; try { loc = JSON.parse(pam('rz-sablony') || '{}') || {}; } catch (e) {}
+    const out = [];
+    listy.forEach((l, i) => { const ns = nast[i]; if (!ns.zahrnout) return; const sig = podpis(l, ns); if (!sig) return; loc[sig] = {map: ns.map, kdy: Date.now()}; out.push({sig, map: ns.map}); });
+    const kl = Object.keys(loc).sort((a, b) => (loc[b].kdy || 0) - (loc[a].kdy || 0)); kl.slice(60).forEach(k => delete loc[k]);
+    pamSet('rz-sablony', JSON.stringify(loc));
+    return out;
+  }
+  // ukázky hodnot z datových řádků (prednost řádky, které vypadají jako položky)
+  function ukazky(l, ns, c) {
+    const out = [], vid = new Set();
+    const od = ns.hlavicka + 1;
+    for (const jenPol of [true, false]) {
+      for (let r = od, k = 0; r < l.rows.length && k < 800 && out.length < 4; r++) {
+        const row = l.rows[r] || []; if (!row.some(v => v !== '' && v != null)) continue; k++;
+        if (jenPol && row.filter(v => cislo(v) != null).length < 2) continue;
+        const v = row[c]; if (v === '' || v == null) continue;
+        const t = typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(Math.round(v * 1000) / 1000).replace('.', ',')) : txt(v);
+        if (!t || vid.has(t)) continue; vid.add(t); out.push(t);
+      }
+      if (out.length >= 3) break;
+    }
+    return out;
+  }
+  function dialogSloupcu(l, ns, nej, hotovo, zrus) {
+    const {st} = statistikaSloupcu(l.rows, ns.hlavicka + 1);
+    const nazvy = hlavickaListu(l, ns);
+    const cols = st.filter(x => x.cnt >= 2).map(x => x.c);
+    const roleSl = {}; Object.keys(ns.map).forEach(k => { roleSl[ns.map[k]] = k; });
+    const nejSl = new Set(nej.map(k => ns.map[k]).filter(c => c != null));
+    const chybi = nej.filter(k => ns.map[k] == null);
+    const karta = c => { const uk = ukazky(l, ns, c), r = roleSl[c] || '', otaz = nejSl.has(c) || (!r && chybi.length && st[c] && st[c].cnt > 5);
+      return `<div class="rz-sk${otaz ? ' otaz' : ''}${r ? ' ma' : ''}" data-c="${c}"><div class="rz-sk-h"><b>Sloupec ${sloupec(c + (l.odSl || 0))}</b>${nazvy[c] ? `<span>„${esc(nazvy[c].slice(0, 40))}“</span>` : '<span>bez názvu</span>'}${otaz ? '<i title="Tady si Constructo není jisté">❓</i>' : ''}</div>
+        <ul>${uk.length ? uk.map(v => `<li>${esc(v.slice(0, 48))}${v.length > 48 ? '…' : ''}</li>`).join('') : '<li class="pr">(prázdný)</li>'}</ul>
+        <select data-sk="${c}"><option value="">— nic, nepotřebuji —</option>${ROLE.map(([k, n]) => `<option value="${k}"${r === k ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></div>`; };
+    const ov = okno('Co je v těchto sloupcích? – list „' + l.n + '“', `<div class="rz-info">Constructo si u tohoto rozpočtu není úplně jisté${chybi.length ? ' (nenašlo: ' + chybi.map(k => ROLE_NAZ[k]).join(', ') + ')' : ''}. U každého sloupce vidíte <b>ukázku z rozpočtu</b>. Vyberte, co v něm je – stačí zkontrolovat sloupce se žlutým ❓. Přiřazení si Constructo zapamatuje a příště rozpočet ze stejného programu pozná samo.</div>
+      <div class="rz-sks">${cols.map(karta).join('')}</div>`,
+      `<span id="rz-sk-s" style="font-size:14px"></span><span class="sp"></span><button type="button" class="rz-btn" data-pres>Přeskočit</button><button type="button" class="rz-btn zl" data-ok>Hotovo</button>`, 'siroky');
+    const mapa = () => { const m = {}; ov.querySelectorAll('[data-sk]').forEach(s => { if (s.value) m[s.value] = +s.dataset.sk; }); return m; };
+    const stav = () => { const m = mapa(), x = Object.assign({}, ns, {map: m}), sh = souhrnListu(l, x); ov.querySelector('#rz-sk-s').innerHTML = `Poznáno <b>${nf0.format(sh.pol)}</b> položek za <b>${kc0(sh.cel)}</b>`; ov.querySelectorAll('.rz-sk').forEach(k => k.classList.toggle('ma', !!k.querySelector('select').value)); };
+    ov.addEventListener('change', e => { const t = e.target; if (t.dataset.sk == null) return; if (t.value) ov.querySelectorAll('[data-sk]').forEach(s => { if (s !== t && s.value === t.value) s.value = ''; }); t.closest('.rz-sk').classList.remove('otaz'); stav(); });
+    stav();
+    let hot = false;
+    ov.querySelector('[data-pres]').onclick = () => { hot = true; ov.zavri(); hotovo(false); };
+    ov.querySelector('[data-ok]').onclick = () => {
+      const m = mapa();
+      if (m.popis == null) return toast('Vyberte sloupec s popisem (názvem) položek.');
+      if (m.mn == null && m.cc == null) return toast('Vyberte sloupec s množstvím nebo s cenou celkem.');
+      hot = true; ns.map = m; ns.jak = {_rucne: 1}; ns.souhrn = souhrnListu(l, ns); ov.zavri(); hotovo(true);
+    };
+    const x = ov.querySelector('[data-x]'); if (x) x.addEventListener('click', () => { if (!hot && zrus) zrus(); });
+  }
+  // postupně se doptá u listů, kde si Constructo není jisté; stejnou hlavičku u dalších listů převezme
+  function doptejSe(listy, nast, hotovo) {
+    const fronta = nast.map((ns, i) => i).filter(i => nast[i].zahrnout);
+    const dalsi = () => {
+      while (fronta.length) {
+        const i = fronta.shift(), ns = nast[i], nej = jistota(listy[i], ns);
+        if (!nej.length) continue;
+        return dialogSloupcu(listy[i], ns, nej, ok => {
+          if (ok) { const sig = podpis(listy[i], ns); nast.forEach((n2, j) => { if (j !== i && sig && podpis(listy[j], n2) === sig && !(n2.jak || {})._rucne) { n2.map = Object.assign({}, ns.map); n2.jak = {_rucne: 1}; n2.souhrn = souhrnListu(listy[j], n2); if (n2.souhrn.pol >= 3) n2.zahrnout = true; } }); }
+          dalsi();
+        }, () => dalsi());
+      }
+      hotovo();
+    };
+    dalsi();
   }
 
   /* ---------- rozdělení řádků: L list, S1/S2 díl, P položka, D podrobnost (výkaz výměr, popis), T součet ---------- */
@@ -1150,11 +1264,11 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       await new Promise(r => setTimeout(r, 30));
       const listy = res.listy.filter(l => l.rows.length);
       if (!listy.length) throw new Error('V souboru nejsou žádné řádky.');
-      const nast = listy.map(l => { const r = rozpoznej(l); return Object.assign(r, {zahrnout: false}); });
+      const nast = listy.map(l => { const r = Object.assign(rozpoznej(l), {zahrnout: false}); pouzijSablonu(l, r); return r; });
       listy.forEach((l, i) => { const s = souhrnListu(l, nast[i]); nast[i].souhrn = s; nast[i].zahrnout = s.pol >= 3 && !/rekapitul|kryci list|krycí list|souhrn/i.test(bezDia(l.n)); nast[i].obj = odhadObjektu(l); });
       if (!nast.some(n => n.zahrnout)) { let m = -1, mi = 0; nast.forEach((n, i) => { if (n.souhrn.pol > m) { m = n.souhrn.pol; mi = i; } }); nast[mi].zahrnout = true; }
       w.konec();
-      if (ucel === 'soupis') hotovo(f, listy, nast); else dialogImportu(f, listy, nast);
+      if (ucel === 'soupis') doptejSe(listy, nast, () => hotovo(f, listy, nast)); else doptejSe(listy, nast, () => dialogImportu(f, listy, nast));
     } catch (e) { w.konec(); toast('Soubor se nepodařilo načíst: ' + (e.message || e)); }
   }
   function odhadObjektu(l) {
@@ -1184,7 +1298,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <div class="rz-info">Zkontrolujte, že sedí sloupce (zeleně = poznáno). Pokud ne, vyberte správný sloupec v rozbalovacím seznamu. Řádky skryté v Excelu Constructo načte všechny – v tabulce půjdou rozbalit a zase schovat. Listy jako Rekapitulace nebo Krycí list nechte vypnuté, jinak by se ceny započítaly dvakrát.</div>
         ${listy.map((l, i) => { const ns = nast[i], s = ns.souhrn; return `<div class="rz-list-sh${ns.zahrnout ? '' : ' vyp'}">
           <h4><label class="rz-chk"><input type="checkbox" data-zahr="${i}"${ns.zahrnout ? ' checked' : ''}> List „${esc(l.n)}“</label><span style="font-weight:400;font-size:13px;color:var(--muted)">${nf0.format(l.rows.length)} řádků v Excelu${l.skryto.some(Boolean) ? ', z toho ' + nf0.format(l.skryto.filter(Boolean).length) + ' skrytých' : ''} · poznáno <b>${nf0.format(s.pol)}</b> položek za <b>${kc0(s.cel)}</b></span>
-          <span style="flex:1"></span><label style="font-size:13px;font-weight:600">Objekt <select class="rz-sel" data-lo="${i}"><option value="">— bez objektu —</option>${OBJEKTY.map(o => `<option value="${esc(o)}"${ns.obj === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label></h4>
+          <span style="flex:1"></span>${ns.zahrnout ? `<button type="button" class="rz-btn mini" data-upr="${i}" title="Ukáže každý sloupec s ukázkou z rozpočtu a zeptá se, co v něm je">❓ Upřesnit sloupce s ukázkou…</button>` : ''}<label style="font-size:13px;font-weight:600">Objekt <select class="rz-sel" data-lo="${i}"><option value="">— bez objektu —</option>${OBJEKTY.map(o => `<option value="${esc(o)}"${ns.obj === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label></h4>
           ${ns.zahrnout ? `<div class="rz-map">${ROLE.map(([k, n]) => `<label>${esc(n)}<select data-m="${i}" data-k="${k}" class="${ns.map[k] != null ? 'ok' : ['popis', 'mn', 'jc'].includes(k) ? 'chybi' : ''}">${volby(ns, l)}</select></label>`).join('')}
             <label>Hlavička je na řádku<select data-h="${i}"><option value="-1">bez hlavičky</option>${l.rows.slice(0, 120).map((r, ri) => `<option value="${ri}"${ri === ns.hlavicka ? ' selected' : ''}>${l.od + ri + 1}: ${esc(r.map(txt).filter(Boolean).join(' | ').slice(0, 50))}</option>`).join('')}</select></label></div>
           ${nahled(l, ns)}` : ''}</div>`; }).join('')}`;
@@ -1202,6 +1316,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       if (t.dataset.h != null) { const i = +t.dataset.h, ns = nast[i]; ns.hlavicka = +t.value; const hl = listy[i].rows[ns.hlavicka] || []; ns.nazvy = []; for (let c = 0; c < ns.nc; c++) ns.nazvy.push(txt(hl[c])); prepocti(i); kresli(); }
     });
     telo.addEventListener('input', e => { if (e.target.id === 'rz-i-n') telo.dataset.n = e.target.value; });
+    telo.addEventListener('click', e => { const b = e.target.closest('[data-upr]'); if (!b) return; const i = +b.dataset.upr; dialogSloupcu(listy[i], nast[i], jistota(listy[i], Object.assign({}, nast[i], {jak: {}})), () => kresli()); });
     kresli();
     ov.querySelector('[data-ok]').onclick = async () => {
       if (!nast.some(n => n.zahrnout)) return toast('Zapněte aspoň jeden list.');
@@ -1232,7 +1347,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       w.text('Komprimuji ' + nf0.format(rows.length) + ' řádků…', 40);
       const gz = await gzip(JSON.stringify(data));
       await idbPut('r:' + id + ':' + rev, {gz, kdy: Date.now()});
-      const rec = Object.assign({}, stary || {}, {id, nazev, soubor: f.name, rev, gid: '', vel: gz.size, pocet: rows.length, polozek: pol.length, celkem: Math.round(pol.reduce((a, r) => a + (r.cc || 0), 0) * 100) / 100, kdo: kdo(), pc: pcId(), kdy: new Date().toISOString(), obj, listy: listy.map((l, i) => nast[i].zahrnout ? l.n : null).filter(Boolean)});
+      const mapy = ulozSablony(listy, nast);
+      const rec = Object.assign({}, stary || {}, {id, nazev, soubor: f.name, rev, mapy, gid: '', vel: gz.size, pocet: rows.length, polozek: pol.length, celkem: Math.round(pol.reduce((a, r) => a + (r.cc || 0), 0) * 100) / 100, kdo: kdo(), pc: pcId(), kdy: new Date().toISOString(), obj, listy: listy.map((l, i) => nast[i].zahrnout ? l.n : null).filter(Boolean)});
       NACTENO.set(id, {rev, R: Object.assign(priprav(rec, rows), {listy: data.listy})});
       R = NACTENO.get(id).R;
       H.upsert('rozpocty', [rec]);
