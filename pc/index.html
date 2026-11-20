@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-QPfYZqzNngJO0wImQEBra/5JqAQM//rpdCaiA7YbhrA=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-XqVVs43PHQ4gztIFefLBrBg/hjy7QqynwDgj36wkox4=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -12,6 +12,7 @@
 <script src="zprava.js"></script>
 <script src="dokumentace.js"></script>
 <script src="rozpocet.js"></script>
+<script src="stavby.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
 <style>
 /* Layout: stavební deník jako nástroj — souhrn nahoře, lidé, pak seznam úkolů po odpovědných osobách nebo harmonogram */
@@ -1185,7 +1186,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.62';
+  const APP_VERSION = '4.63';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1225,13 +1226,16 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   /* ---------- úložiště ---------- */
   const SEED = JSON.parse(document.getElementById('seed').textContent);
   const store = { get: k => { try { return localStorage.getItem(k) || ''; } catch(e) { return ''; } }, set: (k,v) => { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } } };
-  /* 4.33: více staveb. Hybernská = původní data (sdílená přes Google). Další stavby mají vlastní data v tomto prohlížeči. */
+  /* 4.33: více staveb. 4.63: seznam staveb je společný pro všechny (pc/stavby.js – CXStavby, stejný v Deníku).
+     Hybernská = původní sdílená data. Každá další stavba má svá data zvlášť; načítá se a synchronizuje jen otevřená stavba. */
   const DEF_STAVBA = 'hybernska';
-  const stavbyList = () => { try { const a = JSON.parse(store.get('hyb-stavby') || '[]'); if (Array.isArray(a) && a.some(x => x && x.id === DEF_STAVBA)) return a.filter(x => x && x.id); } catch (e) {} return [{id: DEF_STAVBA, name: 'Hybernská 1000/8'}]; };
-  const saveStavby = a => store.set('hyb-stavby', JSON.stringify(a));
-  let STAVBA = store.get('hyb-stavba') || DEF_STAVBA;
-  if (!stavbyList().some(x => x.id === STAVBA)) STAVBA = DEF_STAVBA;
-  const KEY = STAVBA === DEF_STAVBA ? KEY_BASE : KEY_BASE + ':' + STAVBA;
+  const CXS = window.CXStavby;
+  const stavbyList = () => CXS.seznam().map(x => ({id: x.sid, name: x.name, project: x.project}));
+  let STAVBA = CXS.aktivni();
+  if (!/^[A-Za-z0-9_-]{1,40}$/.test(STAVBA)) STAVBA = DEF_STAVBA;
+  const KEY = CXS.lsKlic(STAVBA);
+  // neodeslané změny a číslo verze dat se pamatují pro každou stavbu zvlášť
+  const DIRTY_KEY = STAVBA === DEF_STAVBA ? 'hyb-sync-dirty' : 'hyb-sync-dirty:' + STAVBA;
   function novaStavbaData() {
     const reg = stavbyList().find(x => x.id === STAVBA) || {}, x = clone(SEED);
     x.project = Object.assign({company: (SEED.project && SEED.project.company) || ''}, reg.project || {}, {name: reg.name || 'Nová stavba'});
@@ -1347,9 +1351,12 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   snap = takeSnap(D);
   let fileHandle = null, fileName = '';
 
+  let idbT = 0;
   function persist() {
     D.savedAt = new Date().toISOString();
     const ok = store.set(KEY, JSON.stringify(D));
+    // 4.63: data dalších staveb i v IndexedDB (localStorage má jen 5 MB pro všechno); při plném localStorage stačí IndexedDB
+    if (STAVBA !== DEF_STAVBA) { clearTimeout(idbT); idbT = setTimeout(() => CXS.ulozMistne(STAVBA, D).catch(() => {}), ok ? 1500 : 0); if (!ok) return; }
     if (!ok && storageOk) { storageOk = false; renderBanners(); }
     if (fileHandle) writeLinkedFile();
   }
@@ -3195,16 +3202,18 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function dokPripoj() {
     if (dokHost || !window.CXDok) return;
     dokHost = {
-      seznam: () => D.dokumenty || [],
+      seznam: () => (D.dokumenty || []).filter(r => !/^s[tp]~/.test(String(r.id))),  // st~/sp~ = seznam staveb, ne dokumenty
       upsert: recs => { const m = new Map((D.dokumenty || []).map(r => [r.id, r])); recs.forEach(r => m.set(r.id, r)); D.dokumenty = [...m.values()]; commit(); },
       smaz: ids => { const x = new Set(ids); D.dokumenty = (D.dokumenty || []).filter(r => !x.has(r.id)); commit(); },
       kdo: () => me(),
-      pripojeno: () => !!SY && STAVBA === DEF_STAVBA,
+      pripojeno: () => !!SY,
       ro: () => RO(),
       toast: m => toast(m),
       aktualizujSkript: () => window.CXSkriptSamo ? window.CXSkriptSamo(true) : Promise.resolve(null),
       // nahrávání a stahování po dílech trvá déle než běžná synchronizace, proto vlastní volání s delším limitem
       volej: async body => {
+        // 4.63: soubory dalších staveb do vlastní složky na Disku (Stavby / název stavby / …)
+        if (STAVBA !== DEF_STAVBA && body && Array.isArray(body.cesta) && /^dok_(maly|start)$/.test(body.akce)) body = Object.assign({}, body, {cesta: ['Stavby', String(D.project.name || STAVBA).slice(0, 100)].concat(body.cesta)});
         const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 180000);
         try {
           const r = await fetch(SY.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: SY.key}, body)), signal: ctl.signal, redirect: 'follow'});
@@ -4077,14 +4086,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const bad = cc.find(c => c.email && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(c.email)); if (bad) { toast('E-mail nevypadá správně: ' + bad.email); return 'keep'; }
         if (!cc.some(c => c.role === 'spravce')) { toast('Aspoň jeden člověk musí mít roli Správce stavby.'); return 'keep'; }
         vals.roleStavby = rr; vals.clenove = cc;
-        if (nova) {
-          const id = 's' + uid(), a = stavbyList();
-          a.push({id, name: vals.name, project: vals}); saveStavby(a); store.set('hyb-stavba', id);
-          toast('Stavba založena: ' + vals.name); setTimeout(() => location.reload(), 400); return;
-        }
         Object.assign(D.project, vals);
-        const a = stavbyList(); const r = a.find(x => x.id === STAVBA); if (r) { r.name = vals.name; saveStavby(a); } else { a.push({id: STAVBA, name: vals.name}); saveStavby(a); }
         commit(); toast('Údaje o stavbě uloženy');
+        // 4.63: název, adresa a stav i do společného seznamu staveb (vidí ho Deník i kolegové)
+        if (SY && !RO()) { const z = {}; ['name', 'ulice', 'mesto', 'psc', 'stat', 'popis', 'zacatek', 'konec', 'investor', 'company', 'stav'].forEach(k => { z[k] = vals[k] || ''; }); CXS.uprav(STAVBA, z).catch(e => toast('Seznam staveb se neaktualizoval: ' + e.message)); }
       });
     document.querySelector('#overlay .modal').classList.add('wide');
     // tabulky rolí a lidí: změny se průběžně sbírají, aby se nic neztratilo při přidání řádku
@@ -4104,30 +4109,17 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     bind();
     setTimeout(() => { const n = $('#sv-name'); if (n && !n.value) n.focus(); }, 30);
   }
-  // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou
+  // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou (4.63: stejná nabídka i formulář jako v Deníku – pc/stavby.js)
+  async function ulozPredPrepnutim() {
+    persist();
+    if (STAVBA !== DEF_STAVBA) await CXS.ulozMistne(STAVBA, D).catch(() => {});
+    // neodeslané změny zkusit poslat hned (max. 15 s); když to nejde, odešlou se na pozadí později
+    if (SY && sync.dirty) await Promise.race([new Promise(res => { if (sync.busy) sync.onDone = res; else { syncNow().then(res, res); } }), new Promise(res => setTimeout(res, 15000))]);
+  }
+  const prepniNa = sid => CXS.prepni(sid, {ulozAktualni: ulozPredPrepnutim});
   function stavbyMenu() {
-    const old = document.querySelector('.stv-pop'); if (old) { old.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); return; }
-    const a = stavbyList();
-    if (!a.some(x => x.id === STAVBA)) a.push({id: STAVBA, name: D.project.name || 'Stavba'});
-    const cur = a.find(x => x.id === STAVBA); if (cur && D.project.name && cur.name !== D.project.name) { cur.name = D.project.name; saveStavby(a); }
-    const pop = document.createElement('div'); pop.className = 'stv-pop'; pop.setAttribute('role', 'menu');
-    pop.innerHTML = `<div class="cap">Stavby</div>${a.map(x => `<button type="button" role="menuitem" data-stv="${esc(x.id)}" class="${x.id === STAVBA ? 'on' : ''}">${esc(x.name || 'Stavba')}<small>${x.id === STAVBA ? 'otevřená' : x.id === DEF_STAVBA ? 'sdílená s kolegy' : 'zatím jen v tomto počítači'}</small></button>`).join('')}
-      <hr><button type="button" role="menuitem" class="new" data-act="nova">+ Nová stavba</button><button type="button" role="menuitem" data-act="udaje">Údaje o stavbě, role a lidé</button>`;
-    document.body.appendChild(pop);
-    const r = $('#side-stavba').getBoundingClientRect();
-    pop.style.left = Math.max(8, r.left) + 'px'; pop.style.top = Math.min(r.bottom + 6, window.innerHeight - 120) + 'px';
-    $('#side-stavba').setAttribute('aria-expanded', 'true');
-    const zavri = () => { pop.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); document.removeEventListener('mousedown', venku, true); document.removeEventListener('keydown', esc_); };
-    const venku = e => { if (!pop.contains(e.target) && !$('#side-stavba').contains(e.target)) zavri(); };
-    const esc_ = e => { if (e.key === 'Escape') zavri(); };
-    setTimeout(() => { document.addEventListener('mousedown', venku, true); document.addEventListener('keydown', esc_); }, 0);
-    pop.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => {
-      const id = b.dataset.stv; zavri(); if (id === STAVBA) return;
-      store.set('hyb-stavba', id); toast('Otevírám stavbu…'); setTimeout(() => location.reload(), 200);
-    });
-    pop.querySelector('[data-act=nova]').onclick = () => { zavri(); stavbaForm(true); };
-    pop.querySelector('[data-act=udaje]').onclick = () => { zavri(); stavbaForm(false); };
-    const f0 = pop.querySelector('button.on') || pop.querySelector('button'); if (f0) f0.focus();
+    CXS.menu($('#side-stavba'), {aktualni: STAVBA, naVyber: prepniNa, naUdaje: () => stavbaForm(false),
+      naNovou: () => CXS.formular({ja: me(), zhotovitel: D.project.company || '', naHotovo: sid => { toast('Stavba založena'); prepniNa(sid); }})});
   }
   $('#side-stavba').onclick = stavbyMenu;
   // z Deníku: „Upravit v Managementu“ otevře rovnou Údaje o stavbě
@@ -4382,14 +4374,14 @@ thead{display:table-header-group}tr{break-inside:avoid}
   // pozvaný „jen nahlíží“ má od skriptu klíč jen pro čtení: nic se neukládá ani neodesílá, server by změny stejně odmítl
   function RO() { try { if (SY && store.get('hyb-ro') === '1') return true; const n = $('#me') && $('#me').value.trim(), p = n && D && D.project && D.project.people && D.project.people[n]; return !!(p && p.access === 'nahlizi' && !(D.project.admins || ['Luboš Kozák']).includes(n)); } catch (e) { return false; } }
   if (!SY) { try { const c = JSON.parse(document.getElementById('sync-config').textContent || '{}'); if (c && c.url && c.key) { SY = {url: c.url, key: c.key}; store.set('hyb-sync', JSON.stringify(SY)); } } catch (e) {} }  // uložit, aby fungovaly i další verze souboru bez vloženého připojení
-  if (STAVBA !== DEF_STAVBA) SY = null;  // 4.33: další stavby zatím jen v tomto počítači – nikdy je neposílat do sdílených dat Hybernské
-  const revKey = () => 'hyb-sync-rev:' + (SY ? SY.url : '');
-  const sync = {rev: 0, busy: false, dirty: store.get('hyb-sync-dirty') === '1', state: 'idle', last: null, err: ''};
-  sync.rev = Number(store.get(revKey())) || 0;
+  // 4.63: další stavby se sdílí také – ale vlastní cestou (CXStavby.stahni/posli), nikdy ne do dat Hybernské
+  const revKey = () => STAVBA === DEF_STAVBA ? 'hyb-sync-rev:' + (SY ? SY.url : '') : 'cx-stavba-rev:' + STAVBA;
+  const sync = {rev: 0, busy: false, dirty: store.get(DIRTY_KEY) === '1', state: 'idle', last: null, err: ''};
+  sync.rev = STAVBA === DEF_STAVBA ? Number(store.get(revKey())) || 0 : store.get(revKey());
   let pushT = null;
   function markDirty() {
-    if (!SY || RO() || STAVBA !== DEF_STAVBA) return;
-    sync.dirty = true; store.set('hyb-sync-dirty', '1');
+    if (!SY || RO()) return;
+    sync.dirty = true; store.set(DIRTY_KEY, '1');
     clearTimeout(pushT); pushT = setTimeout(syncNow, 800);
   }
   function softRender() { if ($('#overlay').hidden && S.hmgEdit == null && !S.quickId) render(); else S.pendingRender = true; }
@@ -4417,11 +4409,12 @@ thead{display:table-header-group}tr{break-inside:avoid}
     finally { clearTimeout(tm); }
   }
   async function syncNow() {
-    if (!SY || sync.busy || STAVBA !== DEF_STAVBA) return;
+    if (!SY || sync.busy) return;
+    if (STAVBA !== DEF_STAVBA) return syncStavba();
     sync.busy = true; renderSync();
     const pushing = sync.dirty;
     try {
-      if (pushing) { sync.dirty = false; store.set('hyb-sync-dirty', '0'); }
+      if (pushing) { sync.dirty = false; store.set(DIRTY_KEY, '0'); }
       if (pushing) {
         // 4.34: před odesláním stáhnout novější data a sloučit (jinak by starší kopie údajů stavby přepsala novější)
         const g = await call('GET');
@@ -4440,8 +4433,9 @@ thead{display:table-header-group}tr{break-inside:avoid}
       sync.rev = Number(res.rev) || 0; store.set(revKey(), String(sync.rev));
       sync.state = 'ok'; sync.err = ''; sync.last = new Date();
       setTimeout(uklidZkousky, 0);
+      if (res.data || pushing) try { CXS.prevezmi(D, sync.rev); } catch (e) {}  // 4.63: seznam staveb jede v datech Hybernské
     } catch (e) {
-      if (pushing) { sync.dirty = true; store.set('hyb-sync-dirty', '1'); }
+      if (pushing) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
       sync.state = 'err'; sync.err = e.message || 'Bez spojení.';
     } finally {
       sync.busy = false; renderSync();
@@ -4449,8 +4443,75 @@ thead{display:table-header-group}tr{break-inside:avoid}
       if (sync.onDone) { const f = sync.onDone; sync.onDone = null; f(); }
     }
   }
+  // 4.63: synchronizace další stavby (ne Hybernské) – stáhne/pošle jen data této stavby
+  function chybiNaServeru(L, R) {
+    for (const c of Object.keys(COLLS)) {
+      const k = COLLS[c], rm = new Map((R[c] || []).map(r => [k(r), r._ts || 0])), rt = (R.tomb || {})[c] || {};
+      for (const r of L[c] || []) { const key = k(r), t = r._ts || 0; if (!(rm.has(key) ? rm.get(key) >= t : rt[key] >= t)) return true; }
+      const lt = (L.tomb || {})[c] || {}; for (const key of Object.keys(lt)) if (rm.has(key) && rm.get(key) <= lt[key]) return true;
+    }
+    return ['project', 'hmgInfo'].some(f => ((L[f] || {})._ts || 0) > ((R[f] || {})._ts || 0));
+  }
+  async function syncStavba() {
+    sync.busy = true; renderSync();
+    const pushing = sync.dirty, okKlic = 'cx-stavba-ok:' + STAVBA;
+    try {
+      if (pushing) { sync.dirty = false; store.set(DIRTY_KEY, '0'); }
+      let r = !pushing || store.get(okKlic) !== '1' ? await CXS.stahni(STAVBA, pushing ? '' : sync.rev) : {same: true};
+      const prevezmi = data => {
+        if (!data) return false;
+        let base = D;
+        // tento počítač stavbu ještě nikdy nestáhl: údaje o stavbě vzít ze serveru (prázdná místní kopie je nesmí přepsat)
+        if (store.get(okKlic) !== '1') base = Object.assign({}, D, {project: data.project || D.project, hmgInfo: data.hmgInfo || D.hmgInfo});
+        const before = JSON.stringify(D);
+        const m = normalize(mergeData(base, rzRozbal(data)));
+        m.savedAt = D.savedAt; m.lastBackup = D.lastBackup;
+        store.set(okKlic, '1');
+        // starší skript: při souběhu dvou počítačů mohl server přijít o naši změnu – když máme něco, co na serveru chybí, poslat znovu
+        if (!RO() && chybiNaServeru(m, rzRozbal(data))) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
+        if (JSON.stringify(m) === before) return false;
+        D = m; snap = takeSnap(D); persist(); return true;
+      };
+      let zmena = r.same ? false : prevezmi(r.data);
+      if (r.prazdna) store.set(okKlic, '1');
+      if (pushing && !RO()) { r = await CXS.posli(STAVBA, rzZabal(D)); zmena = prevezmi(r.data) || zmena; }
+      sync.rev = r.rev || ''; store.set(revKey(), sync.rev);
+      sync.state = 'ok'; sync.err = ''; sync.last = new Date();
+      if (zmena && !fixAliases()) softRender();
+    } catch (e) {
+      if (pushing) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
+      sync.state = 'err'; sync.err = e.message || 'Bez spojení.';
+    } finally {
+      sync.busy = false; renderSync();
+      if (sync.dirty && sync.state === 'ok') { clearTimeout(pushT); pushT = setTimeout(syncNow, 1000); }
+      if (sync.onDone) { const f = sync.onDone; sync.onDone = null; f(); }
+    }
+  }
+  // 4.63: úklid a přenosy staveb na pozadí (data jiných staveb z localStorage do IndexedDB, neodeslané změny jiných staveb, stavby jen z tohoto počítače)
+  setTimeout(async () => {
+    try { await CXS.uklidLocalStorage(STAVBA); } catch (e) {}
+    if (!SY || RO()) return;
+    try { if (await CXS.prenesMistni()) toast('Stavby z tohoto počítače jsou teď sdílené s kolegy.'); } catch (e) { console.warn('Přenos staveb', e); }
+    let klice = []; try { klice = Object.keys(localStorage).filter(k => k.startsWith('hyb-sync-dirty:') && k !== DIRTY_KEY && store.get(k) === '1'); } catch (e) {}
+    for (const k of klice) {
+      const sid = k.slice(15);
+      try { const L = await CXS.nactiMistne(sid); if (L) await CXS.posli(sid, rzZabal(L)); store.set(k, '0'); } catch (e) { console.warn('Neodeslané změny stavby', sid, e); }
+    }
+  }, 7000);
+  if (STAVBA !== DEF_STAVBA) {
+    // seznam staveb (názvy, nové stavby od kolegů) – u Hybernské jede se synchronizací dat
+    setInterval(() => { if (SY && document.visibilityState === 'visible') CXS.obnovSeznam().catch(() => {}); }, 60000);
+    setTimeout(() => CXS.obnovSeznam().then(() => { if (!CXS.info(STAVBA)) { toast('Tato stavba už v seznamu není. Otevírám Hybernskou.'); store.set('hyb-stavba', DEF_STAVBA); setTimeout(() => location.reload(), 1500); } }).catch(() => {}), 2500);
+  }
+  // přepnutí stavby v jiném okně (Management nebo Deník): otevřít stejnou stavbu i tady
+  window.addEventListener('storage', e => {
+    if (e.key !== 'hyb-stavba') return;
+    const n = e.newValue || DEF_STAVBA; if (n === STAVBA) return;
+    persist();
+    if ($('#overlay').hidden) setTimeout(() => location.reload(), 300); else toast('V jiném okně jste otevřeli jinou stavbu. Po zavření okna obnovte stránku (F5).');
+  });
   // 4.58: jednou poslat rozpočty, které tento počítač má (dřív je starší skript Google zahodil a ostatní počítače je neviděly)
-  setTimeout(() => { try { if (SY && STAVBA === DEF_STAVBA && ['rozpocty', 'rozpKat', 'faktury'].some(k => (D[k] || []).length) && store.get('cx-rz-push') !== '1') { store.set('cx-rz-push', '1'); sync.dirty = true; store.set('hyb-sync-dirty', '1'); syncNow(); } } catch (e) {} }, 6000);
+  setTimeout(() => { try { if (SY && STAVBA === DEF_STAVBA && ['rozpocty', 'rozpKat', 'faktury'].some(k => (D[k] || []).length) && store.get('cx-rz-push') !== '1') { store.set('cx-rz-push', '1'); sync.dirty = true; store.set(DIRTY_KEY, '1'); syncNow(); } } catch (e) {} }, 6000);
   document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('.side') && !e.target.closest('[data-a="bok"]')) document.body.classList.remove('side-open'); });
   setInterval(() => { if (SY && document.visibilityState === 'visible') syncNow(); }, 5000);  // 4.34: kontrola změn kolegů každých 5 s (Luboš 15. 11.)
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
@@ -4459,10 +4520,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 14
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 15
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 14;
+const SKRIPT_VERZE = 15;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -4501,7 +4562,49 @@ function doPost_(e) {
   if (b.akce === 'firma_odpoved') return firmaOdpoved_(b);
   if (b.akce === 'kolega_zprava') return kolegaZprava_(b);
   if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
+  if (b.akce === 'stavba') return stavbaData_(b);
+  if (b.akce === 'stavby') return stavbySeznam_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
+}
+// 15: více staveb. Hybernská zůstává v původním souboru; každá další stavba má vlastní soubor dat a vlastní číslo verze,
+// takže se vždy načítá a ukládá jen otevřená stavba. Seznam staveb = záznamy st~ v datech Hybernské.
+function stavbaId_(s) { return String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+function stavbaData_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba);
+  if (!sid || sid === 'hybernska') return json_({error: 'Neznámá stavba.'});
+  if (ro && b.data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  const kr = 'srev:' + sid, kf = 'sfile:' + sid, rev = Number(b.rev);
+  // bez změn: jen porovnat číslo verze, nic nečíst z Disku a nečekat na zámek
+  if (!b.data) { const r0 = Number(p.getProperty(kr) || 0); if (rev === r0 && r0 > 0) return json_({rev: r0, same: true}); }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    let r = Number(p.getProperty(kr) || 0), id = p.getProperty(kf);
+    let cur = id ? JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString('UTF-8')) : null;
+    if (b.data) {
+      cur = mergeData(cur || {}, b.data); r++;
+      const s = JSON.stringify(cur);
+      if (id) DriveApp.getFileById(id).setContent(s);
+      else { id = slozka_(DriveApp.getRootFolder(), 'Constructo – data staveb').createFile('stavba-' + sid + '.json', s, 'application/json').getId(); p.setProperty(kf, id); }
+      p.setProperty(kr, String(r));
+      const den = Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
+      if (p.getProperty('szal:' + sid) !== den) { DriveApp.getFileById(id).makeCopy('zaloha-stavba-' + sid + '-' + den + '.json'); p.setProperty('szal:' + sid, den); }
+    }
+    if (!b.data && rev === r && r > 0) return json_({rev: r, same: true});
+    return json_({rev: r, data: cur || {}});
+  } finally { lock.releaseLock(); }
+}
+function stavbySeznam_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const r = Number(p.getProperty('rev') || 0);
+  if (Number(b.rev) === r) return json_({rev: r, same: true});
+  const cur = nacti_(p) || {};
+  return json_({rev: r, zaznamy: (cur.dokumenty || []).filter(function (x) { return x && /^s[tp]~/.test(String(x.id)); })});
 }
 // Fotky z mobilní aplikace: složka „Constructo – fotky ze stavby“ na Disku, podsložky po dnech.
 // Fotku uvidí každý, kdo má její odkaz (odkaz je jen v datech stavby a v e-mailu).
@@ -4672,6 +4775,8 @@ function odpoved_(key, rev, data) {
   const ro = !!key && key !== HESLO && key === PropertiesService.getScriptProperties().getProperty('cteni');
   if (key !== HESLO && !ro) return json_({error: 'heslo'});
   if (ro && data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  // 15: bez změn stačí porovnat číslo verze – nečíst soubor z Disku a nečekat na zámek (rychlejší pro všechny počítače)
+  if (!data) { const r0 = Number(PropertiesService.getScriptProperties().getProperty('rev') || 0); if (rev === r0) return json_({rev: r0, same: true}); }
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
   try {
@@ -5131,7 +5236,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   // 4.53: nová verze skriptu v aplikaci = pokus hned (dřív až za 3 hodiny od posledního pokusu, i když šlo o starší verzi);
   // Dokumentace si může aktualizaci vyžádat (nutne), nejčastěji jednou za minutu. Vrací {ok, verze} nebo {ok: false, duvod}.
   async function skriptSamo(nutne) {
-    if (!SY || RO() || STAVBA !== DEF_STAVBA) return null;
+    if (!SY || RO()) return null;
     const cil = skriptWeb();
     try {
       const t0 = Number(store.get('hyb-samo-t') || 0), v0 = Number(store.get('hyb-samo-v') || 0);
@@ -5195,7 +5300,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       if (!c) { toast('Tohle nevypadá jako kód připojení. Má začínat HYB1-'); return; }
       ok.disabled = true; ok.textContent = 'Připojuji…';
       SY = c; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; sync.dirty = false; store.set('hyb-sync-dirty', '0');
+      sync.rev = 0; sync.dirty = false; store.set(DIRTY_KEY, '0');
       D.project._ts = -1; D.hmgInfo._ts = -1;  // název a údaje stavby převezme ze serveru
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast('Připojeno, data se sdílí'); }
@@ -5238,7 +5343,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       } else store.set('hyb-ro', '');
       if (jmeno) { $('#me').value = jmeno; store.set('hyb-me', jmeno); $('#me').classList.remove('need'); }
       SY = c; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; sync.dirty = false; store.set('hyb-sync-dirty', '0');
+      sync.rev = 0; sync.dirty = false; store.set(DIRTY_KEY, '0');
       D.project._ts = -1; D.hmgInfo._ts = -1;  // název a údaje stavby převezme ze serveru
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast(RO() ? 'Připojeno jen na prohlížení' : 'Připojeno' + (jmeno ? ' jako ' + jmeno : '') + ', data se sdílí'); document.body.classList.toggle('ro', RO()); renderBanners(); if (!me() && !RO()) setTimeout(whoDialog, 300); else if (pre) setTimeout(() => installOffer(true), 900); }
@@ -5444,7 +5549,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       if (!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) { toast('Vložte adresu, která začíná https://script.google.com/macros/'); return; }
       ok.disabled = true; ok.textContent = 'Připojuji…';
       SY = {url, key}; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; stampChanges(true); persist(); sync.dirty = true; store.set('hyb-sync-dirty', '1');
+      sync.rev = 0; stampChanges(true); persist(); sync.dirty = true; store.set(DIRTY_KEY, '1');
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast('Synchronizace zapnutá'); setTimeout(copyDialog, 400); }
         else { ok.disabled = false; ok.textContent = 'Připojit'; SY = null; store.set('hyb-sync', ''); renderSync(); toast(sync.err || 'Připojení se nepovedlo.'); }
@@ -7059,7 +7164,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   {
     // odkaz z pozvánky: …/pc/?k=K7M2QX → připojí se samo, kód z adresy zmizí
     const k = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-    if (k && STAVBA !== DEF_STAVBA) { store.set('hyb-stavba', DEF_STAVBA); location.reload(); }  // pozvánka patří ke sdílené stavbě Hybernská
+    if (k && STAVBA !== DEF_STAVBA && !SY) { store.set('hyb-stavba', DEF_STAVBA); location.reload(); }  // připojení pozvánkou začíná na Hybernské
     if (k) history.replaceState(null, '', location.pathname + location.hash);
     if (!SY && WEB_SCRIPT && STAVBA === DEF_STAVBA) setTimeout(() => webJoinDialog(k.length === 6 ? k : ''), 400);
     else if (SY && k) setTimeout(() => toast('Tento počítač už je ke stavbě připojený.'), 600);

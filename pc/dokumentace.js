@@ -172,7 +172,7 @@
   /* ---------- stav modulu ---------- */
   let H = null, EL = null;
   const S = {slozka: '', q: '', raz: 'nazev', smer: 1, fronta: [], bezi: false, verze: 0, verzeT: 0, chyba: '', skript: '', hotovo: 0, aktT: 0, aktDuvod: ''};
-  const seznam = () => (H && H.seznam() || []).filter(r => r && r.id && !String(r.id).startsWith('rz~'));   // rz~ = rozpočty přenášené přes dokumenty
+  const seznam = () => (H && H.seznam() || []).filter(r => r && r.id && !/^(rz|st|sp)~/.test(String(r.id)));   // rz~ = rozpočty přenášené přes dokumenty, st~/sp~ = seznam staveb
   const najdi = id => seznam().find(r => r.id === id);
   const deti = id => seznam().filter(r => (r.rodic || '') === (id || ''));
   const cestaZaznamu = id => { const out = []; let r = najdi(id), n = 0; while (r && n++ < 50) { out.unshift(r); r = r.rodic ? najdi(r.rodic) : null; } return out; };
