@@ -1,7 +1,7 @@
-// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 14
+// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 15
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 14;
+const SKRIPT_VERZE = 15;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -40,7 +40,49 @@ function doPost_(e) {
   if (b.akce === 'firma_odpoved') return firmaOdpoved_(b);
   if (b.akce === 'kolega_zprava') return kolegaZprava_(b);
   if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
+  if (b.akce === 'stavba') return stavbaData_(b);
+  if (b.akce === 'stavby') return stavbySeznam_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
+}
+// 15: více staveb. Hybernská zůstává v původním souboru; každá další stavba má vlastní soubor dat a vlastní číslo verze,
+// takže se vždy načítá a ukládá jen otevřená stavba. Seznam staveb = záznamy st~ v datech Hybernské.
+function stavbaId_(s) { return String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+function stavbaData_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba);
+  if (!sid || sid === 'hybernska') return json_({error: 'Neznámá stavba.'});
+  if (ro && b.data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  const kr = 'srev:' + sid, kf = 'sfile:' + sid, rev = Number(b.rev);
+  // bez změn: jen porovnat číslo verze, nic nečíst z Disku a nečekat na zámek
+  if (!b.data) { const r0 = Number(p.getProperty(kr) || 0); if (rev === r0 && r0 > 0) return json_({rev: r0, same: true}); }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    let r = Number(p.getProperty(kr) || 0), id = p.getProperty(kf);
+    let cur = id ? JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString('UTF-8')) : null;
+    if (b.data) {
+      cur = mergeData(cur || {}, b.data); r++;
+      const s = JSON.stringify(cur);
+      if (id) DriveApp.getFileById(id).setContent(s);
+      else { id = slozka_(DriveApp.getRootFolder(), 'Constructo – data staveb').createFile('stavba-' + sid + '.json', s, 'application/json').getId(); p.setProperty(kf, id); }
+      p.setProperty(kr, String(r));
+      const den = Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
+      if (p.getProperty('szal:' + sid) !== den) { DriveApp.getFileById(id).makeCopy('zaloha-stavba-' + sid + '-' + den + '.json'); p.setProperty('szal:' + sid, den); }
+    }
+    if (!b.data && rev === r && r > 0) return json_({rev: r, same: true});
+    return json_({rev: r, data: cur || {}});
+  } finally { lock.releaseLock(); }
+}
+function stavbySeznam_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const r = Number(p.getProperty('rev') || 0);
+  if (Number(b.rev) === r) return json_({rev: r, same: true});
+  const cur = nacti_(p) || {};
+  return json_({rev: r, zaznamy: (cur.dokumenty || []).filter(function (x) { return x && /^s[tp]~/.test(String(x.id)); })});
 }
 // Fotky z mobilní aplikace: složka „Constructo – fotky ze stavby“ na Disku, podsložky po dnech.
 // Fotku uvidí každý, kdo má její odkaz (odkaz je jen v datech stavby a v e-mailu).
@@ -211,6 +253,8 @@ function odpoved_(key, rev, data) {
   const ro = !!key && key !== HESLO && key === PropertiesService.getScriptProperties().getProperty('cteni');
   if (key !== HESLO && !ro) return json_({error: 'heslo'});
   if (ro && data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  // 15: bez změn stačí porovnat číslo verze – nečíst soubor z Disku a nečekat na zámek (rychlejší pro všechny počítače)
+  if (!data) { const r0 = Number(PropertiesService.getScriptProperties().getProperty('rev') || 0); if (rev === r0) return json_({rev: r0, same: true}); }
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
   try {

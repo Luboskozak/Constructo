@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8Ar+ERjqS/C9WAgVfsCAtrHWLqwhKbyFGw1MZQgutTc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-YcrNjDSknHnRXS2Vk2LWfZReLZsCTqtWj4aDtfsx8hM=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -12,6 +12,7 @@
 <script src="zprava.js"></script>
 <script src="dokumentace.js"></script>
 <script src="rozpocet.js"></script>
+<script src="stavby.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
 <style>
 /* Layout: stavební deník jako nástroj — souhrn nahoře, lidé, pak seznam úkolů po odpovědných osobách nebo harmonogram */
@@ -832,7 +833,9 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .zv-typ.t-reklamace{background:#fde2df;color:#b42318}.zv-typ.t-neuklizeno{background:#efe4d3;color:#6b4a14}.zv-typ.t-poskozeni{background:#fbe0f0;color:#9c1c6b}
 .zv-typ.t-nedodelek{background:#F4D23C;color:#16191c}.zv-typ.t-bozp{background:#b42318;color:#fff}.zv-typ.t-dotaz{background:#ece4ff;color:#5b3cc4}.zv-typ.t-jine{background:#e8eaed;color:#16191c}
 .zv-st.zv-kol{background:#fff;color:#4a5056;box-shadow:inset 0 0 0 1px #d5d8dc}
-.zv-row .zv-th{width:88px;height:88px;border-radius:10px}.zv-row .zv-th.ph{display:grid;place-items:center;background:#f4f4f1;color:#9aa1a8;font-size:11px;text-align:center;line-height:1.2}
+.zv-row .zv-th{width:88px;height:88px;border-radius:10px;position:relative}.zv-n{position:absolute;right:4px;bottom:4px;background:#16191c;color:#F4D23C;font-size:12px;font-weight:800;border-radius:7px;padding:1px 7px}
+.zv-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.zv-gal img{width:100%;height:130px;object-fit:cover;border-radius:8px;display:block;background:#f4f4f1}
+.zv-gal.pdf{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.zv-gal.pdf img{height:auto;object-fit:contain;border:1px solid #ddd}.zv-row .zv-th.ph{display:grid;place-items:center;background:#f4f4f1;color:#9aa1a8;font-size:11px;text-align:center;line-height:1.2}
 
 .zv-nesouhlas,.zv-vraceno{background:#fdeae6;color:#c0341f}.zv-uzavreno{background:#dcefe3;color:#2f8a52}
 .zv-odp{margin-top:5px;font-size:12.5px;background:var(--soft);border-left:3px solid #F4D23C;border-radius:4px;padding:4px 8px;line-height:1.4}
@@ -937,6 +940,60 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 .dsave{width:100%;justify-content:center;min-height:52px;font-size:16px}
 #j-ukq button.on{background:var(--accent);border-color:var(--accent)}
 .dfil{margin-top:4px}
+/* 4.65: větší pole na zápis a na fotky, Vložit z PD */
+.dform #j-text{min-height:340px;font-size:16px;line-height:1.5}
+.dmedia{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.dphotos{min-height:150px;padding:10px;border:2px dashed var(--line);border-radius:12px;background:var(--bg);align-content:flex-start}
+.dph{width:128px;height:128px}
+.dph.add{font-size:13px;font-weight:600;color:var(--ink)}.dph.add span:first-child{font-size:30px}
+.dph.add.pd{border:2px solid var(--accent);background:#FFF4BF}
+.dph.add img{width:100%;height:78px;object-fit:cover;border-radius:5px 5px 0 0}
+.zv-co{display:flex;gap:8px;padding:12px 14px 0;flex-wrap:wrap}
+.zv-co button{font-size:15px;font-weight:700;padding:10px 18px;border-radius:999px;border:2px solid var(--line);background:var(--panel);cursor:pointer}
+.zv-co button[aria-pressed="true"]{background:var(--k,#16191c);border-color:var(--k,#16191c);color:#fff}
+.zv-co .cnt{margin-left:6px}
+.za-feed{padding:12px 14px;display:flex;flex-direction:column;gap:14px}
+#dk-cil{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:900;background:#16191c;color:#fff;border-radius:14px;padding:12px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.35);max-width:min(860px,calc(100vw - 32px));font-size:14px}
+#dk-cil b{color:#F4D23C}#dk-cil button{flex:none}
+
+/* 4.66: Nový zápis – celá obrazovka, stejné dlaždice, příjemci jako v mobilu */
+.dform.full{position:fixed;inset:0;z-index:19;border:0;border-radius:0;overflow:auto;padding:0 28px 28px;margin:0;box-shadow:none}
+body.dfull-on{overflow:hidden}
+.dform .dform-h{padding-bottom:4px}
+.dform.full .dform-h{position:sticky;top:0;z-index:3;background:var(--panel);padding:14px 0 12px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.dform .dclose{display:none;margin-left:12px;min-height:44px;font-size:15px;font-weight:800;padding:0 18px}
+.dform.full .dclose{display:inline-flex;align-items:center}
+.dform:not(.full) .dopen{display:inline-flex}.dform .dopen{display:none;font-size:12px;color:var(--muted)}
+.dform.full #j-text{min-height:max(340px,calc(100vh - 560px))}
+.dsec{font:700 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 0 -2px}
+.dtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.dtile{position:relative;height:128px;border:2px solid var(--line);border-radius:14px;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font:700 14px var(--f-body,inherit);color:var(--ink);cursor:pointer;overflow:hidden;text-align:center;padding:6px;transition:border-color .15s,background .15s}
+.dtile:hover{border-color:var(--accent);background:#FFFBE6}
+.dtile svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dtile small{font-weight:500;font-size:11.5px;color:var(--muted)}
+.dtile.pd{background:#FFF4BF;border-color:var(--accent)}
+.dtile.mset{padding:0;justify-content:flex-end}
+.dtile.mset .pmini{position:absolute;inset:0;width:100%!important;height:100%!important;border:0;border-radius:0}
+.dtile.mset b{position:relative;z-index:1;background:rgba(19,21,24,.82);color:#fff;font-size:12px;padding:5px 8px;width:100%}
+.dtile .tx{position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:13px;line-height:26px;cursor:pointer}
+.datt{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
+.datt .dph{width:auto;height:128px;border-radius:14px}
+.dph.vid::after,.att a.vid::after{content:"▶";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:18px;line-height:44px;text-align:center;pointer-events:none}
+.att a.vid{position:relative;display:inline-block}
+.dph.vid{background:#16191c}.dph.vid em{position:absolute;left:6px;bottom:6px;color:#fff;font-size:11px;font-style:normal;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:6px}
+.zp-etools .dai-b{margin-left:auto;background:#16191c;color:#F4D23C;border-color:#16191c;font-weight:800}
+.dai{border:2px solid #7c3fd6;background:#F6F0FF;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.dai .t{white-space:pre-wrap;font-size:15px;line-height:1.5}.dai .t.ph{color:var(--muted)}
+.dai .a{display:flex;gap:8px;flex-wrap:wrap}
+.dside .drc{display:flex;flex-wrap:wrap;gap:6px}
+.dside .drc .chip{min-height:36px;font-size:13px}
+.dside .drc .chip.off{opacity:.45}
+.dside .dbox{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.dside .dbox h4{margin:0;font-size:15px}
+.dside .dsum{font-size:13px;color:var(--muted)}
+.dside .dsum b{color:var(--ink)}
+.dodesl{font-size:12.5px;color:var(--muted);margin-top:4px}.dodesl b{color:var(--ink)}
+@media (max-width:1100px){.dtiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.dgrid,.dmedia{grid-template-columns:1fr}}
 </style>
 </head>
@@ -952,7 +1009,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       <button type="button" id="v-hmg" aria-pressed="false">Harmonogram</button>
       <button type="button" id="v-list" aria-pressed="true">Úkoly</button>
       <button type="button" id="v-diary" aria-pressed="false">Denní zápisy</button>
-      <button type="button" id="v-zavady" aria-pressed="false">Zprávy</button>
+      <button type="button" id="v-zavady" aria-pressed="false">Zprávy, zápisy</button>
       <button type="button" id="v-odeslane" aria-pressed="false">Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
@@ -1183,7 +1240,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.61';
+  const APP_VERSION = '4.66';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1223,13 +1280,16 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   /* ---------- úložiště ---------- */
   const SEED = JSON.parse(document.getElementById('seed').textContent);
   const store = { get: k => { try { return localStorage.getItem(k) || ''; } catch(e) { return ''; } }, set: (k,v) => { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } } };
-  /* 4.33: více staveb. Hybernská = původní data (sdílená přes Google). Další stavby mají vlastní data v tomto prohlížeči. */
+  /* 4.33: více staveb. 4.63: seznam staveb je společný pro všechny (pc/stavby.js – CXStavby, stejný v Deníku).
+     Hybernská = původní sdílená data. Každá další stavba má svá data zvlášť; načítá se a synchronizuje jen otevřená stavba. */
   const DEF_STAVBA = 'hybernska';
-  const stavbyList = () => { try { const a = JSON.parse(store.get('hyb-stavby') || '[]'); if (Array.isArray(a) && a.some(x => x && x.id === DEF_STAVBA)) return a.filter(x => x && x.id); } catch (e) {} return [{id: DEF_STAVBA, name: 'Hybernská 1000/8'}]; };
-  const saveStavby = a => store.set('hyb-stavby', JSON.stringify(a));
-  let STAVBA = store.get('hyb-stavba') || DEF_STAVBA;
-  if (!stavbyList().some(x => x.id === STAVBA)) STAVBA = DEF_STAVBA;
-  const KEY = STAVBA === DEF_STAVBA ? KEY_BASE : KEY_BASE + ':' + STAVBA;
+  const CXS = window.CXStavby;
+  const stavbyList = () => CXS.seznam().map(x => ({id: x.sid, name: x.name, project: x.project}));
+  let STAVBA = CXS.aktivni();
+  if (!/^[A-Za-z0-9_-]{1,40}$/.test(STAVBA)) STAVBA = DEF_STAVBA;
+  const KEY = CXS.lsKlic(STAVBA);
+  // neodeslané změny a číslo verze dat se pamatují pro každou stavbu zvlášť
+  const DIRTY_KEY = STAVBA === DEF_STAVBA ? 'hyb-sync-dirty' : 'hyb-sync-dirty:' + STAVBA;
   function novaStavbaData() {
     const reg = stavbyList().find(x => x.id === STAVBA) || {}, x = clone(SEED);
     x.project = Object.assign({company: (SEED.project && SEED.project.company) || ''}, reg.project || {}, {name: reg.name || 'Nová stavba'});
@@ -1275,13 +1335,15 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     });
     return x;
   }
+  // 4.64: firma ze zprávy „Závada poslaná firmě X: …“ → Dodavatel úkolu
+  const supZText = s => { const m = /^Závada poslaná firmě\s+(.+?):\s/.exec(String(s || '')); return m ? m[1].trim() : ''; };
   const normalize = d => {
     d = rzRozbal(d);
     const x = Object.assign({version:1, project:clone(SEED.project), hmgInfo:clone(SEED.hmgInfo), hmg:[], hmgGroups:[], tasks:[], diary:[], log:[], zavady:[], tomb:{}}, d || {});
     if (!x.tomb || typeof x.tomb !== 'object') x.tomb = {};
     if (!x.project) x.project = clone(SEED.project); if (!x.hmgInfo) x.hmgInfo = clone(SEED.hmgInfo);
     ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty','rozpocty','rozpKat','faktury'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
-    x.tasks.forEach(t => { t.id ||= uid(); t.hmg = (t.hmg || []).map(String); });
+    x.tasks.forEach(t => { t.id ||= uid(); t.hmg = (t.hmg || []).map(String); if (!t.supplier) { const f = supZText(t.title); if (f) t.supplier = f; } });   // 4.64: úkol ze zprávy firmě má firmu jako Dodavatele (i starší úkoly)
     // stejný úkol z porady může přijít dvakrát (zabudovaná data + sdílení) – nechat novější
     const bySrc = new Map();
     x.tasks.forEach(t => { if (!t.src) return; const o = bySrc.get(t.src); if (!o || (t._ts || 0) > (o._ts || 0)) bySrc.set(t.src, t); });
@@ -1345,9 +1407,12 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   snap = takeSnap(D);
   let fileHandle = null, fileName = '';
 
+  let idbT = 0;
   function persist() {
     D.savedAt = new Date().toISOString();
     const ok = store.set(KEY, JSON.stringify(D));
+    // 4.63: data dalších staveb i v IndexedDB (localStorage má jen 5 MB pro všechno); při plném localStorage stačí IndexedDB
+    if (STAVBA !== DEF_STAVBA) { clearTimeout(idbT); idbT = setTimeout(() => CXS.ulozMistne(STAVBA, D).catch(() => {}), ok ? 1500 : 0); if (!ok) return; }
     if (!ok && storageOk) { storageOk = false; renderBanners(); }
     if (fileHandle) writeLinkedFile();
   }
@@ -1530,7 +1595,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#eyebrow').textContent = `${D.project.company || ''}`;
     { const pn = String(D.project.name || ''), sh = pn.split(',')[0].replace(/^Rekonstrukce( objektu)?\s*/i, '') || pn, rest = pn.slice(pn.split(',')[0].length).replace(/^,\s*/, '');
       $('#app-h1').innerHTML = esc(sh).replace(/(\s[\d/]+)$/, '<span>$1</span>'); $('#side-proj').textContent = sh; $('#side-ver').textContent = 'Constructo ' + APP_VERSION; $('#side-co').textContent = [D.project.ulice, D.project.mesto].filter(Boolean).join(', ') || rest || ''; }
-    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní zápisy',hmg:'Harmonogram'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
+    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní zápisy',hmg:'Harmonogram',zavady:'Zprávy, zápisy'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
     $('#foot').innerHTML = `<span>Constructo ${APP_VERSION} · samostatná aplikace, data jsou uložená v tomto prohlížeči${fileHandle ? ' a v souboru ' + esc(fileName) : ''}</span><span>HMG: ${esc(D.hmgInfo.source || '')}, stav ke dni ${hmgDateTxt()}</span><span>${SY ? 'Synchronizace zapnutá' : 'Bez synchronizace'}</span><span>Naposledy uloženo ${D.savedAt ? new Date(D.savedAt).toLocaleString('cs-CZ') : '–'}</span>`;
   }
 
@@ -1921,39 +1986,86 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         ${e.misto && e.misto.img ? `<button type="button" class="dline dpin" data-pinv="${esc(e.id)}" title="Ukázat na půdorysu">${mistoMini(e.misto, 132, 86, .11)}<span>📍 ${esc(mistoTxt(e.misto))}</span></button>` : ''}
         ${attHtml(e)}
         ${e.typ === 'problem' ? (e.vyreseno ? `<div class="dline okk">✓ Vyřešeno ${dWhen(e.vyreseno.at)}${e.vyreseno.by ? ' · ' + esc(e.vyreseno.by) : ''} <button type="button" class="del no-print" data-unsolve="${esc(e.id)}">vrátit</button></div>` : `<div class="no-print"><button type="button" class="btn" data-solve="${esc(e.id)}">✓ Vyřešeno</button></div>`) : ''}
+        ${dOdeslHtml(e)}
         ${e.editedAt ? `<div class="tk">upraveno ${dWhen(e.editedAt)}${e.editedBy ? ' · ' + esc(e.editedBy) : ''}</div>` : ''}
         <div class="drep">${rs.map(r => `<div class="rp"><span class="av" style="background:${pcol(r.by || '?')}">${esc(initials(r.by || '?'))}</span><div><b>${esc(r.by || '')}</b> <span class="tm">${dWhen(r.at)}</span>${dIsNew(r, seen) ? ' <span class="nw">nové</span>' : ''}${r.by === me() ? ` <button type="button" class="del no-print" data-rdel="${esc(r.id)}">smazat</button>` : ''}<div class="txt">${esc(r.text)}</div></div></div>`).join('')}
           <form class="rform no-print" data-rf="${esc(e.id)}"><input placeholder="${rs.length ? 'Odpovědět…' : 'Odpovědět nebo doplnit…'}" aria-label="Odpověď na zápis"><button class="btn" type="submit">Odeslat</button></form></div>
       </div></div>`;
   }
+  // 4.66: Nový zápis – klik do formuláře ho otevře na celou obrazovku; dlaždice Fotky / Video / Z výkresu / Místo stejně velké;
+  // Komu poslat jako v mobilu (kolegové, firmy, TDS / investor / BOZP) → jeden formulář PDF e-mailem s tlačítky Beru na vědomí / Potvrzuji / Nesouhlasím / Odpovědět
+  let dFull = false, dAi = null;
+  const DIC = {
+    foto: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.8l1.4-2h6.6l1.4 2h1.8A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="4"/></svg>',
+    video: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="13.5" height="12" rx="2.5"/><path d="M16 10.5l5.5-3v9l-5.5-3z"/></svg>',
+    pd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/><path d="M7.5 17v-5h4v5M11.5 14.5h4.5"/><rect x="10" y="10.5" width="7" height="7.5" rx="1" stroke-dasharray="2 1.6"/></svg>',
+    misto: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+    schr: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.8h6V4M8.5 10h7M8.5 14h7M8.5 18h4"/></svg>'
+  };
+  const MAX_VIDEO = 25 * 1024 * 1024;
+  // příjemci mimo Lidi: firmy (e-maily z karty firmy) a TDS / investor / BOZP (Firmy → Příjemci)
+  const dFirmyRc = () => firmyList().map(f => ({id: f.id, jmeno: f.firma, email: firmaEmaily(f).join(','), typ: 'firma'}));
+  const dPrijRc = () => prijemciList().map(x => ({id: x.id, jmeno: `${x.jmeno || x.firma || x.kdo} (${x.kdo})`, email: x.email || '', typ: 'prij', kdo: x.kdo}));
+  const dEmail = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
+  function dPrijemci(d) {
+    const kol = (d.komu || []).slice(), ext = [...dFirmyRc().filter(x => (d.firmy || []).includes(x.id)), ...dPrijRc().filter(x => (d.prij || []).includes(x.id))];
+    return {kol, ext, n: kol.length + ext.length};
+  }
+  function dSaveLabel(d, ed) {
+    const n = dPrijemci(d).n;
+    return n ? `Uložit a odeslat (${n})` : ed ? 'Uložit změny' : d.ukKomu ? 'Uložit a zadat úkol' : 'Uložit zápis';
+  }
+  function dSouhrn(d) {
+    const p = dPrijemci(d);
+    if (!p.n) return 'Nikomu se nic neposílá – zápis jen uložím. Uvidí ho všichni v Constructu.';
+    const bez = [...p.kol.filter(n => !dEmail(n)), ...p.ext.filter(x => !x.email).map(x => x.jmeno)];
+    return `Odejde <b>${p.n}</b> ${p.n === 1 ? 'příjemci' : 'příjemcům'} jeden formulář PDF e-mailem. Každý může jedním klepnutím odpovědět: Beru na vědomí, Potvrzuji, Nesouhlasím nebo vlastní odpověď.${bez.length ? `<br><span style="color:var(--red)">Chybí e-mail: ${esc(bez.join(', '))}</span>` : ''}`;
+  }
   function renderDiary() {
     const v = $('#view');
-    // nové od minula: co kolegové napsali od mé poslední návštěvy (zvýraznění drží, dokud stránku neobnovím)
-    if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
-    if (me()) store.set(dSeenKey(), new Date().toISOString());
-    const seen = dSeen0;
     dGrab();
     const d = dDraft(), ed = d.edit ? D.diary.find(e => e.id === d.edit) : null;
     if (d.edit && !ed) { diaryDraft = null; return renderDiary(); }
+    d.firmy ||= []; d.prij ||= [];
     const m = me(), team = owners().filter(n => n !== 'Bez přiřazení');
     const fri = (() => { const x = pd(today), w = x.getDay(); return addD(today, w <= 5 ? 5 - w : 6); })();
+    const sch = window.CXDok && CXDok.schranka && CXDok.schranka();
+    const firmy = dFirmyRc(), prij = dPrijRc(), kolegove = team.filter(n => n !== m);
+    const tile = (id, ic, l, sm, cls, inner) => `<${inner ? 'label' : 'button type="button"'} class="dtile${cls ? ' ' + cls : ''}" id="${id}">${DIC[ic]}<span>${l}</span>${sm ? `<small>${sm}</small>` : ''}${inner || ''}</${inner ? 'label' : 'button'}>`;
+    const mistoTile = d.misto && d.misto.img
+      ? `<button type="button" class="dtile mset" id="j-pin" title="Změnit místo">${mistoMini(d.misto, 260, 128, .14)}<b>📍 ${esc(mistoTxt(d.misto))}</b><span class="tx" id="j-pin-x" role="button" title="Odebrat místo">✕</span></button>`
+      : tile('j-pin', 'misto', 'Místo na půdorysu', 'klepněte do plánu');
     const form = `
-      <form class="card dform" id="j-form" autocomplete="off">
-        <div class="dform-h"><h3>${ed ? 'Upravit zápis' : 'Nový zápis'}</h3><span class="hcap">napište, co se dělo · když to má někdo udělat, vyberte vpravo komu a do kdy</span>
-          <span class="dwho">${m ? `<span class="av" style="background:${pcol(m)}">${esc(initials(m))}</span><span>Píše <b>${esc(m)}</b></span><button type="button" class="del" id="j-who">nejsem to já</button>` : `<button type="button" class="btn primary" id="j-who">Kdo píše? Vyberte své jméno</button>`}</span></div>
+      <form class="card dform${dFull ? ' full' : ''}" id="j-form" autocomplete="off">
+        <div class="dform-h"><h3>${ed ? 'Upravit zápis' : 'Nový zápis'}</h3><span class="hcap">${esc((D.project && D.project.name) || '')} · napište, co se dělo · vpravo vyberte, komu to poslat</span><span class="dopen">klepněte kamkoli – otevře se na celou obrazovku</span>
+          <span class="dwho">${m ? `<span class="av" style="background:${pcol(m)}">${esc(initials(m))}</span><span>Píše <b>${esc(m)}</b></span><button type="button" class="del" id="j-who">nejsem to já</button>` : `<button type="button" class="btn primary" id="j-who">Kdo píše? Vyberte své jméno</button>`}</span>
+          <button type="button" class="btn dclose" id="j-close" title="Zavřít (rozepsaný zápis zůstane)">✕ Zavřít</button></div>
         <div class="dgrid">
           <div class="dmain">
             <div class="drow dtop"><label for="j-date" class="dlbl">Den</label><input id="j-date" type="date" value="${esc(d.date)}" max="${today}"><button type="button" class="chip" data-dd="0" aria-pressed="${d.date === today}">Dnes</button><button type="button" class="chip" data-dd="-1" aria-pressed="${d.date === addD(today, -1)}">Včera</button>
               <span class="dlbl" style="margin-left:10px">Druh</span><span class="chips" id="j-typ">${DTYPY.map(t => `<button type="button" class="chip" data-typ="${t.k}" style="--c:${t.c}" aria-pressed="${d.typ === t.k}">${esc(t.l)}</button>`).join('')}</span></div>
-            <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = uložit</span></div>
+            <div class="zp-etools"><button type="button" data-el="ul" title="Odrážky">• Odrážky</button><button type="button" data-el="ol" title="Číslovaný seznam">1. Číslování</button><span class="hcap">Enter = nový řádek · Ctrl+Enter = uložit</span><button type="button" class="dai-b" id="j-ai" title="Claude text opraví a napíše odborně (i z ukrajinštiny)">✨ Upravit text (AI)</button></div>
             <textarea id="j-text" aria-label="Co se dnes dělo" placeholder="Co se dnes dělo… např. Akant dokončil štuky 4. NP dvorní fasáda, zítra lešení 3. NP. Chybí 2 lidi.">${esc(d.text)}</textarea>
-            <div class="dmedia">
-              <div class="fld"><label>Místo na stavbě</label>${d.misto && d.misto.img ? `<div class="dmisto">${mistoMini(d.misto, 150, 100, .12)}<div><b>${esc(mistoTxt(d.misto))}</b><div class="drow"><button type="button" class="btn" id="j-pin">Změnit</button><button type="button" class="del" id="j-pin-x">odebrat</button></div></div></div>` : '<button type="button" class="btn" id="j-pin">📍 Označit místo na půdorysu</button>'}</div>
-              <div class="fld"><label>Fotky</label><div class="dphotos" id="j-drop">${d.att.map((a, i) => `<span class="dph"><img src="${esc(attThumb(a))}" alt="Fotka"><button type="button" data-phx="${i}" aria-label="Odebrat fotku">✕</button></span>`).join('')}<label class="dph add"><span>📷</span><span>Přidat fotky</span><input type="file" id="j-file" accept="image/*" multiple hidden></label></div><span class="hcap">Fotku můžete i vložit (Ctrl+V) nebo přetáhnout sem.</span></div>
+            ${dAi ? `<div class="dai" id="j-aibox"><b>✨ Návrh od Clauda</b><div class="t${dAi.ph ? ' ph' : ''}">${esc(dAi.t)}</div>${dAi.ph ? '' : '<div class="a"><button type="button" class="btn primary" id="j-ai-ok">Použít návrh</button><button type="button" class="btn" id="j-ai-x">Nechat můj text</button></div>'}</div>` : ''}
+            <div class="dsec">Přílohy</div>
+            <div class="dtiles">
+              ${tile('j-foto', 'foto', 'Fotky', 'nebo Ctrl+V / přetáhnout', '', '<input type="file" id="j-file" accept="image/*" multiple hidden>')}
+              ${tile('j-video', 'video', 'Video', 'nejvýš 25 MB', '', '<input type="file" id="j-vfile" accept="video/*" hidden>')}
+              ${tile('j-pd', 'pd', 'Vložit z PD', 'výřez z výkresu', 'pd')}
+              ${mistoTile}
             </div>
+            ${d.att.length || sch ? `<div class="datt" id="j-drop">${d.att.map((a, i) => `<span class="dph${a.video ? ' vid' : ''}">${attThumb(a) ? `<img src="${esc(attThumb(a))}" alt="${a.video ? 'Video' : 'Fotka'}">` : ''}${a.video ? `<em>${esc(a.size >= 104858 ? 'video · ' + (Math.round(a.size / 1048576 * 10) / 10).toLocaleString('cs-CZ') + ' MB' : 'video')}</em>` : ''}<button type="button" data-phx="${i}" aria-label="Odebrat">✕</button></span>`).join('')}${sch ? `<button type="button" class="dtile" id="j-sch" title="${esc(sch.popis)}" style="height:128px">${DIC.schr}<span>Poslední výřez</span><small>vložit do zápisu</small></button>` : ''}</div>` : ''}
           </div>
           <div class="dside">
-            <div class="fld"><label>Pro koho</label><div class="chips" id="j-komu"><button type="button" class="chip" data-komu="" aria-pressed="${!d.komu.length}">Všem</button>${team.filter(n => n !== m).map(n => `<button type="button" class="chip" data-komu="${esc(n)}" aria-pressed="${d.komu.includes(n)}">${esc(n)}</button>`).join('')}</div><span class="hcap">Vybraní to uvidí jako „Pro mě“.</span></div>
+            <div class="dbox">
+              <h4>Komu poslat</h4>
+              <div class="dsec">Kolegové</div>
+              <div class="drc" id="j-komu"><button type="button" class="chip" data-komu="*" aria-pressed="${kolegove.length > 0 && kolegove.every(n => d.komu.includes(n))}">Všem kolegům</button>${kolegove.map(n => `<button type="button" class="chip${dEmail(n) ? '' : ' off'}" data-komu="${esc(n)}" aria-pressed="${d.komu.includes(n)}" title="${dEmail(n) ? esc(dEmail(n)) : 'Chybí e-mail – doplňte ho v kartě osoby'}">${esc(n)}</button>`).join('')}</div>
+              ${firmy.length ? `<div class="dsec">Firmy</div><div class="drc">${firmy.map(f => `<button type="button" class="chip${f.email ? '' : ' off'}" data-rf="${esc(f.id)}" aria-pressed="${d.firmy.includes(f.id)}" title="${f.email ? esc(f.email) : 'Firma nemá e-mail – doplňte ho v záložce Firmy'}">${esc(f.jmeno)}</button>`).join('')}</div>` : ''}
+              <div class="dsec">TDS, investor, BOZP</div>
+              ${prij.length ? `<div class="drc">${prij.map(x => `<button type="button" class="chip" data-rp="${esc(x.id)}" aria-pressed="${d.prij.includes(x.id)}" title="${esc(x.email)}">${esc(x.jmeno)}</button>`).join('')}</div>` : '<span class="hcap">Zatím nikdo. Přidáte je v záložce Firmy → Příjemci.</span>'}
+              <div class="dsum" id="j-sum">${dSouhrn(d)}</div>
+            </div>
             ${ed ? (ed.ukolId ? '<p class="share" style="margin:0">Úkol z tohoto zápisu upravíte kliknutím na něj v zápisu.</p>' : '') : `
             <div class="fld"><label for="j-ukkomu">Úkol – kdo to udělá</label><select id="j-ukkomu" class="${d.ukKomu ? 'on' : ''}"><option value="">— jen zápis, bez úkolu —</option>${team.map(n => `<option value="${esc(n)}"${d.ukKomu === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
             <div class="dsub" id="j-uk" ${d.ukKomu ? '' : 'hidden'}>
@@ -1961,22 +2073,38 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
               <div class="quick" id="j-ukq"><button type="button" data-d="${addD(today, 1)}">Zítra</button><button type="button" data-d="${fri}">Pátek</button><button type="button" data-d="${addD(today, 7)}">Týden</button><button type="button" data-d="${addD(today, 14)}">14 dní</button></div>
               <span class="hcap">Text zápisu se stane úkolem. Kolega ho uvidí v záložce Úkoly a potvrdí splnění.</span>
             </div>`}
-            <button class="btn primary dsave" type="submit" id="j-save">${ed ? 'Uložit změny' : d.ukKomu ? 'Uložit a zadat úkol' : 'Uložit zápis'}</button>${ed ? '<button class="btn" type="button" id="j-cancel">Zrušit úpravu</button>' : ''}
+            <button class="btn primary dsave" type="submit" id="j-save">${dSaveLabel(d, ed)}</button>${ed ? '<button class="btn" type="button" id="j-cancel">Zrušit úpravu</button>' : ''}
           </div>
         </div>
       </form>`;
-    // co nás čeká: termíny prací a úkoly ze zápisů na nejbližší 3 týdny
+    v.innerHTML = `<div class="diary">${form}</div>`;
+    document.body.classList.toggle('dfull-on', dFull);
+    bindDiary(v, d, ed);
+  }
+  // archiv: komu zápis odešel a jak odpověděli
+  function dOdeslHtml(e) {
+    const o = e.odeslano; if (!o) return '';
+    const ts = D.tasks.filter(t => t.grp === o.cid), rk = ts.length ? kolReakce({tasks: ts}) : '';
+    return `<div class="dodesl">📨 Odesláno ${dWhen(o.at)}: <b>${esc((o.poslano || []).join(', ') || 'nikomu')}</b>${(o.missing || []).length ? ` · bez e-mailu: ${esc(o.missing.join(', '))}` : ''}${o.pdf && o.pdf.url ? ` · <a href="${esc(o.pdf.url)}" target="_blank" rel="noopener">PDF</a>` : ''}</div>${rk}`;
+  }
+  // 4.65: archiv denních zápisů – všechny zápisy (D.diary) beze změny dat, jen se zobrazují tady místo pod formulářem
+  const zaHledej = (e) => (!ZF.osoba || [e.by, e.owner, ...(e.komu || []), e.ukKomu].some(n => n && foldName(n) === foldName(ZF.osoba)))
+    && hledej(ZF.q || '', e.text, e.owner, e.by, e.taskTitle, e.obj, (e.komu || []), e.ukKomu, mistoTxt(e.misto), dRepl(e.id).map(r => r.text + ' ' + r.by));
+  function renderZapisyArchiv(v, coHtml) {
+    if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
+    if (me()) store.set(dSeenKey(), new Date().toISOString());
+    const seen = dSeen0, all = D.diary.filter(isZapis);
     const lim = addD(today, 21);
-    const up = []
-      .concat(D.diary.filter(e => isZapis(e) && e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
-        .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].replace(/^\s*(•|-|\d+\.)\s+/, '').slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today})))
+    const up = all.filter(e => e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
+      .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].replace(/^\s*(•|-|\d+\.)\s+/, '').slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today}))
       .sort((a, b) => a.d.localeCompare(b.d)).slice(0, 8);
     const upHtml = up.length ? `<div class="day dup"><div class="day-h">Co nás čeká<span class="cnt">úkoly ze zápisů na 3 týdny</span></div>${up.map(x => `<button type="button" class="uprow" data-go="${esc(x.e.id)}"><span class="num${x.late ? ' late' : ''}">${esc(x.w)}</span><span>${x.h}</span></button>`).join('')}</div>` : '';
-    const all = D.diary.filter(isZapis), nMe = all.filter(e => dForMe(e) && (!e.ukolId || eff(D.tasks.find(x => x.id === e.ukolId) || {}) !== 'done')).length, nProb = all.filter(e => e.typ === 'problem' && !e.vyreseno).length, nNew = all.filter(e => dIsNew(e, seen)).length;
+    const nMe = all.filter(e => dForMe(e) && (!e.ukolId || eff(D.tasks.find(x => x.id === e.ukolId) || {}) !== 'done')).length, nProb = all.filter(e => e.typ === 'problem' && !e.vyreseno).length, nNew = all.filter(e => dIsNew(e, seen)).length;
     const fil = `<div class="dfil no-print">${[['', 'Vše', 0], ['new', 'Nové od minula', nNew], ['me', 'Pro mě', nMe], ['problem', 'Problémy', nProb], ['term', 'Úkoly', 0]].map(([k, l, n]) => `<button type="button" class="chip" data-fil="${k}" aria-pressed="${(S.dFil || '') === k}">${l}${n ? ` <b>${n}</b>` : ''}</button>`).join('')}</div>`;
-    const list = filteredDiary();
+    const list = all.filter(e => (S.dFil !== 'me' || dForMe(e)) && (S.dFil !== 'problem' || (e.typ === 'problem' && !e.vyreseno)) && (S.dFil !== 'term' || !!e.ukolId) && (S.dFil !== 'new' || dIsNew(e, seen)) && zaHledej(e));
+    const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(e => e.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     let feed = '';
-    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${all.length ? 'Filtru neodpovídá žádný zápis.' : 'Zatím žádné zápisy.'}</strong>${all.length ? 'Zvolte „Vše“ nebo zrušte filtr.' : 'První zápis přidáte formulářem vlevo.'}</div></div>`;
+    if (!list.length) feed = `<div class="day"><div class="empty"><strong>${all.length ? 'Výběru neodpovídá žádný zápis.' : 'Zatím žádné zápisy.'}</strong>${all.length ? 'Zvolte „Vše“, jinou osobu nebo smažte hledání.' : 'Nový zápis napíšete v záložce Denní zápisy.'}</div></div>`;
     else {
       const days = {}; list.forEach(e => (days[e.date] ||= []).push(e));
       feed = Object.keys(days).sort().reverse().map(dte => {
@@ -1985,62 +2113,130 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         return `<div class="day"><div class="day-h">${esc(label)}${dte === today ? ' · dnes' : ''}<span class="cnt">${es.length} ${es.length === 1 ? 'zápis' : es.length < 5 ? 'zápisy' : 'zápisů'}</span><button type="button" class="btn no-print" data-copy="${dte}" title="Text dne k vložení do Buildary">Zkopírovat den</button></div>${es.map(e => entryHtml(e, seen)).join('')}</div>`;
       }).join('');
     }
-    v.innerHTML = `<div class="diary">${form}<div>${upHtml}${fil}${feed}</div></div>`;
-    bindDiary(v, d, ed);
+    v.innerHTML = `<div class="sl">${coHtml}<div class="sl-top zv-top">
+      <select id="za-osoba" aria-label="Osoba"><option value="">Všichni</option>${osoby.map(n => `<option value="${esc(n)}"${ZF.osoba && foldName(ZF.osoba) === foldName(n) ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>
+      <input id="za-q" type="search" placeholder="Hledat v zápisech" value="${esc(ZF.q)}" aria-label="Hledat v zápisech">
+      <span class="sp"></span><span>${list.length === all.length ? list.length : `${list.length} z ${all.length}`} ${list.length === 1 ? 'zápis' : list.length > 1 && list.length < 5 ? 'zápisy' : 'zápisů'}</span>
+      ${RO() ? '' : '<button type="button" class="btn primary no-print" id="za-novy">+ Nový zápis</button>'}</div>
+      <div class="za-feed">${upHtml}${fil}${feed}</div></div>`;
+    $('#za-osoba').onchange = e => { ZF.osoba = e.target.value; renderZavady(); };
+    $('#za-q').oninput = e => { ZF.q = e.target.value; const p = e.target.selectionStart; renderZavady(); const i = $('#za-q'); i.focus(); try { i.setSelectionRange(p, p); } catch (x) {} };
+    const nb = $('#za-novy'); if (nb) nb.onclick = () => { dFull = true; setView('diary'); };
+    bindDiaryFeed(v);
   }
-  function bindDiary(v, d, ed) {
-    const re = () => { dGrab(); renderDiary(); };
-    $('#j-who').onclick = () => { if (me()) { $('#me').value = ''; store.set('hyb-me', ''); } whoDialog(); };
-    v.querySelectorAll('[data-dd]').forEach(b => b.onclick = () => { $('#j-date').value = addD(today, +b.dataset.dd); re(); });
-    $('#j-date').onchange = re;
-    v.querySelectorAll('[data-typ]').forEach(b => b.onclick = () => { d.typ = b.dataset.typ; v.querySelectorAll('[data-typ]').forEach(x => x.setAttribute('aria-pressed', x === b)); });
-    v.querySelectorAll('[data-komu]').forEach(b => b.onclick = () => {
-      const n = b.dataset.komu;
-      d.komu = !n ? [] : d.komu.includes(n) ? d.komu.filter(x => x !== n) : [...d.komu, n];
-      v.querySelectorAll('[data-komu]').forEach(x => x.setAttribute('aria-pressed', x.dataset.komu ? d.komu.includes(x.dataset.komu) : !d.komu.length));
-    });
-    if ($('#j-ukkomu')) $('#j-ukkomu').onchange = () => { d.ukKomu = $('#j-ukkomu').value; d.akce = d.ukKomu ? 'ukol' : 'zapis'; $('#j-uk').hidden = !d.ukKomu; $('#j-ukkomu').classList.toggle('on', !!d.ukKomu); $('#j-save').textContent = d.ukKomu ? 'Uložit a zadat úkol' : 'Uložit zápis'; };
-    v.querySelectorAll('#j-ukq [data-d]').forEach(b => b.onclick = () => { $('#j-ukend').value = b.dataset.d; v.querySelectorAll('#j-ukq [data-d]').forEach(x => x.classList.toggle('on', x === b)); });
-    v.querySelectorAll('.dform [data-el]').forEach(b => b.onclick = () => zListToggle($('#j-text'), b.dataset.el));
-    // místo na půdorysu
-    $('#j-pin').onclick = async () => { dGrab(); const r = await planViewer(d.misto, false); if (r) { d.misto = r; renderDiary(); } };
-    if ($('#j-pin-x')) $('#j-pin-x').onclick = () => { d.misto = null; re(); };
-    // fotky: výběr, vložení ze schránky, přetažení
-    $('#j-file').onchange = e => addPhotos(e.target.files);
-    v.querySelectorAll('[data-phx]').forEach(b => b.onclick = () => { d.att.splice(+b.dataset.phx, 1); re(); });
-    const form = $('#j-form');
-    form.onpaste = e => { const fs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type)); if (fs.length) { e.preventDefault(); addPhotos(fs); } };
-    form.ondragover = e => { e.preventDefault(); form.classList.add('drop'); };
-    form.ondragleave = () => form.classList.remove('drop');
-    form.ondrop = e => { e.preventDefault(); form.classList.remove('drop'); addPhotos(e.dataTransfer.files); };
-    if ($('#j-cancel')) $('#j-cancel').onclick = () => { diaryDraft = null; renderDiary(); };
-    form.onsubmit = e => { e.preventDefault(); saveEntry(); };
-    $('#j-text').onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEntry(); } else zListKey(e); };
-    // přehled
-    v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; re(); });
-    v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { const el = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (!el) { S.dFil = ''; S.q = ''; S.owner = ''; S.obj = ''; render(); } const x = v.ownerDocument.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
+  function bindDiaryFeed(v) {
+    v.querySelectorAll('[data-zco]').forEach(b => b.onclick = () => { ZF.co = b.dataset.zco; store.set('hyb-zco', ZF.co); render(); });
+    v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; renderZavady(); });
+    v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (!v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`)) { S.dFil = ''; ZF.q = ''; ZF.osoba = ''; renderZavady(); } const x = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
     v.querySelectorAll('[data-task]').forEach(b => b.onclick = () => quickDone(b.dataset.task, b));
     v.querySelectorAll('[data-pinv]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.pinv); if (e && e.misto) planViewer(e.misto, true); });
     v.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyDay(b.dataset.copy));
-    v.querySelectorAll('[data-solve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.solve); if (!e) return; if (!me()) { whoDialog(); return; } e.vyreseno = {at: new Date().toISOString(), by: me()}; dGrab(); commit(); toast('Označeno jako vyřešené'); });
-    v.querySelectorAll('[data-unsolve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.unsolve); if (!e) return; delete e.vyreseno; dGrab(); commit(); });
+    v.querySelectorAll('[data-solve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.solve); if (!e) return; if (!me()) { whoDialog(); return; } e.vyreseno = {at: new Date().toISOString(), by: me()}; commit(); toast('Označeno jako vyřešené'); });
+    v.querySelectorAll('[data-unsolve]').forEach(b => b.onclick = () => { const e = D.diary.find(x => x.id === b.dataset.unsolve); if (!e) return; delete e.vyreseno; commit(); });
     v.querySelectorAll('[data-rf]').forEach(f => f.onsubmit = e => {
       e.preventDefault(); const inp = f.querySelector('input'), text = inp.value.trim(); if (!text) return;
       if (!me()) { whoDialog(); toast('Nejdřív vyberte, kdo píše.'); return; }
       D.diary.push({id: uid(), kind: 'odpoved', parent: f.dataset.rf, date: today, at: new Date().toISOString(), by: me(), text});
-      dGrab(); commit(); toast('Odpověď odeslána');
+      commit(); toast('Odpověď odeslána');
     });
-    v.querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmModal('Smazat odpověď?', '', 'Smazat', () => { D.diary = D.diary.filter(x => x.id !== b.dataset.rdel); dGrab(); commit(); }));
+    v.querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmModal('Smazat odpověď?', '', 'Smazat', () => { D.diary = D.diary.filter(x => x.id !== b.dataset.rdel); commit(); }));
     v.querySelectorAll('[data-del]').forEach(b => { let armed = null; b.onclick = () => {
       if (!armed) { b.classList.add('armed'); b.textContent = 'Opravdu smazat?'; armed = setTimeout(() => { armed = null; b.classList.remove('armed'); b.textContent = 'Smazat'; }, 4000); return; }
       clearTimeout(armed); const id = b.dataset.del;
-      D.diary = D.diary.filter(e => e.id !== id && !(e.kind === 'odpoved' && e.parent === id)); if (d.edit === id) diaryDraft = null; dGrab(); commit(); toast('Zápis smazán');
+      D.diary = D.diary.filter(e => e.id !== id && !(e.kind === 'odpoved' && e.parent === id)); if (diaryDraft && diaryDraft.edit === id) diaryDraft = null; commit(); toast('Zápis smazán');
     }; });
     v.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
       const e = D.diary.find(x => x.id === b.dataset.edit); if (!e) return;
       diaryDraft = {edit: e.id, date: e.date, typ: e.typ || 'prace', text: e.text || '', komu: (e.komu || []).slice(), akce: e.akce || 'zapis', misto: e.misto || null, att: (e.att || []).slice(), ukEnd: '', ukKomu: '', task: '', done: ''};
-      renderDiary(); $('#j-text').focus(); window.scrollTo({top: $('#j-form').getBoundingClientRect().top + scrollY - 20, behavior: 'smooth'});
+      dFull = true; setView('diary'); $('#j-text').focus(); toast('Upravujete zápis. Po uložení ho najdete zase ve Zprávy, zápisy.');
     });
+  }
+  // 4.65: Vložit z PD – otevře Dokumentaci, výřez z výkresu se vloží do rozepsaného zápisu
+  let dokCil = null;
+  function dkCilLista() {
+    let el = $('#dk-cil');
+    const on = S.view === 'dok' && dokCil === 'zapis';
+    if (!on) { if (el) el.remove(); if (S.view !== 'dok') dokCil = null; return; }
+    if (el) return;
+    el = document.createElement('div'); el.id = 'dk-cil'; el.className = 'no-print'; el.setAttribute('role', 'status');
+    el.innerHTML = '<span><b>Vložit z PD do denního zápisu:</b> otevřete výkres → <b>Výřez</b> → táhněte myší přes místo → <b>Vložit do denního zápisu</b>.</span><button type="button" class="btn">Zpět do zápisu</button>';
+    el.querySelector('button').onclick = () => { dokCil = null; setView('diary'); };
+    document.body.appendChild(el);
+  }
+  function shrinkSrc(src, max, q) {
+    return new Promise((res, rej) => { const i = new Image();
+      i.onload = () => { const k = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas'); c.width = Math.round(i.width * k); c.height = Math.round(i.height * k); const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(i, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', q)); };
+      i.onerror = () => rej(new Error('obrázek')); i.src = src; });
+  }
+  async function vlozDoZapisu(dataUrl) {
+    dokCil = null;
+    const d = dDraft();
+    try { d.att.push({thumb: await shrinkSrc(dataUrl, 640, .7), big: SY ? dataUrl : ''}); }
+    catch (e) { toast('Výřez se nepodařilo vložit. Zkuste to znovu.'); return; }
+    dFull = true; setView('diary');
+    toast('Výřez z výkresu je vložený v zápisu. Dopište text a dejte Uložit zápis.', 7000);
+  }
+
+  function bindDiary(v, d, ed) {
+    const re = () => { dGrab(); renderDiary(); };
+    const form = $('#j-form');
+    // klik kamkoli do formuláře → celá obrazovka (první klik jen otevře, ať se nic nestiskne omylem)
+    const otevri = () => { dFull = true; form.classList.add('full'); document.body.classList.add('dfull-on'); };
+    form.addEventListener('pointerdown', e => {
+      if (dFull) return;
+      const ta = e.target.closest('#j-text');
+      e.preventDefault(); otevri();
+      const stop = ev => { ev.preventDefault(); ev.stopPropagation(); };
+      form.addEventListener('click', stop, {capture: true, once: true}); setTimeout(() => form.removeEventListener('click', stop, {capture: true}), 600);
+      setTimeout(() => { const t = $('#j-text'); if (t && (ta || !e.target.closest('input,select,button,label'))) t.focus(); }, 30);
+    });
+    $('#j-close').onclick = () => { dGrab(); dFull = false; form.classList.remove('full'); document.body.classList.remove('dfull-on'); };
+    form.onkeydown = e => { if (e.key === 'Escape' && dFull && !document.querySelector('#overlay .modal, .pv')) { e.preventDefault(); $('#j-close').click(); } };
+    $('#j-who').onclick = () => { if (me()) { $('#me').value = ''; store.set('hyb-me', ''); } whoDialog(); };
+    v.querySelectorAll('[data-dd]').forEach(b => b.onclick = () => { $('#j-date').value = addD(today, +b.dataset.dd); re(); });
+    $('#j-date').onchange = re;
+    v.querySelectorAll('[data-typ]').forEach(b => b.onclick = () => { d.typ = b.dataset.typ; v.querySelectorAll('[data-typ]').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+    const kolegove = owners().filter(n => n !== 'Bez přiřazení' && n !== me());
+    const prepocti = () => { $('#j-sum').innerHTML = dSouhrn(d); $('#j-save').textContent = dSaveLabel(d, ed);
+      v.querySelectorAll('[data-komu]').forEach(x => x.setAttribute('aria-pressed', x.dataset.komu === '*' ? kolegove.length > 0 && kolegove.every(n => d.komu.includes(n)) : d.komu.includes(x.dataset.komu)));
+      v.querySelectorAll('[data-rf]').forEach(x => x.setAttribute('aria-pressed', d.firmy.includes(x.dataset.rf)));
+      v.querySelectorAll('[data-rp]').forEach(x => x.setAttribute('aria-pressed', d.prij.includes(x.dataset.rp))); };
+    const tog = (arr, x) => arr.includes(x) ? arr.filter(y => y !== x) : [...arr, x];
+    v.querySelectorAll('[data-komu]').forEach(b => b.onclick = () => { const n = b.dataset.komu; d.komu = n === '*' ? (kolegove.every(x => d.komu.includes(x)) ? [] : kolegove.slice()) : tog(d.komu, n); prepocti(); });
+    v.querySelectorAll('[data-rf]').forEach(b => b.onclick = () => { d.firmy = tog(d.firmy, b.dataset.rf); prepocti(); });
+    v.querySelectorAll('[data-rp]').forEach(b => b.onclick = () => { d.prij = tog(d.prij, b.dataset.rp); prepocti(); });
+    if ($('#j-ukkomu')) $('#j-ukkomu').onchange = () => { d.ukKomu = $('#j-ukkomu').value; d.akce = d.ukKomu ? 'ukol' : 'zapis'; $('#j-uk').hidden = !d.ukKomu; $('#j-ukkomu').classList.toggle('on', !!d.ukKomu); $('#j-save').textContent = dSaveLabel(d, ed); };
+    v.querySelectorAll('#j-ukq [data-d]').forEach(b => b.onclick = () => { $('#j-ukend').value = b.dataset.d; v.querySelectorAll('#j-ukq [data-d]').forEach(x => x.classList.toggle('on', x === b)); });
+    v.querySelectorAll('.dform [data-el]').forEach(b => b.onclick = () => zListToggle($('#j-text'), b.dataset.el));
+    // ✨ úprava textu přes Clauda (stejné jako Přepsat odborně v Zápisu z porady)
+    $('#j-ai').onclick = async () => {
+      dGrab(); const t = (d.text || '').trim();
+      if (t.split(/\s+/).length < 3) { toast('Napište aspoň pár slov, pak text upravím.'); $('#j-text').focus(); return; }
+      if (!SY) { toast('Úprava textu jde jen se zapnutou synchronizací (Data → Automatická synchronizace).'); return; }
+      dAi = {t: 'Claude upravuje text…', ph: true}; renderDiary();
+      zNvOff = false; delete ZNV[t.split('\n').map(l => l.replace(/[ \t]+/g, ' ').trim()).filter(Boolean).join('\n')];
+      const n = await zNavrhGet(t);
+      dAi = n ? {t: n, src: t} : {t: zNvOff ? 'Úprava teď nejde: na Googlu chybí klíč pro Clauda (CLAUDE_KLIC).' : 'Text už je v pořádku, nebo se úprava nepodařila. Zkuste to znovu.', ph: true};
+      if (S.view === 'diary') renderDiary();
+      if (dAi && dAi.ph && !zNvOff) setTimeout(() => { if (dAi && dAi.ph) { dAi = null; if (S.view === 'diary') renderDiary(); } }, 5000);
+    };
+    if ($('#j-ai-ok')) $('#j-ai-ok').onclick = () => { d.text = dAi.t; $('#j-text').value = dAi.t; dAi = null; renderDiary(); toast('Text je upravený. Můžete ho ještě opravit.'); };
+    if ($('#j-ai-x')) $('#j-ai-x').onclick = () => { dAi = null; re(); };
+    // místo na půdorysu
+    $('#j-pin').onclick = async e => { if (e.target.closest('#j-pin-x')) { d.misto = null; re(); return; } dGrab(); const r = await planViewer(d.misto, false); if (r) { d.misto = r; renderDiary(); } };
+    // fotky, video, výkres
+    $('#j-file').onchange = e => addPhotos(e.target.files);
+    $('#j-vfile').onchange = e => addVideo(e.target.files[0]);
+    $('#j-pd').onclick = () => { if (!window.CXDok) { toast('Obnovte stránku (F5).'); return; } dGrab(); dokCil = 'zapis'; setView('dok'); toast('Otevřete výkres, dejte Výřez a táhněte myší přes místo. Pak „Vložit do denního zápisu“.', 8000); };
+    if ($('#j-sch')) $('#j-sch').onclick = () => { const x = CXDok.schranka(); if (!x) return; dGrab(); if (d.att.some(a => a.big === x.dataUrl || a.src === x.dataUrl)) { toast('Tento výřez už v zápisu je.'); return; } vlozDoZapisu(x.dataUrl); };
+    v.querySelectorAll('[data-phx]').forEach(b => b.onclick = () => { d.att.splice(+b.dataset.phx, 1); re(); });
+    form.onpaste = e => { const fs = [...(e.clipboardData && e.clipboardData.files || [])].filter(f => /^image\//.test(f.type)); if (fs.length) { e.preventDefault(); addPhotos(fs); } };
+    form.ondragover = e => { e.preventDefault(); form.classList.add('drop'); };
+    form.ondragleave = () => form.classList.remove('drop');
+    form.ondrop = e => { e.preventDefault(); form.classList.remove('drop'); const fs = [...e.dataTransfer.files]; const vi = fs.find(f => /^video\//.test(f.type)); if (vi) addVideo(vi); addPhotos(fs.filter(f => !/^video\//.test(f.type))); };
+    if ($('#j-cancel')) $('#j-cancel').onclick = () => { diaryDraft = null; dAi = null; dFull = false; renderDiary(); };
+    form.onsubmit = e => { e.preventDefault(); saveEntry(); };
+    $('#j-text').onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveEntry(); } else zListKey(e); };
   }
   // fotky se zmenší (rychlé nahrávání), při sdílení se nahrají na Disk Google stejně jako fotky z mobilu
   function shrinkImg(file, max, q) {
@@ -2056,6 +2252,26 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (bad) toast(bad === 1 ? 'Jednu fotku se nepodařilo načíst (formát HEIC z iPhonu převeďte na JPG).' : `${bad} fotek se nepodařilo načíst.`);
     renderDiary();
   }
+  // video: náhled = snímek z videa; na Disk Google se nahraje při uložení (stejná cesta jako fotky)
+  function videoPoster(file) {
+    return new Promise(res => { const u = URL.createObjectURL(file), vd = document.createElement('video'); let hotovo = false;
+      const konec = x => { if (hotovo) return; hotovo = true; URL.revokeObjectURL(u); res(x); };
+      vd.muted = true; vd.playsInline = true; vd.preload = 'auto';
+      vd.onloadeddata = () => { try { vd.currentTime = Math.min(0.5, (vd.duration || 1) / 2); } catch (e) { konec(''); } };
+      vd.onseeked = () => { try { const k = Math.min(1, 480 / Math.max(vd.videoWidth, vd.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(vd.videoWidth * k) || 320; c.height = Math.round(vd.videoHeight * k) || 180; c.getContext('2d').drawImage(vd, 0, 0, c.width, c.height); konec(c.toDataURL('image/jpeg', .7)); } catch (e) { konec(''); } };
+      vd.onerror = () => konec(''); setTimeout(() => konec(''), 6000); vd.src = u; });
+  }
+  async function addVideo(file) {
+    if (!file) return;
+    dGrab(); const d = dDraft();
+    if (!/^video\//.test(file.type) && !/\.(mp4|mov|m4v|webm|3gp)$/i.test(file.name || '')) { toast('Soubor není video.'); return; }
+    if (file.size > MAX_VIDEO) { toast(`Video má ${Math.round(file.size / 1048576)} MB, vejde se nejvýš 25 MB. Natočte kratší (asi do 30 sekund) nebo ho zmenšete.`, 8000); return; }
+    if (!SY) { toast('Video jde uložit jen se zapnutou synchronizací (ukládá se na Disk Google).'); return; }
+    toast('Připravuji video…');
+    d.att.push({video: true, file, name: file.name || 'video.mp4', mime: file.type || 'video/mp4', size: file.size, thumb: await videoPoster(file)});
+    renderDiary();
+  }
+  const fileB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(new Error('soubor')); r.readAsDataURL(f); });
   async function saveEntry() {
     if (roBlock()) return;
     dGrab(); const d = dDraft(), m = me(), text = (d.text || '').trim();
@@ -2063,36 +2279,70 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     if (!text && !d.att.length) { $('#j-text').focus(); toast('Napište, co se dělo.'); return; }
     if (!d.edit && d.akce === 'ukol' && !d.ukKomu) { $('#j-ukkomu').focus(); toast('Vyberte, komu je úkol.'); return; }
     if (!d.edit && d.akce === 'ukol' && !text) { $('#j-text').focus(); toast('Napište, co je potřeba udělat.'); return; }
-    const btn = $('#j-save');
-    if (SY && d.att.some(a => !a.id && a.big)) {
-      btn.disabled = true; btn.textContent = 'Nahrávám fotky…'; let bad = 0;
-      for (const a of d.att) if (!a.id && a.big) {
-        try { const r = await call('POST', {key: SY.key, akce: 'foto', den: d.date || today, name: `denik-${d.date || today}-${uid()}.jpg`, mime: 'image/jpeg', data: a.big.split(',')[1]}); if (r && r.id) Object.assign(a, {id: r.id, url: r.url, thumb: r.thumb}); else bad++; }
-        catch (e) { bad++; }
+    const prij = dPrijemci(d);
+    if (prij.n && !SY) { toast('Odeslat jde jen se zapnutou synchronizací (Data → Automatická synchronizace). Zrušte příjemce, nebo synchronizaci zapněte.', 8000); return; }
+    if (prij.n && !window.CXZprava) { toast('Chybí část programu pro PDF. Obnovte stránku (F5).'); return; }
+    const btn = $('#j-save'); btn.disabled = true;
+    const fotkyPdf = d.att.filter(a => !a.video).map(a => a.big || (a.id ? {id: a.id, url: a.url, thumb: a.thumb} : a.thumb)).filter(Boolean);
+    if (SY && d.att.some(a => !a.id && (a.big || a.file))) {
+      let bad = 0, i = 0; const n = d.att.filter(a => !a.id && (a.big || a.file)).length;
+      for (const a of d.att) if (!a.id && (a.big || a.file)) {
+        i++; btn.textContent = a.video ? `Nahrávám video (${i}/${n})…` : `Nahrávám fotky (${i}/${n})…`;
+        try {
+          const r = a.video ? await call('POST', {key: SY.key, akce: 'foto', den: d.date || today, name: `denik-${d.date || today}-${uid()}.${(a.name.match(/\.(\w{2,4})$/) || [0, 'mp4'])[1].toLowerCase()}`, mime: a.mime, data: await fileB64(a.file)})
+            : await call('POST', {key: SY.key, akce: 'foto', den: d.date || today, name: `denik-${d.date || today}-${uid()}.jpg`, mime: 'image/jpeg', data: a.big.split(',')[1]});
+          if (r && r.id) Object.assign(a, {id: r.id, url: r.url, thumb: a.video ? (a.thumb || r.thumb) : r.thumb}); else bad++;
+        } catch (e) { bad++; }
       }
-      if (bad) toast('Některé fotky se na Disk nenahrály, uloží se zmenšené.');
+      if (bad) toast(d.att.some(a => a.video && !a.id) ? 'Video se na Disk nenahrálo (zkuste kratší). Zápis se uloží bez něj.' : 'Některé fotky se na Disk nenahrály, uloží se zmenšené.', 7000);
     }
-    const att = d.att.map(a => a.id ? {id: a.id, url: a.url, thumb: a.thumb} : {thumb: a.thumb});
+    const att = d.att.filter(a => !(a.video && !a.id)).map(a => a.id ? Object.assign({id: a.id, url: a.url, thumb: a.thumb}, a.video ? {video: true} : {}) : {thumb: a.thumb});
     const misto = d.misto || null, obj = misto && /^[A-G]/.test(misto.room || '') ? misto.room[0] : '';
     const base = {date: d.date || today, typ: d.typ, text, komu: d.komu.slice(), misto, obj, att};
     const at = new Date().toISOString();
+    let entry;
     if (d.edit) {
-      const e = D.diary.find(x => x.id === d.edit);
-      if (e) Object.assign(e, base, {editedAt: at, editedBy: m});
-      diaryDraft = null; commit(); toast(e ? 'Zápis upraven' : 'Zápis mezitím někdo smazal'); return;
+      entry = D.diary.find(x => x.id === d.edit);
+      if (entry) Object.assign(entry, base, {editedAt: at, editedBy: m});
+      if (!entry) { diaryDraft = null; dFull = false; commit(); toast('Zápis mezitím někdo smazal'); return; }
+    } else {
+      entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce}, base);
+      if (d.akce === 'ukol') {
+        const id = uid();
+        D.tasks.push({id, kind: 'simple', title: text, owner: d.ukKomu, team: [], start: today, end: d.ukEnd || '', done: 0, status: 'todo', note: '', obj, supplier: '', hmg: [], att, zapis: entry.id, createdAt: at, createdBy: m, updatedAt: at, updatedBy: m});
+        D.log.push({id: uid(), taskId: id, at, by: m, done: 0, status: 'todo', comment: 'Zadán úkol z denního zápisu' + (d.ukEnd ? ' do ' + fmtDY(d.ukEnd) : ''), title: text});
+        Object.assign(entry, {ukolId: id, ukKomu: d.ukKomu, ukEnd: d.ukEnd || ''});
+        if (!entry.komu.includes(d.ukKomu) && d.ukKomu !== m) entry.komu.push(d.ukKomu);
+      }
+      D.diary.push(entry);
     }
-    const entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce}, base);
-    if (d.akce === 'ukol') {
-      const id = uid();
-      D.tasks.push({id, kind: 'simple', title: text, owner: d.ukKomu, team: [], start: today, end: d.ukEnd || '', done: 0, status: 'todo', note: '', obj, supplier: '', hmg: [], att, zapis: entry.id, createdAt: at, createdBy: m, updatedAt: at, updatedBy: m});
-      D.log.push({id: uid(), taskId: id, at, by: m, done: 0, status: 'todo', comment: 'Zadán úkol z denního zápisu' + (d.ukEnd ? ' do ' + fmtDY(d.ukEnd) : ''), title: text});
-      Object.assign(entry, {ukolId: id, ukKomu: d.ukKomu, ukEnd: d.ukEnd || ''});
-      if (!entry.komu.includes(d.ukKomu) && d.ukKomu !== m) entry.komu.push(d.ukKomu);
-    }
-    D.diary.push(entry);
     store.set('hyb-me-owner', m);
-    diaryDraft = null; commit();
-    toast(d.akce === 'ukol' ? 'Zápis uložen, úkol zadán: ' + d.ukKomu : 'Zápis uložen');
+    const bylUkol = !d.edit && d.akce === 'ukol', ukKomu = d.ukKomu;
+    commit();   // zápis je uložený dřív, než se začne posílat – odeslání ho už neztratí
+    let zprava = '';
+    if (prij.n) { try { zprava = await dOdeslat(entry, prij, fotkyPdf, s => { const b = $('#j-save'); if (b) b.textContent = s; }); } catch (e) { zprava = 'Zápis je uložený, ale odeslání se nepodařilo: ' + ((e && e.message) || e); } }
+    diaryDraft = null; dAi = null; dFull = false; document.body.classList.remove('dfull-on'); commit();
+    toast((d.edit ? 'Zápis upraven' : bylUkol ? 'Zápis uložen, úkol zadán: ' + ukKomu : 'Zápis uložen') + '. ' + (zprava ? zprava + ' ' : '') + 'Najdete ho v záložce Zprávy, zápisy.', zprava ? 12000 : 6000);
+  }
+  // jeden formulář PDF pro všechny vybrané (kolegové, firmy, TDS…), e-mail každému zvlášť s odkazem na reakci
+  async function dOdeslat(e, prij, fotkyPdf, krok) {
+    const P = D.project || {}, stavba = P.name || 'Stavba', typ = dTyp(e.typ);
+    const ext = prij.ext.filter(x => x.email).map(x => ({jmeno: x.jmeno, email: x.email})), bezEm = prij.ext.filter(x => !x.email).map(x => x.jmeno);
+    const to = [...prij.kol, ...ext.map(x => x.jmeno)];
+    const cid = 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    const videa = (e.att || []).filter(a => a.video && a.url);
+    const it = {cid, at: new Date().toISOString(), day: e.date, by: me() || 'Constructo', to, ext, info: true, end: '', obj: e.obj || '', misto: mistoTxt(e.misto), druhL: 'Denní zápis',
+      text: (e.text || 'Foto ze stavby bez popisu') + (videa.length ? '\n\nVideo: ' + videa.map(a => a.url).join('\n') : ''), att: e.att || []};
+    const o = CXZprava.udaje(it, stavba, WEB_HOME + '/pc/');
+    o.zapis = true; o.fotky = fotkyPdf.slice(0, 12);
+    o.polozky = o.polozky.map(x => x[0] === 'Druh' ? ['Druh', 'Denní zápis – ' + typ.l] : x[0] === 'Datum a čas' ? ['Den zápisu', fmtDY(e.date)] : x);
+    krok('Připravuji PDF…');
+    const fm = await CXZprava.formular(o), pdfB = await CXZprava.b64(fm.pdf);
+    const nahraj = async (name, mime, data) => { const r = await call('POST', {key: SY.key, akce: 'foto', name, mime, den: e.date || today, data}); if (!r || !r.id) throw new Error((r && r.error) || 'Soubor se nepodařilo uložit na Disk.'); return r; };
+    krok('Ukládám PDF…'); const pr = await nahraj(o.cislo + '.pdf', 'application/pdf', pdfB), pdf = {id: pr.id, url: pr.url};
+    const z = await nzKolegum(it, o, [], fm, pdfB, pdf, nahraj, krok);
+    e.odeslano = {cid, at: new Date().toISOString(), komu: to, poslano: z.poslano, missing: [...z.missing, ...bezEm], chyby: z.chyby, pdf};
+    return `Odesláno: ${z.poslano.join(', ') || 'nikomu'}.${z.missing.length + bezEm.length ? ' Chybí e-mail: ' + [...z.missing, ...bezEm].join(', ') + '.' : ''}${z.chyby.length ? ' Neodešlo: ' + z.chyby.join('; ') : ''}`;
   }
   // text dne pro oficiální stavební deník (Buildary)
   function copyDay(dte) {
@@ -2448,12 +2698,13 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
-    $('.toolbar').hidden = ['zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
+    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
     $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní zápisy', hmg:'Harmonogram', zavady:'Zprávy, zápisy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
-    { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = S.view === 'diary' || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').innerHTML = 'Denní zápisy' + (n ? `<span class="cnt">${n}</span>` : ''); }
+    { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = (S.view === 'zavady' && ZF.co === 'zapisy') || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').textContent = 'Denní zápisy'; $('#v-zavady').innerHTML = 'Zprávy, zápisy' + (n ? `<span class="cnt" title="Nové denní zápisy od minula">${n}</span>` : ''); }
+    dkCilLista();
     $('#uk-src').hidden = $('#f-osoba').hidden = S.view !== 'list';
     { const fo = $('#f-osoba'), ppl = [...new Set([...owners(), ...D.tasks.filter(t => !t.info).flatMap(taskPeople)])].filter(n => n !== 'Bez přiřazení').sort((a, b) => a.localeCompare(b, 'cs'));
       const opts = '<option value="">Všechny osoby</option>' + ppl.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + '<option value="Bez přiřazení">Bez přiřazení</option>';
@@ -2466,6 +2717,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     $('#clear').hidden = !(S.owner || (hv ? S.hstat : S.fstat) || S.q || S.obj);
     { const t = hledejInfo(S.q), el = $('#q-hint'); if (el) { el.textContent = t ? 'Hledám i: ' + t : ''; el.hidden = !t; } }
     if (S.view !== 'diary' && $('#j-text')) dGrab();
+    if (S.view !== 'diary') document.body.classList.remove('dfull-on');
     S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'rozp' ? renderRozp() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
@@ -2475,7 +2727,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   /* ---------- záložka Úkoly: jednoduché úkoly navíc (popis, komu, do kdy, splněno / nesplněno) ---------- */
   // fotky z mobilní aplikace (uložené na Disku Google)
   const attThumb = a => a.thumb || (a.id ? `https://drive.google.com/thumbnail?id=${a.id}&sz=w800` : '');
-  const attHtml = (t, big) => (t.att || []).length ? `<div class="att${big ? ' big' : ''}">${t.att.map(a => `<a href="${esc(a.url || attThumb(a))}" target="_blank" rel="noopener" title="Otevřít fotku"><img src="${esc(attThumb(a))}" alt="Fotka ze stavby" loading="lazy" onerror="this.parentNode.classList.add('noimg')"></a>`).join('')}</div>` : '';
+  const attHtml = (t, big) => (t.att || []).length ? `<div class="att${big ? ' big' : ''}">${t.att.map(a => `<a href="${esc(a.url || attThumb(a))}" target="_blank" rel="noopener" title="${a.video ? 'Přehrát video' : 'Otevřít fotku'}"${a.video ? ' class="vid"' : ''}><img src="${esc(attThumb(a))}" alt="Fotka ze stavby" loading="lazy" onerror="this.parentNode.classList.add('noimg')"></a>`).join('')}</div>` : '';
   function simpleRow(t) {
     if (t.info) return `<div class="srow info" data-s="${esc(t.id)}">
       <div class="who"><span class="av" style="background:${pcol(t.createdBy || '?')}">${esc(initials(t.createdBy || '?'))}</span><div><b>${esc(t.createdBy || '—')}</b><small>${t.createdAt ? new Date(t.createdAt).toLocaleString('cs-CZ', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}) : fmtD(t.start)}${t.from === 'mobil' ? ' · z telefonu' : ''}</small></div></div>
@@ -3193,16 +3445,18 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   function dokPripoj() {
     if (dokHost || !window.CXDok) return;
     dokHost = {
-      seznam: () => D.dokumenty || [],
+      seznam: () => (D.dokumenty || []).filter(r => !/^s[tp]~/.test(String(r.id))),  // st~/sp~ = seznam staveb, ne dokumenty
       upsert: recs => { const m = new Map((D.dokumenty || []).map(r => [r.id, r])); recs.forEach(r => m.set(r.id, r)); D.dokumenty = [...m.values()]; commit(); },
       smaz: ids => { const x = new Set(ids); D.dokumenty = (D.dokumenty || []).filter(r => !x.has(r.id)); commit(); },
       kdo: () => me(),
-      pripojeno: () => !!SY && STAVBA === DEF_STAVBA,
+      pripojeno: () => !!SY,
       ro: () => RO(),
       toast: m => toast(m),
       aktualizujSkript: () => window.CXSkriptSamo ? window.CXSkriptSamo(true) : Promise.resolve(null),
       // nahrávání a stahování po dílech trvá déle než běžná synchronizace, proto vlastní volání s delším limitem
       volej: async body => {
+        // 4.63: soubory dalších staveb do vlastní složky na Disku (Stavby / název stavby / …)
+        if (STAVBA !== DEF_STAVBA && body && Array.isArray(body.cesta) && /^dok_(maly|start)$/.test(body.akce)) body = Object.assign({}, body, {cesta: ['Stavby', String(D.project.name || STAVBA).slice(0, 100)].concat(body.cesta)});
         const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 180000);
         try {
           const r = await fetch(SY.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key: SY.key}, body)), signal: ctl.signal, redirect: 'follow'});
@@ -3211,7 +3465,8 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         } catch (e) { throw new Error(e.name === 'AbortError' ? 'Google neodpověděl včas.' : e.message || 'Bez připojení.'); }
         finally { clearTimeout(tm); }
       },
-      zprava: dataUrl => { if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu. Výřez si zatím zkopírujte nebo stáhněte.'); return; } NZ.fotky = NZ.fotky.concat([dataUrl]).slice(-12); novaZprava(); toast('Výřez je ve zprávě mezi fotkami. Vyberte komu a napište text.'); },
+      get zpravaText() { return dokCil === 'zapis' ? '✚ Vložit do denního zápisu' : undefined; },
+      zprava: dataUrl => { if (dokCil === 'zapis') { vlozDoZapisu(dataUrl); return; } if (!SY) { toast('Zprávu jde poslat jen s připojením ke Googlu. Výřez si zatím zkopírujte nebo stáhněte.'); return; } NZ.fotky = NZ.fotky.concat([dataUrl]).slice(-12); novaZprava(); toast('Výřez je ve zprávě mezi fotkami. Vyberte komu a napište text.'); },
     };
     CXDok.pripoj(dokHost);
   }
@@ -3442,7 +3697,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   }
 
   /* ---------- záložka Zprávy pro firmy: všechny zprávy (závady, reklamace, úklid…) poslané firmám z mobilu (D.zavady) ---------- */
-  const ZF = {firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
+  const ZF = {co: store.get('hyb-zco') === 'zapisy' ? 'zapisy' : 'zpravy', firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
   /* 4.36: zprávy v kolektivu = úkoly a Na vědomí poslané z mobilu (úkoly se stejnou skupinou grp). Každá dostane PDF a e-mail; výsledek je v t.zprava. */
   const KOL = 'V kolektivu';
   function kolZpravy() {
@@ -3552,7 +3807,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       // 4.60: výřez z Dokumentace, vložení ze schránky (Ctrl+V), přetažení souboru, PDF → první strana
       const tx = $('#nz-text'); if (tx) tx.oninput = () => { NZ.text = tx.value; };
       const sc = $('#nz-sch'); if (sc) sc.onclick = () => { const x = CXDok.schranka(); if (!x) return; if (NZ.fotky.includes(x.dataUrl)) { toast('Tento výřez už ve zprávě je.'); return; } NZ.fotky.push(x.dataUrl); prekresli(); toast('Výřez vložen do zprávy.'); };
-      const vy = $('#nz-vyrez'); if (vy) vy.onclick = () => { ulozPole(); const c = $('#m-cancel'); if (c) c.click(); S.view = 'dok'; store.set('hyb-view', 'dok'); render(); toast('Otevřete výkres, klikněte Výřez a označte místo. Pak dejte „Poslat ve zprávě“ – vrátíte se do této zprávy.'); };
+      const vy = $('#nz-vyrez'); if (vy) vy.onclick = () => { dokCil = null; ulozPole(); const c = $('#m-cancel'); if (c) c.click(); S.view = 'dok'; store.set('hyb-view', 'dok'); render(); toast('Otevřete výkres, klikněte Výřez a označte místo. Pak dejte „Poslat ve zprávě“ – vrátíte se do této zprávy.'); };
       ov.onpaste = e => { const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter(f => /^image\/|pdf/.test(f.type)); if (!fs.length) return; e.preventDefault(); nzPridej(fs); };
       const fb = $('#nz-fotky'); if (fb) { fb.ondragover = e => { e.preventDefault(); fb.classList.add('drop'); }; fb.ondragleave = () => fb.classList.remove('drop'); fb.ondrop = e => { e.preventDefault(); fb.classList.remove('drop'); nzPridej([...e.dataTransfer.files]); }; }
     }
@@ -3598,16 +3853,17 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   async function nzKolegum(it, o, fotky, fm, pdfB, pdf, nahraj, krok) {
     o = Object.assign({}, o, {reakce: await CXZprava.reakceUrl(WEB_HOME, SY.key, it.cid)});   // 4.49: tlačítko Beru na vědomí / Odpovědět bez kódu
     const att = [], P = D.project || {}, stavba = P.name || 'Stavba', obr = {logo: fm.logo}; fm.fotky.forEach((b, i) => { if (b) obr['f' + i] = b; });
-    for (let i = 0; i < fotky.length; i++) { krok(`Ukládám fotky ${i + 1}/${fotky.length}…`); const r = await nahraj(it.cid + '-' + (i + 1) + '.jpg', 'image/jpeg', fotky[i].split(',')[1]); att.push({id: r.id, url: r.url, thumb: r.thumb, name: it.cid + '-' + (i + 1) + '.jpg'}); }
-    const base = {kind: 'simple', title: it.text, start: today, note: '', obj: it.obj, supplier: '', hmg: [], createdAt: it.at, createdBy: it.by, updatedAt: it.at, updatedBy: it.by, from: 'web', grp: it.cid, att};
-    const nove = it.info ? [Object.assign({}, base, {id: 'm' + it.cid + '-0', owner: it.to[0], team: it.to.slice(1), end: '', done: 100, status: 'done', info: true, doneAt: it.at, doneBy: ''})]
-      : it.to.map((n, i) => Object.assign({}, base, {id: 'm' + it.cid + '-' + i, owner: n, team: [], end: it.end || '', done: 0, status: 'todo'}));
-    const em = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
+    if (it.att) att.push(...it.att); else for (let i = 0; i < fotky.length; i++) { krok(`Ukládám fotky ${i + 1}/${fotky.length}…`); const r = await nahraj(it.cid + '-' + (i + 1) + '.jpg', 'image/jpeg', fotky[i].split(',')[1]); att.push({id: r.id, url: r.url, thumb: r.thumb, name: it.cid + '-' + (i + 1) + '.jpg'}); }
+    const base = {kind: 'simple', title: it.text, start: today, note: '', obj: it.obj, supplier: it.supplier || supZText(it.text), hmg: [], createdAt: it.at, createdBy: it.by, updatedAt: it.at, updatedBy: it.by, from: 'web', grp: it.cid, att};
+    const extE = new Map((it.ext || []).map(x => [x.jmeno, x.email])), lidi = it.to.filter(n => !extE.has(n));   // 4.66: firmy a TDS dostanou e-mail, ale úkol se zakládá jen kolegům
+    const nove = it.info ? [Object.assign({}, base, {id: 'm' + it.cid + '-0', owner: lidi[0] || it.by, team: lidi.slice(1), end: '', done: 100, status: 'done', info: true, doneAt: it.at, doneBy: ''})]
+      : lidi.map((n, i) => Object.assign({}, base, {id: 'm' + it.cid + '-' + i, owner: n, team: [], end: it.end || '', done: 0, status: 'todo'}));
+    const em = n => extE.get(n) || String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
     const komu = it.to.filter(n => em(n)), missing = it.to.filter(n => !em(n)), poslano = [], chyby = [];
-    const html = CXZprava.html(o, fm.fotky), predmet = `Constructo · ${stavba} – ${it.info ? 'Na vědomí' : 'Úkol'} od ${it.by}: ${o.predmet}`;
+    const html = CXZprava.html(o, fm.fotky), predmet = `Constructo · ${stavba} – ${it.druhL || (it.info ? 'Na vědomí' : 'Úkol')} od ${it.by}: ${o.predmet}`;
     for (const n of komu) {
       krok(`Posílám ${poslano.length + 1}/${komu.length}…`);
-      let r; try { r = await call('POST', {key: SY.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase(), komu: em(n), predmet, html, text: it.text, pdf: pdfB, pdfJmeno: o.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { r = {error: (e && e.message) || String(e)}; }
+      let r; try { r = await call('POST', {key: SY.key, akce: 'zavada', cid: 'zpr-' + it.cid + '-' + em(n).toLowerCase().slice(0, 80), komu: em(n), predmet, html, text: it.text, pdf: pdfB, pdfJmeno: o.cislo + '.pdf', obr, od: 'Constructo'}); } catch (e) { r = {error: (e && e.message) || String(e)}; }
       if (r && r.ok) poslano.push(n); else chyby.push(n + ': ' + ((r && r.error) || 'neznámá chyba'));
     }
     const zp = {at: new Date().toISOString(), komu: it.to, sent: poslano.length, poslano, missing, error: chyby.join('; '), pdf};
@@ -3629,10 +3885,12 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const z = await nzKolegum(x.it, x.o, NZ.fotky, fm, pdfB, pdf, nahraj, krok), it = x.it;
         nzHotovo(`${it.info ? 'Zpráva' : 'Úkol'} odeslán${it.info ? 'a' : ''}: ${z.poslano.join(', ') || 'nikomu'}.${z.missing.length ? ' Chybí e-mail u: ' + z.missing.join(', ') + '.' : ''}${z.chyby.length ? ' Neodešlo: ' + z.chyby.join('; ') : ''}`);
       } else {
-        let foto = null;
-        if (NZ.fotky[0]) { krok('Ukládám fotku…'); const r = await nahraj(x.cislo + '-foto.jpg', 'image/jpeg', NZ.fotky[0].split(',')[1]); foto = {id: r.id, url: r.url, thumb: r.thumb}; }
+        // 4.62: na Disk se uloží VŠECHNY fotky a výřezy (dřív jen první – ostatní byly jen v PDF)
+        let foto = null; const fotky = [];
+        for (let i = 0; i < NZ.fotky.length; i++) { krok(`Ukládám fotku ${i + 1} z ${NZ.fotky.length}…`); const r = await nahraj(x.cislo + '-foto' + (i ? '-' + (i + 1) : '') + '.jpg', 'image/jpeg', NZ.fotky[i].split(',')[1]); fotky.push({id: r.id, url: r.url, thumb: r.thumb || ''}); }
+        if (fotky[0]) foto = fotky[0];
         const rec = {id: x.id, cislo: x.cislo, at: new Date().toISOString(), by: me() || '', typ: x.typ[1], firma: x.f.firma, email: x.em.join(', '), patro: '', room: NZ.misto.trim(), komu: firmaKomu(x.f),
-          predmet: x.o.predmet, popis: NZ.text.trim(), text: x.o.text, via: ['mail'], server: true, tok: x.tok, odEmail: mujEm, stav: 'odeslano', pdf, foto, z: 'web'};
+          predmet: x.o.predmet, popis: NZ.text.trim(), text: x.o.text, via: ['mail'], server: true, tok: x.tok, odEmail: mujEm, stav: 'odeslano', pdf, foto, z: 'web'}; if (fotky.length > 1) rec.fotky = fotky;
         const kopie = [...NZ.kopie].filter(n => n !== me()).sort((a, b) => a.localeCompare(b, 'cs')); if (kopie.length) rec.kopie = kopie;
         D.zavady = (D.zavady || []).concat([rec]); commit();   // uložit dřív než e-mail: firma odpovídá přes odkaz, který hledá tuto zprávu
         krok('Posílám firmě…');
@@ -3642,7 +3900,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         // 4.47: kopie kolegům „na vědomí“ – stejné PDF jako firma, ale bez tlačítka pro odpověď firmy; uvidí ji i ve Zprávách
         let kp = '';
         if (kopie.length) {
-          const it = {cid: 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at: new Date().toISOString(), day: today, by: me() || 'Constructo', to: kopie, info: true, end: '', obj: '',
+          const it = {cid: 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at: new Date().toISOString(), day: today, by: me() || 'Constructo', to: kopie, info: true, end: '', obj: '', supplier: x.f.firma,
             text: `Závada poslaná firmě ${x.f.firma}: ${x.o.predmet}\n\n${x.o.text}`};
           try { const z = await nzKolegum(it, Object.assign({}, x.o, {odkaz: ''}), NZ.fotky, fm, pdfB, pdf, nahraj, krok);
             kp = ` Na vědomí: ${z.poslano.join(', ') || 'nikomu'}.${z.missing.length ? ' Chybí e-mail u: ' + z.missing.join(', ') + '.' : ''}${z.chyby.length ? ' Kopie neodešla: ' + z.chyby.join('; ') : ''}`;
@@ -3692,11 +3950,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     return a.sort((x, y) => (ZF.sort === 'firma' ? (x.kol ? 1 : 0) - (y.kol ? 1 : 0) : 0) || String(x[k] || '~').localeCompare(String(y[k] || '~'), 'cs') || byDate(x, y));
   }
   function renderZavady() {
+    const nZap = D.diary.filter(isZapis).length, nZpr = ZAV().length + kolZpravy().length;
+    const coHtml = `<div class="zv-co no-print" role="group" aria-label="Archiv"><button type="button" data-zco="zpravy" aria-pressed="${ZF.co !== 'zapisy'}">Zprávy firmám a kolegům<span class="cnt">${nZpr}</span></button><button type="button" data-zco="zapisy" aria-pressed="${ZF.co === 'zapisy'}">Denní zápisy<span class="cnt">${nZap}</span></button></div>`;
+    if (ZF.co === 'zapisy') return renderZapisyArchiv($('#view'), coHtml);
     const v = $('#view'), all = ZAV().concat(kolZpravy()), rows = zavadyVyber(), admin = isAdmin(), firmRows = rows.filter(z => !z.kol);
     const firmyN = [...new Map([...firmyList().map(f => f.firma), ...all.map(z => z.firma)].filter(Boolean).map(n => [zFirmaKey(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(z => z.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const opt = (list, val, all0) => `<option value="">${all0}</option>` + list.map(n => `<option value="${esc(n)}"${val && foldName(val) === foldName(n) ? ' selected' : ''}>${esc(n)}</option>`).join('');
-    let html = `<div class="sl"><div class="sl-top zv-top">
+    let html = `<div class="sl">${coHtml}<div class="sl-top zv-top">
       <select id="zv-firma" aria-label="Firma">${opt(firmyN, ZF.firma, 'Všechny firmy')}</select>
       <select id="zv-osoba" aria-label="Kdo poslal">${opt(osoby, ZF.osoba, 'Všichni, kdo posílali')}</select>
       <select id="zv-stav" aria-label="Stav">${[['', 'Všechny stavy'], ['otevrene', 'Neuzavřené'], ...Object.entries(ZSTAV)].map(([k, l]) => `<option value="${k}"${ZF.stav === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
@@ -3728,7 +3989,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         }
         const th = zThumb(z), pdf = zPdfUrl(z);
         html += `<div class="zv-row" data-zv="${esc(z.id)}">
-          ${zvTh(z.foto)}
+          ${(n => n > 1 ? zvTh(z.foto).replace('<div class="zv-th', `<div title="${n} fotek – všechny v Detailu" class="zv-pocet-${n} zv-th`).replace(/<\/div>$/, `<span class="zv-n">${n}</span></div>`) : zvTh(z.foto))((z.fotky || []).length)}
           <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ || 'Závada')}</span><span class="pill zv-st zv-${zStav(z)}">${ZSTAV[zStav(z)]}</span> ${esc(zPopis(z) || 'bez popisu')}</div>
             <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${zMisto(z) ? `<span>${esc(zMisto(z))}</span>` : ''}${z.cislo ? `<span class="zv-c">${esc(z.cislo)}</span>` : ''}${zVia(z) ? `<span>poslané ${esc(zVia(z))}</span>` : ''}</div>${(o => o ? `<div class="zv-odp"><b>${esc(ZCO[o.stav] || o.stav)}</b> · ${esc(o.jmeno || '')} · ${esc(zKdy(o.at))}${o.text ? ': ' + esc(o.text.length > 140 ? o.text.slice(0, 140) + '…' : o.text) : ''}${(o.fotky || []).length ? ` · ${o.fotky.length} ${o.fotky.length === 1 ? 'fotka' : o.fotky.length < 5 ? 'fotky' : 'fotek'}` : ''}</div>` : '')(zFirmaOdp(z))}</div>
           <div><b>${esc(z.firma || '–')}</b>${zKomu(z) ? `<small class="zv-komu">${esc(zKomu(z))}</small>` : ''}${z.email ? `<small>${esc(z.email)}</small>` : ''}</div>
@@ -3738,6 +3999,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     }
     v.innerHTML = html + '</div>';
     const nzb = $('#zv-nova'); if (nzb) nzb.onclick = novaZprava;
+    v.querySelectorAll('[data-zco]').forEach(b => b.onclick = () => { ZF.co = b.dataset.zco; store.set('hyb-zco', ZF.co); render(); });
     const up = $('#zv-upd'); if (up) up.onclick = () => { ZF.ver = undefined; scriptUpdateDialog(); };
     $('#zv-firma').onchange = e => { ZF.firma = e.target.value; renderZavady(); };
     $('#zv-osoba').onchange = e => { ZF.osoba = e.target.value; renderZavady(); };
@@ -3794,6 +4056,25 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       const c = $('#m-cancel'); if (c) c.click(); if (S.view === 'zavady') renderZavady();
     } finally { btn.disabled = false; btn.textContent = t0; }
   }
+  // 4.62: všechny fotky zprávy v Detailu; u starších zpráv (uložená jen 1. fotka) se fotky ukážou z formuláře PDF
+  function zFotkyHtml(z, th) {
+    const fs = (z.fotky || []).filter(Boolean);
+    if (fs.length > 1) return `<div class="zv-gal">${fs.map((f, i) => { const id = fotoId(f); return `<a href="${esc(f.url || (id ? 'https://drive.google.com/file/d/' + id + '/view' : '#'))}" target="_blank" rel="noopener" title="Fotka ${i + 1} – otevřít velkou"><img src="${esc(id ? 'https://lh3.googleusercontent.com/d/' + id + '=w600' : f.thumb)}" data-alt="${esc(f.thumb || '')}" alt="Fotka ${i + 1}" loading="lazy" class="zv-gi"></a>`; }).join('')}</div><p class="hcap" style="margin:0">${fs.length} ${fs.length < 5 ? 'fotky' : 'fotek'} · kliknutím otevřete velkou</p>`;
+    return `${th ? `<img src="${esc(th)}" alt="" class="zv-gi">` : ''}${z.pdf && z.pdf.id ? '<div id="zv-pdff"><button type="button" class="btn" id="zv-pdfb">🖼 Ukázat všechny fotky ze zprávy (z formuláře PDF)</button></div>' : ''}`;
+  }
+  function zFotkyNapoj(z) {
+    document.querySelectorAll('img.zv-gi').forEach(i => { const chyba = () => { if (i.dataset.alt && i.src !== i.dataset.alt) { i.src = i.dataset.alt; i.dataset.alt = ''; } else i.remove(); }; i.addEventListener('error', chyba); if (i.complete && !i.naturalWidth && i.getAttribute('src')) chyba(); });
+    const b = $('#zv-pdfb'); if (!b) return;
+    b.onclick = async () => {
+      const box = $('#zv-pdff'); if (!window.CXDok || !CXDok.pdfStrany) { toast('Obnovte stránku (F5).'); return; }
+      b.disabled = true; b.textContent = 'Načítám formulář PDF…';
+      try {
+        dokPripoj();
+        const strany = await CXDok.pdfStrany({id: 'zv-' + z.id, gid: z.pdf.id, nazev: (z.cislo || 'zprava') + '.pdf', mime: 'application/pdf'}, 1100);
+        if (box && box.isConnected) box.innerHTML = `<div class="zv-gal pdf">${strany.map((u, i) => `<a href="${u}" target="_blank" rel="noopener" title="Strana ${i + 1}"><img src="${u}" alt="Strana ${i + 1} formuláře"></a>`).join('')}</div><p class="hcap" style="margin:0">Strany formuláře PDF, který dostala firma (všechny fotky jsou v něm).</p>`;
+      } catch (e) { b.disabled = false; b.textContent = '🖼 Ukázat všechny fotky ze zprávy (z formuláře PDF)'; toast('Formulář se nepodařilo načíst: ' + (e.message || e)); }
+    };
+  }
   function zavadaDetail(id) {
     const z = ZAV().find(x => x.id === id); if (!z) return;
     const th = zThumb(z), pdf = zPdfUrl(z), st = zStav(z), ro = RO(), odk = zOdkaz(z);
@@ -3801,7 +4082,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       ${o.text ? `<p>${esc(o.text)}</p>` : ''}${(o.fotky || []).length ? `<div class="zv-of">${o.fotky.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener"><img src="${esc(f.thumb || f.url)}" alt="Fotka od firmy" onerror="this.remove()"></a>`).join('')}</div>` : ''}</div>`).join('');
     confirmModal(`${z.typ || 'Zpráva'}${z.cislo ? ' · ' + z.cislo : ''}`, `<div class="zv-det">
       <p style="margin:0"><span class="pill zv-st zv-${st}">${ZSTAV[st]}</span></p>
-      ${th ? `<img src="${esc(th)}" alt="" onerror="this.remove()">` : ''}
+      ${zFotkyHtml(z, th)}
       <p class="hcap" style="margin:0">${esc(zDatum(z))} ${esc(zCas(z))} · poslal ${esc(z.by || '–')}${zVia(z) ? ' · poslané ' + esc(zVia(z)) : ''}</p>
       <p style="margin:0"><b>${esc(z.firma || 'Bez firmy')}</b>${zKomu(z) ? ' · ' + esc(zKomu(z)) : ''}${z.email ? '<br>' + esc(z.email) : ''}${zMisto(z) ? '<br>' + esc(zMisto(z)) : ''}${(z.kopie || []).length ? '<br>Na vědomí: ' + esc(z.kopie.join(', ')) : ''}</p>
       ${z.text ? `<div class="zv-txt">${esc(z.text)}</div>` : ''}
@@ -3820,6 +4101,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       const o = {at: new Date().toISOString(), jmeno: me() || 'Stavba', nase: true, stav, text};
       r.odpovedi = (r.odpovedi || []).concat([o]); r.stav = stav; commit(); return r;
     };
+    zFotkyNapoj(z);
     const ob = $('#zv-odkaz'); if (ob) ob.onclick = async () => { try { await navigator.clipboard.writeText(odk); toast('Odkaz je zkopírovaný. Můžete ho firmě poslat třeba WhatsAppem.'); } catch (e) { prompt('Odkaz pro firmu:', odk); } };
     const kb = $('#zv-kopie'); if (kb) kb.onclick = () => zKopieKolegum(id, [...document.querySelectorAll('#overlay [data-zkk]:checked')].map(c => c.dataset.zkk), kb);
     const zb = $('#zv-zav'); if (zb) zb.onclick = () => { zapis('uzavreno', $('#zv-pozn').value.trim()); zavri(); toast('Zpráva uzavřena.'); };
@@ -4053,14 +4335,10 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         const bad = cc.find(c => c.email && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(c.email)); if (bad) { toast('E-mail nevypadá správně: ' + bad.email); return 'keep'; }
         if (!cc.some(c => c.role === 'spravce')) { toast('Aspoň jeden člověk musí mít roli Správce stavby.'); return 'keep'; }
         vals.roleStavby = rr; vals.clenove = cc;
-        if (nova) {
-          const id = 's' + uid(), a = stavbyList();
-          a.push({id, name: vals.name, project: vals}); saveStavby(a); store.set('hyb-stavba', id);
-          toast('Stavba založena: ' + vals.name); setTimeout(() => location.reload(), 400); return;
-        }
         Object.assign(D.project, vals);
-        const a = stavbyList(); const r = a.find(x => x.id === STAVBA); if (r) { r.name = vals.name; saveStavby(a); } else { a.push({id: STAVBA, name: vals.name}); saveStavby(a); }
         commit(); toast('Údaje o stavbě uloženy');
+        // 4.63: název, adresa a stav i do společného seznamu staveb (vidí ho Deník i kolegové)
+        if (SY && !RO()) { const z = {}; ['name', 'ulice', 'mesto', 'psc', 'stat', 'popis', 'zacatek', 'konec', 'investor', 'company', 'stav'].forEach(k => { z[k] = vals[k] || ''; }); CXS.uprav(STAVBA, z).catch(e => toast('Seznam staveb se neaktualizoval: ' + e.message)); }
       });
     document.querySelector('#overlay .modal').classList.add('wide');
     // tabulky rolí a lidí: změny se průběžně sbírají, aby se nic neztratilo při přidání řádku
@@ -4080,30 +4358,17 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
     bind();
     setTimeout(() => { const n = $('#sv-name'); if (n && !n.value) n.focus(); }, 30);
   }
-  // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou
+  // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou (4.63: stejná nabídka i formulář jako v Deníku – pc/stavby.js)
+  async function ulozPredPrepnutim() {
+    persist();
+    if (STAVBA !== DEF_STAVBA) await CXS.ulozMistne(STAVBA, D).catch(() => {});
+    // neodeslané změny zkusit poslat hned (max. 15 s); když to nejde, odešlou se na pozadí později
+    if (SY && sync.dirty) await Promise.race([new Promise(res => { if (sync.busy) sync.onDone = res; else { syncNow().then(res, res); } }), new Promise(res => setTimeout(res, 15000))]);
+  }
+  const prepniNa = sid => CXS.prepni(sid, {ulozAktualni: ulozPredPrepnutim});
   function stavbyMenu() {
-    const old = document.querySelector('.stv-pop'); if (old) { old.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); return; }
-    const a = stavbyList();
-    if (!a.some(x => x.id === STAVBA)) a.push({id: STAVBA, name: D.project.name || 'Stavba'});
-    const cur = a.find(x => x.id === STAVBA); if (cur && D.project.name && cur.name !== D.project.name) { cur.name = D.project.name; saveStavby(a); }
-    const pop = document.createElement('div'); pop.className = 'stv-pop'; pop.setAttribute('role', 'menu');
-    pop.innerHTML = `<div class="cap">Stavby</div>${a.map(x => `<button type="button" role="menuitem" data-stv="${esc(x.id)}" class="${x.id === STAVBA ? 'on' : ''}">${esc(x.name || 'Stavba')}<small>${x.id === STAVBA ? 'otevřená' : x.id === DEF_STAVBA ? 'sdílená s kolegy' : 'zatím jen v tomto počítači'}</small></button>`).join('')}
-      <hr><button type="button" role="menuitem" class="new" data-act="nova">+ Nová stavba</button><button type="button" role="menuitem" data-act="udaje">Údaje o stavbě, role a lidé</button>`;
-    document.body.appendChild(pop);
-    const r = $('#side-stavba').getBoundingClientRect();
-    pop.style.left = Math.max(8, r.left) + 'px'; pop.style.top = Math.min(r.bottom + 6, window.innerHeight - 120) + 'px';
-    $('#side-stavba').setAttribute('aria-expanded', 'true');
-    const zavri = () => { pop.remove(); $('#side-stavba').setAttribute('aria-expanded', 'false'); document.removeEventListener('mousedown', venku, true); document.removeEventListener('keydown', esc_); };
-    const venku = e => { if (!pop.contains(e.target) && !$('#side-stavba').contains(e.target)) zavri(); };
-    const esc_ = e => { if (e.key === 'Escape') zavri(); };
-    setTimeout(() => { document.addEventListener('mousedown', venku, true); document.addEventListener('keydown', esc_); }, 0);
-    pop.querySelectorAll('[data-stv]').forEach(b => b.onclick = () => {
-      const id = b.dataset.stv; zavri(); if (id === STAVBA) return;
-      store.set('hyb-stavba', id); toast('Otevírám stavbu…'); setTimeout(() => location.reload(), 200);
-    });
-    pop.querySelector('[data-act=nova]').onclick = () => { zavri(); stavbaForm(true); };
-    pop.querySelector('[data-act=udaje]').onclick = () => { zavri(); stavbaForm(false); };
-    const f0 = pop.querySelector('button.on') || pop.querySelector('button'); if (f0) f0.focus();
+    CXS.menu($('#side-stavba'), {aktualni: STAVBA, naVyber: prepniNa, naUdaje: () => stavbaForm(false),
+      naNovou: () => CXS.formular({ja: me(), zhotovitel: D.project.company || '', naHotovo: sid => { toast('Stavba založena'); prepniNa(sid); }})});
   }
   $('#side-stavba').onclick = stavbyMenu;
   // z Deníku: „Upravit v Managementu“ otevře rovnou Údaje o stavbě
@@ -4358,14 +4623,14 @@ thead{display:table-header-group}tr{break-inside:avoid}
   // pozvaný „jen nahlíží“ má od skriptu klíč jen pro čtení: nic se neukládá ani neodesílá, server by změny stejně odmítl
   function RO() { try { if (SY && store.get('hyb-ro') === '1') return true; const n = $('#me') && $('#me').value.trim(), p = n && D && D.project && D.project.people && D.project.people[n]; return !!(p && p.access === 'nahlizi' && !(D.project.admins || ['Luboš Kozák']).includes(n)); } catch (e) { return false; } }
   if (!SY) { try { const c = JSON.parse(document.getElementById('sync-config').textContent || '{}'); if (c && c.url && c.key) { SY = {url: c.url, key: c.key}; store.set('hyb-sync', JSON.stringify(SY)); } } catch (e) {} }  // uložit, aby fungovaly i další verze souboru bez vloženého připojení
-  if (STAVBA !== DEF_STAVBA) SY = null;  // 4.33: další stavby zatím jen v tomto počítači – nikdy je neposílat do sdílených dat Hybernské
-  const revKey = () => 'hyb-sync-rev:' + (SY ? SY.url : '');
-  const sync = {rev: 0, busy: false, dirty: store.get('hyb-sync-dirty') === '1', state: 'idle', last: null, err: ''};
-  sync.rev = Number(store.get(revKey())) || 0;
+  // 4.63: další stavby se sdílí také – ale vlastní cestou (CXStavby.stahni/posli), nikdy ne do dat Hybernské
+  const revKey = () => STAVBA === DEF_STAVBA ? 'hyb-sync-rev:' + (SY ? SY.url : '') : 'cx-stavba-rev:' + STAVBA;
+  const sync = {rev: 0, busy: false, dirty: store.get(DIRTY_KEY) === '1', state: 'idle', last: null, err: ''};
+  sync.rev = STAVBA === DEF_STAVBA ? Number(store.get(revKey())) || 0 : store.get(revKey());
   let pushT = null;
   function markDirty() {
-    if (!SY || RO() || STAVBA !== DEF_STAVBA) return;
-    sync.dirty = true; store.set('hyb-sync-dirty', '1');
+    if (!SY || RO()) return;
+    sync.dirty = true; store.set(DIRTY_KEY, '1');
     clearTimeout(pushT); pushT = setTimeout(syncNow, 800);
   }
   function softRender() { if ($('#overlay').hidden && S.hmgEdit == null && !S.quickId) render(); else S.pendingRender = true; }
@@ -4393,11 +4658,12 @@ thead{display:table-header-group}tr{break-inside:avoid}
     finally { clearTimeout(tm); }
   }
   async function syncNow() {
-    if (!SY || sync.busy || STAVBA !== DEF_STAVBA) return;
+    if (!SY || sync.busy) return;
+    if (STAVBA !== DEF_STAVBA) return syncStavba();
     sync.busy = true; renderSync();
     const pushing = sync.dirty;
     try {
-      if (pushing) { sync.dirty = false; store.set('hyb-sync-dirty', '0'); }
+      if (pushing) { sync.dirty = false; store.set(DIRTY_KEY, '0'); }
       if (pushing) {
         // 4.34: před odesláním stáhnout novější data a sloučit (jinak by starší kopie údajů stavby přepsala novější)
         const g = await call('GET');
@@ -4416,8 +4682,9 @@ thead{display:table-header-group}tr{break-inside:avoid}
       sync.rev = Number(res.rev) || 0; store.set(revKey(), String(sync.rev));
       sync.state = 'ok'; sync.err = ''; sync.last = new Date();
       setTimeout(uklidZkousky, 0);
+      if (res.data || pushing) try { CXS.prevezmi(D, sync.rev); } catch (e) {}  // 4.63: seznam staveb jede v datech Hybernské
     } catch (e) {
-      if (pushing) { sync.dirty = true; store.set('hyb-sync-dirty', '1'); }
+      if (pushing) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
       sync.state = 'err'; sync.err = e.message || 'Bez spojení.';
     } finally {
       sync.busy = false; renderSync();
@@ -4425,8 +4692,75 @@ thead{display:table-header-group}tr{break-inside:avoid}
       if (sync.onDone) { const f = sync.onDone; sync.onDone = null; f(); }
     }
   }
+  // 4.63: synchronizace další stavby (ne Hybernské) – stáhne/pošle jen data této stavby
+  function chybiNaServeru(L, R) {
+    for (const c of Object.keys(COLLS)) {
+      const k = COLLS[c], rm = new Map((R[c] || []).map(r => [k(r), r._ts || 0])), rt = (R.tomb || {})[c] || {};
+      for (const r of L[c] || []) { const key = k(r), t = r._ts || 0; if (!(rm.has(key) ? rm.get(key) >= t : rt[key] >= t)) return true; }
+      const lt = (L.tomb || {})[c] || {}; for (const key of Object.keys(lt)) if (rm.has(key) && rm.get(key) <= lt[key]) return true;
+    }
+    return ['project', 'hmgInfo'].some(f => ((L[f] || {})._ts || 0) > ((R[f] || {})._ts || 0));
+  }
+  async function syncStavba() {
+    sync.busy = true; renderSync();
+    const pushing = sync.dirty, okKlic = 'cx-stavba-ok:' + STAVBA;
+    try {
+      if (pushing) { sync.dirty = false; store.set(DIRTY_KEY, '0'); }
+      let r = !pushing || store.get(okKlic) !== '1' ? await CXS.stahni(STAVBA, pushing ? '' : sync.rev) : {same: true};
+      const prevezmi = data => {
+        if (!data) return false;
+        let base = D;
+        // tento počítač stavbu ještě nikdy nestáhl: údaje o stavbě vzít ze serveru (prázdná místní kopie je nesmí přepsat)
+        if (store.get(okKlic) !== '1') base = Object.assign({}, D, {project: data.project || D.project, hmgInfo: data.hmgInfo || D.hmgInfo});
+        const before = JSON.stringify(D);
+        const m = normalize(mergeData(base, rzRozbal(data)));
+        m.savedAt = D.savedAt; m.lastBackup = D.lastBackup;
+        store.set(okKlic, '1');
+        // starší skript: při souběhu dvou počítačů mohl server přijít o naši změnu – když máme něco, co na serveru chybí, poslat znovu
+        if (!RO() && chybiNaServeru(m, rzRozbal(data))) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
+        if (JSON.stringify(m) === before) return false;
+        D = m; snap = takeSnap(D); persist(); return true;
+      };
+      let zmena = r.same ? false : prevezmi(r.data);
+      if (r.prazdna) store.set(okKlic, '1');
+      if (pushing && !RO()) { r = await CXS.posli(STAVBA, rzZabal(D)); zmena = prevezmi(r.data) || zmena; }
+      sync.rev = r.rev || ''; store.set(revKey(), sync.rev);
+      sync.state = 'ok'; sync.err = ''; sync.last = new Date();
+      if (zmena && !fixAliases()) softRender();
+    } catch (e) {
+      if (pushing) { sync.dirty = true; store.set(DIRTY_KEY, '1'); }
+      sync.state = 'err'; sync.err = e.message || 'Bez spojení.';
+    } finally {
+      sync.busy = false; renderSync();
+      if (sync.dirty && sync.state === 'ok') { clearTimeout(pushT); pushT = setTimeout(syncNow, 1000); }
+      if (sync.onDone) { const f = sync.onDone; sync.onDone = null; f(); }
+    }
+  }
+  // 4.63: úklid a přenosy staveb na pozadí (data jiných staveb z localStorage do IndexedDB, neodeslané změny jiných staveb, stavby jen z tohoto počítače)
+  setTimeout(async () => {
+    try { await CXS.uklidLocalStorage(STAVBA); } catch (e) {}
+    if (!SY || RO()) return;
+    try { if (await CXS.prenesMistni()) toast('Stavby z tohoto počítače jsou teď sdílené s kolegy.'); } catch (e) { console.warn('Přenos staveb', e); }
+    let klice = []; try { klice = Object.keys(localStorage).filter(k => k.startsWith('hyb-sync-dirty:') && k !== DIRTY_KEY && store.get(k) === '1'); } catch (e) {}
+    for (const k of klice) {
+      const sid = k.slice(15);
+      try { const L = await CXS.nactiMistne(sid); if (L) await CXS.posli(sid, rzZabal(L)); store.set(k, '0'); } catch (e) { console.warn('Neodeslané změny stavby', sid, e); }
+    }
+  }, 7000);
+  if (STAVBA !== DEF_STAVBA) {
+    // seznam staveb (názvy, nové stavby od kolegů) – u Hybernské jede se synchronizací dat
+    setInterval(() => { if (SY && document.visibilityState === 'visible') CXS.obnovSeznam().catch(() => {}); }, 60000);
+    setTimeout(() => CXS.obnovSeznam().then(() => { if (!CXS.info(STAVBA)) { toast('Tato stavba už v seznamu není. Otevírám Hybernskou.'); store.set('hyb-stavba', DEF_STAVBA); setTimeout(() => location.reload(), 1500); } }).catch(() => {}), 2500);
+  }
+  // přepnutí stavby v jiném okně (Management nebo Deník): otevřít stejnou stavbu i tady
+  window.addEventListener('storage', e => {
+    if (e.key !== 'hyb-stavba') return;
+    const n = e.newValue || DEF_STAVBA; if (n === STAVBA) return;
+    persist();
+    if ($('#overlay').hidden) setTimeout(() => location.reload(), 300); else toast('V jiném okně jste otevřeli jinou stavbu. Po zavření okna obnovte stránku (F5).');
+  });
   // 4.58: jednou poslat rozpočty, které tento počítač má (dřív je starší skript Google zahodil a ostatní počítače je neviděly)
-  setTimeout(() => { try { if (SY && STAVBA === DEF_STAVBA && ['rozpocty', 'rozpKat', 'faktury'].some(k => (D[k] || []).length) && store.get('cx-rz-push') !== '1') { store.set('cx-rz-push', '1'); sync.dirty = true; store.set('hyb-sync-dirty', '1'); syncNow(); } } catch (e) {} }, 6000);
+  setTimeout(() => { try { if (SY && STAVBA === DEF_STAVBA && ['rozpocty', 'rozpKat', 'faktury'].some(k => (D[k] || []).length) && store.get('cx-rz-push') !== '1') { store.set('cx-rz-push', '1'); sync.dirty = true; store.set(DIRTY_KEY, '1'); syncNow(); } } catch (e) {} }, 6000);
   document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('.side') && !e.target.closest('[data-a="bok"]')) document.body.classList.remove('side-open'); });
   setInterval(() => { if (SY && document.visibilityState === 'visible') syncNow(); }, 5000);  // 4.34: kontrola změn kolegů každých 5 s (Luboš 15. 11.)
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
@@ -4435,10 +4769,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 14
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 15
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 14;
+const SKRIPT_VERZE = 15;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -4477,7 +4811,49 @@ function doPost_(e) {
   if (b.akce === 'firma_odpoved') return firmaOdpoved_(b);
   if (b.akce === 'kolega_zprava') return kolegaZprava_(b);
   if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
+  if (b.akce === 'stavba') return stavbaData_(b);
+  if (b.akce === 'stavby') return stavbySeznam_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
+}
+// 15: více staveb. Hybernská zůstává v původním souboru; každá další stavba má vlastní soubor dat a vlastní číslo verze,
+// takže se vždy načítá a ukládá jen otevřená stavba. Seznam staveb = záznamy st~ v datech Hybernské.
+function stavbaId_(s) { return String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+function stavbaData_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba);
+  if (!sid || sid === 'hybernska') return json_({error: 'Neznámá stavba.'});
+  if (ro && b.data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  const kr = 'srev:' + sid, kf = 'sfile:' + sid, rev = Number(b.rev);
+  // bez změn: jen porovnat číslo verze, nic nečíst z Disku a nečekat na zámek
+  if (!b.data) { const r0 = Number(p.getProperty(kr) || 0); if (rev === r0 && r0 > 0) return json_({rev: r0, same: true}); }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    let r = Number(p.getProperty(kr) || 0), id = p.getProperty(kf);
+    let cur = id ? JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString('UTF-8')) : null;
+    if (b.data) {
+      cur = mergeData(cur || {}, b.data); r++;
+      const s = JSON.stringify(cur);
+      if (id) DriveApp.getFileById(id).setContent(s);
+      else { id = slozka_(DriveApp.getRootFolder(), 'Constructo – data staveb').createFile('stavba-' + sid + '.json', s, 'application/json').getId(); p.setProperty(kf, id); }
+      p.setProperty(kr, String(r));
+      const den = Utilities.formatDate(new Date(), 'Europe/Prague', 'yyyy-MM-dd');
+      if (p.getProperty('szal:' + sid) !== den) { DriveApp.getFileById(id).makeCopy('zaloha-stavba-' + sid + '-' + den + '.json'); p.setProperty('szal:' + sid, den); }
+    }
+    if (!b.data && rev === r && r > 0) return json_({rev: r, same: true});
+    return json_({rev: r, data: cur || {}});
+  } finally { lock.releaseLock(); }
+}
+function stavbySeznam_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const r = Number(p.getProperty('rev') || 0);
+  if (Number(b.rev) === r) return json_({rev: r, same: true});
+  const cur = nacti_(p) || {};
+  return json_({rev: r, zaznamy: (cur.dokumenty || []).filter(function (x) { return x && /^s[tp]~/.test(String(x.id)); })});
 }
 // Fotky z mobilní aplikace: složka „Constructo – fotky ze stavby“ na Disku, podsložky po dnech.
 // Fotku uvidí každý, kdo má její odkaz (odkaz je jen v datech stavby a v e-mailu).
@@ -4648,6 +5024,8 @@ function odpoved_(key, rev, data) {
   const ro = !!key && key !== HESLO && key === PropertiesService.getScriptProperties().getProperty('cteni');
   if (key !== HESLO && !ro) return json_({error: 'heslo'});
   if (ro && data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
+  // 15: bez změn stačí porovnat číslo verze – nečíst soubor z Disku a nečekat na zámek (rychlejší pro všechny počítače)
+  if (!data) { const r0 = Number(PropertiesService.getScriptProperties().getProperty('rev') || 0); if (rev === r0) return json_({rev: r0, same: true}); }
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
   try {
@@ -5107,7 +5485,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   // 4.53: nová verze skriptu v aplikaci = pokus hned (dřív až za 3 hodiny od posledního pokusu, i když šlo o starší verzi);
   // Dokumentace si může aktualizaci vyžádat (nutne), nejčastěji jednou za minutu. Vrací {ok, verze} nebo {ok: false, duvod}.
   async function skriptSamo(nutne) {
-    if (!SY || RO() || STAVBA !== DEF_STAVBA) return null;
+    if (!SY || RO()) return null;
     const cil = skriptWeb();
     try {
       const t0 = Number(store.get('hyb-samo-t') || 0), v0 = Number(store.get('hyb-samo-v') || 0);
@@ -5171,7 +5549,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       if (!c) { toast('Tohle nevypadá jako kód připojení. Má začínat HYB1-'); return; }
       ok.disabled = true; ok.textContent = 'Připojuji…';
       SY = c; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; sync.dirty = false; store.set('hyb-sync-dirty', '0');
+      sync.rev = 0; sync.dirty = false; store.set(DIRTY_KEY, '0');
       D.project._ts = -1; D.hmgInfo._ts = -1;  // název a údaje stavby převezme ze serveru
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast('Připojeno, data se sdílí'); }
@@ -5214,7 +5592,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       } else store.set('hyb-ro', '');
       if (jmeno) { $('#me').value = jmeno; store.set('hyb-me', jmeno); $('#me').classList.remove('need'); }
       SY = c; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; sync.dirty = false; store.set('hyb-sync-dirty', '0');
+      sync.rev = 0; sync.dirty = false; store.set(DIRTY_KEY, '0');
       D.project._ts = -1; D.hmgInfo._ts = -1;  // název a údaje stavby převezme ze serveru
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast(RO() ? 'Připojeno jen na prohlížení' : 'Připojeno' + (jmeno ? ' jako ' + jmeno : '') + ', data se sdílí'); document.body.classList.toggle('ro', RO()); renderBanners(); if (!me() && !RO()) setTimeout(whoDialog, 300); else if (pre) setTimeout(() => installOffer(true), 900); }
@@ -5420,7 +5798,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       if (!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) { toast('Vložte adresu, která začíná https://script.google.com/macros/'); return; }
       ok.disabled = true; ok.textContent = 'Připojuji…';
       SY = {url, key}; store.set('hyb-sync', JSON.stringify(SY));
-      sync.rev = 0; stampChanges(true); persist(); sync.dirty = true; store.set('hyb-sync-dirty', '1');
+      sync.rev = 0; stampChanges(true); persist(); sync.dirty = true; store.set(DIRTY_KEY, '1');
       sync.onDone = () => {
         if (sync.state === 'ok') { $('#overlay').hidden = true; $('#overlay').innerHTML = ''; render(); toast('Synchronizace zapnutá'); setTimeout(copyDialog, 400); }
         else { ok.disabled = false; ok.textContent = 'Připojit'; SY = null; store.set('hyb-sync', ''); renderSync(); toast(sync.err || 'Připojení se nepovedlo.'); }
@@ -7035,7 +7413,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   {
     // odkaz z pozvánky: …/pc/?k=K7M2QX → připojí se samo, kód z adresy zmizí
     const k = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-    if (k && STAVBA !== DEF_STAVBA) { store.set('hyb-stavba', DEF_STAVBA); location.reload(); }  // pozvánka patří ke sdílené stavbě Hybernská
+    if (k && STAVBA !== DEF_STAVBA && !SY) { store.set('hyb-stavba', DEF_STAVBA); location.reload(); }  // připojení pozvánkou začíná na Hybernské
     if (k) history.replaceState(null, '', location.pathname + location.hash);
     if (!SY && WEB_SCRIPT && STAVBA === DEF_STAVBA) setTimeout(() => webJoinDialog(k.length === 6 ? k : ''), 400);
     else if (SY && k) setTimeout(() => toast('Tento počítač už je ke stavbě připojený.'), 600);

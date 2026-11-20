@@ -172,7 +172,7 @@
   /* ---------- stav modulu ---------- */
   let H = null, EL = null;
   const S = {slozka: '', q: '', raz: 'nazev', smer: 1, fronta: [], bezi: false, verze: 0, verzeT: 0, chyba: '', skript: '', hotovo: 0, aktT: 0, aktDuvod: ''};
-  const seznam = () => (H && H.seznam() || []).filter(r => r && r.id && !String(r.id).startsWith('rz~'));   // rz~ = rozpočty přenášené přes dokumenty
+  const seznam = () => (H && H.seznam() || []).filter(r => r && r.id && !/^(rz|st|sp)~/.test(String(r.id)));   // rz~ = rozpočty přenášené přes dokumenty, st~/sp~ = seznam staveb
   const najdi = id => seznam().find(r => r.id === id);
   const deti = id => seznam().filter(r => (r.rodic || '') === (id || ''));
   const cestaZaznamu = id => { const out = []; let r = najdi(id), n = 0; while (r && n++ < 50) { out.unshift(r); r = r.rodic ? najdi(r.rodic) : null; } return out; };
@@ -1126,8 +1126,23 @@
   }
 
   /* ---------- veřejné rozhraní ---------- */
+  // všechny strany PDF (soubor z Disku Google podle id) jako obrázky – Detail zprávy
+  async function pdfStrany(r, max) {
+    const blob = await nactiSoubor(r), lib = await pdfjs();
+    const doc = await lib.getDocument({data: new Uint8Array(await blob.arrayBuffer()), standardFontDataUrl: BASE + 'pdfjs/standard_fonts/', wasmUrl: BASE + 'pdfjs/wasm/', isEvalSupported: false}).promise;
+    const out = [];
+    try {
+      for (let n = 1; n <= Math.min(doc.numPages, 12); n++) {
+        const pg = await doc.getPage(n), v1 = pg.getViewport({scale: 1}), k = (max || 1100) / Math.max(v1.width, v1.height), vp = pg.getViewport({scale: k});
+        const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+        await pg.render({canvas: c, canvasContext: g, viewport: vp}).promise; out.push(c.toDataURL('image/jpeg', 0.82));
+      }
+    } finally { try { doc.destroy(); } catch (e) {} }
+    return out;
+  }
   window.CXDok = {
-    schranka, pdfNaObrazek,
+    schranka, pdfNaObrazek, pdfStrany,
     // host: {seznam(), upsert(recs), smaz(ids), kdo(), volej(body)→Promise, pripojeno(), ro(), toast(m), zprava?(dataUrl, popis), zkouska?}
     async pripoj(host) {
       H = host; styl();

@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-i1ZA9mDHmmkbzxBj2mD219yiPZ4GWIu6RpCXjmzAeGE='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-65qBi8v+9UyKlY+xHTqG29VktxoNcEWvISeyjxQfel8='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
@@ -121,8 +121,10 @@ textarea{width:100%;min-height:110px;border:2px solid var(--line);border-radius:
         ${!P.info && !uzSplneno ? `<button type="button" class="send" data-st="splneno"${posilam ? ' disabled' : ''}>✓ Splněno</button>` : ''}
         ${!P.info && uzSplneno ? '<div class="ok"><b>✓ Úkol je splněný.</b></div>' : ''}
         <button type="button" class="send${P.info ? '' : ' sec'}" data-st="vedomi"${posilam ? ' disabled' : ''}>${moje.some(o => o.stav === 'vedomi') ? '✓ Beru na vědomí (už potvrzeno)' : '✓ Beru na vědomí'}</button>
-        <button type="button" class="send sec" id="psat"${posilam ? ' disabled' : ''}>✎ Odpovědět / doplnit poznámku</button>
-        ${psat ? `<textarea id="txt" placeholder="Napište odpověď, poznámku nebo co je potřeba upravit…"></textarea><button type="button" class="send" data-st="odpoved"${posilam ? ' disabled' : ''}>Odeslat odpověď</button>` : ''}
+        <button type="button" class="send sec" data-st="potvrzuji"${posilam ? ' disabled' : ''}>👍 Potvrzuji</button>
+        <button type="button" class="send sec" id="nesouhlas"${posilam ? ' disabled' : ''}>✗ Nesouhlasím</button>
+        <button type="button" class="send sec" id="psat"${posilam ? ' disabled' : ''}>✎ Vlastní odpověď</button>
+        ${psat ? `<textarea id="txt" placeholder="${psat === 'ne' ? 'Napište, s čím nesouhlasíte a proč…' : 'Napište odpověď, poznámku nebo co je potřeba upravit…'}"></textarea><button type="button" class="send" data-st="${psat === 'ne' ? 'nesouhlasim' : 'odpoved'}"${posilam ? ' disabled' : ''}>${psat === 'ne' ? 'Odeslat: Nesouhlasím' : 'Odeslat odpověď'}</button>` : ''}
         ${posilam ? '<p class="hint">Odesílám…</p>' : ''}${chyba ? `<p class="err">${esc(chyba)}</p>` : ''}`;
     $('#main').innerHTML = `<div class="card"><span class="pill${P.info ? '' : ' ukol'}">${P.info ? 'NA VĚDOMÍ' : 'ÚKOL'}</span>
         <p class="meta">${esc(kdy(P.at))} · zapsal ${esc(P.by || '–')}${P.obj ? ' · objekt ' + esc(P.obj) : ''}${P.end ? ' · <b>splnit do ' + esc(den(P.end)) + '</b>' : ''}</p>
@@ -135,15 +137,19 @@ textarea{width:100%;min-height:110px;border:2px solid var(--line);border-radius:
     document.querySelectorAll('[data-kdo]').forEach(b => b.onclick = () => { kdo = b.dataset.kdo; ls.set('cx-reakce-kdo', kdo); hotovo = ''; chyba = ''; kresli(); });
     document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => posli(b.dataset.st));
     const ps = $('#psat'); if (ps) ps.onclick = () => { psat = true; kresli(); const x = $('#txt'); if (x) x.focus(); };
+    const ns = $('#nesouhlas'); if (ns) ns.onclick = () => { psat = 'ne'; kresli(); const x = $('#txt'); if (x) x.focus(); };
   }
   async function posli(stav) {
     if (posilam || !kdo) return;
-    const x = $('#txt'), text = x ? x.value.trim() : '';
+    const x = $('#txt'); let text = x ? x.value.trim() : '';
     if (stav === 'odpoved' && !text) { chyba = 'Napište prosím odpověď.'; return kresli(); }
+    const puv = stav;
+    if (stav === 'potvrzuji') { stav = 'odpoved'; text = '👍 Potvrzuji'; }
+    if (stav === 'nesouhlasim') { stav = 'odpoved'; text = '✗ Nesouhlasím' + (text ? ': ' + text : ''); }
     posilam = true; chyba = ''; hotovo = ''; kresli();
     try {
       const r = await call({akce: 'kolega_odpoved', z, t, kdo, stav, text: stav === 'odpoved' ? text : '', cid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6)});
-      if (r && r.zprava) { P = r.zprava; hotovo = stav === 'splneno' ? 'Úkol je označený jako splněný.' : stav === 'vedomi' ? 'Potvrzeno: berete na vědomí.' : 'Vaše odpověď je uložená.'; psat = false; }
+      if (r && r.zprava) { P = r.zprava; hotovo = stav === 'splneno' ? 'Úkol je označený jako splněný.' : stav === 'vedomi' ? 'Potvrzeno: berete na vědomí.' : puv === 'potvrzuji' ? 'Potvrzeno.' : puv === 'nesouhlasim' ? 'Odesláno: nesouhlasíte.' : 'Vaše odpověď je uložená.'; psat = false; }
       else chyba = (r && r.error) || 'Nepodařilo se odeslat, zkuste to prosím znovu.';
     } catch (e) { chyba = 'Bez spojení. Zkontrolujte internet a zkuste to znovu.'; }
     posilam = false; kresli();
