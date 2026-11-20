@@ -40,7 +40,7 @@ const CXZprava = (() => {
   }
   const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
   const b64 = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => res(''); r.readAsDataURL(b); });
-  const STITEK = o => o.firma ? {l: String(o.typL || 'Zpráva').toUpperCase(), bg: '#16191c', fg: '#F4D23C', h: 'ZPRÁVA PRO FIRMU'} : o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
+  const STITEK = o => o.zapis ? {l: 'DENNÍ ZÁPIS', bg: '#0f9d74', fg: '#ffffff', h: 'DENNÍ ZÁPIS'} : o.firma ? {l: String(o.typL || 'Zpráva').toUpperCase(), bg: '#16191c', fg: '#F4D23C', h: 'ZPRÁVA PRO FIRMU'} : o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
   // Drive: fotka přes lh3 (posílá CORS), aby šla nakreslit do PDF
   const fotoSrc = a => typeof a === 'string' ? a : a && a.id ? `https://lh3.googleusercontent.com/d/${a.id}=w1600` : (a && (a.thumb || a.url)) || '';
   async function formular(o) {
@@ -129,8 +129,8 @@ const CXZprava = (() => {
     // 4.49: velké žluté tlačítko nahoře i dole – firma odpoví na stránce /odpoved/, kolega na /reakce/ (bez přihlášení a bez kódu)
     const odk = o.firma ? o.odkaz : (o.reakce || o.web);
     const pop = o.firma ? 'Potvrďte přijetí, nahlaste opravu (i s fotkou) nebo napište, proč nesouhlasíte. Nic nemusíte instalovat ani zadávat žádný kód.'
-      : o.reakce ? (o.info ? 'Jedním klepnutím potvrďte „Beru na vědomí“, nebo napište odpověď. Bez přihlašování a bez kódu.' : 'Jedním klepnutím potvrďte „Splněno“ nebo „Beru na vědomí“, nebo napište odpověď. Bez přihlašování a bez kódu.') : '';
-    const nap = o.firma ? 'Odpovědět na tuto zprávu' : o.reakce ? (o.info ? 'Beru na vědomí / Odpovědět' : 'Splněno / Beru na vědomí / Odpovědět') : 'Otevřít v Constructu';
+      : o.reakce ? (o.info ? 'Jedním klepnutím odpovězte: Beru na vědomí, Potvrzuji, Nesouhlasím, nebo napište vlastní odpověď. Bez přihlašování a bez kódu.' : 'Jedním klepnutím potvrďte „Splněno“ nebo „Beru na vědomí“, nebo napište odpověď. Bez přihlašování a bez kódu.') : '';
+    const nap = o.firma ? 'Odpovědět na tuto zprávu' : o.reakce ? (o.info ? 'Beru na vědomí / Potvrzuji / Nesouhlasím / Odpovědět' : 'Splněno / Beru na vědomí / Odpovědět') : 'Otevřít v Constructu';
     const tlac = horni => !odk ? '' : `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:${horni ? '0 0 18px' : '22px 0 4px'}"><tr><td style="background:#F4D23C;border-radius:12px"><a href="${e(odk)}" style="display:inline-block;padding:${horni ? '16px 26px' : '14px 24px'};color:#131518;font-size:${horni ? 18 : 16}px;font-weight:800;text-decoration:none">${nap} &rarr;</a></td></tr></table>${horni && pop ? `<p style="font-size:13px;color:#6b7279;margin:-10px 0 18px">${pop}</p>` : ''}`;
     const e = esc, st = STITEK(o), pol = o.polozky, radky = [];
     for (let i = 0; i < pol.length; i += 2) radky.push('<tr>' + pol.slice(i, i + 2).map(p => `<td style="padding:10px 14px;vertical-align:top;width:50%"><div style="font-size:11px;font-weight:700;color:#6b7279;text-transform:uppercase;letter-spacing:.05em">${e(p[0])}</div><div style="font-size:14px;font-weight:600;color:#16191c;margin-top:3px">${e(p[1]).replace(/\n/g, '<br>')}</div></td>`).join('') + '</tr>');
