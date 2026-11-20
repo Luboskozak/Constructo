@@ -173,6 +173,6 @@ ${tlac(false)}
     return btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').slice(0, 22);
   }
   const reakceUrl = async (web, key, grp) => { try { const t = await tok(key, grp); return t ? String(web).replace(/\/pc\/?$/, '').replace(/\/$/, '') + '/reakce/#' + grp + '.' + t : ''; } catch (e) { return ''; } };
-  return {formular, html, udaje, b64, tok, reakceUrl};
+  return {formular, html, udaje, b64, tok, reakceUrl, jpegPdf};
 })();
 if (typeof window !== 'undefined') window.CXZprava = CXZprava;

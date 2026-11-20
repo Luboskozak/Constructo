@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-CEQjS1vZGWYZWF5jl3P9LD+nkoBTlBurBo8Qa5VQCP4=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-qOVwDoBcMVgIh2z9imrdf5AfxXJTkEg5MdiHxscotZY=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -242,7 +242,7 @@ h2{font:700 16px/1.2 var(--f-display);font-stretch:90%;margin:0;text-transform:u
 .chips .ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 10px;font-size:12.5px;background:var(--bg)}
 .chips .ch button{border:0;background:var(--soft);border-radius:50%;width:20px;height:20px;line-height:1;padding:0}
 .tags{font:500 10.5px var(--f-mono);color:var(--muted);margin-left:6px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--r);z-index:30;font-weight:500}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--r);z-index:3600;font-weight:500;max-width:calc(100% - 32px);text-align:center}
 @media (prefers-reduced-motion:no-preference){.drawer{animation:slide .18s ease-out}@keyframes slide{from{transform:translateX(24px);opacity:.6}}}
 
 /* ---- doplňky samostatné aplikace ---- */
@@ -826,7 +826,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 .nz textarea,.nz input:not([type=checkbox]):not([type=file]),.nz select{width:100%;font:inherit;padding:8px 10px;border:1px solid #d9d9d3;border-radius:8px;box-sizing:border-box}
 .nz-lide{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}.nz-ch{display:flex;gap:6px;align-items:center;font-size:14px}.nz-obj{display:flex;gap:6px}.nz-obj .btn[aria-pressed=true]{background:#F4D23C;border-color:#F4D23C}
 .nz-fotky{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.nz-f{position:relative}.nz-f img{width:96px;height:72px;object-fit:cover;border-radius:8px;display:block}.nz-f button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#131518;color:#fff;cursor:pointer}
-.nz-add{cursor:pointer}
+.nz-add{cursor:pointer}.nz-sch{display:inline-flex;align-items:center;gap:8px}.nz-sch img{width:44px;height:32px;object-fit:cover;border-radius:5px;border:1px solid var(--line,#ddd)}.nz-fotky.drop{outline:3px dashed #F4D23C;outline-offset:4px;border-radius:8px}
 .zv-kol{background:#e6eefc;color:#2a55b0}
 .zv-typ.t-ukol{background:#dff3e6;color:#17663a}.zv-typ.t-vedomi{background:#e3edff;color:#1f4fb3}.zv-typ.t-kvalita{background:#ffe3c7;color:#9a4300}
 .zv-typ.t-reklamace{background:#fde2df;color:#b42318}.zv-typ.t-neuklizeno{background:#efe4d3;color:#6b4a14}.zv-typ.t-poskozeni{background:#fbe0f0;color:#9c1c6b}
@@ -1183,7 +1183,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.59';
+  const APP_VERSION = '4.60';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1358,7 +1358,7 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = store.get('hyb-view'); if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  const v0 = ''; if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
@@ -3216,6 +3216,14 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       firmy: () => firmyList(), objBarva: o => objCol(o),
       smazano: (k, id) => !!(D.tomb && D.tomb[k] && D.tomb[k][id]),
       bok: () => document.body.classList.toggle('side-open'),
+      domu: () => setView('list'),
+      projekt: () => D.project || {},
+      udajeFaktury: () => (D.project && D.project.fakturace) || {},
+      ulozUdajeFaktury: o => { D.project.fakturace = o; commit(); },
+      ares: ico => aresNajdi(ico),
+      mujEmail: () => String(personOf(me()).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '',
+      posliMail: o => SY ? call('POST', Object.assign({key: SY.key, akce: 'zavada', cid: 'fak-' + Date.now().toString(36), od: 'Constructo'}, o)) : Promise.resolve({error: 'Bez připojení ke Googlu.'}),
+      ulozPdf: async (name, b64, den) => { if (!SY) return null; const r = await call('POST', {key: SY.key, akce: 'foto', name, mime: 'application/pdf', den: den || new Date().toISOString().slice(0, 10), data: b64}); return r && r.id ? {id: r.id, url: r.url} : null; },
     };
     CXRozp.pripoj(rozpHost);
   }
@@ -3499,9 +3507,12 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
         <label>Na vědomí kolegům <span class="hcap">(dostanou kopii e-mailem s PDF a uvidí ji ve Zprávách)</span></label>
         <div class="nz-lide">${team.filter(n => n !== me()).map(n => `<label class="nz-ch"><input type="checkbox" data-nk="${esc(n)}"${NZ.kopie.has(n) ? ' checked' : ''}> ${esc(n)}</label>`).join('')}</div>`}
       <label for="nz-text">Text zprávy</label><textarea id="nz-text" rows="6" placeholder="Co se stalo, co je potřeba…">${esc(NZ.text)}</textarea>
-      <label>Fotky (nejvýš 12)</label>
-      <div class="nz-fotky">${NZ.fotky.map((f, i) => `<span class="nz-f"><img src="${f}" alt="Foto ${i + 1}"><button type="button" data-nx="${i}" title="Odebrat">×</button></span>`).join('')}
-        ${NZ.fotky.length < 12 ? '<label class="btn nz-add">+ Přidat fotky<input type="file" id="nz-file" accept="image/*" multiple hidden></label>' : ''}</div>
+      <label>Fotky, obrázky a výřezy z výkresů (nejvýš 12)</label>
+      <div class="nz-fotky" id="nz-fotky">${NZ.fotky.map((f, i) => `<span class="nz-f"><img src="${f}" alt="Obrázek ${i + 1}"><button type="button" data-nx="${i}" title="Odebrat">×</button></span>`).join('')}
+        ${NZ.fotky.length < 12 ? `<label class="btn nz-add">+ Obrázek ze souboru<input type="file" id="nz-file" accept="image/*,application/pdf,.pdf" multiple hidden></label>
+        ${(sch => sch ? `<button type="button" class="btn nz-add nz-sch" id="nz-sch" title="${esc(sch.popis)}"><img src="${sch.dataUrl}" alt="">📋 Vložit zkopírovaný výřez</button>` : '')(window.CXDok && CXDok.schranka && CXDok.schranka())}
+        <button type="button" class="btn nz-add" id="nz-vyrez">📐 Výřez z výkresu…</button>` : ''}</div>
+      <div class="hcap">Obrázek můžete do zprávy i vložit (Ctrl+V, na Macu ⌘+V) nebo ho sem přetáhnout myší. Ze souboru PDF se vloží první strana.</div>
       <div class="hcap">Zpráva odejde e-mailem i s formulářem PDF (stejně jako z mobilu) a uloží se do Zpráv.</div></div>`;
     const ulozPole = () => { const t = $('#nz-text'); if (t) NZ.text = t.value; const e = $('#nz-end'); if (e) NZ.end = e.value; const m = $('#nz-misto'); if (m) NZ.misto = m.value; };
     const prekresli = () => { ulozPole(); const b = document.querySelector('#overlay .modal > div'); if (b) { b.innerHTML = body(); napoj(); } };
@@ -3516,7 +3527,24 @@ button.dline{cursor:pointer}button.dline:hover{text-decoration:underline}button.
       const fs = $('#nz-firma'); if (fs) fs.onchange = () => { NZ.firma = fs.value; prekresli(); };
       const ts = $('#nz-typ'); if (ts) ts.onchange = () => { NZ.typ = ts.value; };
       ov.querySelectorAll('[data-nx]').forEach(b => b.onclick = () => { NZ.fotky.splice(Number(b.dataset.nx), 1); prekresli(); });
-      const fi = $('#nz-file'); if (fi) fi.onchange = async () => { const files = [...fi.files].slice(0, 12 - NZ.fotky.length); for (const f of files) { try { NZ.fotky.push(await nzShrink(f)); } catch (e) { toast('Fotku ' + f.name + ' se nepodařilo načíst.'); } } prekresli(); };
+      const fi = $('#nz-file'); if (fi) fi.onchange = () => nzPridej([...fi.files]);
+      // 4.60: výřez z Dokumentace, vložení ze schránky (Ctrl+V), přetažení souboru, PDF → první strana
+      const tx = $('#nz-text'); if (tx) tx.oninput = () => { NZ.text = tx.value; };
+      const sc = $('#nz-sch'); if (sc) sc.onclick = () => { const x = CXDok.schranka(); if (!x) return; if (NZ.fotky.includes(x.dataUrl)) { toast('Tento výřez už ve zprávě je.'); return; } NZ.fotky.push(x.dataUrl); prekresli(); toast('Výřez vložen do zprávy.'); };
+      const vy = $('#nz-vyrez'); if (vy) vy.onclick = () => { ulozPole(); const c = $('#m-cancel'); if (c) c.click(); S.view = 'dok'; store.set('hyb-view', 'dok'); render(); toast('Otevřete výkres, klikněte Výřez a označte místo. Pak dejte „Poslat ve zprávě“ – vrátíte se do této zprávy.'); };
+      ov.onpaste = e => { const fs = [...((e.clipboardData && e.clipboardData.files) || [])].filter(f => /^image\/|pdf/.test(f.type)); if (!fs.length) return; e.preventDefault(); nzPridej(fs); };
+      const fb = $('#nz-fotky'); if (fb) { fb.ondragover = e => { e.preventDefault(); fb.classList.add('drop'); }; fb.ondragleave = () => fb.classList.remove('drop'); fb.ondrop = e => { e.preventDefault(); fb.classList.remove('drop'); nzPridej([...e.dataTransfer.files]); }; }
+    }
+    async function nzPridej(files) {
+      ulozPole();
+      for (const f of files.slice(0, 12 - NZ.fotky.length)) {
+        try {
+          if (/pdf/i.test(f.type) || /\.pdf$/i.test(f.name)) { if (!window.CXDok || !CXDok.pdfNaObrazek) throw new Error('pdf'); toast('Připravuji obrázek z PDF…'); NZ.fotky.push(await CXDok.pdfNaObrazek(f, 1800)); }
+          else if (/^image\//.test(f.type) || /\.(jpe?g|png|gif|webp|heic|bmp)$/i.test(f.name)) NZ.fotky.push(await nzShrink(f));
+          else toast('Soubor ' + f.name + ' není obrázek ani PDF.');
+        } catch (e) { toast('Soubor ' + f.name + ' se nepodařilo načíst.'); }
+      }
+      prekresli();
     }
     confirmModal('Nová zpráva', body(), 'Odeslat', () => { ulozPole(); nzOdeslat(); return 'keep'; }, [['Náhled PDF', () => {}]]);
     document.querySelector('#overlay .modal').classList.add('wide');

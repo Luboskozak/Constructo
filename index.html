@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-AJK2xNxaG/FDcWiuDfiDPh7x4z3af2MEl/b1p9FUPNI=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-42rJkdbq905RX/TIh1w6q/bMmDnKl2Ox9m3TRUtW2y0=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -209,7 +209,7 @@ body.pise .nav{display:none}
 .iv-send a,.iv-send button{display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
 .iv-who{display:flex;flex-wrap:wrap;gap:8px}
 .iv-who button{border:2px solid var(--line);background:var(--card);border-radius:14px;min-height:48px;padding:0 14px;font-weight:800;font-size:15px}
-.toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translateX(-50%);background:var(--k);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;font-weight:600;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translateX(-50%);background:var(--k);color:#fff;padding:11px 18px;border-radius:14px;z-index:3600;font-weight:600;max-width:calc(100% - 32px);text-align:center}
 .fileinp{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 /* závada pro firmu: půdorys se špendlíkem, výřez, odborný text */
@@ -292,7 +292,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/dokumentace.js"></script>
 <script>
 (() => {
-  const VERSION = '1.28';
+  const VERSION = '1.29';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
