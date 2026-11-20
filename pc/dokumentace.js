@@ -113,6 +113,9 @@
 .dkv-out h3{margin:0;font-size:18px}.dkv-out img{max-width:100%;max-height:calc(100vh - 230px);object-fit:contain;border:1px solid #ddd;border-radius:8px;align-self:center;background:#fff}
 .dkv-out .ak{display:flex;flex-wrap:wrap;gap:8px}.dkv-out .ak .dk-btn{font-size:14.5px}
 .dkv-out small{color:#666}
+.dk-kop{background:#e6f4ea;color:#11602b;border:1px solid #b9dfc4;border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.4}
+.dk-kop.blik{animation:dkblik .9s}@keyframes dkblik{0%{background:#b6e4c3}100%{background:#e6f4ea}}
+.dk-btn.ok{background:#11873a!important;color:#fff!important;border-color:#11873a!important}
 @media (max-width:900px){
 .dkv{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
 .dkv-stage{grid-column:1;grid-row:2}
@@ -480,7 +483,8 @@
   let tazeniOk = false, hloubka = 0;
   function napojTazeni() {
     if (tazeniOk) return; tazeniOk = true;
-    const aktivni = () => EL && EL.isConnected && !V && !ro();
+    // jen když je Dokumentace opravdu na obrazovce (ne v jiné záložce ani v otevřeném okně, např. ve zprávě)
+    const aktivni = () => EL && EL.isConnected && EL.querySelector('.dk') && !V && !ro() && !document.querySelector('#overlay:not([hidden]) .modal, .dkv-out, .dkv-dlg');
     const jeSoubor = e => [...((e.dataTransfer && e.dataTransfer.types) || [])].includes('Files');
     const zvyrazni = on => { const r = EL && EL.querySelector('.dk'); if (r) r.classList.toggle('tahne', on); };
     window.addEventListener('dragenter', e => { if (!jeSoubor(e) || !aktivni()) return; e.preventDefault(); hloubka++; zvyrazni(true); });
@@ -1059,7 +1063,12 @@
     const jmeno = 'vyrez-' + (V.rec.nazev || 'vykres').replace(/\.[^.]+$/, '').replace(/[^\wÀ-ſ-]+/g, '-').slice(0, 50) + (V.pocet > 1 ? '-list' + V.str : '') + '-' + new Date().toISOString().slice(0, 10) + '.png';
     const o = document.createElement('div'); o.className = 'dkv-out';
     const zpravaOk = H && typeof H.zprava === 'function';
+    // 4.60: výřez se hned uloží do schránky Constructa (a zkusí se i do schránky počítače) – ve zprávě ho vložíte Ctrl+V nebo tlačítkem
+    const dataUrl = (() => { const k = Math.min(1, 1800 / Math.max(c.width, c.height)), j = document.createElement('canvas'); j.width = Math.round(c.width * k); j.height = Math.round(c.height * k);
+      const g = j.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, j.width, j.height); g.drawImage(c, 0, 0, j.width, j.height); return j.toDataURL('image/jpeg', 0.85); })();
+    ulozSchranku(dataUrl, popis);
     o.innerHTML = `<div class="bx" role="dialog" aria-modal="true"><h3>Výřez z výkresu</h3><img src="${url}" alt="Výřez"><small>${esc(popis)}</small>
+      <div class="dk-kop" id="dk-kop" role="status">✓ Zkopírováno do schránky Constructa. Ve zprávě ho vložíte tlačítkem <b>📋 Vložit zkopírovaný výřez</b>.</div>
       <div class="ak">
         <button type="button" class="dk-btn hl" data-o="kop"><b>⧉</b> Kopírovat</button>
         ${zpravaOk ? `<button type="button" class="dk-btn zl" data-o="zprava">${esc(H.zpravaText || 'Poslat ve zprávě (kolegům / firmě)')}</button>` : ''}
@@ -1071,10 +1080,18 @@
     const pryc = () => { o.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
     o.onclick = e => { if (e.target === o) pryc(); };
     o.querySelector('[data-o="zavrit"]').onclick = pryc;
-    o.querySelector('[data-o="kop"]').onclick = async () => {
-      try { await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]); toast('Výřez je zkopírovaný – vložte ho kamkoli (Ctrl+V / ⌘+V).'); }
-      catch (e) { toast('Kopírování tento prohlížeč nedovolil. Použijte Stáhnout obrázek.'); }
+    const kopBtn = o.querySelector('[data-o="kop"]'), kopInfo = o.querySelector('#dk-kop');
+    const kopiruj = async ruc => {
+      try {
+        if (!navigator.clipboard || !window.ClipboardItem) throw new Error('neumí');
+        await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+        kopBtn.innerHTML = '<b>✓</b> Zkopírováno'; kopBtn.classList.add('ok');
+        kopInfo.innerHTML = '✓ <b>Zkopírováno.</b> Vložíte ho kamkoli: do zprávy v Constructu, e-mailu, Wordu nebo WhatsAppu (' + (dotyk() ? 'podržet prst → Vložit' : 'Ctrl+V, na Macu ⌘+V') + ').';
+      } catch (e) { if (ruc) kopInfo.innerHTML = '✓ Zkopírováno do schránky Constructa – ve zprávě dejte <b>📋 Vložit zkopírovaný výřez</b>. (Do schránky počítače tento prohlížeč kopírovat nedovolil, do jiných programů použijte ⬇ Stáhnout obrázek.)'; }
+      kopInfo.classList.remove('blik'); void kopInfo.offsetWidth; kopInfo.classList.add('blik');
     };
+    kopBtn.onclick = () => kopiruj(true);
+    kopiruj(false);
     o.querySelector('[data-o="stahnout"]').onclick = () => { const a = document.createElement('a'); a.href = url; a.download = jmeno; document.body.appendChild(a); a.click(); a.remove(); };
     const ul = o.querySelector('[data-o="ulozit"]');
     if (ul) ul.onclick = () => {
@@ -1083,17 +1100,34 @@
       toast('Výřez se ukládá do Dokumentace › Výřezy. Uvidí ho i kolegové.'); pryc();
     };
     const zp = o.querySelector('[data-o="zprava"]');
-    if (zp) zp.onclick = () => {
-      // do zprávy jako JPEG (menší e-mail), nejvýš 1800 px
-      const k = Math.min(1, 1800 / Math.max(c.width, c.height)), j = document.createElement('canvas'); j.width = Math.round(c.width * k); j.height = Math.round(c.height * k);
-      const g = j.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, j.width, j.height); g.drawImage(c, 0, 0, j.width, j.height);
-      const dataUrl = j.toDataURL('image/jpeg', 0.85);
-      pryc(); zavri(); H.zprava(dataUrl, popis);
-    };
+    if (zp) zp.onclick = () => { pryc(); zavri(); H.zprava(dataUrl, popis); };
+  }
+  /* ---------- schránka Constructa: poslední výřez (pro vložení do zprávy i bez schránky počítače) ---------- */
+  let SCHR = null;
+  function ulozSchranku(dataUrl, popis) {
+    SCHR = {dataUrl, popis: popis || '', kdy: Date.now()};
+    try { localStorage.setItem('cx-schranka', JSON.stringify(SCHR)); } catch (e) {}
+  }
+  function schranka() {
+    if (!SCHR) { try { SCHR = JSON.parse(localStorage.getItem('cx-schranka') || 'null'); } catch (e) {} }
+    return SCHR && Date.now() - SCHR.kdy < 7 * 864e5 ? SCHR : null;
+  }
+  // první strana PDF jako obrázek (pro vložení PDF do zprávy)
+  async function pdfNaObrazek(file, max) {
+    const lib = await pdfjs();
+    const doc = await lib.getDocument({data: new Uint8Array(await file.arrayBuffer()), standardFontDataUrl: BASE + 'pdfjs/standard_fonts/', wasmUrl: BASE + 'pdfjs/wasm/', isEvalSupported: false}).promise;
+    try {
+      const pg = await doc.getPage(1), v1 = pg.getViewport({scale: 1}), k = (max || 2000) / Math.max(v1.width, v1.height);
+      const c = document.createElement('canvas'), vp = pg.getViewport({scale: k}); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      await pg.render({canvas: c, canvasContext: g, viewport: vp}).promise;
+      return c.toDataURL('image/jpeg', 0.85);
+    } finally { try { doc.destroy(); } catch (e) {} }
   }
 
   /* ---------- veřejné rozhraní ---------- */
   window.CXDok = {
+    schranka, pdfNaObrazek,
     // host: {seznam(), upsert(recs), smaz(ids), kdo(), volej(body)→Promise, pripojeno(), ro(), toast(m), zprava?(dataUrl, popis), zkouska?}
     async pripoj(host) {
       H = host; styl();
