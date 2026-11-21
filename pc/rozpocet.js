@@ -145,6 +145,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
 .rz-map label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:var(--muted)}
 .rz-map select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 6px;background:var(--panel);color:var(--ink)}
+.rz-seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}.rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;padding:7px 13px;cursor:pointer;color:var(--ink)}.rz-seg button+button{border-left:1px solid var(--line)}.rz-seg button[aria-pressed=true]{background:#16191c;color:#fff}
+.rz-dr table{width:100%}.rz-dr td{vertical-align:middle}.rz-dr td.nm{min-width:220px}.rz-dr td.podil{color:var(--muted)}.rz-dr td.cp{white-space:nowrap;min-width:150px}.rz-dr td.ak{white-space:nowrap;text-align:right}.rz-dr tr.sum td{border-top:2px solid var(--ink);background:rgba(0,0,0,.03)}
+.rz-dr-bar{display:inline-block;vertical-align:middle;width:90px;height:8px;border-radius:5px;background:rgba(0,0,0,.08);overflow:hidden}.rz-dr-bar i{display:block;height:100%;background:#2f7d4f}.rz-dr-bar i.nad{background:var(--bad,#c0392b)}.rz-dr-p{font-size:12.5px;color:var(--muted);margin-left:6px}
+.rz-dr-a{display:inline-flex;gap:4px;flex-wrap:nowrap}.rz-dr-a .rz-btn.mini{padding:4px 9px;font-size:12.5px}
+.rz-zeb{display:flex;flex-direction:column;gap:3px;margin-top:8px}.rz-zeb-r{display:grid;grid-template-columns:minmax(160px,260px) 1fr auto;gap:10px;align-items:center;padding:3px 6px;border-radius:8px}.rz-zeb-r:hover{background:rgba(0,0,0,.035)}
+.rz-zeb-r .nm{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rz-zeb-r .br{display:flex;align-items:center;gap:8px;min-width:0}.rz-zeb-r .br i{display:block;height:20px;border-radius:5px;background:#F4D23C;flex:none;max-width:70%;overflow:hidden}.rz-zeb-r .br i u{display:block;height:100%;background:#2f7d4f}.rz-zeb-r .br span{font-size:13px;white-space:nowrap;color:var(--muted)}.rz-zeb-r .br span b{color:var(--ink)}
+.rz-sg{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-top:8px;overflow:hidden}.rz-sg-h{display:flex;align-items:center;gap:10px;width:100%;font:inherit;font-size:15px;text-align:left;border:0;background:none;padding:12px 14px;cursor:pointer;color:var(--ink)}.rz-sg-h:hover{background:rgba(0,0,0,.03)}.rz-sg-h .m{font-size:13px;color:var(--muted)}.rz-sg-h .sip{width:14px}.rz-sg-h .sp{flex:1}.rz-sg .rz-list{border:0;border-top:1px solid var(--line);border-radius:0;margin:0}
 .rz-sks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:10px}
 .rz-sk{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel);display:flex;flex-direction:column;gap:6px}
 .rz-sk.ma{border-color:#9fd1b3;background:#f2faf5}
@@ -503,7 +510,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 
   /* ---------- host (Management) ---------- */
   let H = null, EL = null;
-  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
+  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, druhyV: '', skOtv: new Set(), otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
   const toast = m => H && H.toast ? H.toast(m) : alert(m);
   const ro = () => !!(H && H.ro && H.ro());
   const smi = k => !H || !H.smi || !!H.smi(k);   // 4.61: oprávnění osoby (rozp / fakt / fakU)
@@ -1053,15 +1060,51 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <div class="rz-bar"><i class="${s.cer > s.roz + 1 ? 'nad' : ''}" style="width:${Math.min(100, pct(s.cer, s.roz))}%"></i></div><div class="m">${nf0.format(s.n)} položek · čerpáno ${pct(s.cer, s.roz)} %</div>
         <div class="a"><button type="button" class="rz-btn mini" data-ukaz-kat="${esc(k.id)}">Zobrazit položky</button><button type="button" class="rz-btn mini" data-fak-kat="${esc(k.id)}"${ro() ? ' disabled' : ''}>Nová fakturace</button>${virt ? `<button type="button" class="rz-btn mini" data-cin-ulozit="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Vytvoří z této činnosti vlastní druh prací, který můžete upravovat">Uložit jako druh prací</button>` : `<button type="button" class="rz-btn mini zl" data-navrh="${esc(k.id)}"${ro() ? ' disabled' : ''}>Najít položky…</button><button type="button" class="rz-btn mini" data-upr-kat="${esc(k.id)}"${ro() ? ' disabled' : ''}>Upravit</button>`}</div></div>`;
   }
+  /* 4.72: přehlednější zobrazení činností a druhů prací – tabulka / žebříček / skupiny / karty */
+  const DRUHY_V = [['tabulka', 'Tabulka'], ['zebricek', 'Žebříček'], ['skupiny', 'Skupiny'], ['karty', 'Karty']];
+  const druhyV = () => DRUHY_V.some(x => x[0] === S.druhyV) ? S.druhyV : (S.druhyV = pam('rz-druhyV') || 'tabulka', DRUHY_V.some(x => x[0] === S.druhyV) ? S.druhyV : (S.druhyV = 'tabulka'));
+  const SKUPINY = [
+    ['Příprava, zařízení a přesuny', /zarizeni stavenist|inzenyrsk|ostatni naklad|vedlejsi|lesen|presun|bourani|sut|demontaz|vrn|projekt|dokumentac|geodet|zkousk|revize/],
+    ['Hrubá stavba', /zemni|zaklad|zednick|svisl|vodorovn|strop|schodist|komunikac|beton|zelezobet|izolac|hydroizol|ostatni konstrukce|sanac|zdivo|piloty|kanalizace venk/],
+    ['Střecha a fasáda', /strech|krytin|pokryv|tesar|klemp|fasad|vnejsi|zatepl|bleskosvod|hromosvod/],
+    ['Dokončovací práce', /omit|podlah|potery|obklad|dlazb|malb|nater|truhlar|zamecn|sadrokart|sucha vystavba|vyplni|okna|dvere|kamen|stuk|sklen|parket|tapet|restaur|interier|nabytek|kovov/],
+    ['Technika budovy (TZB)', /elektro|silnoproud|slaboproud|vzducho|vzt|vytap|topen|zdravot|zti|plyn|audio|chlaz|klimat|vytah|vodovod|kanaliz|mar\b|eps|sprinkl|hasic|osvetl|zabezpec|datov|fotovolt|tzb/],
+  ];
+  const skupinaCin = nazev => { const n = bezDia(String(nazev)).toLowerCase(); const g = SKUPINY.find(([, rx]) => rx.test(n)); return g ? g[0] : 'Ostatní'; };
+  function akceDruhu(k, virt) {
+    return `<span class="rz-dr-a"><button type="button" class="rz-btn mini" data-ukaz-kat="${esc(k.id)}" title="Zobrazit položky v rozpočtu">Položky</button><button type="button" class="rz-btn mini" data-fak-kat="${esc(k.id)}"${nefak() ? ' disabled' : ''} title="Nová fakturace z této činnosti">Fakturovat</button>${virt ? `<button type="button" class="rz-btn mini" data-cin-ulozit="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Vytvoří z této činnosti vlastní druh prací, který můžete upravovat">+ Druh</button>` : `<button type="button" class="rz-btn mini" data-navrh="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Najít další položky">Najít…</button><button type="button" class="rz-btn mini" data-upr-kat="${esc(k.id)}"${ro() ? ' disabled' : ''}>Upravit</button>`}</span>`;
+  }
+  const cerpTd = s => `<div class="rz-dr-bar" title="čerpáno ${pct(s.cer, s.roz)} %"><i class="${s.cer > s.roz + 1 ? 'nad' : ''}" style="width:${Math.min(100, pct(s.cer, s.roz))}%"></i></div><span class="rz-dr-p">${pct(s.cer, s.roz)} %</span>`;
+  function radkyDruhu(list, C, virt, celkem) {
+    return list.map(k => { const s = C.katSum[k.id] || {roz: 0, cer: 0, n: 0}; return `<tr><td class="nm"><b>${esc(k.nazev)}</b></td><td class="n">${nf0.format(s.n)}</td><td class="n"><b>${kc0(s.roz)}</b></td><td class="n podil">${celkem ? (Math.round(s.roz / celkem * 1000) / 10).toLocaleString('cs-CZ') + ' %' : ''}</td><td class="n">${kc0(s.cer)}</td><td class="n">${kc0(s.roz - s.cer)}</td><td class="cp">${cerpTd(s)}</td><td class="ak">${akceDruhu(k, virt)}</td></tr>`; }).join('');
+  }
+  const hlavaTab = `<thead><tr><th>Činnost</th><th class="n">Položek</th><th class="n">Rozpočet</th><th class="n">Podíl</th><th class="n">Vyfakturováno</th><th class="n">Zbývá</th><th>Čerpání</th><th></th></tr></thead>`;
+  function zobrazDruhy(list, C, virt) {
+    const v = druhyV(), sum = k => (C.katSum[k.id] || {}).roz || 0;
+    const srt = list.slice().sort((a, b) => sum(b) - sum(a));
+    const celkem = srt.reduce((a, k) => a + sum(k), 0);
+    if (v === 'karty') return `<div class="rz-cards">${srt.map(k => kartaDruhu(k, C, virt)).join('')}</div>`;
+    if (v === 'zebricek') {
+      const max = Math.max(1, ...srt.map(sum));
+      return `<div class="rz-zeb">${srt.map(k => { const s = C.katSum[k.id] || {roz: 0, cer: 0, n: 0}; return `<div class="rz-zeb-r"><div class="nm" title="${esc(k.nazev)}">${esc(k.nazev)}</div><div class="br"><i style="width:${Math.max(0.5, s.roz / max * 100)}%"><u style="width:${Math.min(100, pct(s.cer, s.roz))}%"></u></i><span><b>${kc0(s.roz)}</b> · ${celkem ? (Math.round(s.roz / celkem * 1000) / 10).toLocaleString('cs-CZ') : 0} % · ${nf0.format(s.n)} pol.${s.cer ? ' · vyfakt. ' + kc0(s.cer) : ''}</span></div>${akceDruhu(k, virt)}</div>`; }).join('')}</div>`;
+    }
+    if (v === 'skupiny') {
+      const g = new Map(); SKUPINY.map(x => x[0]).concat('Ostatní').forEach(n => g.set(n, []));
+      srt.forEach(k => g.get(skupinaCin(k.nazev)).push(k));
+      return [...g.entries()].filter(([, a]) => a.length).map(([n, a]) => { const r = a.reduce((x, k) => x + sum(k), 0), c = a.reduce((x, k) => x + ((C.katSum[k.id] || {}).cer || 0), 0), pol = a.reduce((x, k) => x + ((C.katSum[k.id] || {}).n || 0), 0), otv = S.skOtv.has(n);
+        return `<div class="rz-sg${otv ? ' otv' : ''}"><button type="button" class="rz-sg-h" data-sg="${esc(n)}"><span class="sip">${otv ? '▾' : '▸'}</span><b>${esc(n)}</b><span class="m">${a.length} činností · ${nf0.format(pol)} položek</span><span class="sp"></span><b>${kc0(r)}</b><span class="m">${celkem ? Math.round(r / celkem * 100) : 0} %</span>${cerpTd({roz: r, cer: c})}</button>${otv ? `<div class="rz-list rz-dr"><table>${hlavaTab}<tbody>${radkyDruhu(a, C, virt, celkem)}</tbody></table></div>` : ''}</div>`; }).join('');
+    }
+    return `<div class="rz-list rz-dr"><table>${hlavaTab}<tbody>${radkyDruhu(srt, C, virt, celkem)}<tr class="sum"><td><b>Celkem</b></td><td class="n">${nf0.format(srt.reduce((a, k) => a + ((C.katSum[k.id] || {}).n || 0), 0))}</td><td class="n"><b>${kc0(celkem)}</b></td><td></td><td class="n">${kc0(srt.reduce((a, k) => a + ((C.katSum[k.id] || {}).cer || 0), 0))}</td><td colspan="3"></td></tr></tbody></table></div>`;
+  }
   function panelDruhy(C) {
     const ks = kategorie(R.rec.id), cs = R.cinnosti || [];
-    const cin = `<h3 style="margin:8px 0 0;font-size:17px">Činnosti (řemesla) – roztříděno automaticky</h3>
-      <div style="font-size:13.5px;color:var(--muted)">Constructo prošlo kód a text každé položky (i nadpisy nad ní) a roztřídilo ${nf0.format(R.polozky.length)} položek do ${cs.length} činností: kamenické, klempířské, tesařské, truhlářské, zámečnické… U každé je Zobrazit položky a Nová fakturace.</div>
-      <div class="rz-cards">${cs.slice().sort((a, b) => ((C.katSum[b.id] || {}).roz || 0) - ((C.katSum[a.id] || {}).roz || 0)).map(k => kartaDruhu(k, C, true)).join('')}</div>`;
+    const prep = `<span class="rz-seg" role="group" aria-label="Zobrazení">${DRUHY_V.map(([k, n]) => `<button type="button" data-dv="${k}" aria-pressed="${druhyV() === k}">${n}</button>`).join('')}</span>`;
+    const cin = `<div class="rz-top" style="margin-top:6px"><h3 style="margin:0;font-size:17px">Činnosti (řemesla) – roztříděno automaticky</h3><span style="font-size:13px;color:var(--muted)">${nf0.format(R.polozky.length)} položek v ${cs.length} činnostech, seřazeno podle objemu</span><span class="sp"></span>${prep}</div>
+      ${zobrazDruhy(cs, C, true)}`;
     return `${cin}<h3 style="margin:14px 0 0;font-size:17px">Moje druhy prací</h3><div class="rz-top"><span style="font-size:14px">Druh prací = skupina položek z celého rozpočtu (např. Střecha: krokve, bednění, izolace, krytina, okna). Z druhu prací se pak dělá fakturace.</span><span class="sp"></span>
         ${ks.length ? '' : `<button type="button" class="rz-btn" data-a="druhy-vychozi"${ro() ? ' disabled' : ''}>Vytvořit běžné druhy prací</button>`}
         <button type="button" class="rz-btn zl" data-a="druh-novy"${ro() ? ' disabled' : ''}>+ Nový druh prací</button></div>
-      ${ks.length ? `<div class="rz-cards">${ks.map(k => kartaDruhu(k, C, false)).join('')}</div>`
+      ${ks.length ? zobrazDruhy(ks, C, false)
       : `<div class="rz-empty"><b>Zatím žádné druhy prací</b>Klikněte <b>Vytvořit běžné druhy prací</b> (Střecha, Okna a dveře, Fasáda, Bourání …) – Constructo je rovnou naplní položkami. Nebo <b>+ Nový druh prací</b> se svými slovy (např. Střecha: krokve, bednění, krytina, oplechování, střešní okna).</div>`}`;
   }
 
@@ -1129,6 +1172,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     on('[data-navrh]', 'click', e => najitPolozky(e.currentTarget.dataset.navrh));
     on('[data-upr-kat]', 'click', e => upravitDruh(e.currentTarget.dataset.uprKat));
     on('[data-fak-kat]', 'click', e => novaFakturace({kat: e.currentTarget.dataset.fakKat}));
+    on('[data-dv]', 'click', e => { S.druhyV = e.currentTarget.dataset.dv; pamSet('rz-druhyV', S.druhyV); prekresli(); });
+    on('[data-sg]', 'click', e => { const n = e.currentTarget.dataset.sg; S.skOtv.has(n) ? S.skOtv.delete(n) : S.skOtv.add(n); prekresli(); });
     on('[data-a="druh-novy"]', 'click', () => upravitDruh(''));
     on('[data-a="druhy-vychozi"]', 'click', () => { const now = new Date().toISOString(); const recs = VYCHOZI_DRUHY.map(([n, s, k]) => { const rec = {id: 'rk' + uid(), rp: R.rec.id, nazev: n, slova: s, kody: k, pol: [], kdo: kdo(), kdy: now}; rec.pol = navrhPolozek(rec).map(x => x.r.id); return rec; }); H.upsert('rozpKat', recs); toast('Druhy prací vytvořeny a rovnou naplněné položkami. Zkontrolovat je můžete tlačítkem Najít položky…'); });
     on('[data-cin-ulozit]', 'click', e => { const c = najdiKat(R.rec.id, e.currentTarget.dataset.cinUlozit); if (!c) return; H.upsert('rozpKat', [{id: 'rk' + uid(), rp: R.rec.id, nazev: c.nazev, slova: '', kody: '', pol: c.pol.slice(), kdo: kdo(), kdy: new Date().toISOString()}]); toast('Uloženo jako druh prací „' + c.nazev + '“. Můžete ho upravit a přidávat položky.'); });
