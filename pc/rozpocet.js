@@ -97,8 +97,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-hd .nx,.rz-r>span:nth-last-child(-n+4){background:color-mix(in srgb,#F4D23C 9%,var(--panel))}
 .rz-r .rz-ob{vertical-align:middle;height:18px;line-height:18px}
 .rz-r .kt{font-style:normal;color:#7c3fd6;margin-left:3px;font-size:10px}
-.rz-hd{position:sticky;top:0;z-index:2;background:var(--soft);border-bottom:2px solid var(--ink);height:34px;font-size:12px;color:var(--ink);font-weight:700}
-.rz-hd>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:32px}
+.rz-hd{position:sticky;top:0;z-index:2;background:#16191c;border-bottom:3px solid #F4D23C;height:42px;font-size:14px;color:#fff;font-weight:800}
+.rz-hd>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:40px;border-right-color:#3a3f44}.rz-hd>span.nx{background:#2b2f33;color:#F4D23C}
 .rz-r{position:absolute;left:0;height:${ROWH}px;font-size:13px;border-bottom:1px solid var(--soft);white-space:nowrap}
 .rz-r>span{overflow:hidden;text-overflow:ellipsis}.rz-r .n{text-align:right;font-variant-numeric:tabular-nums}.rz-hd .n{text-align:right}
 .rz-r:hover{background:var(--soft)}
@@ -124,7 +124,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-card .a{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .rz-list{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto}
 .rz-list table{width:100%;border-collapse:collapse;font-size:14px}
-.rz-list th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.rz-list th{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#1d3f8a;background:#eaf0fb;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 .rz-list td{padding:7px 10px;border-bottom:1px solid var(--soft);vertical-align:middle}.rz-list tr:last-child td{border-bottom:0}
 .rz-list td.n,.rz-list th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .rz-list tr.kl{cursor:pointer}.rz-list tr.kl:hover td{background:var(--soft)}
@@ -145,6 +145,15 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
 .rz-map label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:var(--muted)}
 .rz-map select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:5px 6px;background:var(--panel);color:var(--ink)}
+.fk-hl{display:grid;grid-template-columns:minmax(240px,2fr) repeat(5,minmax(120px,1fr));gap:10px;align-items:end}.fk-hl label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}.fk-hl input,.fk-hl select{font:inherit;font-size:15px;font-weight:600;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--panel)}.fk-hl .fk-komu select{border:2px solid #F4D23C;background:#fffbe6;font-size:16px}
+.fk-dalsi{margin:8px 0 4px}.fk-dalsi summary{cursor:pointer;font-size:13.5px;color:var(--muted);font-weight:600;padding:4px 0}
+.fk-tab thead tr.fk-g th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:6px 8px;border-bottom:0}.fk-tab th.tf,.fk-tab td.tf{background:#fff7cf}.fk-tab thead tr.fk-g th.tf{background:#F4D23C;color:#16191c}.fk-tab th.kc,.fk-tab td.kc{background:#f3f3ef}.fk-tab thead tr.fk-g th.kc{background:#16191c;color:#fff}
+.fk-tab td.tf input{border:2px solid #e0b800;font-weight:700;font-size:15px}.fk-rych{display:inline-flex;gap:3px;white-space:nowrap}.fk-rych button{white-space:nowrap}.fk-rych button{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:3px 7px;cursor:pointer;color:var(--ink)}.fk-rych button:hover{background:#F4D23C}
+.fk-tab thead tr:not(.fk-g) th{font-size:13px;color:#16191c;background:#e4e4de;border-bottom:2px solid #16191c}.fk-tab thead tr:not(.fk-g) th.tf{background:#fbe78a}.fk-tab thead tr:not(.fk-g) th.kc{background:#d9d9d2}
+.fk-chw{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.fk-chw>b{min-width:150px;padding-top:6px}.fk-chs{display:flex;flex-wrap:wrap;gap:6px}.fk-ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13.5px;cursor:pointer;background:var(--panel)}.fk-ch:has(input:checked){background:#F4D23C;border-color:#16191c}.fk-ch small{color:var(--muted)}
+.fk-kl2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.fk-kl2>div{display:flex;flex-direction:column;gap:6px}.fk-kh{font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);color:var(--ink)}.fk-kl{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;padding:4px}.fk-kl label{display:flex;gap:8px;align-items:center;font-size:13.5px;padding:3px 6px;border-radius:6px;cursor:pointer}.fk-kl label:hover{background:rgba(0,0,0,.04)}.fk-kl label span{flex:1}.fk-kl label small{color:var(--muted);white-space:nowrap}.fk-kl label.h{font-weight:700}
+.fk-vf tr.sk td{background:#f3f3ef;border-top:2px solid var(--line)}.fk-vf tr.sk span{font-size:12.5px;color:var(--muted);margin-left:6px}.fk-vf tr.sum td{border-top:2px solid var(--ink)}
+@media (max-width:900px){.fk-hl{grid-template-columns:1fr 1fr}.fk-kl2{grid-template-columns:1fr}}
 .rz-fakl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:#fff5c2;border:2px solid #F4D23C;border-radius:12px;padding:10px 14px;margin:6px 0;font-size:14px;position:sticky;top:0;z-index:5}
 .rz-odbs{display:flex;flex-direction:column;gap:6px}.rz-odb{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}.rz-odb:has(input:checked){border:2px solid #F4D23C;background:#fffbe6}.rz-odb span{display:flex;flex-direction:column}.rz-odb small{color:var(--muted);font-size:12.5px}.rz-odbs .rz-btn{align-self:flex-start;margin-top:4px}
 .rz-seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}.rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;padding:7px 13px;cursor:pointer;color:var(--ink)}.rz-seg button+button{border-left:1px solid var(--line)}.rz-seg button[aria-pressed=true]{background:#16191c;color:#fff}
@@ -512,7 +521,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 
   /* ---------- host (Management) ---------- */
   let H = null, EL = null;
-  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, druhyV: '', skOtv: new Set(), fak: null, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
+  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, druhyV: '', skOtv: new Set(), fak: null, vf: {obd: '', odb: '', kat: '', q: '', sk: 'mes'}, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
   const toast = m => H && H.toast ? H.toast(m) : alert(m);
   const ro = () => !!(H && H.ro && H.ro());
   const smi = k => !H || !H.smi || !!H.smi(k);   // 4.61: oprávnění osoby (rozp / fakt / fakU)
@@ -792,6 +801,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     if (S.panel === 'objekty') telo = panelObjekty(C);
     else if (S.panel === 'druhy') telo = panelDruhy(C);
     else if (S.panel === 'fakturace') telo = panelFakturace(C);
+    else if (S.panel === 'vystavene') telo = panelVystavene(C);
     else telo = panelRozpocet(C);
     EL.innerHTML = `<div class="rz">${hlava(list, rec, C)}
       <div class="rz-tabs" role="group" aria-label="Části rozpočtu">
@@ -799,6 +809,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <button type="button" data-p="objekty" aria-pressed="${S.panel === 'objekty'}">Objekty</button>
         <button type="button" data-p="druhy" aria-pressed="${S.panel === 'druhy'}">Druhy prací${nk ? `<b>${nk}</b>` : ''}</button>
         <button type="button" data-p="fakturace" aria-pressed="${S.panel === 'fakturace'}">Fakturace${nf ? `<b${C.upoz ? ' class="cerv"' : ''}>${nf}</b>` : ''}</button>
+        <button type="button" data-p="vystavene" aria-pressed="${S.panel === 'vystavene'}">📁 Vystavené faktury${faktury(rec.id).filter(f => f.uzavreno).length ? `<b>${faktury(rec.id).filter(f => f.uzavreno).length}</b>` : ''}</button>
       </div>${telo}</div>`;
     vazby();
     if (S.panel === 'rozpocet') { const t = EL.querySelector('.rz-tab'); if (t) { vyska(t); t.scrollTop = SCROLL; kresliRadky(); } }
@@ -1110,6 +1121,36 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       : `<div class="rz-empty"><b>Zatím žádné druhy prací</b>Klikněte <b>Vytvořit běžné druhy prací</b> (Střecha, Okna a dveře, Fasáda, Bourání …) – Constructo je rovnou naplní položkami. Nebo <b>+ Nový druh prací</b> se svými slovy (např. Střecha: krokve, bednění, krytina, oplechování, střešní okna).</div>`}`;
   }
 
+  /* ----- 4.75: Vystavené faktury – archiv uzavřených faktur, třídění podle období, odběratele, druhu prací ----- */
+  const MES = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
+  const mesTxt = m => { const [r, x] = String(m).split('-'); return x ? MES[+x - 1] + ' ' + r : r; };
+  function vystavene() {
+    return faktury(R.rec.id).filter(f => f.uzavreno).map(f => { const o = f.odb && f.odb.firma ? f.odb : odbFaktury(f), k = f.kat && najdiKat(R.rec.id, f.kat), s_ = soucty(f); return {f, odb: o.firma || '—', kat: k ? k.nazev : 'celý rozpočet', mes: String(f.datum || '').slice(0, 7), s: s_}; })
+      .sort((a, b) => String(b.f.datum).localeCompare(String(a.f.datum)) || String(b.f.cislo).localeCompare(String(a.f.cislo)));
+  }
+  function panelVystavene(C) {
+    const vse = vystavene(), V = S.vf;
+    const obd = [...new Set(vse.map(x => x.mes))].sort().reverse(), roky = [...new Set(obd.map(m => m.slice(0, 4)))];
+    const odbs = [...new Set(vse.map(x => x.odb))].sort((a, b) => a.localeCompare(b, 'cs')), kats = [...new Set(vse.map(x => x.kat))].sort((a, b) => a.localeCompare(b, 'cs'));
+    const q = bezDia(V.q.toLowerCase().trim());
+    const sez = vse.filter(x => (!V.obd || x.mes === V.obd || x.mes.slice(0, 4) === V.obd) && (!V.odb || x.odb === V.odb) && (!V.kat || x.kat === V.kat) && (!q || bezDia([x.f.cislo, x.odb, x.kat, x.f.pozn].join(' ').toLowerCase()).includes(q)));
+    const klic = x => V.sk === 'odb' ? x.odb : V.sk === 'kat' ? x.kat : x.mes;
+    const skup = new Map(); sez.forEach(x => { const k = klic(x); if (!skup.has(k)) skup.set(k, []); skup.get(k).push(x); });
+    const opt = (v, t, a) => `<option value="${esc(v)}"${a === v ? ' selected' : ''}>${esc(t)}</option>`;
+    const sum = a => a.reduce((s_, x) => ({z: s_.z + x.s.zakl, d: s_.d + (x.s.dan || 0), c: s_.c + x.s.celkem}), {z: 0, d: 0, c: 0});
+    const T = sum(sez);
+    return `<div class="rz-fil rz-flt"><b style="font-size:16px">📁 Vystavené faktury</b><span style="font-size:13px;color:var(--muted)">uzavřené kódem, PDF uložené na Disku Google</span><span class="sp" style="flex:1"></span>
+        <input class="rz-q" type="search" data-vf="q" placeholder="Hledat číslo, firmu…" value="${esc(V.q)}" style="max-width:220px">
+        <select class="rz-sel${V.obd ? ' akt' : ''}" data-vf="obd"><option value="">Všechna období</option>${roky.map(r => opt(r, 'rok ' + r, V.obd)).join('')}${obd.map(m => opt(m, mesTxt(m), V.obd)).join('')}</select>
+        <select class="rz-sel${V.odb ? ' akt' : ''}" data-vf="odb"><option value="">Všichni odběratelé</option>${odbs.map(o => opt(o, o, V.odb)).join('')}</select>
+        <select class="rz-sel${V.kat ? ' akt' : ''}" data-vf="kat"><option value="">Všechny druhy prací</option>${kats.map(o => opt(o, o, V.kat)).join('')}</select>
+        <span style="font-size:12.5px;color:var(--muted)">Třídit:</span><span class="rz-seg">${[['mes', 'Období'], ['odb', 'Odběratel'], ['kat', 'Druh prací']].map(([k, t]) => `<button type="button" data-vfs="${k}" aria-pressed="${V.sk === k}">${t}</button>`).join('')}</span>
+        <button type="button" class="rz-btn mini" data-a="vf-xls"${sez.length ? '' : ' disabled'}>⬇ Excel přehled</button></div>
+      ${sez.length ? `<div class="rz-list fk-vf"><table><thead><tr><th>Číslo</th><th>Vystaveno</th><th>Splatnost</th><th>Odběratel</th><th>Druh prací</th><th class="n">Základ</th><th class="n">DPH</th><th class="n">Celkem</th><th>Uzavřel(a)</th><th>PDF</th></tr></thead><tbody>
+        ${[...skup.entries()].map(([k, a]) => { const t = sum(a); return `<tr class="sk"><td colspan="5"><b>${esc(V.sk === 'mes' ? mesTxt(k) : k)}</b> <span>${a.length} ${a.length === 1 ? 'faktura' : a.length < 5 ? 'faktury' : 'faktur'}</span></td><td class="n">${kc(t.z)}</td><td class="n">${kc(t.d)}</td><td class="n"><b>${kc(t.c)}</b></td><td colspan="2"></td></tr>` + a.map(x => `<tr class="kl" data-fak="${esc(x.f.id)}"><td><b>${esc(x.f.cislo || '')}</b></td><td>${esc(datCz(x.f.datum))}</td><td>${esc(datCz(x.f.splatnost))}</td><td>${esc(x.odb)}</td><td>${esc(x.kat)}</td><td class="n">${kc(x.s.zakl)}</td><td class="n">${kc(x.s.dan || 0)}</td><td class="n"><b>${kc(x.s.celkem)}</b></td><td>${esc(x.f.uzavreno.kdo || '')}</td><td>${x.f.uzavreno.pdf ? `<a href="${esc(x.f.uzavreno.pdf.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">PDF</a>` : `<button type="button" class="rz-btn mini" data-vfpdf="${esc(x.f.id)}">PDF</button>`}</td></tr>`).join(''); }).join('')}
+        <tr class="sum"><td colspan="5"><b>Celkem ${sez.length} ${sez.length === 1 ? 'faktura' : sez.length < 5 ? 'faktury' : 'faktur'}</b></td><td class="n"><b>${kc(T.z)}</b></td><td class="n"><b>${kc(T.d)}</b></td><td class="n"><b>${kc(T.c)}</b></td><td colspan="2"></td></tr></tbody></table></div>`
+      : `<div class="rz-empty"><b>${vse.length ? 'Filtru neodpovídá žádná faktura' : 'Zatím žádná vystavená faktura'}</b>${vse.length ? '' : 'Faktura se sem uloží sama, jakmile ji uzavřete kódem z e-mailu (Vytvořit fakturu → Uzavřít a uložit).'}</div>`}`;
+  }
   /* ----- panel Fakturace ----- */
   function stavFaktury(f, C) {
     let nad = 0, cena = 0, mimo = 0, kcF = 0;
@@ -1155,6 +1196,12 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     on('[data-a="v-obj"]', 'click', () => priraditObjekt([...S.vyb]));
     on('[data-a="v-fak"]', 'click', () => vytvorFakturu());
     on('[data-a="fak-dal"]', 'click', () => dokonciVyber());
+    on('[data-a="fak-klic"]', 'click', () => vyberKlicem());
+    on('[data-vf]', 'change', e => { S.vf[e.currentTarget.dataset.vf] = e.currentTarget.value; prekresli(); });
+    on('[data-vf="q"]', 'input', e => { S.vf.q = e.currentTarget.value; clearTimeout(vyberKlicem.t); vyberKlicem.t = setTimeout(() => { prekresli(); const i = EL.querySelector('[data-vf="q"]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 350); });
+    on('[data-vfs]', 'click', e => { S.vf.sk = e.currentTarget.dataset.vfs; prekresli(); });
+    on('[data-vfpdf]', 'click', async e => { e.stopPropagation(); const f = faktury(R.rec.id).find(x => x.id === e.currentTarget.dataset.vfpdf); if (f) { const b = await fakturaPdf(f); stahni(b, nazevPdf(f)); } });
+    on('[data-a="vf-xls"]', 'click', () => { const l = vystavene(); ulozExcel('Vystavené faktury – ' + ((H.projekt && H.projekt().name) || ''), [{n: 'Vystavené faktury', rows: [['Číslo', 'Vystaveno', 'Splatnost', 'Období', 'Odběratel', 'IČO', 'Druh prací', 'Základ', 'DPH', 'Celkem', 'Uzavřel(a)', 'PDF']].concat(l.map(x => [x.f.cislo, x.f.datum, x.f.splatnost, x.mes, x.odb, (x.f.odb || {}).ico || '', x.kat, x.s.zakl, x.s.dan || 0, x.s.celkem, x.f.uzavreno.kdo || '', x.f.uzavreno.pdf ? x.f.uzavreno.pdf.url : '']))}]); });
     on('[data-a="fak-zrus"]', 'click', () => { if (S.fak && S.fak.F.pol.length && !confirm('Zrušit rozpracovanou fakturu?')) return; S.fak = null; S.vyb.clear(); prekresli(); });
     on('[data-a="fak-vlastni"]', 'click', () => vlastniPolozka(l => { if (S.fak) { S.fak.F.pol.push(l); prekresli(); toast('Vlastní položka přidána.'); } }));
     on('[data-a="vyb-vse"]', 'change', e => { VIS.forEach(i => { const r = R.rows[i]; if (r.t === 'P') e.target.checked ? S.vyb.add(r.id) : S.vyb.delete(r.id); }); prekresli(); });
@@ -1443,23 +1490,24 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const jindeKc = new Map();
     faktury(R.rec.id).forEach(f => { if (f.id === F.id) return; (f.pol || []).forEach(l => { if (l.r) jindeKc.set(l.r, (jindeKc.get(l.r) || 0) + (Number(l.mn) || 0) * (Number(l.jc) || 0)); }); });
     const ov = okno(nova ? 'Nová faktura' : 'Faktura ' + (F.cislo || '') + (uzav ? ' – uzavřená 🔒' : ''), `${!uzav && F.keSchvaleni ? `<div class="rz-info" style="background:#fff3d6;border-color:#f0c96b;color:#6b4500">⏳ Faktura čeká na schválení (poslal(a) ${esc(F.keSchvaleni.kdo || '')}, ${esc(new Date(F.keSchvaleni.kdy).toLocaleString('cs-CZ'))}).${smi('fakU') ? ' Zkontrolujte ji a klikněte 🧾 Vytvořit fakturu (PDF) → Uzavřít a uložit.' : ''}</div>` : ''}${!uzav && zam ? '<div class="rz-info">Fakturu můžete jen prohlížet – připravovat faktury vám správce nepovolil.</div>' : ''}${uzav ? `<div class="rz-info" style="background:#dcefe3;border-color:#9fd1b3;color:#1d4d31">🔒 Faktura je uzavřená (${esc(new Date(F.uzavreno.kdy).toLocaleString('cs-CZ'))}, ${esc(F.uzavreno.kdo || '')}). Nejde měnit ani smazat a vyfakturované množství je v rozpočtu zamčené.</div>` : ''}
-      <div class="rz-pole"><label>Komu fakturovat<select data-f="odbV"${dis}><option value="">${esc((udaje().odb || {}).firma ? (udaje().odb.firma + ' (obvyklý odběratel)') : 'Obvyklý odběratel – zatím nevyplněn')}</option>${firmy.filter(z => z.firma).map(z => `<option value="f:${esc(z.id)}"${F.odbV === 'f:' + z.id ? ' selected' : ''}>${esc(z.firma)}</option>`).join('')}${dis ? '' : '<option value="__jiny">Jiný / upravit obvyklého…</option>'}</select></label>
+      <div class="fk-hl"><label class="fk-komu">Komu fakturovat (odběratel)<select data-f="odbV"${dis}><option value="">${esc((udaje().odb || {}).firma ? (udaje().odb.firma + ' (obvyklý odběratel)') : 'Obvyklý odběratel – zatím nevyplněn')}</option>${firmy.filter(z => z.firma).map(z => `<option value="f:${esc(z.id)}"${F.odbV === 'f:' + z.id ? ' selected' : ''}>${esc(z.firma)}</option>`).join('')}${dis ? '' : '<option value="__jiny">Jiný / upravit obvyklého…</option>'}</select></label>
         <label>Číslo faktury<input data-f="cislo" value="${esc(F.cislo)}"${dis}></label>
-        <label>Firma (provádí práce)<select data-f="firma"${dis}><option value="">— nevybráno —</option>${firmy.map(z => `<option value="${esc(z.id)}"${F.firma === z.id ? ' selected' : ''}>${esc(z.firma)}</option>`).join('')}</select></label>
+        <label>Vystaveno<input type="date" data-f="datum" value="${esc(F.datum)}"${dis}></label>
+        <label>Zdaň. plnění<input type="date" data-f="duzp" value="${esc(F.duzp)}"${dis}></label>
+        <label>Splatnost<input type="date" data-f="splatnost" value="${esc(F.splatnost)}"${dis}></label>
+        <label>DPH<select data-f="dph"${dis}>${DPH.map(([k, t]) => `<option value="${k}"${F.dph === k ? ' selected' : ''}>${t}</option>`).join('')}</select></label></div>
+      <details class="fk-dalsi"${F.kat || F.od || F.do || F.pozn ? ' open' : ''}><summary>Další údaje na faktuře – druh prací, období, poznámka</summary><div class="rz-pole">
         <label>Druh prací / činnost<select data-f="kat"${dis}><option value="">— celý rozpočet —</option>${ks.map(k => `<option value="${esc(k.id)}"${F.kat === k.id ? ' selected' : ''}>${k.virt ? 'Činnost: ' : ''}${esc(k.nazev)}</option>`).join('')}</select></label>
         <label>Období od<input type="date" data-f="od" value="${esc(F.od)}"${dis}></label><label>Období do<input type="date" data-f="do" value="${esc(F.do)}"${dis}></label>
-        <label>Datum vystavení<input type="date" data-f="datum" value="${esc(F.datum)}"${dis}></label>
-        <label>Datum zdaň. plnění<input type="date" data-f="duzp" value="${esc(F.duzp)}"${dis}></label>
-        <label>Splatnost<input type="date" data-f="splatnost" value="${esc(F.splatnost)}"${dis}></label>
-        <label>DPH<select data-f="dph"${dis}>${DPH.map(([k, t]) => `<option value="${k}"${F.dph === k ? ' selected' : ''}>${t}</option>`).join('')}</select></label>
-        <label>Poznámka<input data-f="pozn" value="${esc(F.pozn)}"${dis}></label></div>
+        <label style="grid-column:span 2">Poznámka na faktuře<input data-f="pozn" value="${esc(F.pozn)}"${dis}></label></div></details>
       ${zam ? '' : `<div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat title="Vrátí vás do rozpočtu, kde položky přehledně zaškrtnete (s filtry)">+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-soupis>⬆ Načíst soupis prací z Excelu</button><button type="button" class="rz-btn" data-mimo>+ Vlastní položka (vícepráce…)</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>`}
-      <div class="rz-fil rz-pct"${zam ? ' hidden' : ''}><b>Fakturovat procentem:</b> <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
-        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">tato fakturace = % z rozpočtu</button>
-        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">hotovo celkem % (odečte dřívější)</button>
-        <span style="font-size:12.5px;color:var(--muted)">Platí pro všechny položky v této fakturaci. Jednotlivé řádky jde potom upravit ručně.</span></div>
+      <div class="rz-fil rz-pct"${zam ? ' hidden' : ''}><b>Fakturovat hromadně procentem</b> <span style="font-size:12.5px;color:var(--muted)">(všem položkám najednou)</span>: <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
+        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">nastavit všem: tato faktura = % z rozpočtu</button>
+        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">nastavit všem: hotovo celkem % (odečte dřívější)</button>
+        <span style="font-size:12.5px;color:var(--muted)">Hodí se, když fakturujete hodně položek stejným dílem. Jednotlivé řádky pak můžete v tabulce upravit ručně. Procenta se na fakturu netisknou.</span></div>
       <div id="rz-fw"></div>
-      <div class="rz-list rz-fl"><table><thead><tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Tato faktura MJ</th><th class="n">nebo %</th><th class="n">J. cena</th><th class="n">Celkem Kč</th><th class="n">Zbývá MJ</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
+      <div class="rz-list rz-fl fk-tab"><table><thead><tr class="fk-g"><th colspan="6">Z rozpočtu</th><th colspan="3" class="tf">Tato faktura – zadejte množství, nebo %</th><th colspan="2" class="kc">Na fakturu</th><th colspan="2"></th></tr>
+        <tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Zbývá</th><th class="n tf">Množství</th><th class="n tf">%</th><th class="tf">Rychle</th><th class="n kc">J. cena</th><th class="n kc">Celkem Kč</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
       zam ? `<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button><button type="button" class="rz-btn zl" data-pdf>⬇ Faktura PDF</button>`
         : `${nova ? '' : '<button type="button" class="rz-btn del" data-smaz>Smazat</button>'}<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn" data-ok>Uložit rozpracovanou</button><button type="button" class="rz-btn cr" data-faktura>🧾 Vytvořit fakturu (PDF)</button>`, 'siroky');
     const kontrola = l => {
@@ -1480,9 +1528,12 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         const {r, w, zb} = kontrola(l), cl = (Number(l.mn) || 0) * (Number(l.jc) || 0); sum += cl;
         if (!r) mimo++; if (w.some(x => !x[0])) nad++; else if (w.some(x => x[0] === 'o' && r)) cena++;
         return `<tr class="${w.some(x => !x[0]) ? 'nad' : w.length ? 'cena' : ''}" data-i="${i}"><td>${esc(r ? r.k : '')}</td><td>${r ? esc(r.d) + (C0.obj[r.i] ? ' ' + obBadges(C0.obj[r.i]) : '') : `<input class="t" data-l="t" value="${esc(l.t || '')}" placeholder="popis práce">`}</td><td>${r ? esc(r.mj) : `<input class="t" style="min-width:50px" data-l="mj" value="${esc(l.mj || '')}">`}</td>
-          <td class="n">${r ? mnT(r.mn) + (l.p ? `<div style="font-size:11.5px;color:var(--muted)" title="Výběr podle objektu/podlaží: patří sem jen tento podíl z výkazu výměr">z toho výběr ${mnT(r.mn * l.p)} (${Math.round(l.p * 100)} %)</div>` : '') : ''}</td><td class="n">${r ? mnT(jinde.get(l.r) || 0) : ''}</td><td class="n"><input data-l="mn" inputmode="decimal" value="${esc(l.mn === 0 ? '' : String(l.mn).replace('.', ','))}" placeholder="0"${dis}></td><td class="n"><input data-l="pct" inputmode="decimal" style="min-width:58px" value="${r && r.mn && l.mn ? esc(String(Math.round(l.mn / (r.mn * (l.p || 1)) * 1000) / 10).replace('.', ',')) : ''}" placeholder="%"${dis}></td><td class="n"><input data-l="jc" inputmode="decimal" value="${esc(String(l.jc).replace('.', ','))}"${dis}></td><td class="n"><b>${kc(cl)}</b></td><td class="n">${zb == null ? '' : `<span style="color:${zb < -EPS ? 'var(--bad)' : 'inherit'}">${mnT(zb)}</span>`}</td>
+          <td class="n">${r ? mnT(r.mn) + (l.p ? `<div style="font-size:11.5px;color:var(--muted)" title="Výběr podle objektu/podlaží: patří sem jen tento podíl z výkazu výměr">z toho výběr ${mnT(r.mn * l.p)} (${Math.round(l.p * 100)} %)</div>` : '') : ''}</td><td class="n">${r ? mnT(jinde.get(l.r) || 0) : ''}</td><td class="n">${zb == null ? '' : `<span style="color:${zb < -EPS ? 'var(--bad)' : 'inherit'}">${mnT(zb)}</span>`}</td>
+          <td class="n tf"><input data-l="mn" inputmode="decimal" value="${esc(l.mn === 0 ? '' : String(l.mn).replace('.', ','))}" placeholder="0"${dis}></td><td class="n tf"><input data-l="pct" inputmode="decimal" style="min-width:58px" value="${r && r.mn && l.mn ? esc(String(Math.round(l.mn / (r.mn * (l.p || 1)) * 1000) / 10).replace('.', ',')) : ''}" placeholder="%"${dis}></td>
+          <td class="tf">${r && !zam ? `<span class="fk-rych"><button type="button" data-rych="100" title="Celé množství z rozpočtu">100 %</button><button type="button" data-rych="zb" title="Všechno, co ještě zbývá vyfakturovat">zbytek</button><button type="button" data-rych="0" title="Vynulovat">0</button></span>` : ''}</td>
+          <td class="n kc"><input data-l="jc" inputmode="decimal" value="${esc(String(l.jc).replace('.', ','))}"${dis}></td><td class="n kc"><b>${kc(cl)}</b></td>
           <td>${w.length ? w.map(x => `<div class="w${x[0] ? ' o' : ''}">⚠ ${esc(x[1])}</div>`).join('') : (Number(l.mn) ? '<span class="rz-ok">✓</span>' : '')}</td><td>${zam ? '' : `<button type="button" class="rz-btn mini" data-del="${i}" title="Odebrat řádek">✕</button>`}</td></tr>`;
-      }).join('') || '<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:20px">Zatím žádné položky. Klikněte <b>+ Přidat položky z rozpočtu</b> nebo <b>Načíst soupis prací z Excelu</b>.</td></tr>';
+      }).join('') || '<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:20px">Zatím žádné položky. Klikněte <b>+ Přidat položky z rozpočtu</b> nebo <b>Načíst soupis prací z Excelu</b>.</td></tr>';
       ov.querySelector('#rz-fs').innerHTML = `Celkem <b>${kc(sum)} Kč</b> · ${F.pol.length} položek`;
       ov.querySelector('#rz-fw').innerHTML = nad || cena || mimo ? `<div class="rz-info${nad ? ' cerv' : ''}">⚠ Kontrola: ${[nad ? nad + ' položek přes rozpočet (množství nebo Kč)' : '', cena ? cena + ' s jinou cenou nebo mimo druh prací' : '', mimo ? mimo + ' mimo rozpočet' : ''].filter(Boolean).join(' · ')}</div>` : F.pol.length ? '<div class="rz-info" style="background:#dcefe3;border-color:#9fd1b3;color:#1d4d31">✓ Vše sedí s rozpočtem.</div>' : '';
     };
@@ -1501,7 +1552,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       if (ae && ae[0] != null) { const n = tb.querySelector(`[data-i="${ae[0]}"] [data-l="${ae[1]}"]`); if (n) n.focus(); }
     });
     tb.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset.l) { e.preventDefault(); const all = [...tb.querySelectorAll('[data-l="mn"]')], k = all.indexOf(e.target); e.target.dispatchEvent(new Event('change', {bubbles: true})); const n = [...tb.querySelectorAll('[data-l="mn"]')][k + 1]; if (n) n.focus(); } });
-    tb.addEventListener('click', e => { const d = e.target.closest('[data-del]'); if (d) { F.pol.splice(+d.dataset.del, 1); kresli(); } });
+    tb.addEventListener('click', e => {
+      const d = e.target.closest('[data-del]'); if (d) { F.pol.splice(+d.dataset.del, 1); kresli(); return; }
+      const q = e.target.closest('[data-rych]'); if (!q) return;
+      const l = F.pol[+q.closest('[data-i]').dataset.i], r = l && l.r && R.byId.get(l.r); if (!r || r.mn == null) return;
+      const zakl = r.mn * (l.p || 1), v = q.dataset.rych === '100' ? zakl : q.dataset.rych === 'zb' ? Math.max(0, zakl - (jinde.get(l.r) || 0)) : 0;
+      l.mn = Math.round(v * 1000) / 1000; kresli();
+    });
     ov.querySelectorAll('[data-pct]').forEach(b => b.onclick = () => {
       const p = cislo(ov.querySelector('#rz-pct').value);
       if (p == null || p < 0) return toast('Zadejte procento, např. 30.');
@@ -1585,7 +1642,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   const udaje = () => (H && H.udajeFaktury && H.udajeFaktury()) || {};
   const plusDni = (d, n) => { const x = new Date((d || new Date().toISOString().slice(0, 10)) + 'T12:00:00'); x.setDate(x.getDate() + (Number(n) || 0)); return x.toISOString().slice(0, 10); };
   const datCz = d => d ? String(d).slice(0, 10).split('-').reverse().map(Number).join('. ') : '';
-  const nazevPdf = F => 'Faktura ' + (F.cislo || '') + '.pdf';
+  const nazevPdf = F => { const o = (F.odb && F.odb.firma) || (udaje().odb || {}).firma || ''; return ('Faktura ' + (F.cislo || '') + (o ? ' - ' + o : '') + (F.datum ? ' - ' + String(F.datum).slice(0, 7) : '')).replace(/[\\/:*?"<>|]/g, ' ') + '.pdf'; };
   function stahni(blob, jm) { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = jm.replace(/[\\/:*?"<>|]/g, ' '); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }
   function vytvorFakturu() {
     if (!R) return toast('Nejdřív nahrajte rozpočet.');
@@ -1632,6 +1689,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     return `<div class="rz-fakl"><b>🧾 Faktura ${esc(F.cislo || '')}${odb ? ' pro ' + esc(odb) : ''}</b>
       <span>${nV ? `Zaškrtnuto <b>${nf0.format(nV)}</b> položek · ${kc0(kcV)}` : filtr ? `Nic nezaškrtnuto – vezme se všech <b>${nf0.format(VIS._n)}</b> vyfiltrovaných položek` : 'Zaškrtněte položky v rozpočtu (☐ vlevo u řádku, ☐ v záhlaví = všechny zobrazené)'}${uz.size ? ` · ve faktuře už ${nf0.format(uz.size)}` : ''}${vl ? ` · vlastních ${vl}` : ''}</span>
       <span class="sp" style="flex:1"></span>
+      <button type="button" class="rz-btn zl" data-a="fak-klic" title="Najednou vybere položky podle kódu, slov v popisu, kapitoly, řemesla nebo pořadových čísel">☑ Vybrat podle klíče…</button>
       <button type="button" class="rz-btn" data-a="fak-vlastni">+ Vlastní položka (vícepráce…)</button>
       <button type="button" class="rz-btn" data-a="fak-zrus">Zrušit</button>
       <button type="button" class="rz-btn cr" data-a="fak-dal">Pokračovat – rozsah v MJ nebo % →</button></div>`;
@@ -1646,6 +1704,48 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       if (!g('t')) return toast('Napište popis práce.');
       ov.zavri(); hotovo({r: '', t: g('t'), mj: g('mj'), mn: cislo(g('mn')) == null ? 1 : cislo(g('mn')), jc: cislo(g('jc')) || 0});
     };
+  }
+  // 4.75/4.76: hromadný výběr položek podle klíče (kód, slova, cena, objekt, MJ, kapitola, řemeslo, jen nevyfakturované)
+  function vyberKlicem() {
+    const C = spocti(R), sekce = R.rows.filter(r => r.t === 'S1' || r.t === 'S2'), cs = vsechnyKat(R.rec.id);
+    const obj = Object.keys(C.objSum).filter(Boolean).sort((a, b) => a.localeCompare(b, 'cs'));
+    const mjN = new Map(); R.polozky.forEach(r => { const m = String(r.mj || '').trim(); mjN.set(m, (mjN.get(m) || 0) + 1); });
+    const mjs = [...mjN].sort((a, b) => b[1] - a[1]).slice(0, 14);
+    const ov = okno('Vybrat položky podle klíče', `<div class="rz-info">Vyplňte jedno nebo více polí – položka se vybere, když splní <b>všechna vyplněná</b>. Počet nalezených se ukazuje dole hned.</div>
+      <div class="rz-pole"><label>Kód položky začíná na<input data-k="kod" placeholder="např. 767, 764 (víc oddělte čárkou)"></label>
+        <label>Popis obsahuje slovo<input data-k="txt" placeholder="např. zábradlí, okno (stačí jedno z nich)"></label>
+        <label>Cena položky celkem od (Kč)<input data-k="od" inputmode="numeric" placeholder="např. 10 000"></label><label>do (Kč)<input data-k="do" inputmode="numeric" placeholder="nechte prázdné"></label></div>
+      ${obj.length ? `<div class="fk-chw"><b>Objekt / křídlo</b><div class="fk-chs">${obj.map(o => `<label class="fk-ch"><input type="checkbox" data-ob value="${esc(o)}"><span>${o ? obBadge(o) + ' ' + esc(o) : 'bez objektu'}</span></label>`).join('')}</div></div>` : ''}
+      <div class="fk-chw"><b>Měrná jednotka</b><div class="fk-chs">${mjs.map(([m, n]) => `<label class="fk-ch"><input type="checkbox" data-mj value="${esc(m)}"><span>${esc(m || 'bez MJ')} <small>${nf0.format(n)}</small></span></label>`).join('')}</div></div>
+      <div class="fk-kl2"><div><b>Kapitola / díl rozpočtu</b><input class="fk-kh" data-kh="s" placeholder="hledat kapitolu…"><div class="fk-kl" data-kl="s">${sekce.map(r => `<label data-n="${esc(bezDia(((r.k || '') + ' ' + r.d).toLowerCase()))}"${r.t === 'S1' ? ' class="h"' : ''}><input type="checkbox" value="${r.i}"><span>${esc([r.k, r.d].filter(Boolean).join(' '))}</span><small>${kc0(R.sum[r.i] || 0)}</small></label>`).join('')}</div></div>
+        <div><b>Řemeslo / druh prací</b><input class="fk-kh" data-kh="c" placeholder="hledat řemeslo…"><div class="fk-kl" data-kl="c">${cs.map(k => `<label data-n="${esc(bezDia(k.nazev.toLowerCase()))}"><input type="checkbox" value="${esc(k.id)}"><span>${esc(k.nazev)}</span><small>${nf0.format((k.pol || []).length)}</small></label>`).join('')}</div></div></div>
+      <label class="rz-chk" style="margin-top:8px"><input type="checkbox" data-k="nevyf" checked> Jen položky, které ještě nejsou celé vyfakturované</label>`,
+      `<span id="fk-kn" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn zl" data-ok>Přidat do výběru</button>`, 'siroky');
+    const najdi = () => {
+      const g = k => (ov.querySelector(`[data-k="${k}"]`) || {}).value || '';
+      const kody = g('kod').split(/[,;\s]+/).map(x => x.trim()).filter(Boolean), slova = g('txt').split(/[,;]+/).map(x => bezDia(x.trim().toLowerCase())).filter(Boolean);
+      const od = cislo(g('od').replace(/\s/g, '')), dd = cislo(g('do').replace(/\s/g, '')), nevyf = ov.querySelector('[data-k="nevyf"]').checked;
+      const sk = new Set([...ov.querySelectorAll('[data-kl="s"] input:checked')].map(x => +x.value));
+      const kat = [...ov.querySelectorAll('[data-kl="c"] input:checked')].map(x => cs.find(k => k.id === x.value)).filter(Boolean);
+      const vKat = kat.length ? new Set(kat.flatMap(k => k.pol || [])) : null;
+      const ob = new Set([...ov.querySelectorAll('[data-ob]:checked')].map(x => x.value)), mj = new Set([...ov.querySelectorAll('[data-mj]:checked')].map(x => x.value));
+      if (!kody.length && !slova.length && od == null && dd == null && !sk.size && !vKat && !ob.size && !mj.size) return [];
+      return R.polozky.filter(r => {
+        if (kody.length && !kody.some(k => String(r.k || '').replace(/\s/g, '').startsWith(k))) return false;
+        if (slova.length) { const t = bezDia(String(r.d || '').toLowerCase()); if (!slova.some(w => t.includes(w))) return false; }
+        if (od != null || dd != null) { const n = r.cc || 0; if ((od != null && n < od) || (dd != null && n > dd)) return false; }
+        if (ob.size && !(C.obj[r.i] || []).some(([o]) => ob.has(o))) return false;
+        if (mj.size && !mj.has(String(r.mj || '').trim())) return false;
+        if (sk.size) { let q = r.p, ok = false; while (q >= 0) { if (sk.has(q)) { ok = true; break; } q = R.rows[q].p; } if (!ok) return false; }
+        if (vKat && !vKat.has(r.id)) return false;
+        if (nevyf && r.mn != null) { const x = C.pol.get(r.id); if (x && x.mn >= r.mn - EPS) return false; }
+        return true;
+      });
+    };
+    const ukaz = () => { const n = najdi(); ov.querySelector('#fk-kn').innerHTML = `Nalezeno <b>${nf0.format(n.length)}</b> položek za <b>${kc0(n.reduce((a, r) => a + (r.cc || 0), 0))}</b>`; return n; };
+    ov.addEventListener('input', e => { const h = e.target.dataset.kh; if (h) { const q = bezDia(e.target.value.toLowerCase()); ov.querySelectorAll(`[data-kl="${h}"] label`).forEach(l => { l.hidden = q && !l.dataset.n.includes(q); }); return; } ukaz(); });
+    ov.addEventListener('change', ukaz); ukaz();
+    ov.querySelector('[data-ok]').onclick = () => { const n = najdi(); if (!n.length) return toast('Nic nenalezeno – upravte klíč.'); n.forEach(r => S.vyb.add(r.id)); ov.zavri(); prekresli(); toast('Přidáno do výběru: ' + nf0.format(n.length) + ' položek.'); };
   }
   function dokonciVyber() {
     if (!S.fak) return;
@@ -1744,99 +1844,160 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     return {zakl, sazba, dan, celkem: Math.round((zakl + dan) * 100) / 100};
   }
   // faktura jako PDF (stránky A4 kreslené do obrázku – stejný způsob jako zprávy pro firmy)
+  // 4.75: QR Platba (SPAYD) – účet ve tvaru [předčíslí-]číslo/banka převede na IBAN
+  function ibanCz(u) {
+    u = String(u || '').replace(/\s/g, '').toUpperCase();
+    if (/^CZ\d{22}$/.test(u)) return u;
+    const m = /^(?:(\d{1,6})-)?(\d{2,10})\/(\d{4})$/.exec(u); if (!m) return '';
+    const bban = m[3] + (m[1] || '').padStart(6, '0') + m[2].padStart(10, '0');
+    const kont = 98n - (BigInt(bban + '123500') % 97n);
+    return 'CZ' + String(kont).padStart(2, '0') + bban;
+  }
+  function spayd(F, S_, dod) {
+    const iban = ibanCz(dod.ucet); if (!iban) return '';
+    const vs = String(F.cislo || '').replace(/\D/g, '').slice(0, 10);
+    const ascii = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9 .,\-\/]/g, '').slice(0, 60);
+    return ['SPD*1.0', 'ACC:' + iban, 'AM:' + (Math.round(S_.celkem * 100) / 100).toFixed(2), 'CC:CZK', F.splatnost ? 'DT:' + String(F.splatnost).replace(/-/g, '') : '', vs ? 'X-VS:' + vs : '', 'MSG:' + ascii('Faktura ' + (F.cislo || '') + ' ' + (dod.firma || ''))].filter(Boolean).join('*');
+  }
+  function kresliQr(g, text, x, y, size) {
+    if (!text || typeof window.qrcode !== 'function') return false;
+    const q = window.qrcode(0, 'M'); q.addData(text); q.make();
+    const n = q.getModuleCount(), m = size / (n + 2);
+    g.fillStyle = '#fff'; g.fillRect(x, y, size, size); g.fillStyle = '#000';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) g.fillRect(Math.floor(x + (c + 1) * m), Math.floor(y + (r + 1) * m), Math.ceil(m), Math.ceil(m));
+    return true;
+  }
+  // faktura jako PDF (stránky A4 kreslené do obrázku – stejný způsob jako zprávy pro firmy)
   async function fakturaPdf(F) {
-    const U = udaje(), dod = U.dod || {}, odb = odbFaktury(F), P = (H.projekt && H.projekt()) || {};
-    const W = 1190, Hh = 1684, M = 70, FONT = 'Helvetica, Arial, sans-serif';
-    let logoImg = null;
-    if (dod.logo) logoImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = dod.logo; });
+    const U = udaje(), dod = U.dod || {}, odb = F.odb && F.odb.firma ? F.odb : odbFaktury(F), P = (H.projekt && H.projekt()) || {};
+    const W = 1190, Hh = 1684, M = 72, FONT = 'Helvetica, Arial, sans-serif', INK = '#16191c', SED = '#6b737b', ZL = '#F4D23C', LINKA = '#e3e3dd';
+    const obr = src => new Promise(res => { if (!src) return res(null); const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+    const logoImg = await obr(dod.logo), cxLogo = await obr('ikona-constructo.png');
     const mer = document.createElement('canvas').getContext('2d');
     const zalom = (t, font, maxW, maxL) => { mer.font = font; const out = []; let line = ''; String(t || '').replace(/\s+/g, ' ').trim().split(' ').forEach(w => { const x = line ? line + ' ' + w : w; if (line && mer.measureText(x).width > maxW) { out.push(line); line = w; } else line = x; }); if (line) out.push(line); if (maxL && out.length > maxL) { out.length = maxL; out[maxL - 1] = out[maxL - 1].replace(/\s*\S*$/, '') + '…'; } return out; };
     const nf2 = new Intl.NumberFormat('cs-CZ', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const nfM = new Intl.NumberFormat('cs-CZ', {maximumFractionDigits: 3});
-    const S_ = soucty(F), kat = F.kat && najdiKat(R.rec.id, F.kat);
-    // sloupce tabulky
-    const K = [{k: 'Kód', x: M, w: 150}, {k: 'Popis položky', x: M + 156, w: 456}, {k: 'MJ', x: M + 618, w: 46}, {k: 'Množství', x: M + 670, w: 112, r: 1}, {k: '%', x: M + 788, w: 56, r: 1}, {k: 'J. cena', x: M + 850, w: 96, r: 1}, {k: 'Celkem Kč', x: M + 952, w: 98, r: 1}];
-    const FR = '19px ' + FONT, LH = 23;
-    const radky = (F.pol || []).filter(l => Number(l.mn)).map(l => {
-      const r = l.r && R.byId.get(l.r), zakl = r && r.mn ? r.mn * (l.p || 1) : 0;
-      return {kod: r ? String(r.k || '') : '', d: zalom(r ? r.d : l.t || '', FR, K[1].w - 8, 3), mj: r ? r.mj || '' : l.mj || '', mn: Number(l.mn) || 0, pct: zakl ? Math.round(l.mn / zakl * 1000) / 10 : null, jc: Number(l.jc) || 0, cc: Math.round((Number(l.mn) || 0) * (Number(l.jc) || 0) * 100) / 100};
+    const S_ = soucty(F), kat = F.kat && najdiKat(R.rec.id, F.kat), qrText = spayd(F, S_, dod), vs = String(F.cislo || '').replace(/\D/g, '');
+    // 4.76: na faktuře jen to, co odběratel potřebuje – bez procent a údajů z rozpočtu
+    const K = [{k: '#', x: M, w: 40}, {k: 'Kód', x: M + 44, w: 146}, {k: 'Popis položky', x: M + 196, w: 410}, {k: 'MJ', x: M + 612, w: 54}, {k: 'Množství', x: M + 668, w: 112, r: 1}, {k: 'Cena za MJ', x: M + 784, w: 120, r: 1}, {k: 'Celkem Kč', x: M + 906, w: W - 2 * M - 906, r: 1}];
+    const FR = '17px ' + FONT, LH = 22;
+    const radky = (F.pol || []).filter(l => Number(l.mn)).map((l, i) => {
+      const r = l.r && R.byId.get(l.r);
+      return {n: i + 1, kod: r ? String(r.k || '') : 'vícepráce', d: zalom(r ? r.d : l.t || '', FR, K[2].w - 12, 3), mj: r ? r.mj || '' : l.mj || '', mn: Number(l.mn) || 0, jc: Number(l.jc) || 0, cc: Math.round((Number(l.mn) || 0) * (Number(l.jc) || 0) * 100) / 100};
     });
-    // rozdělení na stránky
-    const HLAVA1 = 820, HLAVA = 200, PATA = Hh - 120, SOUCTY = 300, stranky = [[]];
-    let y = HLAVA1 + 44;
-    radky.forEach(rw => { const h = rw.d.length * LH + 14; if (y + h > PATA) { stranky.push([]); y = HLAVA + 44; } stranky[stranky.length - 1].push(rw); y += h; });
+    const HLAVA1 = 772, HLAVA = 200, PATA = Hh - 110, SOUCTY = 310, stranky = [[]];
+    let y = HLAVA1 + 50;
+    radky.forEach(rw => { const h = rw.d.length * LH + 16; if (y + h > PATA) { stranky.push([]); y = HLAVA + 50; } stranky[stranky.length - 1].push(rw); y += h; });
     if (y + SOUCTY > PATA) stranky.push([]);
     const pages = [];
     for (let pi = 0; pi < stranky.length; pi++) {
       const c = document.createElement('canvas'); c.width = W; c.height = Hh; const g = c.getContext('2d');
       g.fillStyle = '#fff'; g.fillRect(0, 0, W, Hh); g.textBaseline = 'alphabetic';
-      const txt = (t, x, yy, font, col, al) => { g.font = font; g.fillStyle = col || '#16191c'; g.textAlign = al || 'left'; g.fillText(String(t == null ? '' : t), x, yy); g.textAlign = 'left'; };
+      const txt = (t, x, yy, font, col, al, ls) => { g.font = font; g.fillStyle = col || INK; g.textAlign = al || 'left'; if ('letterSpacing' in g) g.letterSpacing = ls || '0px'; g.fillText(String(t == null ? '' : t), x, yy); g.textAlign = 'left'; if ('letterSpacing' in g) g.letterSpacing = '0px'; };
+      const stitek = (t, x, yy, col) => txt(String(t).toUpperCase(), x, yy, 'bold 13px ' + FONT, col || SED, 'left', '2px');
+      const box = (x, yy, w, h, fill, stroke, rad) => { g.beginPath(); if (g.roundRect) g.roundRect(x, yy, w, h, rad == null ? 12 : rad); else g.rect(x, yy, w, h); if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } };
+      const cara = (x, yy, w, col, h) => { g.fillStyle = col || LINKA; g.fillRect(x, yy, w, h || 1); };
+      // logo dodavatele, nebo monogram s názvem firmy
+      const logo = (x, yc, maxW, maxH) => {
+        if (logoImg) { const sc = Math.min(maxW / logoImg.naturalWidth, maxH / logoImg.naturalHeight), lw = logoImg.naturalWidth * sc, lh = logoImg.naturalHeight * sc; g.drawImage(logoImg, x, yc - lh / 2, lw, lh); return; }
+        const s = Math.min(maxH, 84), ini = String(dod.firma || '?').replace(/[^\p{L}\p{N}]/gu, ' ').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        box(x, yc - s / 2, s, s, INK, null, 16); txt(ini, x + s / 2, yc + s * 0.17, 'bold ' + Math.round(s * 0.42) + 'px ' + FONT, ZL, 'center');
+        zalom(dod.firma || '', 'bold 28px ' + FONT, 420, 2).forEach((l, i, a) => txt(l, x + s + 20, yc + 10 - (a.length - 1) * 17 + i * 34, 'bold 28px ' + FONT));
+      };
       let yy;
       if (pi === 0) {
-        if (logoImg) { const sc = Math.min(380 / logoImg.naturalWidth, 130 / logoImg.naturalHeight); g.drawImage(logoImg, M, 56, logoImg.naturalWidth * sc, logoImg.naturalHeight * sc); }
-        else txt(dod.firma || '', M, 110, 'bold 34px ' + FONT);
-        txt('FAKTURA', W - M, 100, 'bold 52px ' + FONT, '#16191c', 'right');
-        txt((F.dph === '0' ? 'číslo ' : 'daňový doklad č. ') + (F.cislo || ''), W - M, 140, '24px ' + FONT, '#444', 'right');
-        g.fillStyle = '#F4D23C'; g.fillRect(M, 200, W - 2 * M, 8);
-        const box = (x, nad, o, extra) => {
-          txt(nad, x, 250, 'bold 16px ' + FONT, '#7a828a'); let yb = 286;
-          zalom(o.firma, 'bold 25px ' + FONT, 500, 2).forEach(l => { txt(l, x, yb, 'bold 25px ' + FONT); yb += 31; });
-          zalom(o.adresa, '20px ' + FONT, 500, 3).forEach(l => { txt(l, x, yb, '20px ' + FONT, '#333'); yb += 26; });
-          yb += 6; if (o.ico) { txt('IČO: ' + o.ico, x, yb, '20px ' + FONT); yb += 26; } if (o.dic) { txt('DIČ: ' + o.dic, x, yb, '20px ' + FONT); yb += 26; }
-          (extra || []).filter(Boolean).forEach(t => { zalom(t, '17px ' + FONT, 500, 2).forEach(l => { txt(l, x, yb, '17px ' + FONT, '#555'); yb += 22; }); });
+        logo(M, 112, 380, 120);
+        txt('FAKTURA', W - M, 104, 'bold 52px ' + FONT, INK, 'right', '3px');
+        txt(F.dph === '0' ? 'číslo dokladu' : 'daňový doklad', W - M, 140, '19px ' + FONT, SED, 'right');
+        txt(F.cislo || '', W - M, 172, 'bold 26px ' + FONT, INK, 'right');
+        cara(M, 204, W - 2 * M, ZL, 6);
+        // dodavatel / odběratel
+        const sw = (W - 2 * M - 60) / 2;
+        const strana = (x, nad, o, extra, zvyr) => {
+          if (zvyr) cara(x - 22, 240, 5, ZL, 196);
+          stitek(nad, x, 258); let yb = 296;
+          zalom(o.firma, 'bold 25px ' + FONT, sw, 2).forEach(l => { txt(l, x, yb, 'bold 25px ' + FONT); yb += 31; });
+          zalom(o.adresa, '18px ' + FONT, sw, 2).forEach(l => { txt(l, x, yb, '18px ' + FONT, '#333'); yb += 25; });
+          yb += 8;
+          if (o.ico) { txt('IČO', x, yb, '16px ' + FONT, SED); txt(o.ico, x + 52, yb, 'bold 18px ' + FONT); }
+          if (o.dic) { txt('DIČ', x + 200, yb, '16px ' + FONT, SED); txt(o.dic, x + 248, yb, 'bold 18px ' + FONT); }
+          yb += 28;
+          (extra || []).filter(Boolean).forEach(t => { zalom(t, '15px ' + FONT, sw, 1).forEach(l => { txt(l, x, yb, '15px ' + FONT, '#5a6168'); yb += 21; }); });
         };
-        box(M, 'DODAVATEL', dod, [dod.email ? 'E-mail: ' + dod.email : '', dod.tel ? 'Tel.: ' + dod.tel : '', dod.rejstrik]);
-        box(W / 2 + 20, 'ODBĚRATEL', odb, []);
-        const vs = String(F.cislo || '').replace(/\D/g, '');
-        const info = [['Datum vystavení', datCz(F.datum)], ['Datum zdanitelného plnění', datCz(F.duzp || F.datum)], ['Datum splatnosti', datCz(F.splatnost)], ['Forma úhrady', 'převodem'],
-          ['Bankovní účet', dod.ucet || ''], ['Variabilní symbol', vs], ['Stavba', P.name || ''], ['Plnění', [kat ? kat.nazev : '', F.od || F.do ? 'za období ' + [datCz(F.od), datCz(F.do)].filter(Boolean).join(' – ') : ''].filter(Boolean).join(', ') || 'práce podle rozpočtu']];
-        g.fillStyle = '#f6f6f3'; g.fillRect(M, 560, W - 2 * M, 200);
-        info.forEach(([k, v], i) => { const x = M + 20 + (i % 2) * ((W - 2 * M) / 2), yb = 600 + Math.floor(i / 2) * 44; txt(k, x, yb, '16px ' + FONT, '#7a828a'); txt(zalom(v, 'bold 19px ' + FONT, 300, 1)[0] || '', x + 215, yb, 'bold 19px ' + FONT); });
-        if (F.pozn) txt(zalom('Poznámka: ' + F.pozn, '17px ' + FONT, W - 2 * M, 1)[0], M, 790, '17px ' + FONT, '#555');
+        strana(M, 'Dodavatel', dod, [dod.rejstrik, [dod.email, dod.tel].filter(Boolean).join('   ·   ')]);
+        strana(M + sw + 60 + 22, 'Odběratel', odb, [], true);
+        // platební údaje
+        box(M, 464, W - 2 * M, 196, '#f6f6f2', null, 14);
+        const pw = (W - 2 * M - 48) / 4, pol = (i, row, k, v, font, col) => { const x = M + 24 + i * pw, yb = 464 + 44 + row * 92; stitek(k, x, yb); txt(v, x, yb + 36, font || 'bold 22px ' + FONT, col || INK); };
+        pol(0, 0, 'Datum vystavení', datCz(F.datum)); pol(1, 0, 'Zdanitelné plnění', datCz(F.duzp || F.datum));
+        const xs = M + 24 + 2 * pw; box(xs - 14, 464 + 18, pw - 10, 74, ZL, null, 10); stitek('Datum splatnosti', xs, 464 + 44, INK); txt(datCz(F.splatnost), xs, 464 + 80, 'bold 24px ' + FONT);
+        pol(3, 0, 'Forma úhrady', 'převodem');
+        cara(M + 24, 464 + 104, W - 2 * M - 48);
+        pol(0, 1, 'Bankovní účet', dod.ucet || '—'); pol(1, 1, 'IBAN', ibanCz(dod.ucet).replace(/(.{4})/g, '$1 ').trim() || '—', 'bold 17px ' + FONT);
+        pol(3, 1, 'Variabilní symbol', vs || '—');
+        // předmět plnění
+        let yb = 696;
+        const plneni = [kat ? kat.nazev : '', F.od || F.do ? 'za období ' + [datCz(F.od), datCz(F.do)].filter(Boolean).join(' – ') : ''].filter(Boolean).join(', ') || 'stavební práce podle rozpočtu';
+        txt('Stavba:', M, yb, '17px ' + FONT, SED); txt(zalom(P.name || '', 'bold 18px ' + FONT, 380, 1)[0] || '', M + 70, yb, 'bold 18px ' + FONT);
+        txt('Předmět plnění:', W / 2, yb, '17px ' + FONT, SED); txt(zalom(plneni, 'bold 18px ' + FONT, W / 2 - M - 140, 1)[0] || '', W / 2 + 134, yb, 'bold 18px ' + FONT);
+        if (F.pozn) txt(zalom('Poznámka: ' + F.pozn, '17px ' + FONT, W - 2 * M, 1)[0], M, yb + 32, '17px ' + FONT, '#555');
+        txt('Fakturujeme vám za provedené práce:', M, 752, 'bold 19px ' + FONT);
         yy = HLAVA1;
       } else {
-        txt('Faktura ' + (F.cislo || '') + ' – pokračování', M, 100, 'bold 26px ' + FONT); txt(dod.firma || '', W - M, 100, '18px ' + FONT, '#555', 'right');
-        g.fillStyle = '#F4D23C'; g.fillRect(M, 130, W - 2 * M, 6);
+        logo(M, 84, 220, 70);
+        txt('Faktura ' + (F.cislo || ''), W - M, 82, 'bold 26px ' + FONT, INK, 'right'); txt('pokračování', W - M, 110, '17px ' + FONT, SED, 'right');
+        cara(M, 140, W - 2 * M, ZL, 5);
         yy = HLAVA;
       }
-      // hlavička tabulky
-      g.fillStyle = '#16191c'; g.fillRect(M, yy, W - 2 * M, 40);
-      K.forEach(k => txt(k.k, k.r ? k.x + k.w - 4 : k.x + 4, yy + 27, 'bold 15px ' + FONT, '#fff', k.r ? 'right' : 'left'));
-      yy += 40;
-      stranky[pi].forEach((rw, j) => {
-        const h = rw.d.length * LH + 14;
-        if (j % 2) { g.fillStyle = '#f7f7f4'; g.fillRect(M, yy, W - 2 * M, h); }
-        const yt = yy + 26;
-        txt(zalom(rw.kod, '17px ' + FONT, K[0].w - 6, 1)[0] || '', K[0].x + 4, yt, '17px ' + FONT, '#444');
-        rw.d.forEach((l, i) => txt(l, K[1].x, yt + i * LH, FR));
-        txt(rw.mj, K[2].x, yt, FR);
-        txt(nfM.format(rw.mn), K[3].x + K[3].w, yt, FR, '#16191c', 'right');
-        txt(rw.pct == null ? '' : String(rw.pct).replace('.', ',') + ' %', K[4].x + K[4].w, yt, '17px ' + FONT, '#555', 'right');
-        txt(nf2.format(rw.jc), K[5].x + K[5].w, yt, FR, '#16191c', 'right');
-        txt(nf2.format(rw.cc), K[6].x + K[6].w, yt, 'bold 19px ' + FONT, '#16191c', 'right');
-        yy += h;
-        g.fillStyle = '#e4e4df'; g.fillRect(M, yy - 1, W - 2 * M, 1);
+      // tabulka položek
+      if (stranky[pi].length) {
+        box(M, yy, W - 2 * M, 46, INK, null, 8);
+        K.forEach(k => txt(k.k, k.r ? k.x + k.w - 10 : k.x + 10, yy + 30, 'bold 15px ' + FONT, '#fff', k.r ? 'right' : 'left'));
+        yy += 50;
+      }
+      stranky[pi].forEach(rw => {
+        const h = rw.d.length * LH + 16, yt = yy + 27;
+        txt(rw.n, K[0].x + 10, yt, '15px ' + FONT, SED);
+        txt(zalom(rw.kod, '15px ' + FONT, K[1].w - 12, 1)[0] || '', K[1].x + 10, yt, '15px ' + FONT, SED);
+        rw.d.forEach((l, i) => txt(l, K[2].x + 10, yt + i * LH, FR));
+        txt(rw.mj, K[3].x + 10, yt, FR, '#333');
+        txt(nfM.format(rw.mn), K[4].x + K[4].w - 10, yt, FR, INK, 'right');
+        txt(nf2.format(rw.jc), K[5].x + K[5].w - 10, yt, FR, INK, 'right');
+        txt(nf2.format(rw.cc), K[6].x + K[6].w - 10, yt, 'bold 18px ' + FONT, INK, 'right');
+        yy += h; cara(M, yy - 1, W - 2 * M);
       });
       if (pi === stranky.length - 1) {
-        yy += 30; const xL = W / 2 + 40, xR = W - M;
-        const rad = (k, v, b) => { txt(k, xL, yy, (b ? 'bold ' : '') + '21px ' + FONT, '#333'); txt(v, xR, yy, (b ? 'bold ' : '') + '21px ' + FONT, '#16191c', 'right'); yy += 34; };
+        yy += 40; const top = yy, xL = W / 2 + 70, xR = W - M;
+        const rad = (k, v) => { txt(k, xL, yy, '20px ' + FONT, '#333'); txt(v, xR, yy, '20px ' + FONT, INK, 'right'); yy += 38; };
         rad('Základ daně', nf2.format(S_.zakl) + ' Kč');
         if (F.dph === 'pdp') rad('DPH', 'přenesená povinnost'); else if (S_.sazba) rad('DPH ' + S_.sazba + ' %', nf2.format(S_.dan) + ' Kč');
-        yy += 6; g.fillStyle = '#16191c'; g.fillRect(xL - 16, yy - 6, xR - xL + 16, 64);
-        txt('Celkem k úhradě', xL, yy + 36, 'bold 24px ' + FONT, '#F4D23C'); txt(nf2.format(S_.celkem) + ' Kč', xR - 16, yy + 38, 'bold 30px ' + FONT, '#F4D23C', 'right');
-        yy += 100;
-        if (F.dph === 'pdp') zalom('Daň odvede zákazník – přenesená daňová povinnost podle § 92e zákona č. 235/2004 Sb., o dani z přidané hodnoty.', '18px ' + FONT, W - 2 * M, 3).forEach(l => { txt(l, M, yy, '18px ' + FONT, '#333'); yy += 24; });
-        if (F.dph === '0') { txt('Dodavatel není plátcem DPH.', M, yy, '18px ' + FONT, '#333'); yy += 24; }
-        yy += 40; txt('Vystavil(a): ' + (F.uzavreno ? F.uzavreno.kdo : kdo()) + (dod.firma ? ', ' + dod.firma : ''), M, yy, '18px ' + FONT, '#333');
+        cara(xL, yy - 18, xR - xL, INK, 2);
+        box(xL - 24, yy, xR - xL + 24, 96, ZL, null, 14);
+        stitek('Celkem k úhradě', xL, yy + 34, INK); txt(nf2.format(S_.celkem) + ' Kč', xR - 22, yy + 76, 'bold 36px ' + FONT, INK, 'right');
+        yy += 130;
+        // QR Platba vlevo od součtů
+        if (qrText) {
+          box(M, top - 22, 460, 204, null, LINKA, 14);
+          if (kresliQr(g, qrText, M + 14, top - 8, 172)) { txt('QR Platba', M + 204, top + 26, 'bold 21px ' + FONT); zalom('Naskenujte v mobilním bankovnictví. Vyplní se účet, částka, variabilní symbol i datum splatnosti.', '15px ' + FONT, 236, 5).forEach((l, i) => txt(l, M + 204, top + 56 + i * 21, '15px ' + FONT, '#555')); }
+        }
+        yy = Math.max(yy, top + 214);
+        if (F.dph === 'pdp') zalom('Daň odvede zákazník – přenesená daňová povinnost podle § 92e zákona č. 235/2004 Sb., o dani z přidané hodnoty.', '17px ' + FONT, W - 2 * M, 3).forEach(l => { txt(l, M, yy, '17px ' + FONT, '#333'); yy += 24; });
+        if (F.dph === '0') { txt('Dodavatel není plátcem DPH.', M, yy, '17px ' + FONT, '#333'); yy += 24; }
+        yy += 14;
+        stitek('Vystavil(a)', M, yy); txt((F.uzavreno ? F.uzavreno.kdo : kdo()) + (dod.firma ? ', ' + dod.firma : ''), M, yy + 30, '18px ' + FONT, INK);
+        stitek('Razítko a podpis', xL, yy); cara(xL, yy + 64, xR - xL, '#b9b9b2');
       }
-      txt('Faktura ' + (F.cislo || '') + ' · strana ' + (pi + 1) + ' z ' + stranky.length, M, Hh - 50, '15px ' + FONT, '#8a929a');
-      txt('Vystaveno v Constructo', W - M, Hh - 50, '15px ' + FONT, '#8a929a', 'right');
+      // patička: údaje dodavatele + malé logo Constructo
+      cara(M, Hh - 86, W - 2 * M);
+      txt([dod.firma, dod.ico ? 'IČO ' + dod.ico : '', dod.rejstrik].filter(Boolean).join('  ·  '), M, Hh - 52, '13px ' + FONT, '#8a929a');
+      txt('Faktura ' + (F.cislo || '') + '  ·  strana ' + (pi + 1) + ' z ' + stranky.length, W - M, Hh - 52, '13px ' + FONT, '#8a929a', 'right');
+      if (cxLogo) { g.drawImage(cxLogo, W - M - 196, Hh - 40, 20, 20); txt('vystaveno v Constructo', W - M, Hh - 25, '12px ' + FONT, '#8a929a', 'right'); }
       pages.push(c);
     }
     const jpgs = [];
-    for (const c of pages) { const b = await new Promise(res => c.toBlob(res, 'image/jpeg', .9)); jpgs.push({jpg: new Uint8Array(await b.arrayBuffer()), w: W, h: Hh}); }
+    for (const c of pages) { const b = await new Promise(res => c.toBlob(res, 'image/jpeg', .92)); jpgs.push({jpg: new Uint8Array(await b.arrayBuffer()), w: W, h: Hh}); }
     const pdf = window.CXZprava.jpegPdf(jpgs);
-    pdf.nahled = pages.map(c => c.toDataURL('image/jpeg', .8));   // náhled jako obrázky (PDF v okně Safari/Chrome nemusí jít zobrazit)
+    pdf.nahled = pages.map(c => c.toDataURL('image/jpeg', .8));
     return pdf;
   }
   async function nahledFaktury(F) {
