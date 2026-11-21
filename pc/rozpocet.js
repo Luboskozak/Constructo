@@ -151,6 +151,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .fk-tab td.tf input{border:2px solid #e0b800;font-weight:700;font-size:15px}.fk-rych{display:inline-flex;gap:3px;white-space:nowrap}.fk-rych button{white-space:nowrap}.fk-rych button{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:3px 7px;cursor:pointer;color:var(--ink)}.fk-rych button:hover{background:#F4D23C}
 .fk-tab thead tr:not(.fk-g) th{font-size:13px;color:#16191c;background:#e4e4de;border-bottom:2px solid #16191c}.fk-tab thead tr:not(.fk-g) th.tf{background:#fbe78a}.fk-tab thead tr:not(.fk-g) th.kc{background:#d9d9d2}
 .fk-chw{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.fk-chw>b{min-width:150px;padding-top:6px}.fk-chs{display:flex;flex-wrap:wrap;gap:6px}.fk-ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13.5px;cursor:pointer;background:var(--panel)}.fk-ch:has(input:checked){background:#F4D23C;border-color:#16191c}.fk-ch small{color:var(--muted)}
+.fk-hrom{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff7cf;border:2px solid #F4D23C;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:15px}.fk-hrom>b{font-size:16px}.fk-hrom input{width:90px;font-size:20px;font-weight:800;text-align:right;padding:6px 8px;border:2px solid #16191c;border-radius:8px}.fk-hromb{font-size:16px!important;padding:10px 18px!important}.fk-hrom small{flex-basis:100%;color:#5a5f63;font-size:12.5px}
+.rz-tab [data-vp]{cursor:pointer;width:16px;height:16px}
 .fk-kl2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.fk-kl2>div{display:flex;flex-direction:column;gap:6px}.fk-kh{font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);color:var(--ink)}.fk-kl{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;padding:4px}.fk-kl label{display:flex;gap:8px;align-items:center;font-size:13.5px;padding:3px 6px;border-radius:6px;cursor:pointer}.fk-kl label:hover{background:rgba(0,0,0,.04)}.fk-kl label span{flex:1}.fk-kl label small{color:var(--muted);white-space:nowrap}.fk-kl label.h{font-weight:700}
 .fk-vf tr.sk td{background:#f3f3ef;border-top:2px solid var(--line)}.fk-vf tr.sk span{font-size:12.5px;color:var(--muted);margin-left:6px}.fk-vf tr.sum td{border-top:2px solid var(--ink)}
 @media (max-width:900px){.fk-hl{grid-template-columns:1fr 1fr}.fk-kl2{grid-template-columns:1fr}}
@@ -846,6 +848,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 
   /* ----- panel Rozpočet: stejná tabulka jako v Excelu (všechny sloupce, barvy, seskupení), kreslí se jen viditelné řádky ----- */
   let VIS = [];
+  const TAH = {on: false, add: true, posl: null};
   // úrovně seskupení: z Excelu (outline 1–7), a když je Excel nemá, podle dílů / položek / výkazu výměr
   function obrys(Rx) {
     const rows = Rx.rows, n = rows.length, lv = new Uint8Array(n), head = new Uint8Array(n), skr0 = new Uint8Array(n);
@@ -1197,6 +1200,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     on('[data-a="v-fak"]', 'click', () => vytvorFakturu());
     on('[data-a="fak-dal"]', 'click', () => dokonciVyber());
     on('[data-a="fak-klic"]', 'click', () => vyberKlicem());
+    on('[data-a="fak-vse"]', 'click', () => { let n = 0; VIS.forEach(i => { const r = R.rows[i]; if (r.t === 'P') { S.vyb.add(r.id); n++; } }); prekresli(); toast(n ? 'Vybráno ' + nf0.format(n) + ' zobrazených položek.' : 'V tabulce teď nejsou žádné položky – upravte filtr.'); });
+    on('[data-a="fak-nic"]', 'click', () => { S.vyb.clear(); prekresli(); });
     on('[data-vf]', 'change', e => { S.vf[e.currentTarget.dataset.vf] = e.currentTarget.value; prekresli(); });
     on('[data-vf="q"]', 'input', e => { S.vf.q = e.currentTarget.value; clearTimeout(vyberKlicem.t); vyberKlicem.t = setTimeout(() => { prekresli(); const i = EL.querySelector('[data-vf="q"]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 350); });
     on('[data-vfs]', 'click', e => { S.vf.sk = e.currentTarget.dataset.vfs; prekresli(); });
@@ -1212,9 +1217,29 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         const tg = e.target.closest('[data-tg]');
         if (tg) { const i = +tg.dataset.tg, r = R.rows[i]; const skryto = r.t === 'L' ? S.zav.has(r.id) : zavreno(i); if (!skryto) { S.otev.delete(r.id); S.zav.add(r.id); } else { S.zav.delete(r.id); S.otev.add(r.id); } SCROLL = tab.scrollTop; prekresli(); return; }
       });
+      // 4.76: zaškrtávání tažením myší a Shift+klik (rozsah)
+      const nastav = (el, add) => { const r = R.rows[+el.dataset.vp]; add ? S.vyb.add(r.id) : S.vyb.delete(r.id); el.checked = add; const rw = el.closest('.rz-r'); if (rw) rw.classList.toggle('vyb', add); };
+      tab.addEventListener('mousedown', e => {
+        const el = e.target.closest('[data-vp]'); if (!el || e.button) return;
+        e.preventDefault();
+        const i = +el.dataset.vp, add = !el.checked;
+        if (e.shiftKey && TAH.posl != null) {
+          const a = VIS.indexOf(TAH.posl), b = VIS.indexOf(i);
+          if (a >= 0 && b >= 0) { for (let k = Math.min(a, b); k <= Math.max(a, b); k++) { const r = R.rows[VIS[k]]; if (r.t === 'P') add ? S.vyb.add(r.id) : S.vyb.delete(r.id); } TAH.posl = i; SCROLL = tab.scrollTop; prekresli(); return; }
+        }
+        TAH.add = add; TAH.on = true; TAH.posl = i; nastav(el, add);
+        const pust = () => { document.removeEventListener('mouseup', pust); TAH.on = false; SCROLL = tab.scrollTop; prekresli(); };
+        document.addEventListener('mouseup', pust);
+      });
+      tab.addEventListener('mouseover', e => {
+        if (!TAH.on) return; const rw = e.target.closest('.rz-r'), el = rw && rw.querySelector('[data-vp]');
+        if (el && el.checked !== TAH.add) { nastav(el, TAH.add); TAH.posl = +el.dataset.vp; }
+        const bx = tab.getBoundingClientRect(); if (e.clientY > bx.bottom - 30) tab.scrollTop += 24; else if (e.clientY < bx.top + 50) tab.scrollTop -= 24;
+      });
+      tab.addEventListener('click', e => { const el = e.target.closest('[data-vp]'); if (el && e.detail) e.preventDefault(); }, true);
       tab.addEventListener('change', e => {
         const vp = e.target.closest('[data-vp]'), vs = e.target.closest('[data-vs]');
-        if (vp) { const r = R.rows[+vp.dataset.vp]; vp.checked ? S.vyb.add(r.id) : S.vyb.delete(r.id); SCROLL = tab.scrollTop; prekresli(); }
+        if (vp) { const r = R.rows[+vp.dataset.vp]; vp.checked ? S.vyb.add(r.id) : S.vyb.delete(r.id); TAH.posl = +vp.dataset.vp; SCROLL = tab.scrollTop; prekresli(); }
         if (vs) { const i = +vs.dataset.vs, add = vs.checked; const st = [i]; while (st.length) { const k = st.pop(); R.deti[k].forEach(c => { const r = R.rows[c]; if (r.t === 'P') add ? S.vyb.add(r.id) : S.vyb.delete(r.id); else if (r.t !== 'D') st.push(c); }); } SCROLL = tab.scrollTop; prekresli(); }
       });
     }
@@ -1501,10 +1526,9 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <label>Období od<input type="date" data-f="od" value="${esc(F.od)}"${dis}></label><label>Období do<input type="date" data-f="do" value="${esc(F.do)}"${dis}></label>
         <label style="grid-column:span 2">Poznámka na faktuře<input data-f="pozn" value="${esc(F.pozn)}"${dis}></label></div></details>
       ${zam ? '' : `<div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat title="Vrátí vás do rozpočtu, kde položky přehledně zaškrtnete (s filtry)">+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-soupis>⬆ Načíst soupis prací z Excelu</button><button type="button" class="rz-btn" data-mimo>+ Vlastní položka (vícepráce…)</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>`}
-      <div class="rz-fil rz-pct"${zam ? ' hidden' : ''}><b>Fakturovat hromadně procentem</b> <span style="font-size:12.5px;color:var(--muted)">(všem položkám najednou)</span>: <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
-        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">nastavit všem: tato faktura = % z rozpočtu</button>
-        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">nastavit všem: hotovo celkem % (odečte dřívější)</button>
-        <span style="font-size:12.5px;color:var(--muted)">Hodí se, když fakturujete hodně položek stejným dílem. Jednotlivé řádky pak můžete v tabulce upravit ručně. Procenta se na fakturu netisknou.</span></div>
+      <div class="fk-hrom"${zam ? ' hidden' : ''}><b>Hromadně všem položkám:</b><span>fakturovat</span><input id="rz-pct" inputmode="decimal" placeholder="např. 20"><span>% z množství v rozpočtu</span>
+        <button type="button" class="rz-btn cr fk-hromb" data-pct="tato">✓ Vepsat do všech položek</button>
+        <small>Zadané procento se vepíše do sloupce % u každé položky. Kdyby s dříve vyfakturovaným položka přesáhla 100 %, Constructo se zeptá. Na faktuře se procenta netisknou.</small></div>
       <div id="rz-fw"></div>
       <div class="rz-list rz-fl fk-tab"><table><thead><tr class="fk-g"><th colspan="6">Z rozpočtu</th><th colspan="3" class="tf">Tato faktura – zadejte množství, nebo %</th><th colspan="2" class="kc">Na fakturu</th><th colspan="2"></th></tr>
         <tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Zbývá</th><th class="n tf">Množství</th><th class="n tf">%</th><th class="tf">Rychle</th><th class="n kc">J. cena</th><th class="n kc">Celkem Kč</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
@@ -1559,13 +1583,23 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       const zakl = r.mn * (l.p || 1), v = q.dataset.rych === '100' ? zakl : q.dataset.rych === 'zb' ? Math.max(0, zakl - (jinde.get(l.r) || 0)) : 0;
       l.mn = Math.round(v * 1000) / 1000; kresli();
     });
-    ov.querySelectorAll('[data-pct]').forEach(b => b.onclick = () => {
+    // 4.76: hromadné procento – vepíše se do všech řádků, nad 100 % se zeptá
+    const hromadne = () => {
       const p = cislo(ov.querySelector('#rz-pct').value);
-      if (p == null || p < 0) return toast('Zadejte procento, např. 30.');
-      let n = 0;
-      F.pol.forEach(l => { const r = l.r && R.byId.get(l.r); if (!r || r.mn == null) return; const zakl = r.mn * (l.p || 1); let v = zakl * p / 100; if (b.dataset.pct === 'celkem') v = Math.max(0, v - (jinde.get(l.r) || 0)); l.mn = Math.round(v * 1000) / 1000; n++; });
-      kresli(); toast(`Nastaveno u ${n} položek.`);
-    });
+      if (p == null || p <= 0) { toast('Napište procento, např. 20.'); ov.querySelector('#rz-pct').focus(); return; }
+      const lz = F.pol.map(l => { const r = l.r && R.byId.get(l.r); if (!r || r.mn == null) return null; const zakl = r.mn * (l.p || 1), dr = jinde.get(l.r) || 0; return {l, zakl, dr, v: zakl * p / 100}; }).filter(Boolean);
+      if (!lz.length) return toast('Ve faktuře nejsou položky z rozpočtu.');
+      const nad = lz.filter(x => x.dr + x.v > x.zakl + EPS);
+      const proved = dorovnat => { lz.forEach(x => { let v = x.v; if (dorovnat && x.dr + v > x.zakl) v = Math.max(0, x.zakl - x.dr); x.l.mn = Math.round(v * 1000) / 1000; }); kresli(); toast(`Vepsáno ${String(p).replace('.', ',')} % do ${nf0.format(lz.length)} položek.`); };
+      if (!nad.length) return proved(false);
+      const q = okno('Překročení 100 %', `<p style="font-size:15px;margin:0">U <b>${nf0.format(nad.length)}</b> z ${nf0.format(lz.length)} položek už bylo dříve něco vyfakturováno. S ${String(p).replace('.', ',')} % by součet byl <b>přes 100 %</b> rozpočtu.</p>
+        <p style="font-size:15px">Mám u těchto položek vyfakturovat jen <b>zbytek do 100 %</b>?</p>`,
+        `<button type="button" class="rz-btn" data-ne>Ne, nechat ${String(p).replace('.', ',')} % i přes 100 %</button><span class="sp"></span><button type="button" class="rz-btn zl" data-ok>Ano, vyčerpat do 100 %</button>`);
+      q.querySelector('[data-ok]').onclick = () => { q.zavri(); proved(true); };
+      q.querySelector('[data-ne]').onclick = () => { q.zavri(); proved(false); };
+    };
+    ov.querySelectorAll('[data-pct]').forEach(b => b.onclick = hromadne);
+    const pctIn = ov.querySelector('#rz-pct'); if (pctIn) pctIn.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); hromadne(); } });
     const pdfBtn = ov.querySelector('[data-pdf]');
     if (pdfBtn) pdfBtn.onclick = async () => { if (F.uzavreno && F.uzavreno.pdf && F.uzavreno.pdf.url) { window.open(F.uzavreno.pdf.url, '_blank', 'noopener'); return; } const b = await fakturaPdf(F); stahni(b, nazevPdf(F)); };
     if (zam) { const x = ov.querySelector('[data-xls]'); if (x) x.onclick = () => excelFaktura(F); return; }
@@ -1687,9 +1721,11 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const odb = odbFaktury(F).firma || '';
     const filtr = !nV && filtrAktivni() && VIS && VIS._n;
     return `<div class="rz-fakl"><b>🧾 Faktura ${esc(F.cislo || '')}${odb ? ' pro ' + esc(odb) : ''}</b>
-      <span>${nV ? `Zaškrtnuto <b>${nf0.format(nV)}</b> položek · ${kc0(kcV)}` : filtr ? `Nic nezaškrtnuto – vezme se všech <b>${nf0.format(VIS._n)}</b> vyfiltrovaných položek` : 'Zaškrtněte položky v rozpočtu (☐ vlevo u řádku, ☐ v záhlaví = všechny zobrazené)'}${uz.size ? ` · ve faktuře už ${nf0.format(uz.size)}` : ''}${vl ? ` · vlastních ${vl}` : ''}</span>
+      <span>${nV ? `Zaškrtnuto <b>${nf0.format(nV)}</b> položek · ${kc0(kcV)} <small style="opacity:.75">(tip: táhněte myší přes ☐, Shift + klik = rozsah)</small>` : filtr ? `Nic nezaškrtnuto – vezme se všech <b>${nf0.format(VIS._n)}</b> vyfiltrovaných položek` : 'Zaškrtněte položky: ☐ u řádku, ☐ u kapitoly = celá kapitola, <b>táhněte myší</b> přes ☐ nebo <b>Shift + klik</b> = rozsah'}${uz.size ? ` · ve faktuře už ${nf0.format(uz.size)}` : ''}${vl ? ` · vlastních ${vl}` : ''}</span>
       <span class="sp" style="flex:1"></span>
-      <button type="button" class="rz-btn zl" data-a="fak-klic" title="Najednou vybere položky podle kódu, slov v popisu, kapitoly, řemesla nebo pořadových čísel">☑ Vybrat podle klíče…</button>
+      <button type="button" class="rz-btn cr" data-a="fak-vse" title="Zaškrtne všechny položky, které teď vidíte v tabulce (po filtru)">☑ Vybrat vše zobrazené${VIS && VIS._n ? ' (' + nf0.format(VIS._n) + ')' : ''}</button>
+      ${nV ? '<button type="button" class="rz-btn" data-a="fak-nic">☐ Zrušit výběr</button>' : ''}
+      <button type="button" class="rz-btn zl" data-a="fak-klic" title="Najednou vybere položky podle kódu, slova, ceny, objektu, MJ, kapitoly nebo řemesla">🔎 Vybrat podle klíče…</button>
       <button type="button" class="rz-btn" data-a="fak-vlastni">+ Vlastní položka (vícepráce…)</button>
       <button type="button" class="rz-btn" data-a="fak-zrus">Zrušit</button>
       <button type="button" class="rz-btn cr" data-a="fak-dal">Pokračovat – rozsah v MJ nebo % →</button></div>`;
