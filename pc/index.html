@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-k41SERYeSLKQHlNabb0cyPqpVVLnw+LeS/rNhD2pBXI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-jdil4RyoDUSj8NdPO4kMMwawlSrKCqCwobtn+tiGCPs=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1240,7 +1240,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.67';
+  const APP_VERSION = '4.68';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2429,9 +2429,25 @@ body.dfull-on{overflow:hidden}
       const key = e => { if (e.key === 'Escape') close(null); };
       document.addEventListener('keydown', key);
       const fit = () => Math.min(st.clientWidth / p.w, st.clientHeight / p.h);
-      const clampS = v => Math.max(fit() * .9, Math.min(2.5, v));
+      const clampS = v => Math.max(fit() * .9, Math.min(6, v));   // 4.68: víc přiblížit, ostré dlaždice z PDF
+      // 4.68: ostrý půdorys – při přiblížení se přes základní obrázek dokreslí dlaždice 4× podrobnější (z PDF výkresu)
+      const hdT = new Map(); let hdP = null;
+      function hdDlazdice() {
+        const h = p.hd; if (!h) return;
+        if (hdP !== p.id) { inn.querySelectorAll('.pv-hd').forEach(x => x.remove()); hdT.clear(); hdP = p.id; }
+        if (s * Math.min(window.devicePixelRatio || 1, 2) <= 1.05) return;
+        const W = st.clientWidth, Hh = st.clientHeight, T = h.t;
+        const x0 = Math.max(0, Math.floor(-tx / s / T)), y0 = Math.max(0, Math.floor(-ty / s / T)), x1 = Math.min(h.nx - 1, Math.floor((W - tx) / s / T)), y1 = Math.min(h.ny - 1, Math.floor((Hh - ty) / s / T));
+        for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+          const k = y + '-' + x; if (hdT.has(k)) continue;
+          const im = new Image(); im.className = 'pv-hd'; im.alt = ''; im.draggable = false; im.decoding = 'async';
+          im.style.cssText = `position:absolute;left:${x * T}px;top:${y * T}px;width:${Math.min(T, p.w - x * T)}px;height:${Math.min(T, p.h - y * T)}px;pointer-events:none`;
+          im.onerror = () => im.remove(); im.src = PLAN_ROOT + 'pudorysy/hd/' + p.id.toLowerCase() + '/' + k + '.png';
+          inn.appendChild(im); hdT.set(k, im);
+        }
+      }
       function apply() {
-        inn.style.width = p.w + 'px'; inn.style.height = p.h + 'px'; inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+        inn.style.width = p.w + 'px'; inn.style.height = p.h + 'px'; inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`; hdDlazdice();
         pinEl.hidden = !pin || pin.floor !== p.id;
         if (pin) { pinEl.style.left = (tx + pin.x * p.w * s) + 'px'; pinEl.style.top = (ty + pin.y * p.h * s) + 'px'; }
       }

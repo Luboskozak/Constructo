@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-sHEEO0WJ97Z/dQUBoX7+aAFfRqZa0bo3XVWY+SbbFLo=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-5uPNpGSNhgdtQ3VbvsUq5QM2BXlu9HOjjFn7tGTVhQA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -300,7 +300,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/stavby.js"></script>
 <script>
 (() => {
-  const VERSION = '1.32';
+  const VERSION = '1.33';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1381,10 +1381,26 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const st = o.querySelector('.pv-stage'), inn = o.querySelector('.pv-in'), img = inn.querySelector('img'), pinEl = o.querySelector('.pv-pin'), roomEl = o.querySelector('.pv-room'), okB = o.querySelector('[data-pv="ok"]'), load = o.querySelector('.pv-load');
     const close = () => { o.remove(); };
     const fit = () => Math.min(st.clientWidth / p.w, st.clientHeight / p.h);
-    const clampS = v => Math.max(fit() * .9, Math.min(2.5, v));
+    const clampS = v => Math.max(fit() * .9, Math.min(6, v));   // 4.68: víc přiblížit, ostré dlaždice z PDF
+      // 4.68: ostrý půdorys – při přiblížení se přes základní obrázek dokreslí dlaždice 4× podrobnější (z PDF výkresu)
+      const hdT = new Map(); let hdP = null;
+      function hdDlazdice() {
+        const h = p.hd; if (!h) return;
+        if (hdP !== p.id) { inn.querySelectorAll('.pv-hd').forEach(x => x.remove()); hdT.clear(); hdP = p.id; }
+        if (s * Math.min(window.devicePixelRatio || 1, 2) <= 1.05) return;
+        const W = st.clientWidth, Hh = st.clientHeight, T = h.t;
+        const x0 = Math.max(0, Math.floor(-tx / s / T)), y0 = Math.max(0, Math.floor(-ty / s / T)), x1 = Math.min(h.nx - 1, Math.floor((W - tx) / s / T)), y1 = Math.min(h.ny - 1, Math.floor((Hh - ty) / s / T));
+        for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+          const k = y + '-' + x; if (hdT.has(k)) continue;
+          const im = new Image(); im.className = 'pv-hd'; im.alt = ''; im.draggable = false; im.decoding = 'async';
+          im.style.cssText = `position:absolute;left:${x * T}px;top:${y * T}px;width:${Math.min(T, p.w - x * T)}px;height:${Math.min(T, p.h - y * T)}px;pointer-events:none`;
+          im.onerror = () => im.remove(); im.src = 'pudorysy/hd/' + p.id.toLowerCase() + '/' + k + '.png';
+          inn.appendChild(im); hdT.set(k, im);
+        }
+      }
     function apply() {
       inn.style.width = p.w + 'px'; inn.style.height = p.h + 'px';
-      inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+      inn.style.transform = `translate(${tx}px,${ty}px) scale(${s})`; hdDlazdice();
       pinEl.hidden = !pin;
       if (pin) { pinEl.style.left = (tx + pin.x * p.w * s) + 'px'; pinEl.style.top = (ty + pin.y * p.h * s) + 'px'; }
     }
