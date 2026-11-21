@@ -97,8 +97,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-hd .nx,.rz-r>span:nth-last-child(-n+4){background:color-mix(in srgb,#F4D23C 9%,var(--panel))}
 .rz-r .rz-ob{vertical-align:middle;height:18px;line-height:18px}
 .rz-r .kt{font-style:normal;color:#7c3fd6;margin-left:3px;font-size:10px}
-.rz-hd{position:sticky;top:0;z-index:2;background:var(--soft);border-bottom:2px solid var(--ink);height:34px;font-size:12px;color:var(--ink);font-weight:700}
-.rz-hd>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:32px}
+.rz-hd{position:sticky;top:0;z-index:2;background:#16191c;border-bottom:3px solid #F4D23C;height:42px;font-size:14px;color:#fff;font-weight:800}
+.rz-hd>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;line-height:40px;border-right-color:#3a3f44}.rz-hd>span.nx{background:#2b2f33;color:#F4D23C}
 .rz-r{position:absolute;left:0;height:${ROWH}px;font-size:13px;border-bottom:1px solid var(--soft);white-space:nowrap}
 .rz-r>span{overflow:hidden;text-overflow:ellipsis}.rz-r .n{text-align:right;font-variant-numeric:tabular-nums}.rz-hd .n{text-align:right}
 .rz-r:hover{background:var(--soft)}
@@ -124,7 +124,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-card .a{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .rz-list{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto}
 .rz-list table{width:100%;border-collapse:collapse;font-size:14px}
-.rz-list th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.rz-list th{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#1d3f8a;background:#eaf0fb;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 .rz-list td{padding:7px 10px;border-bottom:1px solid var(--soft);vertical-align:middle}.rz-list tr:last-child td{border-bottom:0}
 .rz-list td.n,.rz-list th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .rz-list tr.kl{cursor:pointer}.rz-list tr.kl:hover td{background:var(--soft)}
@@ -149,6 +149,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .fk-dalsi{margin:8px 0 4px}.fk-dalsi summary{cursor:pointer;font-size:13.5px;color:var(--muted);font-weight:600;padding:4px 0}
 .fk-tab thead tr.fk-g th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:6px 8px;border-bottom:0}.fk-tab th.tf,.fk-tab td.tf{background:#fff7cf}.fk-tab thead tr.fk-g th.tf{background:#F4D23C;color:#16191c}.fk-tab th.kc,.fk-tab td.kc{background:#f3f3ef}.fk-tab thead tr.fk-g th.kc{background:#16191c;color:#fff}
 .fk-tab td.tf input{border:2px solid #e0b800;font-weight:700;font-size:15px}.fk-rych{display:inline-flex;gap:3px;white-space:nowrap}.fk-rych button{white-space:nowrap}.fk-rych button{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:3px 7px;cursor:pointer;color:var(--ink)}.fk-rych button:hover{background:#F4D23C}
+.fk-tab thead tr:not(.fk-g) th{font-size:13px;color:#16191c;background:#e4e4de;border-bottom:2px solid #16191c}.fk-tab thead tr:not(.fk-g) th.tf{background:#fbe78a}.fk-tab thead tr:not(.fk-g) th.kc{background:#d9d9d2}
+.fk-chw{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.fk-chw>b{min-width:150px;padding-top:6px}.fk-chs{display:flex;flex-wrap:wrap;gap:6px}.fk-ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13.5px;cursor:pointer;background:var(--panel)}.fk-ch:has(input:checked){background:#F4D23C;border-color:#16191c}.fk-ch small{color:var(--muted)}
 .fk-kl2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.fk-kl2>div{display:flex;flex-direction:column;gap:6px}.fk-kh{font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);color:var(--ink)}.fk-kl{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;padding:4px}.fk-kl label{display:flex;gap:8px;align-items:center;font-size:13.5px;padding:3px 6px;border-radius:6px;cursor:pointer}.fk-kl label:hover{background:rgba(0,0,0,.04)}.fk-kl label span{flex:1}.fk-kl label small{color:var(--muted);white-space:nowrap}.fk-kl label.h{font-weight:700}
 .fk-vf tr.sk td{background:#f3f3ef;border-top:2px solid var(--line)}.fk-vf tr.sk span{font-size:12.5px;color:var(--muted);margin-left:6px}.fk-vf tr.sum td{border-top:2px solid var(--ink)}
 @media (max-width:900px){.fk-hl{grid-template-columns:1fr 1fr}.fk-kl2{grid-template-columns:1fr}}
@@ -1499,10 +1501,10 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <label>Období od<input type="date" data-f="od" value="${esc(F.od)}"${dis}></label><label>Období do<input type="date" data-f="do" value="${esc(F.do)}"${dis}></label>
         <label style="grid-column:span 2">Poznámka na faktuře<input data-f="pozn" value="${esc(F.pozn)}"${dis}></label></div></details>
       ${zam ? '' : `<div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat title="Vrátí vás do rozpočtu, kde položky přehledně zaškrtnete (s filtry)">+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-soupis>⬆ Načíst soupis prací z Excelu</button><button type="button" class="rz-btn" data-mimo>+ Vlastní položka (vícepráce…)</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>`}
-      <div class="rz-fil rz-pct"${zam ? ' hidden' : ''}><b>Fakturovat procentem:</b> <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
-        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">tato fakturace = % z rozpočtu</button>
-        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">hotovo celkem % (odečte dřívější)</button>
-        <span style="font-size:12.5px;color:var(--muted)">Platí pro všechny položky v této fakturaci. Jednotlivé řádky jde potom upravit ručně.</span></div>
+      <div class="rz-fil rz-pct"${zam ? ' hidden' : ''}><b>Fakturovat hromadně procentem</b> <span style="font-size:12.5px;color:var(--muted)">(všem položkám najednou)</span>: <input id="rz-pct" inputmode="decimal" placeholder="např. 30" style="width:80px"> %
+        <button type="button" class="rz-btn mini" data-pct="tato" title="Každá položka: tato fakturace = zadané % z množství v rozpočtu">nastavit všem: tato faktura = % z rozpočtu</button>
+        <button type="button" class="rz-btn mini" data-pct="celkem" title="Každá položka: hotovo celkem zadané % – dříve vyfakturované se odečte">nastavit všem: hotovo celkem % (odečte dřívější)</button>
+        <span style="font-size:12.5px;color:var(--muted)">Hodí se, když fakturujete hodně položek stejným dílem. Jednotlivé řádky pak můžete v tabulce upravit ručně. Procenta se na fakturu netisknou.</span></div>
       <div id="rz-fw"></div>
       <div class="rz-list rz-fl fk-tab"><table><thead><tr class="fk-g"><th colspan="6">Z rozpočtu</th><th colspan="3" class="tf">Tato faktura – zadejte množství, nebo %</th><th colspan="2" class="kc">Na fakturu</th><th colspan="2"></th></tr>
         <tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Zbývá</th><th class="n tf">Množství</th><th class="n tf">%</th><th class="tf">Rychle</th><th class="n kc">J. cena</th><th class="n kc">Celkem Kč</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
@@ -1703,13 +1705,18 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       ov.zavri(); hotovo({r: '', t: g('t'), mj: g('mj'), mn: cislo(g('mn')) == null ? 1 : cislo(g('mn')), jc: cislo(g('jc')) || 0});
     };
   }
-  // 4.75: hromadný výběr položek podle klíče (kód, slova, kapitola, řemeslo, P.č., jen nevyfakturované)
+  // 4.75/4.76: hromadný výběr položek podle klíče (kód, slova, cena, objekt, MJ, kapitola, řemeslo, jen nevyfakturované)
   function vyberKlicem() {
     const C = spocti(R), sekce = R.rows.filter(r => r.t === 'S1' || r.t === 'S2'), cs = vsechnyKat(R.rec.id);
+    const obj = Object.keys(C.objSum).filter(Boolean).sort((a, b) => a.localeCompare(b, 'cs'));
+    const mjN = new Map(); R.polozky.forEach(r => { const m = String(r.mj || '').trim(); mjN.set(m, (mjN.get(m) || 0) + 1); });
+    const mjs = [...mjN].sort((a, b) => b[1] - a[1]).slice(0, 14);
     const ov = okno('Vybrat položky podle klíče', `<div class="rz-info">Vyplňte jedno nebo více polí – položka se vybere, když splní <b>všechna vyplněná</b>. Počet nalezených se ukazuje dole hned.</div>
       <div class="rz-pole"><label>Kód položky začíná na<input data-k="kod" placeholder="např. 767, 764 (víc oddělte čárkou)"></label>
         <label>Popis obsahuje slovo<input data-k="txt" placeholder="např. zábradlí, okno (stačí jedno z nich)"></label>
-        <label>Pořadové číslo od<input data-k="od" inputmode="numeric" placeholder="např. 120"></label><label>do<input data-k="do" inputmode="numeric" placeholder="např. 180"></label></div>
+        <label>Cena položky celkem od (Kč)<input data-k="od" inputmode="numeric" placeholder="např. 10 000"></label><label>do (Kč)<input data-k="do" inputmode="numeric" placeholder="nechte prázdné"></label></div>
+      ${obj.length ? `<div class="fk-chw"><b>Objekt / křídlo</b><div class="fk-chs">${obj.map(o => `<label class="fk-ch"><input type="checkbox" data-ob value="${esc(o)}"><span>${o ? obBadge(o) + ' ' + esc(o) : 'bez objektu'}</span></label>`).join('')}</div></div>` : ''}
+      <div class="fk-chw"><b>Měrná jednotka</b><div class="fk-chs">${mjs.map(([m, n]) => `<label class="fk-ch"><input type="checkbox" data-mj value="${esc(m)}"><span>${esc(m || 'bez MJ')} <small>${nf0.format(n)}</small></span></label>`).join('')}</div></div>
       <div class="fk-kl2"><div><b>Kapitola / díl rozpočtu</b><input class="fk-kh" data-kh="s" placeholder="hledat kapitolu…"><div class="fk-kl" data-kl="s">${sekce.map(r => `<label data-n="${esc(bezDia(((r.k || '') + ' ' + r.d).toLowerCase()))}"${r.t === 'S1' ? ' class="h"' : ''}><input type="checkbox" value="${r.i}"><span>${esc([r.k, r.d].filter(Boolean).join(' '))}</span><small>${kc0(R.sum[r.i] || 0)}</small></label>`).join('')}</div></div>
         <div><b>Řemeslo / druh prací</b><input class="fk-kh" data-kh="c" placeholder="hledat řemeslo…"><div class="fk-kl" data-kl="c">${cs.map(k => `<label data-n="${esc(bezDia(k.nazev.toLowerCase()))}"><input type="checkbox" value="${esc(k.id)}"><span>${esc(k.nazev)}</span><small>${nf0.format((k.pol || []).length)}</small></label>`).join('')}</div></div></div>
       <label class="rz-chk" style="margin-top:8px"><input type="checkbox" data-k="nevyf" checked> Jen položky, které ještě nejsou celé vyfakturované</label>`,
@@ -1717,15 +1724,18 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const najdi = () => {
       const g = k => (ov.querySelector(`[data-k="${k}"]`) || {}).value || '';
       const kody = g('kod').split(/[,;\s]+/).map(x => x.trim()).filter(Boolean), slova = g('txt').split(/[,;]+/).map(x => bezDia(x.trim().toLowerCase())).filter(Boolean);
-      const od = cislo(g('od')), dd = cislo(g('do')), nevyf = ov.querySelector('[data-k="nevyf"]').checked;
+      const od = cislo(g('od').replace(/\s/g, '')), dd = cislo(g('do').replace(/\s/g, '')), nevyf = ov.querySelector('[data-k="nevyf"]').checked;
       const sk = new Set([...ov.querySelectorAll('[data-kl="s"] input:checked')].map(x => +x.value));
       const kat = [...ov.querySelectorAll('[data-kl="c"] input:checked')].map(x => cs.find(k => k.id === x.value)).filter(Boolean);
       const vKat = kat.length ? new Set(kat.flatMap(k => k.pol || [])) : null;
-      if (!kody.length && !slova.length && od == null && dd == null && !sk.size && !vKat) return [];
+      const ob = new Set([...ov.querySelectorAll('[data-ob]:checked')].map(x => x.value)), mj = new Set([...ov.querySelectorAll('[data-mj]:checked')].map(x => x.value));
+      if (!kody.length && !slova.length && od == null && dd == null && !sk.size && !vKat && !ob.size && !mj.size) return [];
       return R.polozky.filter(r => {
         if (kody.length && !kody.some(k => String(r.k || '').replace(/\s/g, '').startsWith(k))) return false;
         if (slova.length) { const t = bezDia(String(r.d || '').toLowerCase()); if (!slova.some(w => t.includes(w))) return false; }
-        if (od != null || dd != null) { const n = cislo(r.pc); if (n == null || (od != null && n < od) || (dd != null && n > dd)) return false; }
+        if (od != null || dd != null) { const n = r.cc || 0; if ((od != null && n < od) || (dd != null && n > dd)) return false; }
+        if (ob.size && !(C.obj[r.i] || []).some(([o]) => ob.has(o))) return false;
+        if (mj.size && !mj.has(String(r.mj || '').trim())) return false;
         if (sk.size) { let q = r.p, ok = false; while (q >= 0) { if (sk.has(q)) { ok = true; break; } q = R.rows[q].p; } if (!ok) return false; }
         if (vKat && !vKat.has(r.id)) return false;
         if (nevyf && r.mn != null) { const x = C.pol.get(r.id); if (x && x.mn >= r.mn - EPS) return false; }
@@ -1860,101 +1870,128 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   // faktura jako PDF (stránky A4 kreslené do obrázku – stejný způsob jako zprávy pro firmy)
   async function fakturaPdf(F) {
     const U = udaje(), dod = U.dod || {}, odb = F.odb && F.odb.firma ? F.odb : odbFaktury(F), P = (H.projekt && H.projekt()) || {};
-    const W = 1190, Hh = 1684, M = 64, FONT = 'Helvetica, Arial, sans-serif', INK = '#16191c', SED = '#6f777f', ZL = '#F4D23C';
-    let logoImg = null;
-    if (dod.logo) logoImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = dod.logo; });
+    const W = 1190, Hh = 1684, M = 72, FONT = 'Helvetica, Arial, sans-serif', INK = '#16191c', SED = '#6b737b', ZL = '#F4D23C', LINKA = '#e3e3dd';
+    const obr = src => new Promise(res => { if (!src) return res(null); const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+    const logoImg = await obr(dod.logo), cxLogo = await obr('ikona-constructo.png');
     const mer = document.createElement('canvas').getContext('2d');
     const zalom = (t, font, maxW, maxL) => { mer.font = font; const out = []; let line = ''; String(t || '').replace(/\s+/g, ' ').trim().split(' ').forEach(w => { const x = line ? line + ' ' + w : w; if (line && mer.measureText(x).width > maxW) { out.push(line); line = w; } else line = x; }); if (line) out.push(line); if (maxL && out.length > maxL) { out.length = maxL; out[maxL - 1] = out[maxL - 1].replace(/\s*\S*$/, '') + '…'; } return out; };
     const nf2 = new Intl.NumberFormat('cs-CZ', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const nfM = new Intl.NumberFormat('cs-CZ', {maximumFractionDigits: 3});
-    const S_ = soucty(F), kat = F.kat && najdiKat(R.rec.id, F.kat), qrText = spayd(F, S_, dod);
-    const K = [{k: 'Kód', x: M, w: 140}, {k: 'Popis položky', x: M + 148, w: 470}, {k: 'MJ', x: M + 624, w: 50}, {k: 'Množství', x: M + 676, w: 106, r: 1}, {k: '%', x: M + 786, w: 60, r: 1}, {k: 'Cena/MJ', x: M + 850, w: 104, r: 1}, {k: 'Celkem Kč', x: M + 958, w: W - 2 * M - 958, r: 1}];
-    const FR = '19px ' + FONT, LH = 24;
-    const radky = (F.pol || []).filter(l => Number(l.mn)).map(l => {
-      const r = l.r && R.byId.get(l.r), zakl = r && r.mn ? r.mn * (l.p || 1) : 0;
-      return {kod: r ? String(r.k || '') : 'vícepráce', d: zalom(r ? r.d : l.t || '', FR, K[1].w - 10, 3), mj: r ? r.mj || '' : l.mj || '', mn: Number(l.mn) || 0, pct: zakl ? Math.round(l.mn / zakl * 1000) / 10 : null, jc: Number(l.jc) || 0, cc: Math.round((Number(l.mn) || 0) * (Number(l.jc) || 0) * 100) / 100};
+    const S_ = soucty(F), kat = F.kat && najdiKat(R.rec.id, F.kat), qrText = spayd(F, S_, dod), vs = String(F.cislo || '').replace(/\D/g, '');
+    // 4.76: na faktuře jen to, co odběratel potřebuje – bez procent a údajů z rozpočtu
+    const K = [{k: '#', x: M, w: 40}, {k: 'Kód', x: M + 44, w: 146}, {k: 'Popis položky', x: M + 196, w: 410}, {k: 'MJ', x: M + 612, w: 54}, {k: 'Množství', x: M + 668, w: 112, r: 1}, {k: 'Cena za MJ', x: M + 784, w: 120, r: 1}, {k: 'Celkem Kč', x: M + 906, w: W - 2 * M - 906, r: 1}];
+    const FR = '17px ' + FONT, LH = 22;
+    const radky = (F.pol || []).filter(l => Number(l.mn)).map((l, i) => {
+      const r = l.r && R.byId.get(l.r);
+      return {n: i + 1, kod: r ? String(r.k || '') : 'vícepráce', d: zalom(r ? r.d : l.t || '', FR, K[2].w - 12, 3), mj: r ? r.mj || '' : l.mj || '', mn: Number(l.mn) || 0, jc: Number(l.jc) || 0, cc: Math.round((Number(l.mn) || 0) * (Number(l.jc) || 0) * 100) / 100};
     });
-    const HLAVA1 = 790, HLAVA = 190, PATA = Hh - 110, SOUCTY = 360, stranky = [[]];
-    let y = HLAVA1 + 46;
-    radky.forEach(rw => { const h = rw.d.length * LH + 18; if (y + h > PATA) { stranky.push([]); y = HLAVA + 46; } stranky[stranky.length - 1].push(rw); y += h; });
+    const HLAVA1 = 772, HLAVA = 200, PATA = Hh - 110, SOUCTY = 310, stranky = [[]];
+    let y = HLAVA1 + 50;
+    radky.forEach(rw => { const h = rw.d.length * LH + 16; if (y + h > PATA) { stranky.push([]); y = HLAVA + 50; } stranky[stranky.length - 1].push(rw); y += h; });
     if (y + SOUCTY > PATA) stranky.push([]);
     const pages = [];
     for (let pi = 0; pi < stranky.length; pi++) {
       const c = document.createElement('canvas'); c.width = W; c.height = Hh; const g = c.getContext('2d');
       g.fillStyle = '#fff'; g.fillRect(0, 0, W, Hh); g.textBaseline = 'alphabetic';
-      const txt = (t, x, yy, font, col, al) => { g.font = font; g.fillStyle = col || INK; g.textAlign = al || 'left'; g.fillText(String(t == null ? '' : t), x, yy); g.textAlign = 'left'; };
-      const box = (x, yy, w, h, fill, stroke, rad) => { g.beginPath(); if (g.roundRect) g.roundRect(x, yy, w, h, rad || 14); else g.rect(x, yy, w, h); if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } };
+      const txt = (t, x, yy, font, col, al, ls) => { g.font = font; g.fillStyle = col || INK; g.textAlign = al || 'left'; if ('letterSpacing' in g) g.letterSpacing = ls || '0px'; g.fillText(String(t == null ? '' : t), x, yy); g.textAlign = 'left'; if ('letterSpacing' in g) g.letterSpacing = '0px'; };
+      const stitek = (t, x, yy, col) => txt(String(t).toUpperCase(), x, yy, 'bold 13px ' + FONT, col || SED, 'left', '2px');
+      const box = (x, yy, w, h, fill, stroke, rad) => { g.beginPath(); if (g.roundRect) g.roundRect(x, yy, w, h, rad == null ? 12 : rad); else g.rect(x, yy, w, h); if (fill) { g.fillStyle = fill; g.fill(); } if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } };
+      const cara = (x, yy, w, col, h) => { g.fillStyle = col || LINKA; g.fillRect(x, yy, w, h || 1); };
+      // logo dodavatele, nebo monogram s názvem firmy
+      const logo = (x, yc, maxW, maxH) => {
+        if (logoImg) { const sc = Math.min(maxW / logoImg.naturalWidth, maxH / logoImg.naturalHeight), lw = logoImg.naturalWidth * sc, lh = logoImg.naturalHeight * sc; g.drawImage(logoImg, x, yc - lh / 2, lw, lh); return; }
+        const s = Math.min(maxH, 84), ini = String(dod.firma || '?').replace(/[^\p{L}\p{N}]/gu, ' ').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        box(x, yc - s / 2, s, s, INK, null, 16); txt(ini, x + s / 2, yc + s * 0.17, 'bold ' + Math.round(s * 0.42) + 'px ' + FONT, ZL, 'center');
+        zalom(dod.firma || '', 'bold 28px ' + FONT, 420, 2).forEach((l, i, a) => txt(l, x + s + 20, yc + 10 - (a.length - 1) * 17 + i * 34, 'bold 28px ' + FONT));
+      };
       let yy;
       if (pi === 0) {
-        // černý pruh nahoře: logo dodavatele vlevo (na bílém), FAKTURA vpravo
-        g.fillStyle = INK; g.fillRect(0, 0, W, 170); g.fillStyle = ZL; g.fillRect(0, 170, W, 8);
-        if (logoImg) { const sc = Math.min(300 / logoImg.naturalWidth, 104 / logoImg.naturalHeight), lw = logoImg.naturalWidth * sc, lh = logoImg.naturalHeight * sc; box(M - 12, 85 - lh / 2 - 12, lw + 24, lh + 24, '#fff', null, 12); g.drawImage(logoImg, M, 85 - lh / 2, lw, lh); }
-        else txt(dod.firma || '', M, 100, 'bold 32px ' + FONT, '#fff');
-        txt('FAKTURA', W - M, 88, 'bold 54px ' + FONT, '#fff', 'right');
-        txt((F.dph === '0' ? 'č. ' : 'daňový doklad č. ') + (F.cislo || ''), W - M, 130, 'bold 24px ' + FONT, ZL, 'right');
+        logo(M, 112, 380, 120);
+        txt('FAKTURA', W - M, 104, 'bold 52px ' + FONT, INK, 'right', '3px');
+        txt(F.dph === '0' ? 'číslo dokladu' : 'daňový doklad', W - M, 140, '19px ' + FONT, SED, 'right');
+        txt(F.cislo || '', W - M, 172, 'bold 26px ' + FONT, INK, 'right');
+        cara(M, 204, W - 2 * M, ZL, 6);
         // dodavatel / odběratel
+        const sw = (W - 2 * M - 60) / 2;
         const strana = (x, nad, o, extra, zvyr) => {
-          box(x, 214, (W - 2 * M - 24) / 2, 250, zvyr ? '#fffbe6' : '#f7f7f4', zvyr ? ZL : null);
-          txt(nad, x + 24, 252, 'bold 15px ' + FONT, SED); let yb = 290;
-          zalom(o.firma, 'bold 26px ' + FONT, 480, 2).forEach(l => { txt(l, x + 24, yb, 'bold 26px ' + FONT); yb += 32; });
-          zalom(o.adresa, '19px ' + FONT, 480, 2).forEach(l => { txt(l, x + 24, yb, '19px ' + FONT, '#333'); yb += 25; });
-          yb += 6; txt([o.ico ? 'IČO ' + o.ico : '', o.dic ? 'DIČ ' + o.dic : ''].filter(Boolean).join('    '), x + 24, yb, 'bold 19px ' + FONT); yb += 26;
-          (extra || []).filter(Boolean).forEach(t => { zalom(t, '16px ' + FONT, 480, 1).forEach(l => { txt(l, x + 24, yb, '16px ' + FONT, '#555'); yb += 21; }); });
+          if (zvyr) cara(x - 22, 240, 5, ZL, 196);
+          stitek(nad, x, 258); let yb = 296;
+          zalom(o.firma, 'bold 25px ' + FONT, sw, 2).forEach(l => { txt(l, x, yb, 'bold 25px ' + FONT); yb += 31; });
+          zalom(o.adresa, '18px ' + FONT, sw, 2).forEach(l => { txt(l, x, yb, '18px ' + FONT, '#333'); yb += 25; });
+          yb += 8;
+          if (o.ico) { txt('IČO', x, yb, '16px ' + FONT, SED); txt(o.ico, x + 52, yb, 'bold 18px ' + FONT); }
+          if (o.dic) { txt('DIČ', x + 200, yb, '16px ' + FONT, SED); txt(o.dic, x + 248, yb, 'bold 18px ' + FONT); }
+          yb += 28;
+          (extra || []).filter(Boolean).forEach(t => { zalom(t, '15px ' + FONT, sw, 1).forEach(l => { txt(l, x, yb, '15px ' + FONT, '#5a6168'); yb += 21; }); });
         };
-        strana(M, 'DODAVATEL', dod, [dod.rejstrik, [dod.email, dod.tel].filter(Boolean).join(' · ')]);
-        strana(W / 2 + 12, 'ODBĚRATEL', odb, [], true);
-        // klíčové údaje v dlaždicích
-        const vs = String(F.cislo || '').replace(/\D/g, '');
-        const dl = [['Vystaveno', datCz(F.datum)], ['Zdanitelné plnění', datCz(F.duzp || F.datum)], ['Splatnost', datCz(F.splatnost)], ['Variabilní symbol', vs]];
-        const dw = (W - 2 * M - 3 * 16) / 4;
-        dl.forEach(([k, v], i) => { const x = M + i * (dw + 16); box(x, 490, dw, 96, i === 2 ? ZL : '#f7f7f4'); txt(k, x + 20, 524, '15px ' + FONT, i === 2 ? INK : SED); txt(v, x + 20, 566, 'bold 26px ' + FONT); });
-        const info = [['Bankovní účet', dod.ucet || ''], ['IBAN', ibanCz(dod.ucet).replace(/(.{4})/g, '$1 ').trim()], ['Stavba', P.name || ''], ['Plnění', [kat ? kat.nazev : '', F.od || F.do ? 'za období ' + [datCz(F.od), datCz(F.do)].filter(Boolean).join(' – ') : ''].filter(Boolean).join(', ') || 'práce podle rozpočtu']];
-        info.forEach(([k, v], i) => { const x = M + (i % 2) * ((W - 2 * M) / 2), yb = 630 + Math.floor(i / 2) * 40; txt(k, x, yb, '16px ' + FONT, SED); txt(zalom(v, 'bold 19px ' + FONT, 380, 1)[0] || '', x + 150, yb, 'bold 19px ' + FONT); });
-        if (F.pozn) txt(zalom('Poznámka: ' + F.pozn, '17px ' + FONT, W - 2 * M, 1)[0], M, 728, '17px ' + FONT, '#555');
-        txt('Fakturujeme vám za provedené práce:', M, 768, 'bold 19px ' + FONT);
+        strana(M, 'Dodavatel', dod, [dod.rejstrik, [dod.email, dod.tel].filter(Boolean).join('   ·   ')]);
+        strana(M + sw + 60 + 22, 'Odběratel', odb, [], true);
+        // platební údaje
+        box(M, 464, W - 2 * M, 196, '#f6f6f2', null, 14);
+        const pw = (W - 2 * M - 48) / 4, pol = (i, row, k, v, font, col) => { const x = M + 24 + i * pw, yb = 464 + 44 + row * 92; stitek(k, x, yb); txt(v, x, yb + 36, font || 'bold 22px ' + FONT, col || INK); };
+        pol(0, 0, 'Datum vystavení', datCz(F.datum)); pol(1, 0, 'Zdanitelné plnění', datCz(F.duzp || F.datum));
+        const xs = M + 24 + 2 * pw; box(xs - 14, 464 + 18, pw - 10, 74, ZL, null, 10); stitek('Datum splatnosti', xs, 464 + 44, INK); txt(datCz(F.splatnost), xs, 464 + 80, 'bold 24px ' + FONT);
+        pol(3, 0, 'Forma úhrady', 'převodem');
+        cara(M + 24, 464 + 104, W - 2 * M - 48);
+        pol(0, 1, 'Bankovní účet', dod.ucet || '—'); pol(1, 1, 'IBAN', ibanCz(dod.ucet).replace(/(.{4})/g, '$1 ').trim() || '—', 'bold 17px ' + FONT);
+        pol(3, 1, 'Variabilní symbol', vs || '—');
+        // předmět plnění
+        let yb = 696;
+        const plneni = [kat ? kat.nazev : '', F.od || F.do ? 'za období ' + [datCz(F.od), datCz(F.do)].filter(Boolean).join(' – ') : ''].filter(Boolean).join(', ') || 'stavební práce podle rozpočtu';
+        txt('Stavba:', M, yb, '17px ' + FONT, SED); txt(zalom(P.name || '', 'bold 18px ' + FONT, 380, 1)[0] || '', M + 70, yb, 'bold 18px ' + FONT);
+        txt('Předmět plnění:', W / 2, yb, '17px ' + FONT, SED); txt(zalom(plneni, 'bold 18px ' + FONT, W / 2 - M - 140, 1)[0] || '', W / 2 + 134, yb, 'bold 18px ' + FONT);
+        if (F.pozn) txt(zalom('Poznámka: ' + F.pozn, '17px ' + FONT, W - 2 * M, 1)[0], M, yb + 32, '17px ' + FONT, '#555');
+        txt('Fakturujeme vám za provedené práce:', M, 752, 'bold 19px ' + FONT);
         yy = HLAVA1;
       } else {
-        g.fillStyle = INK; g.fillRect(0, 0, W, 110); g.fillStyle = ZL; g.fillRect(0, 110, W, 6);
-        txt('Faktura ' + (F.cislo || '') + ' – pokračování', M, 70, 'bold 28px ' + FONT, '#fff'); txt(dod.firma || '', W - M, 70, '18px ' + FONT, ZL, 'right');
+        logo(M, 84, 220, 70);
+        txt('Faktura ' + (F.cislo || ''), W - M, 82, 'bold 26px ' + FONT, INK, 'right'); txt('pokračování', W - M, 110, '17px ' + FONT, SED, 'right');
+        cara(M, 140, W - 2 * M, ZL, 5);
         yy = HLAVA;
       }
       // tabulka položek
       if (stranky[pi].length) {
-        g.fillStyle = '#f0f0ec'; g.fillRect(M, yy, W - 2 * M, 44); g.fillStyle = ZL; g.fillRect(M, yy + 42, W - 2 * M, 4);
-        K.forEach(k => txt(k.k, k.r ? k.x + k.w - 8 : k.x + 8, yy + 29, 'bold 15px ' + FONT, INK, k.r ? 'right' : 'left'));
-        yy += 46;
+        box(M, yy, W - 2 * M, 46, INK, null, 8);
+        K.forEach(k => txt(k.k, k.r ? k.x + k.w - 10 : k.x + 10, yy + 30, 'bold 15px ' + FONT, '#fff', k.r ? 'right' : 'left'));
+        yy += 50;
       }
-      stranky[pi].forEach((rw, j) => {
-        const h = rw.d.length * LH + 18;
-        if (j % 2) { g.fillStyle = '#fafaf8'; g.fillRect(M, yy, W - 2 * M, h); }
-        const yt = yy + 28;
-        txt(zalom(rw.kod, '16px ' + FONT, K[0].w - 10, 1)[0] || '', K[0].x + 8, yt, '16px ' + FONT, SED);
-        rw.d.forEach((l, i) => txt(l, K[1].x + 8, yt + i * LH, FR));
-        txt(rw.mj, K[2].x + 4, yt, FR, '#333');
-        txt(nfM.format(rw.mn), K[3].x + K[3].w - 8, yt, FR, INK, 'right');
-        txt(rw.pct == null ? '' : String(rw.pct).replace('.', ',') + ' %', K[4].x + K[4].w - 8, yt, '16px ' + FONT, SED, 'right');
-        txt(nf2.format(rw.jc), K[5].x + K[5].w - 8, yt, FR, INK, 'right');
-        txt(nf2.format(rw.cc), K[6].x + K[6].w - 8, yt, 'bold 19px ' + FONT, INK, 'right');
-        yy += h; g.fillStyle = '#e6e6e1'; g.fillRect(M, yy - 1, W - 2 * M, 1);
+      stranky[pi].forEach(rw => {
+        const h = rw.d.length * LH + 16, yt = yy + 27;
+        txt(rw.n, K[0].x + 10, yt, '15px ' + FONT, SED);
+        txt(zalom(rw.kod, '15px ' + FONT, K[1].w - 12, 1)[0] || '', K[1].x + 10, yt, '15px ' + FONT, SED);
+        rw.d.forEach((l, i) => txt(l, K[2].x + 10, yt + i * LH, FR));
+        txt(rw.mj, K[3].x + 10, yt, FR, '#333');
+        txt(nfM.format(rw.mn), K[4].x + K[4].w - 10, yt, FR, INK, 'right');
+        txt(nf2.format(rw.jc), K[5].x + K[5].w - 10, yt, FR, INK, 'right');
+        txt(nf2.format(rw.cc), K[6].x + K[6].w - 10, yt, 'bold 18px ' + FONT, INK, 'right');
+        yy += h; cara(M, yy - 1, W - 2 * M);
       });
       if (pi === stranky.length - 1) {
-        yy += 34; const top = yy, xL = W / 2 + 60, xR = W - M;
-        const rad = (k, v) => { txt(k, xL, yy, '21px ' + FONT, '#333'); txt(v, xR, yy, '21px ' + FONT, INK, 'right'); yy += 36; };
+        yy += 40; const top = yy, xL = W / 2 + 70, xR = W - M;
+        const rad = (k, v) => { txt(k, xL, yy, '20px ' + FONT, '#333'); txt(v, xR, yy, '20px ' + FONT, INK, 'right'); yy += 38; };
         rad('Základ daně', nf2.format(S_.zakl) + ' Kč');
         if (F.dph === 'pdp') rad('DPH', 'přenesená povinnost'); else if (S_.sazba) rad('DPH ' + S_.sazba + ' %', nf2.format(S_.dan) + ' Kč');
-        yy += 4; box(xL - 22, yy - 8, xR - xL + 22, 76, INK, null, 14);
-        txt('Celkem k úhradě', xL, yy + 40, 'bold 23px ' + FONT, '#fff'); txt(nf2.format(S_.celkem) + ' Kč', xR - 20, yy + 42, 'bold 32px ' + FONT, ZL, 'right');
-        yy += 110;
+        cara(xL, yy - 18, xR - xL, INK, 2);
+        box(xL - 24, yy, xR - xL + 24, 96, ZL, null, 14);
+        stitek('Celkem k úhradě', xL, yy + 34, INK); txt(nf2.format(S_.celkem) + ' Kč', xR - 22, yy + 76, 'bold 36px ' + FONT, INK, 'right');
+        yy += 130;
         // QR Platba vlevo od součtů
-        if (qrText && kresliQr(g, qrText, M, top - 14, 210)) { txt('QR Platba', M + 228, top + 20, 'bold 20px ' + FONT); zalom('Naskenujte v mobilním bankovnictví – vyplní se účet, částka, variabilní symbol i splatnost.', '16px ' + FONT, 300, 4).forEach((l, i) => txt(l, M + 228, top + 50 + i * 22, '16px ' + FONT, '#555')); }
-        yy = Math.max(yy, top + 230);
-        if (F.dph === 'pdp') zalom('Daň odvede zákazník – přenesená daňová povinnost podle § 92e zákona č. 235/2004 Sb., o dani z přidané hodnoty.', '18px ' + FONT, W - 2 * M, 3).forEach(l => { txt(l, M, yy, '18px ' + FONT, '#333'); yy += 24; });
-        if (F.dph === '0') { txt('Dodavatel není plátcem DPH.', M, yy, '18px ' + FONT, '#333'); yy += 24; }
-        yy += 24; txt('Vystavil(a): ' + (F.uzavreno ? F.uzavreno.kdo : kdo()) + (dod.firma ? ', ' + dod.firma : ''), M, yy, '18px ' + FONT, '#333');
+        if (qrText) {
+          box(M, top - 22, 460, 204, null, LINKA, 14);
+          if (kresliQr(g, qrText, M + 14, top - 8, 172)) { txt('QR Platba', M + 204, top + 26, 'bold 21px ' + FONT); zalom('Naskenujte v mobilním bankovnictví. Vyplní se účet, částka, variabilní symbol i datum splatnosti.', '15px ' + FONT, 236, 5).forEach((l, i) => txt(l, M + 204, top + 56 + i * 21, '15px ' + FONT, '#555')); }
+        }
+        yy = Math.max(yy, top + 214);
+        if (F.dph === 'pdp') zalom('Daň odvede zákazník – přenesená daňová povinnost podle § 92e zákona č. 235/2004 Sb., o dani z přidané hodnoty.', '17px ' + FONT, W - 2 * M, 3).forEach(l => { txt(l, M, yy, '17px ' + FONT, '#333'); yy += 24; });
+        if (F.dph === '0') { txt('Dodavatel není plátcem DPH.', M, yy, '17px ' + FONT, '#333'); yy += 24; }
+        yy += 14;
+        stitek('Vystavil(a)', M, yy); txt((F.uzavreno ? F.uzavreno.kdo : kdo()) + (dod.firma ? ', ' + dod.firma : ''), M, yy + 30, '18px ' + FONT, INK);
+        stitek('Razítko a podpis', xL, yy); cara(xL, yy + 64, xR - xL, '#b9b9b2');
       }
-      g.fillStyle = '#e6e6e1'; g.fillRect(M, Hh - 78, W - 2 * M, 1);
-      txt([dod.firma, dod.rejstrik].filter(Boolean).join(' · '), M, Hh - 48, '14px ' + FONT, '#8a929a');
-      txt('Faktura ' + (F.cislo || '') + ' · strana ' + (pi + 1) + ' z ' + stranky.length + ' · vystaveno v Constructo', W - M, Hh - 48, '14px ' + FONT, '#8a929a', 'right');
+      // patička: údaje dodavatele + malé logo Constructo
+      cara(M, Hh - 86, W - 2 * M);
+      txt([dod.firma, dod.ico ? 'IČO ' + dod.ico : '', dod.rejstrik].filter(Boolean).join('  ·  '), M, Hh - 52, '13px ' + FONT, '#8a929a');
+      txt('Faktura ' + (F.cislo || '') + '  ·  strana ' + (pi + 1) + ' z ' + stranky.length, W - M, Hh - 52, '13px ' + FONT, '#8a929a', 'right');
+      if (cxLogo) { g.drawImage(cxLogo, W - M - 196, Hh - 40, 20, 20); txt('vystaveno v Constructo', W - M, Hh - 25, '12px ' + FONT, '#8a929a', 'right'); }
       pages.push(c);
     }
     const jpgs = [];
