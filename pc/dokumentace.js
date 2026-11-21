@@ -1075,7 +1075,7 @@
         ${ro() ? '' : '<button type="button" class="dk-btn" data-o="ulozit">Uložit do Dokumentace › Výřezy</button>'}
         <button type="button" class="dk-btn" data-o="stahnout">⬇ Stáhnout obrázek</button>
         <button type="button" class="dk-btn" data-o="zavrit">Zavřít</button>
-      </div><small>${dotyk() ? 'Zkopírovaný výřez vložíte do WhatsAppu, e-mailu nebo zprávy (podržet prst → Vložit).' : 'Zkopírovaný výřez vložíte kamkoli: do e-mailu, Wordu, WhatsAppu nebo do zápisu (Ctrl+V, na Macu ⌘+V).'}</small></div>`;
+      </div><small>${dotyk() ? 'Zkopírovaný výřez vložíte do WhatsAppu, e-mailu nebo zprávy (podržet prst → Vložit).' : 'Zkopírovaný výřez vložíte kamkoli: do e-mailu, Wordu, WhatsAppu nebo do záznamu (Ctrl+V, na Macu ⌘+V).'}</small></div>`;
     document.body.appendChild(o);
     const pryc = () => { o.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
     o.onclick = e => { if (e.target === o) pryc(); };
