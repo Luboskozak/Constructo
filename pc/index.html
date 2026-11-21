@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-5xCBXl70LXsGKwO8DuCROCqw6nEIsahBa1o4Yf4lhsU=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-wjn4LP01mY6mcGzNrsE0NjJtesjg9MKxbHYeIHlRNSo=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -381,6 +381,7 @@ body.rz-full .wrap>section{gap:0!important}
 .stv-pop button small{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
 .stv-pop hr{border:0;border-top:1px solid var(--line);margin:6px 0}
 .stv-pop .new{font-weight:700}
+.stv-fak{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .stv-sec{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
 .stv-tab{width:100%;border-collapse:collapse;font-size:13px}
 .stv-tab th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:4px 4px}
@@ -1256,7 +1257,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.73';
+  const APP_VERSION = '4.74';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3665,6 +3666,20 @@ body.dfull-on{overflow:hidden}
   }
   const PR_ROLE = ['TDS', 'Investor', 'Architekt', 'Koordinátor BOZP'];
   // údaje z ARES podle IČO: nejdřív přímo z prohlížeče, když to nejde, přes skript na Googlu
+  // 4.74: zápis v obchodním rejstříku z ARES („C 12345 vedená u Městského soudu v Praze“)
+  const ARES_SOUD = {MSPH: 'Městského soudu v Praze', KSBR: 'Krajského soudu v Brně', KSOS: 'Krajského soudu v Ostravě', KSPL: 'Krajského soudu v Plzni', KSUL: 'Krajského soudu v Ústí nad Labem', KSHK: 'Krajského soudu v Hradci Králové', KSCB: 'Krajského soudu v Českých Budějovicích', KSPH: 'Krajského soudu v Praze'};
+  function aresSZ(oddil, vlozka, soud) { soud = String(soud || '').toUpperCase(); return oddil && vlozka ? `${oddil} ${vlozka}` + (ARES_SOUD[soud] ? ` vedená u ${ARES_SOUD[soud]}` : soud ? ` (${soud})` : '') : ''; }
+  async function aresRejstrik(ico, o) {
+    try {
+      const du = (o && o.dalsiUdaje) || []; for (const x of du) { const m = /^\s*([A-Za-z]{1,3})\s*(\d+)\s*\/\s*([A-Z]{4})/.exec(String(x.spisovaZnacka || '')); if (m) return aresSZ(m[1], m[2], m[3]); }
+      const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 10000);
+      const r = await fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty-vr/' + ico, {headers: {Accept: 'application/json'}, signal: ctl.signal});
+      clearTimeout(tm); if (!r.ok) return '';
+      const v = await r.json(), zz = (v.zaznamy || []).slice().sort((a, b) => (b.primarniZaznam ? 1 : 0) - (a.primarniZaznam ? 1 : 0));
+      for (const z of zz) { const sz = [].concat(z.spisovaZnacka || []).filter(x => x && !x.platnostDo); const x = sz[sz.length - 1] || [].concat(z.spisovaZnacka || [])[0]; if (x && x.oddil && x.vlozka) return aresSZ(x.oddil, x.vlozka, x.soud); }
+    } catch (e) {}
+    return '';
+  }
   async function aresNajdi(ico) {
     ico = String(ico || '').replace(/\D/g, '');
     if (ico.length !== 8) throw new Error('IČO má mít 8 číslic.');
@@ -3673,7 +3688,7 @@ body.dfull-on{overflow:hidden}
       const r = await fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/' + ico, {headers: {Accept: 'application/json'}, signal: ctl.signal});
       clearTimeout(tm);
       if (r.status === 404) throw new Error('Firma s tímto IČO v ARES není.');
-      if (r.ok) { const o = await r.json(); return {ico: o.ico || ico, firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''}; }
+      if (r.ok) { const o = await r.json(); return {ico: o.ico || ico, firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || '', rejstrik: await aresRejstrik(ico, o)}; }
     } catch (e) { if (/ARES není/.test(e.message)) throw e; }
     if (!SY) throw new Error('ARES se teď nepodařilo načíst. Údaje doplňte ručně.');
     const r = await call('POST', {key: SY.key, akce: 'ares', ico});
@@ -4324,6 +4339,11 @@ body.dfull-on{overflow:hidden}
     const zhot = Object.keys(fc).sort((x, y) => fc[y] - fc[x])[0] || '';
     return {name: 'Hybernská 1000/8', investor: inv ? (inv.firma || inv.jmeno || '') : '', company: zhot, ulice: 'Hybernská 1000/8', mesto: 'Praha 1', psc: '110 00', stat: 'Česká republika', popis: 'Rekonstrukce objektu Hybernská 1000/8, Praha 1', zacatek: st[0] || '', konec: en[en.length - 1] || '', stav: 'aktivni'};
   }
+  // 4.74: údaje vaší firmy pro faktury (dodavatel, logo, účet, splatnost, DPH) – zadávají se zde, ne až při fakturaci
+  function svFakHtml() {
+    const U = (D.project && D.project.fakturace) || {}, d = U.dod || {};
+    return `${d.logo ? `<img src="${d.logo}" alt="Logo" style="max-height:44px;max-width:150px">` : ''}<div style="flex:1;min-width:200px;font-size:14px">${d.firma ? `<b>${esc(d.firma)}</b>${d.ico ? ' · IČO ' + esc(d.ico) : ''}<br><span class="hcap" style="margin:0">${esc([d.ucet ? 'účet ' + d.ucet : '', 'splatnost ' + (U.splatnost || 14) + ' dní', d.rejstrik || ''].filter(Boolean).join(' · '))}</span>` : '<span class="hcap" style="margin:0">Zatím nevyplněno – bez toho nejde vytvořit fakturu.</span>'}</div><button type="button" class="btn" id="sv-fakb">${d.firma ? 'Upravit…' : 'Vyplnit (IČO → ARES)…'}</button>`;
+  }
   function stavbaForm(nova) {
     const P = nova ? {stat: 'Česká republika', stav: 'priprava', company: D.project.company || ''} : Object.assign({}, stavbaVychozi(), D.project || {});
     if (!nova && STAVBA === DEF_STAVBA) { const v0 = stavbaVychozi(); ['name', 'investor', 'company', 'zacatek', 'konec'].forEach(k => { if (!P[k] || (k === 'name' && P[k] === 'Constructo')) P[k] = v0[k] || P[k] || ''; }); }
@@ -4364,6 +4384,8 @@ body.dfull-on{overflow:hidden}
         ${f('sv-co', 'Zhotovitel', P.company, 'placeholder="Zhotovitel"')}
         <div class="fld"><label for="sv-stav">Stav stavby</label><select id="sv-stav">${Object.entries(STAV_STAV).map(([k, v]) => `<option value="${k}"${(P.stav || 'aktivni') === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
       </div>
+      ${nova ? '' : `<div class="stv-sec">Fakturace – kdo fakturuje</div>
+      <div id="sv-fak" class="stv-fak">${svFakHtml()}</div>`}
       <div class="stv-sec">Role a přístup</div>
       <p class="hcap" style="margin:0 0 6px">Do Managementu smí jen určení lidé ze stavby. Do Deníku zapisují i subdodavatelé (firmy).</p>
       <div id="sv-roles">${rolesHtml()}</div>
@@ -4402,6 +4424,7 @@ body.dfull-on{overflow:hidden}
     }
     function kresli() { $('#sv-roles').innerHTML = rolesHtml(); $('#sv-clen').innerHTML = clenHtml(); bind(); }
     bind();
+    { const fb = () => { const b = $('#sv-fakb'); if (b) b.onclick = () => { if (!isAdmin()) { toast('Údaje pro faktury upravuje správce stavby.'); return; } rozpPripoj(); if (!window.CXRozp || !CXRozp.udajeDodavatele) { toast('Obnovte stránku (F5).'); return; } CXRozp.udajeDodavatele(() => { const x = $('#sv-fak'); if (x) { x.innerHTML = svFakHtml(); fb(); } }); }; }; fb(); }
     setTimeout(() => { const n = $('#sv-name'); if (n && !n.value) n.focus(); }, 30);
   }
   // rozbalovací nabídka pod políčkem Projekt: vybrat stavbu, nebo založit novou (4.63: stejná nabídka i formulář jako v Deníku – pc/stavby.js)
