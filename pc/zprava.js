@@ -40,7 +40,7 @@ const CXZprava = (() => {
   }
   const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
   const b64 = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => res(''); r.readAsDataURL(b); });
-  const STITEK = o => o.zapis ? {l: 'DENNÍ ZÁPIS', bg: '#0f9d74', fg: '#ffffff', h: 'DENNÍ ZÁPIS'} : o.firma ? {l: String(o.typL || 'Zpráva').toUpperCase(), bg: '#16191c', fg: '#F4D23C', h: 'ZPRÁVA PRO FIRMU'} : o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
+  const STITEK = o => o.zapis ? {l: 'DENNÍ ZÁZNAM', bg: '#0f9d74', fg: '#ffffff', h: 'DENNÍ ZÁZNAM'} : o.firma ? {l: String(o.typL || 'Zpráva').toUpperCase(), bg: '#16191c', fg: '#F4D23C', h: 'ZPRÁVA PRO FIRMU'} : o.info ? {l: 'NA VĚDOMÍ', bg: '#2b6cb0', fg: '#ffffff', h: 'NA VĚDOMÍ'} : {l: 'ÚKOL', bg: '#16191c', fg: '#F4D23C', h: 'ÚKOL PRO KOLEGY'};
   // Drive: fotka přes lh3 (posílá CORS), aby šla nakreslit do PDF
   const fotoSrc = a => typeof a === 'string' ? a : a && a.id ? `https://lh3.googleusercontent.com/d/${a.id}=w1600` : (a && (a.thumb || a.url)) || '';
   async function formular(o) {
