@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-TpkeX2bq8Oe1jjLfDpMl+HAJAMDKtArbb29lsZs0/aU='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-9D+HJtlJVD64d9ZvOsbecIGqTDvCfT+0nETh1eKc0QA='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -5780,7 +5780,7 @@ function samoHodinove() {
   const r = samoZapis_(samoProved_());
   if (r && r.ok) return;
   const p = PropertiesService.getScriptProperties(), c = JSON.parse(p.getProperty('samo-chyba') || '{}');
-  if (!c.duvod || Date.now() - (c.mail || 0) < 7 * 86400000) return;   // 19: e-mail o chybě nejvýš jednou týdně
+  if (!c.duvod || /has not been used in project|SERVICE_DISABLED/i.test(c.duvod) || Date.now() - (c.mail || 0) < 7 * 86400000) return;   // 19: e-mail o chybě nejvýš jednou týdně
   try {
     const d = nacti_(p) || {}, P = d.project || {}, pp = P.people || {}, adm = Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
     const komu = adm.map(function (n) { return String((pp[n] || {}).email || '').split(',')[0].trim(); }).filter(function (a) { return a.indexOf('@') > 0; });
@@ -5871,6 +5871,8 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
     const duvod = String(r.duvod || 'neznámá chyba');
     try { store.set('hyb-samo-duvod', duvod); } catch (e) {}
     if (/F5/.test(duvod)) return r;
+    // 4.85: výchozí projekt Google Cloud nedovolí Apps Script API (nejde zapnout) – skript pak aktualizuje Claude přímo v editoru Googlu, pruh by jen strašil
+    if (/has not been used in project|SERVICE_DISABLED/i.test(duvod)) { if (el) el.remove(); return r; }
     if (!el) { el = document.createElement('div'); el.id = 'skript-pruh'; el.style.cssText = 'position:sticky;top:0;z-index:9000;background:#b42318;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.4'; document.body.prepend(el); }
     const api = /not enabled|has not been used|disabled|usersettings/i.test(duvod), opr = /insufficient|scope|PERMISSION_DENIED|403/i.test(duvod) && !api;
     el.innerHTML = `<span style="flex:1;min-width:240px"><b>Skript na Googlu se nepodařilo aktualizovat na verzi ${skriptWeb()}.</b> ${api ? 'Je potřeba jednou zapnout přepínač <b>Google Apps Script API</b> (stránka se otevře tlačítkem vpravo), pak klikněte Zkusit znovu.' : opr ? 'Google chce znovu povolit oprávnění skriptu.' : ''} <span style="opacity:.85">Důvod: ${esc(duvod.slice(0, 220))}</span></span>${api ? '<a class="btn" style="background:#fff;color:#b42318;text-decoration:none" href="https://script.google.com/home/usersettings" target="_blank" rel="noopener">Otevřít přepínač</a>' : opr ? '<button type="button" class="btn" data-sp="navod" style="background:#fff;color:#b42318">Postup…</button>' : ''}<button type="button" class="btn" data-sp="znovu" style="background:#fff;color:#b42318">Zkusit znovu</button>`;

@@ -971,7 +971,7 @@ function samoHodinove() {
   const r = samoZapis_(samoProved_());
   if (r && r.ok) return;
   const p = PropertiesService.getScriptProperties(), c = JSON.parse(p.getProperty('samo-chyba') || '{}');
-  if (!c.duvod || Date.now() - (c.mail || 0) < 7 * 86400000) return;   // 19: e-mail o chybě nejvýš jednou týdně
+  if (!c.duvod || /has not been used in project|SERVICE_DISABLED/i.test(c.duvod) || Date.now() - (c.mail || 0) < 7 * 86400000) return;   // 19: e-mail o chybě nejvýš jednou týdně
   try {
     const d = nacti_(p) || {}, P = d.project || {}, pp = P.people || {}, adm = Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
     const komu = adm.map(function (n) { return String((pp[n] || {}).email || '').split(',')[0].trim(); }).filter(function (a) { return a.indexOf('@') > 0; });
