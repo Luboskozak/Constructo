@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-jqMkdFJOvl5YRWU8JWokbHeWmmuzPEH3mnoWzxk4jrc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-LbN2CHWs1ujkg+QrB+NCveNaXI2NxWKK417npCEaIfY='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -308,7 +308,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/firmy.js"></script>
 <script>
 (() => {
-  const VERSION = '1.37';
+  const VERSION = '1.38';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -554,8 +554,11 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       // když člověk dopíše (klávesnice zmizí), dokreslí se odložené změny ze sítě
       document.addEventListener('focusout', () => setTimeout(() => { if (bgPending && !pise()) { bgPending = false; render(); } }, 400));
       // 1.21: při psaní (otevřená klávesnice) schovat spodní panel – na iPhonu by jinak vyskočil doprostřed a zakryl formulář
-      const kb = () => document.body.classList.toggle('pise', pise());
+      // 1.38: na novějším iPhonu se klávesnice pozná i podle zmenšené viditelné plochy (focusin někdy nestačil)
+      const vv = window.visualViewport;
+      const kb = () => document.body.classList.toggle('pise', pise() || !!(vv && vv.height < window.innerHeight * 0.78));
       document.addEventListener('focusin', kb); document.addEventListener('focusout', () => setTimeout(kb, 120));
+      if (vv) vv.addEventListener('resize', kb);
     }
     loadQ().then(() => { render(); pump(); refresh(); });
   }

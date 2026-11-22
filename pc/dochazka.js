@@ -119,7 +119,7 @@
   const odkazOsoby = (kid, tok) => ODKAZ + '?s=' + encodeURIComponent(S.sid) + '&k=' + encodeURIComponent(kid) + '&t=' + encodeURIComponent(tok);
   const odkazQR = () => ODKAZ + '?s=' + encodeURIComponent(S.sid) + '&q=' + encodeURIComponent(S.qr);
   const qrSvg = (text, px) => { try { const q = qrcode(0, 'M'); q.addData(text); q.make(); const n = q.getModuleCount(), c = Math.max(2, Math.floor((px || 240) / (n + 8))); return q.createSvgTag(c, c * 4); } catch (e) { return '<p>QR kód se nepodařilo vytvořit.</p>'; } };
-  const zpravaPozvanky = (k, url) => 'Dobrý den, ' + k.jmeno.split(' ')[0] + ', tady je Docházka Constructo pro stavbu ' + projektNazev() + '. Otevřete odkaz, klepněte na Rozumím a přidejte si ikonu Docházka na plochu. Ráno pak jen klepnete na Příchod. ' + url;
+  const zpravaPozvanky = (k, url) => 'Dobrý den, ' + k.jmeno.split(' ')[0] + ', tady je Docházka Constructo pro stavbu ' + projektNazev() + '. Otevřete odkaz v Safari (iPhone) nebo v Chrome (Android), klepněte na Rozumím a přidejte si ikonu Docházka na plochu. Ráno pak jen klepnete na Příchod. ' + url;
   const projektNazev = () => String((H.projekt() || {}).name || 'stavba').split(',')[0];
 
   /* ---------- dialog ---------- */
@@ -149,7 +149,7 @@
       bm.disabled = true;
       const html = '<div style="font-family:Arial,sans-serif;font-size:16px;color:#16191c;max-width:560px"><p>Dobrý den,</p><p>tady je <b>Docházka Constructo</b> pro stavbu ' + esc(projektNazev()) + '. Na stavbě jí budete potvrzovat příchod, pauzu a odchod.</p>' +
         '<p style="margin:22px 0"><a href="' + esc(url) + '" style="background:#F4D23C;color:#131518;padding:14px 26px;border-radius:10px;font-weight:800;text-decoration:none;font-size:18px">Otevřít Docházku</a></p>' +
-        '<ol><li>Otevřete odkaz v telefonu.</li><li>Klepněte na <b>Rozumím</b> a přidejte si ikonu <b>Docházka</b> na plochu.</li><li>Ráno na stavbě klepněte na <b>Příchod</b>, při obědě na <b>Pauza</b>, večer na <b>Odchod</b>.</li></ol>' +
+        '<ol><li>Otevřete odkaz v telefonu, na iPhonu v <b>Safari</b>, na Androidu v <b>Chrome</b>.</li><li>Klepněte na <b>Rozumím</b> a přidejte si ikonu <b>Docházka</b> na plochu.</li><li>Ráno na stavbě klepněte na <b>Příchod</b>, při obědě na <b>Pauza</b>, večer na <b>Odchod</b>.</li></ol>' +
         '<p style="color:#6b7279;font-size:13px">Poloha telefonu se zjistí jen ve chvíli potvrzení, nikdy jindy. Odkaz je osobní, nikomu ho neposílejte.</p></div>';
       const r = await H.posliMail({komu: k.email, predmet: 'Docházka Constructo – ' + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date())});
       bm.disabled = false;
