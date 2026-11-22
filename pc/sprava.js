@@ -14,11 +14,14 @@ const CXSprava = (() => {
   const EMAIL_RE = /^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/;
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 
-  const ZALOZKY = [['udaje', 'Údaje o stavbě'], ['firmy', 'Firmy / osoby na projektu'], ['kolegove', 'Kolegové'], ['lide', 'Lidé a role']];
+  // 4.83: stejně jako v Deníku – Správa stavby → Detail a Role a lidé (Firmy / osoby na projektu mají vlastní položku v nabídce)
+  const ZALOZKY = [['detail', 'Detail'], ['lide', 'Role a lidé']];
+  const ALIAS = {udaje: 'detail', kolegove: 'lide'};
   // ikony – stejné obrázky v Managementu i Deníku (data-URI pro CSS masku)
   const svg = p => `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E${p}%3C/svg%3E")`;
   const IKONY = {
     sprava: svg("%3Cpath d='M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M3 21h18M8 7h4M8 11h4M8 15h4'/%3E"),
+    detail: svg("%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Cpath d='M8 8h8M8 12h8M8 16h5'/%3E"),
     udaje: svg("%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Cpath d='M8 8h8M8 12h8M8 16h5'/%3E"),
     firmy: svg("%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E"),
     kolegove: svg("%3Ccircle cx='9' cy='8' r='3.5'/%3E%3Cpath d='M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5'/%3E%3Ccircle cx='17' cy='9' r='2.8'/%3E%3Cpath d='M17.5 14.6c2.2.4 3.6 2.2 4 5.4'/%3E"),
@@ -33,11 +36,14 @@ const CXSprava = (() => {
   const ACCESS = {zapisuje: ['Zapisuje', 'zadává úkoly, píše záznamy'], nahlizi: ['Jen nahlíží', 'vidí vše, nic nemění']};
   // role na stavbě: kdo smí do Managementu a jak do Deníku
   const DENIK_PR = {zapis: 'Zapisuje', cteni: 'Jen čte', ne: 'Bez přístupu'};
+  const NIC = {rozp: false, fakt: false, fakU: false, doch: false};
   const ROLE_DEF = [
-    {id: 'spravce', nazev: 'Správce stavby', mgmt: true, denik: 'zapis'},
-    {id: 'vedeni', nazev: 'Vedení stavby', mgmt: true, denik: 'zapis'},
-    {id: 'subdodavatel', nazev: 'Subdodavatel (firma)', mgmt: false, denik: 'zapis'},
-    {id: 'dozor', nazev: 'TDS, investor, BOZP', mgmt: false, denik: 'cteni'}];
+    {id: 'spravce', nazev: 'Správce stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: true, doch: true}},
+    {id: 'vedeni', nazev: 'Vedení stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: false, doch: true}},
+    {id: 'subdodavatel', nazev: 'Subdodavatel (firma)', mgmt: false, denik: 'zapis', prava: NIC},
+    {id: 'dozor', nazev: 'TDS, investor, BOZP', mgmt: false, denik: 'cteni', prava: NIC}];
+  // sloupce „co vidí“ v tabulce rolí (krátké názvy)
+  const PRAVA_KRATCE = {rozp: 'Rozpočet a ceny', fakt: 'Připravuje faktury', fakU: 'Uzavírá faktury', doch: 'Docházka'};
   const STAV = {aktivni: 'Probíhá', priprava: 'V přípravě', pozastavena: 'Pozastavená', dokoncena: 'Dokončená'};
 
   const ADMINS = P => Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
@@ -56,7 +62,17 @@ const CXSprava = (() => {
     if (x.fakU) x.fakt = true; if (x.fakt) x.rozp = true;
     return x;
   }
-  const rolesOf = P => (Array.isArray(P.roleStavby) && P.roleStavby.length ? P.roleStavby : ROLE_DEF).map(r => Object.assign({}, r));
+  const rolesOf = P => (Array.isArray(P.roleStavby) && P.roleStavby.length ? P.roleStavby : ROLE_DEF).map(r => {
+    const d = ROLE_DEF.find(x => x.id === r.id), x = Object.assign({}, r);
+    x.prava = Object.assign({}, NIC, (d && d.prava) || {}, r.prava || {}); if (x.id === 'spravce') x.prava = Object.assign({}, ROLE_DEF[0].prava);
+    return x;
+  });
+  // oprávnění role se propíšou kolegům s touto rolí (pak je jde u člověka ještě upravit v Upravit)
+  function pravaRoleKolegum(P, lide, roles) {
+    const pp = Object.assign({}, P.people || {}), adm = ADMINS(P);
+    lide.filter(x => x.skup === 'kolegove' && !adm.includes(x.jmeno)).forEach(x => { const r = roles.find(y => y.id === x.role); if (!r) return; const fx = Object.assign({}, r.prava); if (fx.fakU) fx.fakt = true; if (fx.fakt) fx.rozp = true; pp[x.jmeno] = Object.assign({}, pp[x.jmeno] || {}, {prava: fx, _ts: Date.now()}); });
+    P.people = pp;
+  }
   const smazano = (P, k, id) => { const s = Object.assign({}, P.smazane || {}); s[k] = Object.assign({}, s[k] || {}, {[id]: Date.now()}); P.smazane = s; };
 
   // všichni lidé na stavbě – sestaveno z Kolegů, pracovníků firem (Dodavatel), Objednatele a ručně přidaných
@@ -115,6 +131,8 @@ const CXSprava = (() => {
 .cxs-foot .hint{flex:1;font-size:12.5px;color:var(--m)}
 .cxs-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) minmax(0,1fr) auto;gap:6px 14px;padding:11px 14px;border-bottom:1px solid #eeeee8;align-items:center}
 .cxs-row:last-child{border-bottom:0}
+.cxs-row.r5{grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) minmax(0,1fr) 200px auto}
+.cxs-row select{font-size:14px;padding:7px 9px}
 .cxs-row b.n{display:block;font-size:15px}.cxs-row small{display:block;font-size:12px;color:var(--m);margin-top:2px}
 .cxs-row a{color:var(--k)!important}
 .cxs-a{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
@@ -144,7 +162,7 @@ const CXSprava = (() => {
 .cxs-opt label span{display:block;font-weight:400;font-size:12px;color:#5f676d}
 .cxs-opt input{width:18px;height:18px;margin-top:2px;accent-color:#131518;flex:none}
 .cxs .hint{font-size:12.5px;color:var(--m);margin:0}
-@media (max-width:900px){.cxs-grid{grid-template-columns:1fr 1fr}.cxs-row,.cxs-lr{grid-template-columns:1fr}.cxs-a{justify-content:flex-start}}
+@media (max-width:900px){.cxs-grid{grid-template-columns:1fr 1fr}.cxs-row,.cxs-row.r5,.cxs-lr{grid-template-columns:1fr}.cxs-a{justify-content:flex-start}}
 @media (max-width:560px){.cxs-grid{grid-template-columns:1fr}.cxs-grid .half{grid-column:auto}.cxs-ov{padding:0}.cxs-m{border-radius:0;min-height:100%}}`;
     document.head.appendChild(s);
   }
@@ -173,18 +191,17 @@ const CXSprava = (() => {
     const ro = () => !!(host.ro && host.ro());
     const admin = () => !ro() && !!(host.admin && host.admin());
     const P = () => host.projekt() || {};
-    zal = ZALOZKY.some(z => z[0] === zal) ? zal : 'udaje';
+    zal = ALIAS[zal] || zal; if (!ZALOZKY.some(z => z[0] === zal) && zal !== 'firmy') zal = 'detail';
     const uloz = async fn => { await host.uloz(fn); };
 
     function render() {
       const tabs = `<div class="cxs-tabs" role="tablist">${ZALOZKY.map(([k, n]) => `<button type="button" class="cxs-tab" role="tab" data-z="${k}" aria-pressed="${zal === k}">${n}</button>`).join('')}</div>`;
-      el.innerHTML = `<div class="cxs">${tabs}<div class="cxs-obsah"></div></div>`;
+      el.innerHTML = `<div class="cxs">${zal === 'firmy' ? '' : tabs}<div class="cxs-obsah"></div></div>`;
       el.querySelectorAll('.cxs-tab[data-z]').forEach(b => b.style.setProperty('--ico', IKONY[b.dataset.z]));
       el.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { if (host.prepni) host.prepni(b.dataset.z); else { zal = b.dataset.z; render(); } });
       const box = el.querySelector('.cxs-obsah');
-      if (zal === 'udaje') udaje(box);
+      if (zal === 'detail') udaje(box);
       else if (zal === 'firmy') firmy(box);
-      else if (zal === 'kolegove') kolegove(box);
       else lide(box);
     }
 
@@ -238,17 +255,19 @@ const CXSprava = (() => {
     }
 
     /* ---------- 3. Kolegové (tým stavby: kdo pracuje v Constructu) ---------- */
-    function kolegove(box) {
+    function kolegove(box, roleSel, L) {
       const p = P(), A = admin(), adm = ADMINS(p), lidi = tym(p).slice().sort((a, b) => a.localeCompare(b, 'cs'));
+      const ri = n => L.findIndex(x => x.skup === 'kolegove' && x.jmeno === n);
       const ini = n => n.split(/\s+/).map(x => x[0] || '').join('').slice(0, 2).toUpperCase();
       box.innerHTML = `<section class="cxs-card"><div class="cxs-h"><b>Kolegové</b><span>tým stavby – přihlašují se do Constructa, přidělují se jim úkoly · ${lidi.length} ${lidi.length === 1 ? 'kolega' : lidi.length < 5 ? 'kolegové' : 'kolegů'}</span><span class="sp"></span>${A ? '<button type="button" class="cxs-b add" id="cxs-kadd">+ Přidat</button>' : ''}</div>
         ${lidi.length ? lidi.map(n => { const o = osoba(p, n), em = emaily(o), pr = pravaOf(p, n);
-          return `<div class="cxs-row"><div class="cxs-nm"><span class="cxs-av">${esc(ini(n))}</span><div><b class="n">${esc(n)}</b><small>${esc([o.role, o.company].filter(Boolean).join(' · ') || '–')}</small></div></div>
+          return `<div class="cxs-row r5"><div class="cxs-nm"><span class="cxs-av">${esc(ini(n))}</span><div><b class="n">${esc(n)}</b><small>${esc([o.role, o.company].filter(Boolean).join(' · ') || '–')}</small></div></div>
             <div>${em.length ? em.map(x => `<a href="mailto:${esc(x.a)}">${esc(x.a)}</a>${x.rep ? '' : ' <small style="display:inline">(bez reportů)</small>'}`).join('<br>') : '<small>bez e-mailu</small>'}${o.phone ? `<br><a href="tel:${esc(String(o.phone).replace(/\s/g, ''))}">${esc(o.phone)}</a>` : ''}</div>
             <div>${adm.includes(n) ? '<span class="cxs-tag y">Správce</span>' : ''}<span class="cxs-tag">${o.access === 'nahlizi' ? 'Jen nahlíží' : 'Zapisuje'}</span>${PRAVA.filter(([k]) => pr[k]).map(([k, l]) => `<span class="cxs-tag">${esc(l)}</span>`).join('')}</div>
+            <div>${ri(n) >= 0 ? roleSel(L[ri(n)], ri(n)) : ''}</div>
             <div class="cxs-a">${A ? `${host.pozvat ? `<button type="button" class="cxs-b" data-poz="${esc(n)}">Pozvat</button>` : ''}<button type="button" class="cxs-b" data-ed="${esc(n)}">Upravit</button>${adm.includes(n) ? '' : `<button type="button" class="cxs-b del" data-od="${esc(n)}">Odebrat</button>`}` : ''}</div></div>`; }).join('')
           : '<div class="cxs-empty">Zatím žádný kolega. Klikněte na + Přidat.</div>'}</section>
-        <p class="hint">Kolegové jsou i v záložce Lidé a role, kde jim nastavíte roli na stavbě. Odebraný kolega zůstane u svých úkolů a záznamů, jen už nebude v týmu.</p>`;
+        <p class="hint" style="margin:-8px 0 16px">Odebraný kolega zůstane u svých úkolů a záznamů, jen už nebude v týmu.</p>`;
       const ka = box.querySelector('#cxs-kadd'); if (ka) ka.onclick = () => upravKolegu(null);
       box.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => upravKolegu(b.dataset.ed));
       box.querySelectorAll('[data-poz]').forEach(b => b.onclick = () => host.pozvat(b.dataset.poz));
@@ -258,6 +277,7 @@ const CXSprava = (() => {
         try { await uloz(p0 => { p0.team = tym(p0).filter(x => x !== n); smazano(p0, 'team', n); }); toast('Odebráno z týmu: ' + n); } catch (e) { toast('Nepodařilo se: ' + (e.message || e)); }
         render();
       });
+
     }
     function upravKolegu(n) {
       const p = P(), o = n ? osoba(p, n) : {}, adm = n && ADMINS(p).includes(n), pr = pravaOf(p, n);
@@ -304,40 +324,52 @@ const CXSprava = (() => {
       setTimeout(() => { const i = ov.querySelector('#cxs-kn'); if (i && !i.disabled) i.focus(); }, 30);
     }
 
-    /* ---------- 4. Lidé a role (všichni na stavbě + jejich role) ---------- */
+    /* ---------- Role a lidé: role (co kdo vidí a kam smí), kolegové, lidé z firem a objednatele ---------- */
     function lide(box) {
       const p = P(), A = admin(), roles = rolesOf(p), L = lideNaStavbe(p);
       const roleSel = (x, i) => `<select data-ri="${i}"${A ? '' : ' disabled'} aria-label="Role">${roles.map(r => `<option value="${esc(r.id)}"${r.id === x.role ? ' selected' : ''}>${esc(r.nazev)}</option>`).join('')}</select>`;
-      const SK = [['kolegove', 'Kolegové'], ['dod', '1. Dodavatel – pracovníci firem'], ['obj', '2. Objednatel – Investor, TDS, BOZP, Architekt, Ostatní'], ['ruc', 'Další lidé']];
+      const SK = [['dod', '1. Dodavatel – pracovníci firem'], ['obj', '2. Objednatel – Investor, TDS, BOZP, Architekt, Ostatní'], ['ruc', 'Další lidé']];
+      const pocet = id => L.filter(x => x.role === id).length;
       const radek = (x, i) => `<div class="cxs-lr"><div><b>${esc(x.jmeno || x.firma)}</b>${x.pozice ? `<small style="display:block;font-size:12px;color:#5f676d">${esc(x.pozice)}</small>` : ''}</div><div>${esc(x.jmeno ? x.firma : '')}</div>
         <div style="font-size:13px">${[x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '', x.tel ? esc(x.tel) : ''].filter(Boolean).join(' · ') || '<span class="hint">bez kontaktu</span>'}</div>
-        <div>${roleSel(x, i)}</div><div class="cxs-a">${A ? (x.skup === 'ruc' ? `<button type="button" class="cxs-b" data-red="${i}">Upravit</button><button type="button" class="cxs-b del" data-rod="${i}">Odebrat</button>` : `<button type="button" class="cxs-b" data-kde="${x.skup}" title="Kontakt se upravuje u zdroje">Upravit</button>`) : ''}</div></div>`;
-      box.innerHTML = `<section class="cxs-card"><div class="cxs-h"><b>Role na stavbě</b><span>kdo smí do Managementu a jak smí do Deníku</span><span class="sp"></span>${A ? '<button type="button" class="cxs-b add" id="cxs-radd">+ Přidat</button>' : ''}</div>
-          <div class="cxs-body" style="padding:6px 8px"><table class="cxs-tab-r"><thead><tr><th>Role</th><th class="c">Management</th><th>Deník</th><th></th></tr></thead><tbody>${roles.map((r, i) => `<tr data-r="${i}">
-            <td><input data-k="nazev" value="${esc(r.nazev)}" aria-label="Název role"${A ? '' : ' disabled'}></td>
-            <td class="c"><input type="checkbox" data-k="mgmt"${r.mgmt ? ' checked' : ''}${r.id === 'spravce' || !A ? ' disabled' : ''} aria-label="Přístup do Managementu"></td>
-            <td><select data-k="denik"${r.id === 'spravce' || !A ? ' disabled' : ''} aria-label="Přístup do Deníku">${Object.entries(DENIK_PR).map(([k, l]) => `<option value="${k}"${r.denik === k ? ' selected' : ''}>${l}</option>`).join('')}</select></td>
-            <td>${A && !ROLE_DEF.some(d => d.id === r.id) ? `<button type="button" class="cxs-b del" data-rdel="${i}">Odebrat</button>` : ''}</td></tr>`).join('')}</tbody></table></div>
-          ${A ? '<div class="cxs-foot"><span class="hint">Změny rolí platí pro všechny lidi s danou rolí.</span><button type="button" class="cxs-b pri" id="cxs-rsave">Uložit role</button></div>' : ''}</section>
-        <section class="cxs-card"><div class="cxs-h"><b>Lidé na stavbě</b><span>všichni z Kolegů, Firem a Objednatele na jednom místě – u každého vyberte roli</span><span class="sp"></span>${A ? '<button type="button" class="cxs-b add" id="cxs-ladd">+ Přidat</button>' : ''}</div>
+        <div>${roleSel(x, i)}</div><div class="cxs-a">${A ? (x.skup === 'ruc' ? `<button type="button" class="cxs-b" data-red="${i}">Upravit</button><button type="button" class="cxs-b del" data-rod="${i}">Odebrat</button>` : `<button type="button" class="cxs-b" data-kde="firmy" title="Kontakt se upravuje ve Firmy / osoby na projektu">Upravit</button>`) : ''}</div></div>`;
+      const ch = (r, i, k, dis) => `<td class="c"><input type="checkbox" data-k="${k}"${(k === 'mgmt' ? r.mgmt : r.prava[k]) ? ' checked' : ''}${dis ? ' disabled' : ''} aria-label="${esc(r.nazev)}: ${k === 'mgmt' ? 'Management' : PRAVA_KRATCE[k]}"></td>`;
+      box.innerHTML = `<section class="cxs-card"><div class="cxs-h"><b>Role – co kdo vidí a kam smí</b><span>zaškrtněte, co role smí; platí pro všechny lidi s touto rolí (kolegy i firmy)</span><span class="sp"></span>${A ? '<button type="button" class="cxs-b add" id="cxs-radd">+ Přidat roli</button>' : ''}</div>
+          <div class="cxs-body" style="padding:6px 8px;overflow-x:auto"><table class="cxs-tab-r"><thead><tr><th>Role</th><th class="c">Lidí</th><th class="c">Management</th><th>Deník</th>${Object.values(PRAVA_KRATCE).map(l => `<th class="c">${l}</th>`).join('')}<th></th></tr></thead><tbody>${roles.map((r, i) => { const z = r.id === 'spravce' || !A; return `<tr data-r="${i}">
+            <td style="min-width:170px"><input data-k="nazev" value="${esc(r.nazev)}" aria-label="Název role"${A ? '' : ' disabled'}></td>
+            <td class="c">${pocet(r.id)}</td>
+            ${ch(r, i, 'mgmt', z)}
+            <td style="min-width:130px"><select data-k="denik"${z ? ' disabled' : ''} aria-label="Přístup do Deníku">${Object.entries(DENIK_PR).map(([k, l]) => `<option value="${k}"${r.denik === k ? ' selected' : ''}>${l}</option>`).join('')}</select></td>
+            ${Object.keys(PRAVA_KRATCE).map(k => ch(r, i, k, z)).join('')}
+            <td>${A && !ROLE_DEF.some(d => d.id === r.id) ? `<button type="button" class="cxs-b del" data-rdel="${i}">Odebrat</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>
+          ${A ? '<div class="cxs-foot"><span class="hint">Management = smí do počítačové aplikace vedení. Deník = zapisuje / jen čte / nic. Po uložení dostanou kolegové s danou rolí tato oprávnění (u jednotlivce je jde změnit v Upravit).</span><button type="button" class="cxs-b pri" id="cxs-rsave">Uložit role</button></div>' : ''}</section>
+        <div id="cxs-kol"></div>
+        <section class="cxs-card"><div class="cxs-h"><b>Lidé z firem a objednatele</b><span>pracovníci firem, Investor, TDS, BOZP, Architekt… – u každého vyberte roli</span><span class="sp"></span>${A && window.CXDochazka && CXDochazka.pozvatDoStavby ? '<button type="button" class="cxs-b" id="cxs-poz">Pozvat do stavby</button>' : ''}${A ? '<button type="button" class="cxs-b add" id="cxs-ladd">+ Přidat osobu</button>' : ''}</div>
           ${SK.map(([k, nm]) => { const xs = L.map((x, i) => [x, i]).filter(([x]) => x.skup === k); return xs.length || k !== 'ruc' ? `<div class="cxs-sub">${nm} <span class="hint" style="display:inline;font-weight:400">(${xs.length})</span></div>${xs.length ? xs.map(([x, i]) => radek(x, i)).join('') : '<div class="cxs-empty">Nikdo.</div>'}` : ''; }).join('')}
         </section>
-        <p class="hint">Kontakty kolegů se upravují v záložce Kolegové, pracovníků firem a objednatele ve Firmy / osoby na projektu – sem se propíšou samy.</p>`;
-      // role lidí: uloží se hned po změně
+        <p class="hint">Kontakty pracovníků firem a objednatele se upravují ve Firmy / osoby na projektu – sem se propíšou samy.</p>`;
+      kolegove(box.querySelector('#cxs-kol'), roleSel, L);
+      // tlačítko „Pozvat do stavby“ dodává Docházka (CXDochazka.pozvatDoStavby) – stejné jako ve Firmy / osoby na projektu
+      { const pz = box.querySelector('#cxs-poz'); if (pz) pz.onclick = () => CXDochazka.pozvatDoStavby({lide: L, projekt: P(), po: render}); }
+      // role člověka: uloží se hned po změně (kolega dostane i oprávnění role)
       box.querySelectorAll('select[data-ri]').forEach(s => s.onchange = async () => {
         const x = L[+s.dataset.ri], stara = x.role; x.role = s.value;
         const ja = host.ja ? host.ja() : '';
         if (x.skup === 'kolegove' && x.jmeno === ja && stara === 'spravce' && x.role !== 'spravce') { toast('Sami sobě roli Správce stavby odebrat nemůžete.'); x.role = stara; s.value = stara; return; }
         if (!L.some(y => y.skup === 'kolegove' && y.role === 'spravce')) { toast('Aspoň jeden kolega musí mít roli Správce stavby.'); x.role = stara; s.value = stara; return; }
-        try { await uloz(p0 => zapisClenove(p0, L)); toast('Role uložena: ' + (x.jmeno || x.firma) + ' – ' + (roles.find(r => r.id === x.role) || {}).nazev); }
+        try { await uloz(p0 => { zapisClenove(p0, L); if (x.skup === 'kolegove') pravaRoleKolegum(p0, L.filter(y => y === x), roles); }); toast('Role uložena: ' + (x.jmeno || x.firma) + ' – ' + (roles.find(r => r.id === x.role) || {}).nazev); render(); }
         catch (e) { toast('Nepodařilo se uložit: ' + (e.message || e)); }
       });
-      box.querySelectorAll('[data-kde]').forEach(b => b.onclick = () => { const z = b.dataset.kde === 'kolegove' ? 'kolegove' : 'firmy'; if (host.prepni) host.prepni(z); else { zal = z; render(); } });
+      box.querySelectorAll('[data-kde]').forEach(b => b.onclick = () => { if (host.prepni) host.prepni('firmy'); else { zal = 'firmy'; render(); } });
       const rs = box.querySelector('#cxs-rsave');
-      const sberRole = () => { box.querySelectorAll('tr[data-r]').forEach(tr => { const r = roles[+tr.dataset.r]; r.nazev = tr.querySelector('[data-k=nazev]').value.trim() || 'Role'; if (r.id !== 'spravce') { r.mgmt = tr.querySelector('[data-k=mgmt]').checked; r.denik = tr.querySelector('[data-k=denik]').value; } }); };
-      if (rs) rs.onclick = async () => { sberRole(); try { await uloz(p0 => { p0.roleStavby = roles; }); toast('Role uloženy'); render(); } catch (e) { toast('Nepodařilo se uložit: ' + (e.message || e)); } };
+      const sberRole = () => { box.querySelectorAll('tr[data-r]').forEach(tr => { const r = roles[+tr.dataset.r]; r.nazev = tr.querySelector('[data-k=nazev]').value.trim() || 'Role'; if (r.id !== 'spravce') { r.mgmt = tr.querySelector('[data-k=mgmt]').checked; r.denik = tr.querySelector('[data-k=denik]').value; Object.keys(PRAVA_KRATCE).forEach(k => { r.prava[k] = tr.querySelector(`[data-k=${k}]`).checked; }); if (r.prava.fakU) r.prava.fakt = true; if (r.prava.fakt) r.prava.rozp = true; } }); };
+      if (rs) rs.onclick = async () => { sberRole(); try { await uloz(p0 => { p0.roleStavby = roles; pravaRoleKolegum(p0, L, roles); }); toast('Role uloženy a propsány lidem'); render(); } catch (e) { toast('Nepodařilo se uložit: ' + (e.message || e)); } };
+      const rt = box.querySelector('.cxs-tab-r');
+      if (rt) rt.onchange = e => { const k = e.target.dataset.k, tr = e.target.closest('tr'); if (!tr || !(k in PRAVA_KRATCE)) return; const c = x => tr.querySelector(`[data-k=${x}]`);
+        if (e.target.checked && k === 'fakU') { c('fakt').checked = true; c('rozp').checked = true; } if (e.target.checked && k === 'fakt') c('rozp').checked = true;
+        if (!e.target.checked && k === 'rozp') { c('fakt').checked = false; c('fakU').checked = false; } if (!e.target.checked && k === 'fakt') c('fakU').checked = false; };
       const ra = box.querySelector('#cxs-radd');
-      if (ra) ra.onclick = async () => { sberRole(); roles.push({id: 'r' + uid(), nazev: 'Nová role', mgmt: false, denik: 'cteni'}); try { await uloz(p0 => { p0.roleStavby = roles; }); render(); const i = el.querySelector('tr[data-r]:last-child input'); if (i) { i.focus(); i.select(); } } catch (e) { toast(e.message || e); } };
+      if (ra) ra.onclick = async () => { sberRole(); roles.push({id: 'r' + uid(), nazev: 'Nová role', mgmt: false, denik: 'cteni', prava: Object.assign({}, NIC)}); try { await uloz(p0 => { p0.roleStavby = roles; }); render(); const i = el.querySelector('tr[data-r]:last-child input'); if (i) { i.focus(); i.select(); } } catch (e) { toast(e.message || e); } };
       box.querySelectorAll('[data-rdel]').forEach(b => b.onclick = async () => {
         if (!b.classList.contains('arm')) { b.classList.add('arm'); b.textContent = 'Opravdu odebrat?'; return; }
         sberRole(); const r = roles[+b.dataset.rdel]; roles.splice(+b.dataset.rdel, 1);
@@ -375,6 +407,6 @@ const CXSprava = (() => {
     return {render, prepni: z => { zal = z; render(); }, upravKolegu};
   }
 
-  return {panel, ZALOZKY, IKONY, POZICE, PRAVA, PRAVA_VYCH, PRAVA_POZICE, ACCESS, ROLE_DEF, DENIK_PR, STAV, lideNaStavbe, rolesOf, pravaOf, emaily};
+  return {panel, ZALOZKY, ALIAS, IKONY, PRAVA_KRATCE, POZICE, PRAVA, PRAVA_VYCH, PRAVA_POZICE, ACCESS, ROLE_DEF, DENIK_PR, STAV, lideNaStavbe, rolesOf, pravaOf, emaily};
 })();
 if (typeof window !== 'undefined') window.CXSprava = CXSprava;
