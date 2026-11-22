@@ -48,7 +48,7 @@
 .rz-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.rz-top .sp{flex:1}
 .rz-top h2{font-size:19px;margin:0}
 .rz-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:14px;font-weight:700;border:1px solid var(--line);border-radius:10px;padding:8px 13px;background:var(--panel);color:var(--ink);cursor:pointer;white-space:nowrap}
-.rz-btn:hover{border-color:var(--ink)}.rz-btn.zl{background:#F4D23C;border-color:#F4D23C;color:#16191c}.rz-btn.cr{background:#16191c;border-color:#16191c;color:#fff}
+.rz-btn:hover{border-color:var(--ink)}.rz-btn.zl{background:#F4D23C;border-color:#F4D23C;color:#16191c}.rz-btn.cr{background:#16191c;border-color:#16191c;color:#fff}.rz-btn.ze{background:#1f8a4c;border-color:#1f8a4c;color:#fff}.rz-btn.ze:hover{background:#18723e}
 .rz-btn.mini{font-size:12.5px;padding:5px 9px;font-weight:600;border-radius:8px}.rz-btn[disabled]{opacity:.45;cursor:default}
 .rz-btn.del{color:var(--bad)}
 .rz-sel,.rz-q,.rz-in{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--panel);color:var(--ink)}
@@ -63,7 +63,8 @@
 .rz-tabs button[aria-pressed=true]{background:#16191c;color:#fff;border-color:#16191c}
 .rz-tabs button b{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:#F4D23C;color:#16191c;font-size:12px;margin-left:6px;padding:0 5px}
 .rz-tabs button b.cerv{background:var(--bad);color:#fff}
-.rz-fil{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rz-fil{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.rz-brk{flex-basis:100%;height:0;margin:-2px 0}.rz-flt .rz-brk{border-top:1px solid var(--line,#e5e5e5);margin:2px 0}
+.rz-top .rz-inf{flex:1 1 120px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.rz-top select{max-width:300px}
 .rz-seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;border-right:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 11px;cursor:pointer}
 .rz-seg button:last-child{border-right:0}.rz-seg button[aria-pressed=true]{background:#16191c;color:#fff}
@@ -131,6 +132,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 /* okna */
 .rz-ov{position:fixed;inset:0;z-index:2500;background:rgba(10,12,14,.55);display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto}
 .rz-dlg{background:var(--panel);color:var(--ink);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);width:min(1100px,100%);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+.rz-ov.cela{padding:0!important}.rz-dlg.cela{width:100vw!important;max-width:none;height:100vh;max-height:100vh!important;border-radius:0}.rz-dlg.cela .rz-db{flex:1}.rz-dh .rz-cela{margin-left:auto;margin-right:8px}
 .rz-dlg.uzky{width:min(620px,100%)}.rz-dlg.siroky{width:min(1500px,100%)}
 .rz-dh{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}.rz-dh h3{margin:0;font-size:18px;flex:1}
 .rz-x{font:inherit;font-size:15px;font-weight:800;border:2px solid #16191c;background:#fff;color:#16191c;border-radius:10px;padding:6px 14px;cursor:pointer}
@@ -151,12 +153,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .fk-tab td.tf input{border:2px solid #e0b800;font-weight:700;font-size:15px}.fk-rych{display:inline-flex;gap:3px;white-space:nowrap}.fk-rych button{white-space:nowrap}.fk-rych button{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:3px 7px;cursor:pointer;color:var(--ink)}.fk-rych button:hover{background:#F4D23C}
 .fk-tab thead tr:not(.fk-g) th{font-size:13px;color:#16191c;background:#e4e4de;border-bottom:2px solid #16191c}.fk-tab thead tr:not(.fk-g) th.tf{background:#fbe78a}.fk-tab thead tr:not(.fk-g) th.kc{background:#d9d9d2}
 .fk-chw{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.fk-chw>b{min-width:150px;padding-top:6px}.fk-chs{display:flex;flex-wrap:wrap;gap:6px}.fk-ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13.5px;cursor:pointer;background:var(--panel)}.fk-ch:has(input:checked){background:#F4D23C;border-color:#16191c}.fk-ch small{color:var(--muted)}
-.fk-hrom{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff7cf;border:2px solid #F4D23C;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:15px}.fk-hrom>b{font-size:16px}.fk-hrom input{width:90px;font-size:20px;font-weight:800;text-align:right;padding:6px 8px;border:2px solid #16191c;border-radius:8px}.fk-hromb{font-size:16px!important;padding:10px 18px!important}.fk-hrom small{flex-basis:100%;color:#5a5f63;font-size:12.5px}
+.fk-hrom{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#fff7cf;border:2px solid #F4D23C;border-radius:12px;padding:12px 14px;margin:8px 0;font-size:15px}.fk-hrom>b{font-size:16px}.fk-hrom input{width:120px;font-size:20px;font-weight:800;text-align:right;padding:6px 8px;border:2px solid #16191c;border-radius:8px}.fk-hromb{font-size:16px!important;padding:10px 18px!important}.fk-hrom small{flex-basis:100%;color:#5a5f63;font-size:12.5px}
 .rz-tab [data-vp]{cursor:pointer;width:16px;height:16px}
 .fk-kl2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.fk-kl2>div{display:flex;flex-direction:column;gap:6px}.fk-kh{font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);color:var(--ink)}.fk-kl{border:1px solid var(--line);border-radius:10px;max-height:260px;overflow:auto;padding:4px}.fk-kl label{display:flex;gap:8px;align-items:center;font-size:13.5px;padding:3px 6px;border-radius:6px;cursor:pointer}.fk-kl label:hover{background:rgba(0,0,0,.04)}.fk-kl label span{flex:1}.fk-kl label small{color:var(--muted);white-space:nowrap}.fk-kl label.h{font-weight:700}
 .fk-vf tr.sk td{background:#f3f3ef;border-top:2px solid var(--line)}.fk-vf tr.sk span{font-size:12.5px;color:var(--muted);margin-left:6px}.fk-vf tr.sum td{border-top:2px solid var(--ink)}
 @media (max-width:900px){.fk-hl{grid-template-columns:1fr 1fr}.fk-kl2{grid-template-columns:1fr}}
-.rz-fakl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:#fff5c2;border:2px solid #F4D23C;border-radius:12px;padding:10px 14px;margin:6px 0;font-size:14px;position:sticky;top:0;z-index:5}
+.rz-fakl .r1,.rz-fakl .r2{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;width:100%}.rz-fakl .r1 small{color:#6b6440;font-size:12.5px}.rz-fakl .r2 .sep{width:1px;height:26px;background:#d9c56a}.rz-fakl .r2 .lb{font-weight:700;font-size:13.5px}
+.rz-fakl{display:flex;flex-direction:column;gap:8px;background:#fff5c2;border:2px solid #F4D23C;border-radius:12px;padding:10px 14px;margin:6px 0;font-size:14px;position:sticky;top:0;z-index:5}
 .rz-odbs{display:flex;flex-direction:column;gap:6px}.rz-odb{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}.rz-odb:has(input:checked){border:2px solid #F4D23C;background:#fffbe6}.rz-odb span{display:flex;flex-direction:column}.rz-odb small{color:var(--muted);font-size:12.5px}.rz-odbs .rz-btn{align-self:flex-start;margin-top:4px}
 .rz-seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}.rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;padding:7px 13px;cursor:pointer;color:var(--ink)}.rz-seg button+button{border-left:1px solid var(--line)}.rz-seg button[aria-pressed=true]{background:#16191c;color:#fff}
 .rz-dr table{width:100%}.rz-dr td{vertical-align:middle}.rz-dr td.nm{min-width:220px}.rz-dr td.podil{color:var(--muted)}.rz-dr td.cp{white-space:nowrap;min-width:150px}.rz-dr td.ak{white-space:nowrap;text-align:right}.rz-dr tr.sum td{border-top:2px solid var(--ink);background:rgba(0,0,0,.03)}
@@ -842,7 +845,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       <button type="button" class="rz-btn" data-a="xls-roz" title="Stáhnout rozpočet s čerpáním do Excelu (jen to, co je právě vyfiltrované)">⬇ Excel</button>
       <button type="button" class="rz-btn" data-a="menu-rp">Rozpočet ▾</button>
       <button type="button" class="rz-btn zl" data-a="import"${ro() ? ' disabled' : ''}>⬆ Nahrát rozpočet z Excelu</button>
-      <button type="button" class="rz-btn cr" data-a="fak-vytvor"${nefak() ? ' disabled' : ''} title="${nefak() && !ro() ? 'Připravovat faktury vám správce nepovolil' : 'Vybrat položky, zadat rozsah v jednotkách nebo v procentech a vytvořit fakturu s logem'}">🧾 Vytvořit fakturu</button>
+      <button type="button" class="rz-btn ze" data-a="fak-vytvor"${nefak() ? ' disabled' : ''} title="${nefak() && !ro() ? 'Připravovat faktury vám správce nepovolil' : 'Vybrat položky, zadat rozsah v jednotkách nebo v procentech a vytvořit fakturu s logem'}">🧾 Vytvořit fakturu</button>
       <button type="button" class="rz-btn" data-a="zavrit" title="Zavřít rozpočet a vrátit se na úvodní stránku">✕ Zavřít</button></div>${sum}${S.chyba ? `<div class="rz-info">${esc(S.chyba)}</div>` : ''}`;
   }
 
@@ -972,9 +975,10 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${sel('obj', 'Objekt', 'Všechny objekty', objOpts, S.obj)}
         ${sel('pod', 'Podlaží', 'Všechna podlaží', podOpts, S.pod)}
         <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
+        <div class="rz-brk"></div>
+        ${filtrAktivni() ? `<span class="rz-souhrn">Vyfiltrováno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : '<span class="rz-souhrn" style="color:var(--muted)">Celý rozpočet – zužte ho filtry nahoře</span>'}
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
-        ${filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Stáhne Excel jen s vyfiltrovanými položkami ve stejné podobě jako rozpočet, ale bez cen – k poslání firmě na poptávku">📨 Poptat vybrané (Excel bez cen)</button><button type="button" class="rz-btn mini" data-a="fak-filtr"${nefak() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vybrané %…</button>` : ''}
-        ${filtrAktivni() ? `<span class="rz-souhrn">Vybráno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : ''}
+        ${filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Stáhne Excel jen s vyfiltrovanými položkami ve stejné podobě jako rozpočet, ale bez cen – k poslání firmě na poptávku">📄 Vytvořit slepý rozpočet</button>${S.fak ? '' : `<button type="button" class="rz-btn mini" data-a="fak-filtr"${nefak() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vyfiltrované…</button>`}` : ''}
         <span class="sp" style="flex:1"></span>
         <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
         <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
@@ -1202,12 +1206,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     on('[data-a="fak-klic"]', 'click', () => vyberKlicem());
     on('[data-a="fak-vse"]', 'click', () => { let n = 0; VIS.forEach(i => { const r = R.rows[i]; if (r.t === 'P') { S.vyb.add(r.id); n++; } }); prekresli(); toast(n ? 'Vybráno ' + nf0.format(n) + ' zobrazených položek.' : 'V tabulce teď nejsou žádné položky – upravte filtr.'); });
     on('[data-a="fak-nic"]', 'click', () => { S.vyb.clear(); prekresli(); });
+    on('[data-a="fak-zpet"]', 'click', () => { if (!S.fak) return; const F = S.fak.F; S.fak = null; S.vyb.clear(); if (F.pol.length) { prekresli(); editorFaktury(null, F); } else { S.panel = 'fakturace'; pamSet('rz-panel', 'fakturace'); prekresli(); } });
     on('[data-vf]', 'change', e => { S.vf[e.currentTarget.dataset.vf] = e.currentTarget.value; prekresli(); });
     on('[data-vf="q"]', 'input', e => { S.vf.q = e.currentTarget.value; clearTimeout(vyberKlicem.t); vyberKlicem.t = setTimeout(() => { prekresli(); const i = EL.querySelector('[data-vf="q"]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 350); });
     on('[data-vfs]', 'click', e => { S.vf.sk = e.currentTarget.dataset.vfs; prekresli(); });
     on('[data-vfpdf]', 'click', async e => { e.stopPropagation(); const f = faktury(R.rec.id).find(x => x.id === e.currentTarget.dataset.vfpdf); if (f) { const b = await fakturaPdf(f); stahni(b, nazevPdf(f)); } });
     on('[data-a="vf-xls"]', 'click', () => { const l = vystavene(); ulozExcel('Vystavené faktury – ' + ((H.projekt && H.projekt().name) || ''), [{n: 'Vystavené faktury', rows: [['Číslo', 'Vystaveno', 'Splatnost', 'Období', 'Odběratel', 'IČO', 'Druh prací', 'Základ', 'DPH', 'Celkem', 'Uzavřel(a)', 'PDF']].concat(l.map(x => [x.f.cislo, x.f.datum, x.f.splatnost, x.mes, x.odb, (x.f.odb || {}).ico || '', x.kat, x.s.zakl, x.s.dan || 0, x.s.celkem, x.f.uzavreno.kdo || '', x.f.uzavreno.pdf ? x.f.uzavreno.pdf.url : '']))}]); });
-    on('[data-a="fak-zrus"]', 'click', () => { if (S.fak && S.fak.F.pol.length && !confirm('Zrušit rozpracovanou fakturu?')) return; S.fak = null; S.vyb.clear(); prekresli(); });
+    on('[data-a="fak-zrus"]', 'click', () => { if (S.fak && S.fak.F.pol.length && !confirm('Zrušit tuto fakturu? Vybrané položky se zahodí.')) return; S.fak = null; S.vyb.clear(); prekresli(); });
     on('[data-a="fak-vlastni"]', 'click', () => vlastniPolozka(l => { if (S.fak) { S.fak.F.pol.push(l); prekresli(); toast('Vlastní položka přidána.'); } }));
     on('[data-a="vyb-vse"]', 'change', e => { VIS.forEach(i => { const r = R.rows[i]; if (r.t === 'P') e.target.checked ? S.vyb.add(r.id) : S.vyb.delete(r.id); }); prekresli(); });
     const tab = EL.querySelector('.rz-tab');
@@ -1275,6 +1280,14 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     ov.querySelector('[data-x]').onclick = zavri;
     ov.zavri = zavri;
     return ov;
+  }
+  // 4.78: okno přes celou obrazovku (zapamatuje se)
+  function celaObrazovka(ov, klic) {
+    const dlg = ov.querySelector('.rz-dlg'), b = document.createElement('button'); b.type = 'button'; b.className = 'rz-btn rz-cela';
+    const nast = on => { dlg.classList.toggle('cela', on); ov.classList.toggle('cela', on); b.textContent = on ? '🗗 Menší okno' : '⛶ Celá obrazovka'; b.title = on ? 'Zmenšit okno' : 'Roztáhnout okno přes celou obrazovku'; };
+    nast(pam(klic, '1') !== '0');
+    b.onclick = () => { const on = !dlg.classList.contains('cela'); nast(on); pamSet(klic, on ? '1' : '0'); };
+    ov.querySelector('.rz-dh [data-x]').before(b);
   }
   function cekej(text) {
     const w = document.createElement('div'); w.className = 'rz-wait'; w.innerHTML = `<div><b>${esc(text)}</b><small></small><div class="rz-prog" style="margin-top:10px"><i style="width:5%"></i></div></div>`;
@@ -1525,7 +1538,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <label>Druh prací / činnost<select data-f="kat"${dis}><option value="">— celý rozpočet —</option>${ks.map(k => `<option value="${esc(k.id)}"${F.kat === k.id ? ' selected' : ''}>${k.virt ? 'Činnost: ' : ''}${esc(k.nazev)}</option>`).join('')}</select></label>
         <label>Období od<input type="date" data-f="od" value="${esc(F.od)}"${dis}></label><label>Období do<input type="date" data-f="do" value="${esc(F.do)}"${dis}></label>
         <label style="grid-column:span 2">Poznámka na faktuře<input data-f="pozn" value="${esc(F.pozn)}"${dis}></label></div></details>
-      ${zam ? '' : `<div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat title="Vrátí vás do rozpočtu, kde položky přehledně zaškrtnete (s filtry)">+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-soupis>⬆ Načíst soupis prací z Excelu</button><button type="button" class="rz-btn" data-mimo>+ Vlastní položka (vícepráce…)</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>`}
+      ${zam ? '' : `<div class="rz-fil"><button type="button" class="rz-btn zl" data-pridat title="Vrátí vás do rozpočtu, kde položky přehledně zaškrtnete (s filtry)">+ Přidat položky z rozpočtu</button><button type="button" class="rz-btn" data-mimo>+ Vlastní položka (vícepráce…)</button><span class="sp" style="flex:1"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button></div>`}
       <div class="fk-hrom"${zam ? ' hidden' : ''}><b>Hromadně všem položkám:</b><span>fakturovat</span><input id="rz-pct" inputmode="decimal" placeholder="např. 20"><span>% z množství v rozpočtu</span>
         <button type="button" class="rz-btn cr fk-hromb" data-pct="tato">✓ Vepsat do všech položek</button>
         <small>Zadané procento se vepíše do sloupce % u každé položky. Kdyby s dříve vyfakturovaným položka přesáhla 100 %, Constructo se zeptá. Na faktuře se procenta netisknou.</small></div>
@@ -1533,7 +1546,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       <div class="rz-list rz-fl fk-tab"><table><thead><tr class="fk-g"><th colspan="6">Z rozpočtu</th><th colspan="3" class="tf">Tato faktura – zadejte množství, nebo %</th><th colspan="2" class="kc">Na fakturu</th><th colspan="2"></th></tr>
         <tr><th>Kód</th><th>Popis</th><th>MJ</th><th class="n">V rozpočtu</th><th class="n">Dříve vyfakt.</th><th class="n">Zbývá</th><th class="n tf">Množství</th><th class="n tf">%</th><th class="tf">Rychle</th><th class="n kc">J. cena</th><th class="n kc">Celkem Kč</th><th>Kontrola</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>`,
       zam ? `<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn" data-xls>⬇ Excel</button><button type="button" class="rz-btn zl" data-pdf>⬇ Faktura PDF</button>`
-        : `${nova ? '' : '<button type="button" class="rz-btn del" data-smaz>Smazat</button>'}<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn" data-ok>Uložit rozpracovanou</button><button type="button" class="rz-btn cr" data-faktura>🧾 Vytvořit fakturu (PDF)</button>`, 'siroky');
+        : `<button type="button" class="rz-btn" data-zpet title="Zpět do rozpočtu – vyberete další položky, nic se neztratí">← Zpět do rozpočtu</button>${nova ? '' : '<button type="button" class="rz-btn del" data-smaz>Smazat</button>'}<span id="rz-fs" style="font-size:15px"></span><span class="sp"></span><button type="button" class="rz-btn" data-ok>Uložit rozpracovanou</button><button type="button" class="rz-btn ze" data-faktura>🧾 Vytvořit fakturu (PDF)</button>`, 'siroky');
+    celaObrazovka(ov, 'rz-fakCela');
     const kontrola = l => {
       const r = l.r && R.byId.get(l.r), w = [];
       if (!r) { w.push(['o', 'Položka není v rozpočtu (vícepráce?)']); return {r, w, zb: null}; }
@@ -1616,7 +1630,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     };
     ov.querySelector('[data-mimo]').onclick = () => vlastniPolozka(l => { F.pol.push(l); kresli(); });
     ov.querySelector('[data-pridat]').onclick = () => { ov.zavri(); rezimVyberu(F); };
-    ov.querySelector('[data-soupis]').onclick = () => vyberSoubor('soupis', (f, listy, nast) => soupisDoFaktury(F, f, listy, nast, kresli));
+    ov.querySelector('[data-zpet]').onclick = () => { ov.zavri(); rezimVyberu(F); };
     ov.querySelector('[data-xls]').onclick = () => excelFaktura(F);
     const sm = ov.querySelector('[data-smaz]');
     if (sm) sm.onclick = () => { if (!confirm('Smazat fakturaci ' + (F.cislo || '') + '? Smaže se všem kolegům.')) return; H.smaz('faktury', [F.id]); ov.zavri(); };
@@ -1720,15 +1734,18 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     let kcV = 0; S.vyb.forEach(id => { const r = R.byId.get(id); if (r) kcV += r.cc || 0; });
     const odb = odbFaktury(F).firma || '';
     const filtr = !nV && filtrAktivni() && VIS && VIS._n;
-    return `<div class="rz-fakl"><b>🧾 Faktura ${esc(F.cislo || '')}${odb ? ' pro ' + esc(odb) : ''}</b>
-      <span>${nV ? `Zaškrtnuto <b>${nf0.format(nV)}</b> položek · ${kc0(kcV)} <small style="opacity:.75">(tip: táhněte myší přes ☐, Shift + klik = rozsah)</small>` : filtr ? `Nic nezaškrtnuto – vezme se všech <b>${nf0.format(VIS._n)}</b> vyfiltrovaných položek` : 'Zaškrtněte položky: ☐ u řádku, ☐ u kapitoly = celá kapitola, <b>táhněte myší</b> přes ☐ nebo <b>Shift + klik</b> = rozsah'}${uz.size ? ` · ve faktuře už ${nf0.format(uz.size)}` : ''}${vl ? ` · vlastních ${vl}` : ''}</span>
-      <span class="sp" style="flex:1"></span>
-      <button type="button" class="rz-btn cr" data-a="fak-vse" title="Zaškrtne všechny položky, které teď vidíte v tabulce (po filtru)">☑ Vybrat vše zobrazené${VIS && VIS._n ? ' (' + nf0.format(VIS._n) + ')' : ''}</button>
+    return `<div class="rz-fakl"><div class="r1"><b>🧾 Faktura ${esc(F.cislo || '')}${odb ? ' pro ' + esc(odb) : ''}</b>
+      <span>${nV ? `Zaškrtnuto <b>${nf0.format(nV)}</b> položek · ${kc0(kcV)}` : filtr ? `Nic nezaškrtnuto – vezme se všech <b>${nf0.format(VIS._n)}</b> vyfiltrovaných položek` : 'Zaškrtněte položky k fakturaci'}${uz.size ? ` · ve faktuře už ${nf0.format(uz.size)}` : ''}${vl ? ` · vlastních ${vl}` : ''}</span>
+      <small>☐ u řádku · ☐ u kapitoly = celá kapitola · táhněte myší přes ☐ · Shift + klik = rozsah</small></div>
+      <div class="r2"><button type="button" class="rz-btn" data-a="fak-zpet" title="${F.pol.length ? 'Zpět do faktury (nic se neztratí)' : 'Zpět do Fakturace'}">← Zpět</button>
+      <span class="sep"></span><span class="lb">Vybrat:</span>
+      <button type="button" class="rz-btn cr" data-a="fak-vse" title="Zaškrtne všechny položky, které teď vidíte v tabulce (po filtru)">☑ Vše zobrazené${VIS && VIS._n ? ' (' + nf0.format(VIS._n) + ')' : ''}</button>
+      <button type="button" class="rz-btn zl" data-a="fak-klic" title="Najednou vybere položky podle kódu, slova, ceny, objektu, MJ, kapitoly nebo řemesla">🔎 Podle klíče…</button>
       ${nV ? '<button type="button" class="rz-btn" data-a="fak-nic">☐ Zrušit výběr</button>' : ''}
-      <button type="button" class="rz-btn zl" data-a="fak-klic" title="Najednou vybere položky podle kódu, slova, ceny, objektu, MJ, kapitoly nebo řemesla">🔎 Vybrat podle klíče…</button>
-      <button type="button" class="rz-btn" data-a="fak-vlastni">+ Vlastní položka (vícepráce…)</button>
-      <button type="button" class="rz-btn" data-a="fak-zrus">Zrušit</button>
-      <button type="button" class="rz-btn cr" data-a="fak-dal">Pokračovat – rozsah v MJ nebo % →</button></div>`;
+      <span class="sep"></span><button type="button" class="rz-btn" data-a="fak-vlastni">+ Vlastní položka (vícepráce…)</button>
+      <span class="sp" style="flex:1"></span>
+      <button type="button" class="rz-btn del" data-a="fak-zrus">Zrušit fakturu</button>
+      <button type="button" class="rz-btn ze" data-a="fak-dal">Pokračovat do faktury →</button></div></div>`;
   }
   function vlastniPolozka(hotovo) {
     const ov = okno('Vlastní položka (mimo rozpočet)', `<div class="rz-pole"><label style="grid-column:1/-1">Popis práce<input data-v="t" placeholder="např. Vícepráce – oprava stropu v 2.NP"></label>
