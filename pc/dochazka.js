@@ -1,4 +1,4 @@
-/* Constructo 4.81: Docházka pracovníků firem – záložka v Managementu (window.CXDochazka).
+/* Constructo 4.81 (4.84: Pozvat do stavby): Docházka pracovníků firem – záložka v Managementu (window.CXDochazka).
    Pracovníci = kontakty firem (D.project.firmy[].kontakty, panel Firmy / osoby na projektu). Záznamy Příchod / Pauza / Konec pauzy / Odchod
    posílají pracovníci ze stránky /dochazka/ (telefon, ikona na ploše). Data jsou na Disku Google zvlášť po měsících (skript Google ≥ 16),
    sem se načítají jen měsíce, které se změnily, a pamatují se v počítači (IndexedDB). Vidí jen osoby s právem „Vidí docházku“. */
@@ -8,6 +8,7 @@
   const TYP = {prichod: 'Příchod', pauza: 'Pauza', konec: 'Konec pauzy', odchod: 'Odchod'};
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
   const pad = n => String(n).padStart(2, '0');
+  const fold = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
   const den = d => { const x = d instanceof Date ? d : new Date(d); return x.getFullYear() + '-' + pad(x.getMonth() + 1) + '-' + pad(x.getDate()); };
   const pd = s => { const p = String(s).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
   const plus = (s, n) => { const d = pd(s); d.setDate(d.getDate() + n); return den(d); };
@@ -129,21 +130,21 @@
     document.body.appendChild(bg);
     return bg;
   }
-  async function pozvat(kid) {
-    const k = kontakty().find(x => x.kid === kid);
-    if (!k) return;
-    let url;
-    try { url = odkazOsoby(kid, (await klic([kid]))[0]); } catch (e) { H.toast(e.message); return; }
+  // 4.84: odeslání osobního odkazu jedním tlačítkem (e-mail, WhatsApp, SMS, kopírovat, QR) – stejné z Docházky, Firem i Správy stavby
+  function cestyHtml(k, url) {
     const tel = String(k.tel || '').replace(/[^0-9+]/g, ''), txt = zpravaPozvanky(k, url), wa = tel.replace(/^00/, '+').replace(/^\+/, '');
-    const d = dlg('<h3>Docházka pro: ' + esc(k.jmeno) + '</h3><p class="dc-m">' + esc([k.firma, k.funkce].filter(Boolean).join(' · ')) + '</p>' +
-      '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 220) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
-      (k.email ? '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>' : '<p class="dc-m">E-mail pracovníka není vyplněný (Firmy / osoby na projektu).</p>') +
-      (wa ? '<a class="btn" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">WhatsApp<small>' + esc(k.tel) + '</small></a>' : '') +
+    return '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 200) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
+      (k.email ? '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>' : '<p class="dc-m">E-mail není vyplněný.</p>') +
+      (wa ? '<a class="btn dc-wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">WhatsApp<small>' + esc(k.tel) + '</small></a>' : '') +
       (tel ? '<a class="btn" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">SMS z vašeho telefonu<small>zdarma podle vašeho tarifu</small></a>' : '') +
+      (!k.email && !tel ? '<p class="dc-m">Bez e-mailu a telefonu: zkopírujte odkaz nebo nechte pracovníka naskenovat QR.</p>' : '') +
       '<button type="button" class="btn" data-p="kop">Kopírovat odkaz</button></div></div>' +
-      '<p class="dc-m">Odkaz je osobní: kdo ho otevře, zapisuje docházku za ' + esc(k.jmeno) + '. Neposílejte ho nikomu jinému.</p>');
-    d.querySelector('[data-p="kop"]').onclick = async () => { try { await navigator.clipboard.writeText(url); H.toast('Odkaz zkopírován'); } catch (e) { prompt('Zkopírujte odkaz:', url); } };
-    const bm = d.querySelector('[data-p="mail"]');
+      '<p class="dc-m">Odkaz je osobní: kdo ho otevře, zapisuje docházku za ' + esc(k.jmeno) + '. Neposílejte ho nikomu jinému.</p>';
+  }
+  function cestyBind(box, k, kid, url) {
+    const txt = zpravaPozvanky(k, url);
+    box.querySelector('[data-p="kop"]').onclick = async () => { try { await navigator.clipboard.writeText(url); H.toast('Odkaz zkopírován'); } catch (e) { prompt('Zkopírujte odkaz:', url); } };
+    const bm = box.querySelector('[data-p="mail"]');
     if (bm) bm.onclick = async () => {
       bm.disabled = true;
       const html = '<div style="font-family:Arial,sans-serif;font-size:16px;color:#16191c;max-width:560px"><p>Dobrý den,</p><p>tady je <b>Docházka Constructo</b> pro stavbu ' + esc(projektNazev()) + '. Na stavbě jí budete potvrzovat příchod, pauzu a odchod.</p>' +
@@ -155,6 +156,83 @@
       H.toast(r && r.ok ? 'E-mail odeslán: ' + k.email : 'E-mail se nepodařilo poslat' + (r && r.error ? ': ' + r.error : '.'));
     };
   }
+  async function pozvat(kid) {
+    const k = kontakty().find(x => x.kid === kid);
+    if (!k) return;
+    let url;
+    try { url = odkazOsoby(kid, (await klic([kid]))[0]); } catch (e) { H.toast(e.message); return; }
+    const d = dlg('<h3>Docházka pro: ' + esc(k.jmeno) + '</h3><p class="dc-m">' + esc([k.firma, k.funkce].filter(Boolean).join(' · ')) + '</p>' + cestyHtml(k, url));
+    cestyBind(d, k, kid, url);
+  }
+  const FUNKCE = ['dělník', 'pomocný dělník', 'mistr', 'parťák', 'technik', 'stavbyvedoucí', 'elektrikář', 'instalatér', 'zedník', 'tesař', 'svářeč', 'řidič', 'jeřábník', 'brigádník'];
+  // Jedno tlačítko „Pozvat do stavby“: vybrat uložené jméno (nebo zapsat novou osobu, uloží se k firmě ve Firmy / osoby na projektu)
+  // a hned poslat osobní odkaz. Volá se z Docházky, z Firem (CXFirmy) i ze Správy stavby: pozvatDoStavby({jmeno, kid, po}).
+  function pozvatDoStavby(o) {
+    o = o || {};
+    if (!H && window.CXDochPripoj) window.CXDochPripoj();
+    if (!H) return;
+    if (!H.smi('doch')) { H.toast('Zvát do Docházky může jen ten, kdo má právo „Vidí docházku“.'); return; }
+    if (!H.pripojeno()) { H.toast('Nejdřív připojte Constructo ke Googlu (Data → Automatická synchronizace).'); return; }
+    if (S.sid !== H.stavba()) { S.sid = H.stavba(); S.klice = {}; S.qr = ''; }
+    const fy = (H.firmy() || []).filter(f => f && f.id).sort((a, b) => String(a.firma || '').localeCompare(String(b.firma || ''), 'cs'));
+    let vyber = '';
+    const ks0 = kontakty();
+    if (o.kid && ks0.some(k => k.kid === o.kid)) vyber = o.kid;
+    else if (o.jmeno) { const f = ks0.filter(k => fold(k.jmeno) === fold(o.jmeno)); if (f.length === 1) vyber = f[0].kid; }
+    const d = dlg('<h3>Pozvat do stavby</h3><p class="dc-m">Pracovník dostane odkaz s ikonou <b>Docházka</b> do telefonu: Příchod · Pauza · Odchod.</p>' +
+      '<div class="dc-pk"><label class="dc-l" for="dp-kdo">Kdo</label><div class="dc-row"><select id="dp-kdo"></select><button type="button" class="btn" id="dp-nova">+ Nová osoba</button></div></div>' +
+      '<div id="dp-form" hidden class="dc-nf"><h4>Nová osoba</h4><div class="dc-g2">' +
+      '<div><label class="dc-l" for="dp-j">Jméno a příjmení *</label><input id="dp-j" autocomplete="off"></div>' +
+      '<div><label class="dc-l" for="dp-f">Firma *</label><select id="dp-f"><option value="">– vyberte firmu –</option>' + fy.map(f => '<option value="' + esc(f.id) + '">' + esc(f.firma || '') + '</option>').join('') + '</select></div>' +
+      '<div><label class="dc-l" for="dp-fu">Pozice</label><input id="dp-fu" list="dp-ful" placeholder="dělník, mistr, technik… nebo vlastní"><datalist id="dp-ful">' + FUNKCE.map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></div>' +
+      '<div><label class="dc-l" for="dp-t">Telefon (pro WhatsApp / SMS)</label><input id="dp-t" type="tel" placeholder="+420 …"></div>' +
+      '<div><label class="dc-l" for="dp-e">E-mail</label><input id="dp-e" type="email"></div></div>' +
+      (fy.length ? '' : '<p class="dc-m">Zatím tu není žádná firma. Přidejte ji nejdřív ve <b>Firmy / osoby na projektu</b>.</p>') +
+      '<p class="dc-m">Osoba se uloží k firmě ve <b>Firmy / osoby na projektu</b> a uvidí ji všichni.</p>' +
+      '<div class="dc-row"><button type="button" class="btn dc-pri" id="dp-ul">Uložit a pozvat</button><button type="button" class="btn" id="dp-zr">Zrušit</button></div></div>' +
+      '<div id="dp-out"></div>', 640);
+    const sel = d.querySelector('#dp-kdo'), form = d.querySelector('#dp-form'), out = d.querySelector('#dp-out');
+    function plnSel() {
+      const ks = kontakty(), g = {};
+      ks.forEach(k => (g[k.firma || 'Bez firmy'] = g[k.firma || 'Bez firmy'] || []).push(k));
+      sel.innerHTML = '<option value="">– vyberte jméno –</option>' + Object.keys(g).sort((a, b) => a.localeCompare(b, 'cs')).map(f => '<optgroup label="' + esc(f) + '">' +
+        g[f].sort((a, b) => a.jmeno.localeCompare(b.jmeno, 'cs')).map(k => '<option value="' + esc(k.kid) + '">' + esc(k.jmeno) + (k.funkce ? ' · ' + esc(k.funkce) : '') + '</option>').join('') + '</optgroup>').join('');
+      sel.value = vyber;
+    }
+    async function ukaz(kid) {
+      vyber = kid; out.innerHTML = '';
+      const k = kontakty().find(x => x.kid === kid);
+      if (!k) return;
+      out.innerHTML = '<p class="dc-m">Připravuji osobní odkaz…</p>';
+      let url;
+      try { url = odkazOsoby(kid, (await klic([kid]))[0]); } catch (e) { out.innerHTML = '<p class="dc-err">' + esc(e.message) + '</p>'; return; }
+      if (vyber !== kid) return;
+      out.innerHTML = '<h4 class="dc-ph">' + esc(k.jmeno) + ' <small>' + esc([k.firma, k.funkce].filter(Boolean).join(' · ')) + '</small></h4>' + cestyHtml(k, url);
+      cestyBind(out, k, kid, url);
+    }
+    plnSel();
+    sel.onchange = () => { form.hidden = true; ukaz(sel.value); };
+    d.querySelector('#dp-nova').onclick = () => { form.hidden = false; out.innerHTML = ''; sel.value = ''; vyber = ''; d.querySelector('#dp-j').value = o.jmeno && !o.kid ? o.jmeno : ''; d.querySelector('#dp-j').focus(); };
+    d.querySelector('#dp-zr').onclick = () => { form.hidden = true; };
+    d.querySelector('#dp-ul').onclick = async () => {
+      const g = id => d.querySelector(id).value.trim();
+      const j = g('#dp-j'), fid = g('#dp-f'), em = g('#dp-e');
+      if (!j) { H.toast('Napište jméno a příjmení.'); d.querySelector('#dp-j').focus(); return; }
+      if (!fid) { H.toast('Vyberte firmu.'); d.querySelector('#dp-f').focus(); return; }
+      if (em && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(em)) { H.toast('E-mail ' + em + ' nevypadá správně.'); return; }
+      if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
+      if (!H.pridejOsobu) { H.toast('Novou osobu zapište ve Firmy / osoby na projektu.'); return; }
+      const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      const ok = await H.pridejOsobu(fid, {id: kid, jmeno: j, funkce: g('#dp-fu'), tel: g('#dp-t'), email: em, posilat: false});
+      if (!ok) return;
+      H.toast('Uloženo: ' + j);
+      form.hidden = true; vyber = kid; plnSel();
+      if (o.po) try { o.po(); } catch (e) {}
+      ukaz(kid);
+    };
+    if (vyber) ukaz(vyber); else if (o.jmeno && !o.kid) d.querySelector('#dp-nova').click();
+  }
+  const tlacitkoPozvat = () => H && H.smi('doch') && !H.ro() ? '<button type="button" class="btn dc-pri dc-pozv" data-doch-pozvat="1">＋ Pozvat do stavby</button>' : '';
   async function cedule() {
     if (!S.qr) { try { await klic(['_']); } catch (e) { H.toast(e.message); return; } }
     const url = odkazQR(), nazev = String((H.projekt() || {}).name || '');
@@ -197,7 +275,7 @@
 
   /* ---------- vykreslení ---------- */
   function lista() {
-    return '<div class="sl-top dc-top"><b>Docházka</b><span>' + (S.nacita ? 'načítám…' : S.nacteno ? 'pracovníci potvrzují v telefonu · obnovuje se samo' : '') + '</span><span class="sp" style="flex:1"></span>' +
+    return '<div class="sl-top dc-top"><b>Docházka</b><span>' + (S.nacita ? 'načítám…' : S.nacteno ? 'pracovníci potvrzují v telefonu · obnovuje se samo' : '') + '</span><span class="sp" style="flex:1"></span>' + tlacitkoPozvat() +
       '<div class="seg" role="tablist">' + [['dnes', 'Den'], ['prehled', 'Přehledy a grafy'], ['archiv', 'Archiv záznamů'], ['lide', 'Pracovníci a QR']].map(([k, l]) => '<button type="button" data-dt="' + k + '" aria-pressed="' + (S.tab === k) + '">' + l + '</button>').join('') + '</div></div>';
   }
   function vDen() {
@@ -308,7 +386,7 @@
     let h = '<div class="dc-card dc-ced"><div><h4>QR cedule u vstupu na stavbu</h4><p>Vytiskněte ji a pověste u vstupu. Pracovník ji naskenuje <b>jen jednou</b>: vybere svou firmu a jméno a přidá si ikonu Docházka na plochu. Pak už QR nepotřebuje.</p>' +
       '<p class="dc-m">Vybírat jde jen z lidí zapsaných u firem ve <b>Firmy / osoby na projektu</b>.</p><button type="button" class="btn dc-pri" id="dc-ced">🖨 Vytisknout QR ceduli (A4)</button></div>' +
       (S.qr ? '<div class="dc-qr sm">' + qrSvg(odkazQR(), 150) + '</div>' : '') + '</div>';
-    h += '<div class="dc-card"><h4>Osobní odkaz pro každého pracovníka</h4><p class="dc-m">Pro toho, kdo nebude u cedule: pošlete mu odkaz e-mailem, WhatsAppem nebo SMS z vlastního telefonu (vše zdarma).</p>';
+    h += '<div class="dc-card"><h4>Osobní odkaz pro každého pracovníka</h4><p class="dc-m">Pro toho, kdo nebude u cedule: pošlete mu odkaz e-mailem, WhatsAppem nebo SMS z vlastního telefonu (vše zdarma).</p>' + (tlacitkoPozvat() ? '<p>' + tlacitkoPozvat() + ' <span class="dc-m">vyberete jméno, nebo zapíšete novou osobu</span></p>' : '');
     if (!ks.length) h += '<p class="dc-empty">Zatím žádní pracovníci. Zapíšete je ve <b>Firmy / osoby na projektu</b> u každé firmy (jméno, funkce, telefon, e-mail).</p>';
     Object.keys(fy).sort((a, b) => a.localeCompare(b, 'cs')).forEach(f => {
       h += '<h5 class="dc-fh">' + esc(f) + '</h5><table class="dc-t"><tbody>' + fy[f].sort((a, b) => a.jmeno.localeCompare(b.jmeno, 'cs')).map(k => '<tr><td><b>' + esc(k.jmeno) + '</b>' + (k.funkce ? '<small>' + esc(k.funkce) + '</small>' : '') + '</td><td>' + esc(k.tel || '') + (k.email ? '<small>' + esc(k.email) + '</small>' : '') + '</td><td>' + (posl[k.kid] ? 'naposledy ' + fDY(den(posl[k.kid])) + ' ' + cas(posl[k.kid]) : '<span class="dc-np">zatím nepoužil</span>') + '</td><td class="r"><button type="button" class="btn" data-doch-k="' + esc(k.kid) + '">Poslat docházku</button></td></tr>').join('') + '</tbody></table>';
@@ -337,6 +415,8 @@
 
   /* ---------- události (delegovaně, i tlačítko „Poslat docházku“ v panelu Firmy) ---------- */
   document.addEventListener('click', e => {
+    const pz = e.target.closest('[data-doch-pozvat]');
+    if (pz) { e.preventDefault(); pozvatDoStavby({}); return; }
     const pk = e.target.closest('[data-doch-k]');
     if (pk && H) { e.preventDefault(); pozvat(pk.dataset.dochK); return; }
     if (!EL || !e.target.closest('.dc')) return;
@@ -418,6 +498,10 @@
 .dc-pri{background:#131518!important;color:#fff!important;border-color:#131518!important;font-weight:700}.dc-pri::before{display:none!important}
 .dc-chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:14px;padding:2px 10px;font:600 12px var(--f-body);cursor:pointer;margin-left:6px;vertical-align:middle}.dc-chip:hover{border-color:var(--ink)}
 .dc-acts{display:flex;gap:8px;justify-content:flex-end}
+.dc-l{display:block;font-size:12px;font-weight:700;color:var(--muted,#6b7279);margin:0 0 4px}.dc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.dc-row select{flex:1;min-width:220px;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
+.dc-nf{margin:14px 0;padding:14px;border:1px solid var(--line,#d9dcdf);border-radius:12px}.dc-nf h4{margin:0 0 10px}.dc-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}.dc-g2 input,.dc-g2 select{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border-radius:9px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
+.dc-ph{margin:16px 0 0}.dc-ph small{font-weight:400;color:var(--muted,#6b7279)}.dc-wa{background:#25D366!important;color:#fff!important;border-color:#25D366!important}.dc-pozv{white-space:nowrap;margin-right:8px}.dc-pozv::before{display:none!important}
+@media (max-width:700px){.dc-g2{grid-template-columns:1fr}}
 @media (max-width:700px){.dc-t th:nth-child(7),.dc-t td:nth-child(7){display:none}.dc-form{grid-template-columns:1fr}}
 `;
   document.head.appendChild(css);
@@ -427,6 +511,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, cedule, spocti, verze: '1.0'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.1'
   };
 })();
