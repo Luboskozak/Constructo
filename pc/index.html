@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-UJnqIkNllaweoKnQ7J7NbkxIoZ+UcrHPyJxX8rPrs10=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-sNq4XDeH1MdgFkrCnP3BEvDt9PbOS6hQO9hM2GZeiSg='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1273,7 +1273,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.83';
+  const APP_VERSION = '4.84';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3575,9 +3575,22 @@ body.dfull-on{overflow:hidden}
       stavba: () => STAVBA, projekt: () => D.project || {}, firmy: () => firmyList(), smi: k => smi(k),
       aktualizujSkript: dokHost.aktualizujSkript,
       posliMail: o => SY ? call('POST', Object.assign({key: SY.key, akce: 'zavada', od: 'Constructo'}, o)) : Promise.resolve({error: 'Bez připojení ke Googlu.'}),
+      // 4.84: Pozvat do stavby – nová osoba zapsaná uživatelem se uloží k firmě (Firmy / osoby na projektu) a propíše všude
+      pridejOsobu: (fid, k) => {
+        if (RO()) { toast('Jen prohlížení – osobu nejde přidat.'); return false; }
+        const f = firmyList().find(x => x.id === fid);
+        if (!f) { toast('Firma se nenašla.'); return false; }
+        const ks = kontaktyOf(f).map(x => Object.assign({}, x, {id: x.id || 'k0'}));
+        const nf = Object.assign({}, f, {kontakty: ks.concat(k), _ts: Date.now()});
+        if (!ks.length && !f.email && !f.tel && !f.kontakt) Object.assign(nf, {kontakt: [k.jmeno, k.funkce].filter(Boolean).join(', ')});
+        D.project.firmy = firmyList().map(y => y.id === fid ? nf : y);
+        commit();
+        return true;
+      },
     };
     CXDochazka.pripoj(dochHost);
   }
+  window.CXDochPripoj = () => { if (smi('doch')) dochPripoj(); };
   function renderDoch() {
     const v = $('#view');
     if (!window.CXDochazka) { v.innerHTML = '<div class="sl"><p style="padding:20px">Chybí část programu pro Docházku. Obnovte stránku (F5).</p></div>'; return; }
@@ -3656,6 +3669,7 @@ body.dfull-on{overflow:hidden}
     CXFirmy.panel($('#view'), {
       data: () => ({firmy: firmyList(), prijemci: prijemciList()}),
       ro: RO, toast, ares: aresNajdi, nadpis: false,
+      pozvatDoStavby: window.CXDochazka && smi('doch') && !RO() ? () => { dochPripoj(); CXDochazka.pozvatDoStavby({}); } : null,
       pocetZprav: f => cnt.get(zFirmaKey(f)) || 0,
       zpravy: f => zavadyGo({firma: f, osoba: ''}),
       uloz: (k, x, ed) => {
@@ -4825,10 +4839,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 17
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 18
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 17;
+const SKRIPT_VERZE = 18;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -5752,7 +5766,7 @@ function samoAktualizace_(b) {
   return json_(samoZapis_(samoProved_()));
 }
 function samoStav_() {
-  const o = {verze: SKRIPT_VERZE, samo: true, hodinove: PropertiesService.getScriptProperties().getProperty('samo-zapnuto') === '17'};
+  const o = {verze: SKRIPT_VERZE, samo: true, id: ScriptApp.getScriptId(), hodinove: PropertiesService.getScriptProperties().getProperty('samo-zapnuto') === '17'};
   try { const c = JSON.parse(PropertiesService.getScriptProperties().getProperty('samo-chyba') || 'null'); if (c && c.duvod) { o.chyba = c.duvod; o.chyba_t = c.t; } } catch (x) {}
   return o;
 }
@@ -5874,6 +5888,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
     try {
       const v = await call('POST', {key: SY.key, akce: 'verze'});
       const ma = Number(v && v.verze) || 0;
+      if (v && v.id) try { store.set('hyb-skript-id', String(v.id)); } catch (e) {}
       if (!v || !v.samo) return {ok: false, duvod: 'skript neumí sám aktualizovat'};
       if (ma >= cil) return {ok: true, verze: ma};
       if (v.chyba && !nutne && Date.now() - (v.chyba_t || 0) < 3600000) return {ok: false, duvod: v.chyba};
@@ -6116,13 +6131,13 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   function scriptUpdateDialog() {
     if (!SY) { syncDialog(); return; }
     confirmModal('Aktualizovat skript na Googlu', `
-      <p>Tohle stačí udělat <b>jednou</b>. Další verze skriptu si Google pak nahraje sám. Data zůstanou, adresa i kód pro kolegy se nemění.</p>
+      <p>Tohle stačí udělat <b>jednou</b>. Další verze skriptu si Google pak nahraje sám. Data zůstanou, adresa i kód pro kolegy se nemění.</p>${(() => { let id = ''; try { id = store.get('hyb-skript-id') || ''; } catch (e) {} return id ? `<p><a class="btn" href="https://script.google.com/home/projects/${encodeURIComponent(id)}/edit" target="_blank" rel="noopener">Otevřít projekt skriptu na Googlu</a> <span class="hcap">(otevře přímo Váš projekt; když ho Google nenajde, přepněte vpravo nahoře účet)</span></p>` : ''; })()}
       <ol class="steps">
         <li>Otevřete <b>script.google.com/home/usersettings</b> a zapněte přepínač <b>Google Apps Script API</b>.</li>
         <li>Klikněte níže na <b>Zkopírovat nový skript</b>. Na <b>script.google.com</b> otevřete svůj projekt, klikněte do textu skriptu, označte vše (Cmd+A, ve Windows Ctrl+A), vložte (Cmd+V / Ctrl+V) a uložte ikonou diskety.</li>
         <li>Vlevo klikněte na ozubené kolečko <b>Nastavení projektu</b> a zaškrtněte <b>Zobrazit soubor manifestu „appsscript.json“ v editoru</b>.</li>
         <li>Vlevo klikněte na <b>&lt;&gt; Editor</b> a v seznamu souborů na <b>appsscript.json</b>. Klikněte níže na <b>Zkopírovat nastavení</b>, v souboru označte vše, vložte a uložte.</li>
-        <li>Vpravo nahoře klikněte <b>Nasadit → Spravovat nasazení</b>, u nasazení klikněte na <b>tužku</b>, u Verze zvolte <b>Nová verze</b> a klikněte <b>Nasadit</b>.</li>
+        <li>Vpravo nahoře klikněte <b>Implementovat → Spravovat implementace</b> (někde „Nasadit → Spravovat nasazení“), klikněte na <b>tužku</b>, u Verze zvolte <b>Nová verze</b> a klikněte <b>Nasadit</b>.</li>
         <li>Google se zeptá na nová oprávnění (mimo jiné „spravovat projekty Google Apps Script“). Povolte je: Autorizovat přístup, vybrat účet, případně Rozšířená nastavení → Přejít na projekt, a Povolit.</li>
       </ol>
       <p class="hcap">Oprávnění ke správě skriptu používá jen sám skript: novou verzi si stáhne z webu Constructa a nahraje ji. Nikdo jiný přes něj kód měnit nemůže.</p>`, null, null,

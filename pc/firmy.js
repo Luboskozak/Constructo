@@ -7,7 +7,8 @@
      host.uloz(k, x, puv)   → uloží jednu položku (k = 'firmy' | 'prijemci'); může vrátit Promise
      host.odeber(k, id)     → odebere položku (s náhrobkem, aby se jinde neobnovila)
      host.ro                → true / funkce: jen prohlížení
-     host.toast(text), host.ares(ico) (nepovinné), host.pocetZprav(firma), host.zpravy(firma) (nepovinné) */
+     host.toast(text), host.ares(ico) (nepovinné), host.pocetZprav(firma), host.zpravy(firma) (nepovinné)
+     host.pozvatDoStavby()  → nepovinné: tlačítko „Pozvat do stavby“ (Docházka, jen Management) */
 const CXFirmy = (() => {
   const VERZE = 1;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -166,7 +167,7 @@ const CXFirmy = (() => {
       const ps = prijemci.slice().sort((a, b) => String(a.jmeno || a.firma || '').localeCompare(String(b.jmeno || b.firma || ''), 'cs'));
       const pocet = {dod: fs.length, obj: ps.length}; OBJ.forEach(([k]) => pocet[k] = ps.filter(x => oblast(x) === k).length);
       const t = (k, n, sub) => `<button type="button" class="cxf-t${sub ? ' sub' : ''}" data-obl="${k}" aria-pressed="${st.obl === k}">${n}<em>${k === 'vse' ? fs.length + ps.length : pocet[k]}</em></button>`;
-      let h = `<div class="cxf-top">${host.nadpis === false ? '' : `<h2>${ICO.firmy}Firmy / osoby na projektu</h2>`}<span class="sp"></span><input class="cxf-q" type="search" placeholder="Hledat firmu nebo osobu" value="${esc(st.q)}" aria-label="Hledat firmu nebo osobu"></div>
+      let h = `<div class="cxf-top">${host.nadpis === false ? '' : `<h2>${ICO.firmy}Firmy / osoby na projektu</h2>`}<span class="sp"></span>${host.pozvatDoStavby && !R ? '<button type="button" class="cxf-b add" data-cxf-pozvat="1" title="Vybrat jméno nebo zapsat novou osobu a poslat jí odkaz na Docházku">＋ Pozvat do stavby</button>' : ''}<input class="cxf-q" type="search" placeholder="Hledat firmu nebo osobu" value="${esc(st.q)}" aria-label="Hledat firmu nebo osobu"></div>
         <div class="cxf-obl" role="group" aria-label="Oblasti"><div class="cxf-r">${t('vse', 'Vše')}${t('dod', '1. Dodavatel')}${t('obj', '2. Objednatel')}</div>
         <div class="cxf-r"><span class="lb">Objednatel:</span>${OBJ.map(([k, n]) => t(k, PIS[k] + ') ' + n, true)).join('')}</div></div>`;
       const ukazDod = st.obl === 'vse' || st.obl === 'dod';
@@ -207,6 +208,7 @@ const CXFirmy = (() => {
       el.querySelectorAll('[data-add]').forEach(b => b.onclick = () => b.dataset.add === 'dod' ? upravFirmu() : upravOsobu(null, b.dataset.add));
       el.querySelectorAll('[data-ed]').forEach(b => b.onclick = () => b.dataset.ed === 'firmy' ? upravFirmu(b.dataset.i) : upravOsobu(b.dataset.i));
       el.querySelectorAll('[data-zpr]').forEach(b => b.onclick = () => host.zpravy(b.dataset.zpr));
+      el.querySelectorAll('[data-cxf-pozvat]').forEach(b => b.onclick = () => host.pozvatDoStavby());
       el.querySelectorAll('[data-od]').forEach(b => b.onclick = async () => {
         if (!b.classList.contains('arm')) { b.classList.add('arm'); b.textContent = 'Opravdu odebrat?'; setTimeout(() => { if (b.isConnected) { b.classList.remove('arm'); b.textContent = 'Odebrat'; } }, 5000); return; }
         const k = b.dataset.od, id = b.dataset.i, x = data()[k].find(y => y.id === id);

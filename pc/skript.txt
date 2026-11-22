@@ -1,7 +1,7 @@
-// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 17
+// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 18
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 17;
+const SKRIPT_VERZE = 18;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -957,7 +957,7 @@ function samoAktualizace_(b) {
   return json_(samoZapis_(samoProved_()));
 }
 function samoStav_() {
-  const o = {verze: SKRIPT_VERZE, samo: true, hodinove: PropertiesService.getScriptProperties().getProperty('samo-zapnuto') === '17'};
+  const o = {verze: SKRIPT_VERZE, samo: true, id: ScriptApp.getScriptId(), hodinove: PropertiesService.getScriptProperties().getProperty('samo-zapnuto') === '17'};
   try { const c = JSON.parse(PropertiesService.getScriptProperties().getProperty('samo-chyba') || 'null'); if (c && c.duvod) { o.chyba = c.duvod; o.chyba_t = c.t; } } catch (x) {}
   return o;
 }
