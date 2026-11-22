@@ -14,7 +14,7 @@
   const velTxt = b => !b && b !== 0 ? '' : b < 1024 ? b + ' B' : b < 1048576 ? Math.round(b / 1024) + ' kB' : b < 1073741824 ? (b / 1048576).toFixed(b < 10485760 ? 1 : 0).replace('.', ',') + ' MB' : (b / 1073741824).toFixed(2).replace('.', ',') + ' GB';
   const datTxt = s => { if (!s) return ''; const d = new Date(s); return isNaN(d) ? '' : d.toLocaleDateString('cs-CZ', {day: 'numeric', month: 'numeric', year: 'numeric'}); };
   const cmp = (a, b) => String(a).localeCompare(String(b), 'cs', {numeric: true, sensitivity: 'base'});
-  const bezDia = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const bezDia = s => String(s || '').normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').toLowerCase();
   const druh = n => { const p = pripona(n); return p === 'pdf' ? 'pdf' : p === 'dwg' ? 'dwg' : p === 'dxf' ? 'dxf' : /^(jpe?g|png|gif|webp|bmp)$/.test(p) ? 'obr' : /^(docx?|odt|rtf|txt)$/.test(p) ? 'text' : /^(xlsx?|ods|csv)$/.test(p) ? 'tab' : /^(zip|rar|7z)$/.test(p) ? 'zip' : 'jiny'; };
   const IKONA = {slozka: '📁', pdf: 'PDF', dwg: 'DWG', dxf: 'DXF', obr: 'IMG', text: 'DOC', tab: 'XLS', zip: 'ZIP', jiny: '…'};
   const dotyk = () => matchMedia('(pointer:coarse)').matches;

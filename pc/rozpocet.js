@@ -15,7 +15,7 @@
   const OBJEKTY = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Dvory', 'Společné'];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-  const bezDia = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const bezDia = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').toLowerCase();
   const norm = s => bezDia(s).replace(/[\[\]\(\)\{\}:;"'`´]/g, ' ').replace(/\s+/g, ' ').trim();
   const EPS = 1e-6;
   const nf2 = new Intl.NumberFormat('cs-CZ', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -63,7 +63,8 @@
 .rz-tabs button[aria-pressed=true]{background:#16191c;color:#fff;border-color:#16191c}
 .rz-tabs button b{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:#F4D23C;color:#16191c;font-size:12px;margin-left:6px;padding:0 5px}
 .rz-tabs button b.cerv{background:var(--bad);color:#fff}
-.rz-fil{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.rz-brk{flex-basis:100%;height:0;margin:-2px 0}.rz-flt .rz-brk{border-top:1px solid var(--line,#e5e5e5);margin:2px 0}
+.rz-fil{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rz-fgrid{display:grid;grid-template-columns:minmax(260px,2fr) repeat(auto-fit,minmax(170px,1fr));gap:10px 12px;width:100%;align-items:end}.rz-fgrid .rz-fl-l>span{display:block!important;font-size:12px;font-weight:800;color:#4a4f54;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}.rz-fgrid select.rz-sel,.rz-fgrid .rz-q{width:100%!important;max-width:none!important;min-width:0!important;font-size:15.5px!important;padding:8px 11px!important;height:44px;border-radius:10px;box-sizing:border-box}.rz-fgrid .rz-q{border:2px solid #16191c;flex:none!important}.rz-fgrid .rz-fl-ch{height:44px;font-size:15px}.rz-flt{font-size:15px}.rz-flt .rz-souhrn{font-size:15.5px}.rz-brk{flex-basis:100%;height:0;margin:-2px 0}.rz-flt .rz-brk{border-top:1px solid var(--line,#e5e5e5);margin:2px 0}
 .rz-top .rz-inf{flex:1 1 120px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.rz-top select{max-width:300px}
 .rz-seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .rz-seg button{font:inherit;font-size:13.5px;font-weight:600;border:0;border-right:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 11px;cursor:pointer}
@@ -967,14 +968,14 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const podOpts = podl.map(p => opt(p, p, S.pod)).join('') + opt('-', 'Bez podlaží', S.pod);
     const nF = [S.cast, S.dil, S.obor, S.kat, S.obj, S.pod].filter(Boolean).length;
     return `<div class="rz-fil rz-flt">
-        <input class="rz-q" type="search" placeholder="Hledat v rozpočtu (kód, popis, např. krokve)…" value="${esc(S.q)}" data-a="q">
+        <div class="rz-fgrid"><label class="rz-fl-l rz-fl-q"><span>🔍 Hledat v rozpočtu</span><input class="rz-q" type="search" placeholder="kód nebo slovo, např. dlažba" value="${esc(S.q)}" data-a="q" autocomplete="off" spellcheck="false"></label>
         ${sz.cast.length > 1 ? selS('cast', 'Část projektu', 'Všechny části', sz.cast, S.cast) : ''}
         ${sz.dil.length ? selS('dil', 'Díl (nadpis)', 'Všechny díly', sz.dil, S.dil) : ''}
         ${R.oborN && sz.obor.length > 1 ? selS('obor', esc(R.oborN), 'Vše', sz.obor, S.obor) : ''}
         ${sel('kat', 'Druh prací / řemeslo', 'Všechna řemesla', katOpts, S.kat)}
         ${sel('obj', 'Objekt', 'Všechny objekty', objOpts, S.obj)}
         ${sel('pod', 'Podlaží', 'Všechna podlaží', podOpts, S.pod)}
-        <label class="rz-chk"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label>
+        <label class="rz-chk rz-fl-ch"><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}> Jen s upozorněním</label></div>
         <div class="rz-brk"></div>
         ${filtrAktivni() ? `<span class="rz-souhrn">Vyfiltrováno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : '<span class="rz-souhrn" style="color:var(--muted)">Celý rozpočet – zužte ho filtry nahoře</span>'}
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
@@ -1911,7 +1912,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   function spayd(F, S_, dod) {
     const iban = ibanCz(dod.ucet); if (!iban) return '';
     const vs = String(F.cislo || '').replace(/\D/g, '').slice(0, 10);
-    const ascii = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9 .,\-\/]/g, '').slice(0, 60);
+    const ascii = t => String(t || '').normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').replace(/[^A-Za-z0-9 .,\-\/]/g, '').slice(0, 60);
     return ['SPD*1.0', 'ACC:' + iban, 'AM:' + (Math.round(S_.celkem * 100) / 100).toFixed(2), 'CC:CZK', F.splatnost ? 'DT:' + String(F.splatnost).replace(/-/g, '') : '', vs ? 'X-VS:' + vs : '', 'MSG:' + ascii('Faktura ' + (F.cislo || '') + ' ' + (dod.firma || ''))].filter(Boolean).join('*');
   }
   function kresliQr(g, text, x, y, size) {

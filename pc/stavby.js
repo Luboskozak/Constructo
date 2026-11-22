@@ -7,6 +7,41 @@
      a sdílená data Hybernské nesou jen ukazatel na nejnovější soubor (záznam „sp~<id>“).
    - Otevřená stavba: localStorage „hyb-stavba“ (stejná pro Management i Deník). Kopie dat staveb v tomto
      počítači jsou v IndexedDB (localStorage má jen 5 MB a sdílí ho všechny části aplikace). */
+/* 4.79: čeština všude (Management, Deník, mobil, Dokumentace – tento soubor načítají všechny).
+   1) Mac / iPhone píše háčky a čárky „mrtvou klávesou“ (ˇ, potom z = ž). Během skládání znaku aplikace nesmí
+      pole překreslit, jinak v něm zůstane samostatné „ˇ“ a hledání nic nenajde. Události psaní během skládání
+      se proto podrží a po dokončení znaku se pošlou jednou s hotovým textem.
+   2) Kdyby přesto v poli zůstal samostatný háček nebo čárka před písmenem (ˇz, ´a, ˚u), složí se na ž, á, ů.
+   3) Řazení textů bez udaného jazyka (localeCompare) je vždy podle češtiny (ch za h, č za c…). */
+(() => {
+  if (window.__cxCestina) return; window.__cxCestina = 1;
+  const ZNAK = {'ˇ': '̌', '˘': '̌', '´': '́', '˚': '̊', '¨': '̈'};
+  const RX = /([ˇ˘´˚¨])\s?([A-Za-z])/g;
+  const opravit = t => {
+    if (!t || !('value' in t) || typeof t.value !== 'string' || /^(password|file|checkbox|radio|number|date|time|color|range|hidden)$/i.test(t.type || '')) return false;
+    const v = t.value; if (!/[ˇ˘´˚¨]/.test(v)) return false;
+    let pos = null; try { pos = t.selectionStart; } catch (e) {}
+    let ubr = 0;
+    const n = v.replace(RX, (m, z, p, off) => { const c = (p + ZNAK[z]).normalize('NFC'); if (pos != null && off < pos) ubr += m.length - c.length; return c; }).replace(/[ˇ˘´˚¨](?=\p{L})/gu, (m, off) => { if (pos != null && off < pos) ubr++; return ''; });
+    if (n === v) return false;
+    t.value = n;
+    if (pos != null) try { t.setSelectionRange(pos - ubr, pos - ubr); } catch (e) {}
+    return true;
+  };
+  addEventListener('compositionend', e => {
+    const t = e.target;
+    setTimeout(() => { opravit(t); if (t && t.isConnected) t.dispatchEvent(new Event('input', {bubbles: true})); }, 0);
+  }, true);
+  addEventListener('input', e => {
+    if (e.isComposing) { e.stopImmediatePropagation(); return; }
+    opravit(e.target);
+  }, true);
+  window.cxBezDiakritiky = s => String(s == null ? '' : s).replace(RX, (m, z, p) => p).normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').toLowerCase();
+  try {
+    const kol = new Intl.Collator('cs'), lc = String.prototype.localeCompare;
+    String.prototype.localeCompare = function (b, loc, opt) { return loc === undefined && opt === undefined ? kol.compare(String(this), String(b)) : lc.call(this, b, loc, opt); };
+  } catch (e) { /* starý prohlížeč – zůstane výchozí řazení */ }
+})();
 (() => {
   if (window.CXStavby) return;
   const HYB = 'hybernska';
@@ -23,7 +58,7 @@
   const jsn = (s, d) => { try { const x = JSON.parse(s); return x == null ? d : x; } catch (e) { return d; } };
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
-  const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f\u02c7\u02d8\u00b4\u02da\u00a8]/g, '').toLowerCase();
   // mobil 1.32: telefon má spojení v IndexedDB (ne v hyb-sync) – předá ho přes CXStavby.spojeni(conn)
   let spoj = null;
   const SY = () => { if (spoj) return spoj; const s = jsn(ls.get('hyb-sync'), null); return s && s.url && s.key ? s : null; };

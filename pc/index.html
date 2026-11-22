@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-F/qRNWZeTuxXukwCbWNsIn8YDVz2lls8+hjkN/j7F8E=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8ewhg25N5XBbosqDW+IkDoRMNjCTPV1q7QFhLXZWJXI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1257,7 +1257,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.78';
+  const APP_VERSION = '4.79';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -3069,11 +3069,11 @@ body.dfull-on{overflow:hidden}
     }
   }
 
-  const foldName = n => String(n || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+  const foldName = n => String(n || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f\u02c7\u02d8\u00b4\u02da\u00a8]/g, '').replace(/\s+/g, ' ').trim();
   /* 4.46: chytré hledání – stejné všude (Harmonogram, Úkoly, Deník, Zprávy, Odeslané, Plán prací).
      Hledá v celém textu bez ohledu na háčky a čárky, snese překlep a zná zkratky: firmy (MTS = Metrostav,
      odvozené z názvu nebo ručně v kartě firmy „Zkratky pro hledání“) a běžné stavařské (SDK, VZT, ZTI…). */
-  function hlNorm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  function hlNorm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
   const HL_OBOR = {sdk: 'sadrokarton', vzt: 'vzduchotechnika', zti: 'zdravotechnika', ut: 'ustredni topeni', mar: 'mereni a regulace', eps: 'elektricka pozarni signalizace',
     ezs: 'elektricka zabezpecovaci signalizace', slp: 'slaboproud', tzb: 'technicke zarizeni budov', zb: 'zelezobeton', hi: 'hydroizolace', tds: 'technicky dozor',
     bozp: 'bezpecnost prace', kd: 'kontrolni den', pd: 'projektova dokumentace', rds: 'realizacni dokumentace', dps: 'dokumentace pro provedeni stavby', hmg: 'harmonogram', gd: 'generalni dodavatel'};
@@ -3156,7 +3156,7 @@ body.dfull-on{overflow:hidden}
   function hledejInfo(q) { if (!q || !String(q).trim()) return ''; hledej(q, ''); return hlLast.info; }
   function hlUkolTxt(t) { return t ? [t.title, t.supplier, ownerTxt(t), t.obj, t.note, t.missed, (t.sub || []).map(u => u && u.text)] : []; }
   // jména z porad, která patří stávajícím odpovědným osobám (dle Luboše 14. 10. 2026)
-  const ALIASES = Object.assign({'lk': 'Luboš Kozák', 'helca': 'Helena Tomková'}, Object.fromEntries(Object.entries(TEAM_V2).map(([a, n]) => [a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), n])));
+  const ALIASES = Object.assign({'lk': 'Luboš Kozák', 'helca': 'Helena Tomková'}, Object.fromEntries(Object.entries(TEAM_V2).map(([a, n]) => [a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f\u02c7\u02d8\u00b4\u02da\u00a8]/g, ''), n])));
   function fixAliases() {
     let n = 0;
     const fix = x => { const a = ALIASES[foldName(x.owner)]; if (a && x.owner !== a) { x.owner = a; n++; }
@@ -3359,7 +3359,7 @@ body.dfull-on{overflow:hidden}
   }
   function hmgFromCsv(text) {
     const rows = parseCsv(text);
-    const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+    const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').trim();
     let hi = rows.findIndex(r => r.some(c => /^(id|c\.|cislo)$/.test(norm(c))) && r.some(c => /nazev|name|ukol/.test(norm(c))));
     if (hi < 0) throw new Error('V souboru chybí řádek se záhlavím (sloupce ID a Název).');
     const H = rows[hi].map(norm);
@@ -4289,7 +4289,7 @@ body.dfull-on{overflow:hidden}
     if (y + 30 > BOTTOM) { doc.page(); y = M; }
     y += 16; doc.text(M, y, `Celkem ${rows.length} ${rows.length === 1 ? 'zpráva' : rows.length < 5 ? 'zprávy' : 'zpráv'}. Každá zpráva má vlastní formulář PDF s fotkami (v Constructu: Zprávy → Formulář PDF).`, {size: 8, color: '#333333'});
     doc.pages.forEach((pg, k) => { doc.cur = pg; doc.text(M, 595 - 14, fitText(`Constructo · ${P.name || 'Stavba'} · zprávy pro firmy`, R, 7.5, 360), {size: 7.5, color: GREY}); doc.text(M + W / 2, 595 - 14, 'Developed by Luboš Kozák', {size: 7.5, color: GREY, align: 'center'}); doc.text(M + W, 595 - 14, `Strana ${k + 1} z ${doc.pages.length}`, {size: 7.5, color: GREY, align: 'right'}); });
-    const nm = (ZF.firma || ZF.osoba || 'vse').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '');
+    const nm = (ZF.firma || ZF.osoba || 'vse').normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '');
     return {blob: await doc.bytes('Zprávy pro firmy'), name: `Zpravy-pro-firmy_${nm}_${today}.pdf`};
   }
   // jednorázový úklid (Luboš 31. 10.): zkušební firma „zkouška“ pryč
@@ -5958,7 +5958,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   }
   const serialToIso = n => { const d = new Date(Date.UTC(1899, 11, 30) + Math.round(Number(n)) * 864e5); return d.toISOString().slice(0, 10); };
   function tasksFromRows(rows, fileName) {
-    const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+    const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').trim();
     const hi = rows.findIndex(r => r.some(c => /^(ukol|cinnost|nazev)/.test(norm(c))) && r.some(c => /^odpovid/.test(norm(c))));
     if (hi < 0) throw new Error('V tabulce chybí řádek se záhlavím (sloupce Úkol a Odpovídá).');
     const H = rows[hi].map(norm), col = re => H.findIndex(h => re.test(h));
@@ -6003,7 +6003,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
     const f = e.target.files[0]; if (!f) return;
     let res;
     try { res = tasksFromRows(await readTaskTable(f), f.name); } catch (err) { toast(err.message || 'Tabulku se nepodařilo přečíst.'); return; }
-    const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+    const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯˇ˘´˚¨]/g, '').replace(/\s+/g, ' ').trim();
     const exists = t => D.tasks.some(x => (x.src && x.src === t.src) || (fold(x.title) === fold(t.title) && fold(x.owner) === fold(t.owner)));
     const fresh = res.tasks.filter(t => !exists(t)), skip = res.tasks.length - fresh.length;
     const newPeople = [...new Set(fresh.map(t => t.owner).filter(o => o && !owners().includes(o)))];
