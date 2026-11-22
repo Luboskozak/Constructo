@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-8sZRGceLgz3qCWuDDNobjk53j7SBzHWmrpBCEP+vG8c='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-Vca51X7jviystR45us+j/mTPvzqzT6ss+WpPGwxeilU='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
@@ -152,7 +152,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
       vAplA: '<b>Odkaz je otevřený uvnitř jiné aplikace nebo v prohlížeči, který ikonu neumí.</b> Klepněte na tlačítko níže, otevřete aplikaci <b>Chrome</b> (nebo prohlížeč telefonu), podržte prst v adresním řádku a dejte <b>Vložit a přejít</b>.',
       vAplI: '<b>Otevřeli jste odkaz z WhatsAppu nebo z e-mailu?</b> Tam ikonu přidat nejde. Klepněte dole na <b>≡</b> (nebo na ikonu <b>kompasu</b>) a zvolte <b>Otevřít v Safari</b>. Když tam ta volba není, klepněte na tlačítko níže, otevřete aplikaci <b>Safari</b>, podržte prst v adresním řádku a dejte <b>Vložit a přejít</b>.',
       kop: 'Zkopírovat odkaz', kopOk: 'Zkopírováno ✓ – teď otevřete prohlížeč', kopP: 'Zkopírujte odkaz:', obr: 'obrázek pro ukázku',
-      s1: '<p>V Safari dole klepněte na <b>tři tečky •••</b> (na starším iPhonu rovnou na <b>Sdílet</b>).</p>', s1o: 'obrázek pro ukázku – klepejte dole v Safari', s2: '<p>Klepněte na <b>Sdílet</b>.</p>', s3: '<p>Posuňte nabídku dolů, klepněte na <b>Přidat na plochu</b> a pak vpravo nahoře na <b>Přidat</b>.</p>',
+      s0: '<p>Klepněte na žluté tlačítko.</p>', s1: '<p>Dole klepněte na <b>≡</b> (vlevo v řádku s adresou). Na starším iPhonu na <b>•••</b>.</p>', s2: '<p>Klepněte na <b>Sdílet</b>.</p>', s3: '<p>Posuňte dolů a klepněte na <b>Přidat na plochu</b> (když tam není, nejdřív na <b>Více</b>). Pak vpravo nahoře <b>Přidat</b>.</p>',
       posl: '<p>Na ploše klepněte na ikonu <b>Docházka</b>. Jste přihlášený, nic neopisujete.</p>'
     },
     uk: {
@@ -177,7 +177,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
       vAplA: '<b>Посилання відкрите всередині іншого застосунку або в браузері, який не вміє іконки.</b> Натисніть кнопку нижче, відкрийте <b>Chrome</b> (або браузер телефону), утримуйте палець в адресному рядку і виберіть <b>Vložit a přejít</b>.',
       vAplI: '<b>Відкрили посилання з WhatsApp або з e-mailу?</b> Там іконку додати не можна. Натисніть унизу <b>≡</b> (або іконку <b>компаса</b>) і виберіть <b>Otevřít v Safari</b>. Якщо такого варіанту немає, натисніть кнопку нижче, відкрийте <b>Safari</b>, утримуйте палець в адресному рядку і виберіть <b>Vložit a přejít</b>.',
       kop: 'Скопіювати посилання', kopOk: 'Скопійовано ✓ – тепер відкрийте браузер', kopP: 'Скопіюйте посилання:', obr: 'зображення для прикладу',
-      s1: '<p>У Safari внизу натисніть <b>три крапки •••</b> (на старішому iPhone одразу <b>Sdílet</b>).</p>', s1o: 'зображення для прикладу – натискайте внизу в Safari', s2: '<p>Натисніть <b>Sdílet</b>.</p>', s3: '<p>Прокрутіть меню вниз, натисніть <b>Přidat na plochu</b>, потім угорі праворуч <b>Přidat</b>.</p>',
+      s0: '<p>Натисніть жовту кнопку.</p>', s1: '<p>Унизу натисніть <b>≡</b> (ліворуч у рядку з адресою). На старішому iPhone – <b>•••</b>.</p>', s2: '<p>Натисніть <b>Sdílet</b>.</p>', s3: '<p>Прокрутіть вниз і натисніть <b>Přidat na plochu</b> (якщо немає, спочатку <b>Více</b>). Потім угорі праворуч <b>Přidat</b>.</p>',
       posl: '<p>На екрані натисніть іконку <b>Docházka</b>. Ви вже увійшли, нічого не треба вводити.</p>'
     }
   };
@@ -191,7 +191,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
   const cas = iso => { const d = new Date(iso); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
   const denKey = d => { const x = d ? new Date(d) : new Date(); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
   const zarizeni = () => { let z = ls.get('cx-doch-zar'); if (!z) { z = Array.from(crypto.getRandomValues(new Uint8Array(8)), x => x.toString(16).padStart(2, '0')).join(''); ls.set('cx-doch-zar', z); } return z; };
-  const IOS_BAR = `<svg viewBox="0 0 320 64" aria-hidden="true"><rect width="320" height="64" fill="#e9e9ee"/><rect x="12" y="12" width="40" height="40" rx="20" fill="#fff"/><path d="M36 22l-10 10 10 10" stroke="#007aff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="60" y="12" width="200" height="40" rx="20" fill="#fff"/><text x="160" y="37" font-size="14" text-anchor="middle" fill="#333" font-family="-apple-system,system-ui">lovely-gumption…</text><rect x="268" y="12" width="40" height="40" rx="20" fill="#fff" stroke="#F4A20C" stroke-width="4"/><circle cx="279" cy="32" r="3" fill="#007aff"/><circle cx="288" cy="32" r="3" fill="#007aff"/><circle cx="297" cy="32" r="3" fill="#007aff"/></svg>`;
+  const IOS_BAR = `<svg viewBox="0 0 320 64" aria-hidden="true"><rect width="320" height="64" fill="#f2f2f7"/><circle cx="30" cy="32" r="21" fill="#fff" stroke="#ddd"/><path d="M34 23l-9 9 9 9" stroke="#aaa" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="60" y="11" width="200" height="42" rx="21" fill="#555"/><circle cx="84" cy="32" r="17" fill="none" stroke="#F4A20C" stroke-width="4"/><path d="M76 25h16M76 32h16M76 39h11" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="168" y="37" font-size="14" text-anchor="middle" fill="#fff" font-family="-apple-system,system-ui">be0f29.netlify.app</text><circle cx="290" cy="32" r="21" fill="#fff" stroke="#ddd"/><rect x="281" y="25" width="13" height="13" rx="3" fill="none" stroke="#333" stroke-width="2.4"/><rect x="286" y="30" width="13" height="13" rx="3" fill="#fff" stroke="#333" stroke-width="2.4"/></svg>`;
   const IOS_SHARE = `<svg viewBox="0 0 320 64" aria-hidden="true"><rect width="320" height="64" fill="#f2f2f7"/><rect x="10" y="8" width="300" height="48" rx="12" fill="#fff" stroke="#F4A20C" stroke-width="4"/><path d="M36 40v8h18v-8M45 18v22M38 25l7-7 7 7" stroke="#007aff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="72" y="39" font-size="17" fill="#111" font-family="-apple-system,system-ui">Sdílet</text></svg>`;
   const IOS_ADD = `<svg viewBox="0 0 320 112" aria-hidden="true"><rect width="320" height="112" fill="#f2f2f7"/><rect x="10" y="6" width="300" height="46" rx="12" fill="#fff"/><text x="24" y="35" font-size="16" fill="#999" font-family="-apple-system,system-ui">Přidat do záložek</text><rect x="10" y="60" width="300" height="46" rx="12" fill="#fff" stroke="#F4A20C" stroke-width="4"/><text x="24" y="89" font-size="17" fill="#111" font-weight="600" font-family="-apple-system,system-ui">Přidat na plochu</text><rect x="270" y="71" width="24" height="24" rx="6" fill="none" stroke="#111" stroke-width="2.2"/><path d="M282 77v12M276 83h12" stroke="#111" stroke-width="2.2" stroke-linecap="round"/></svg>`;
   function browserKind() {
@@ -417,11 +417,10 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
     // 1.1: odkaz otevřený z WhatsAppu / e-mailu běží v okně uvnitř té aplikace (iPhone ho nerozliší od Safari) – tam ikonu přidat nejde
     const kopB = '<button type="button" class="big sec" id="i-kop">' + T.kop + '</button>';
     const vApl = kind === 'inapp' || kind === 'uc' ? '<div class="vapl">' + T.vAplA + kopB + '</div>'
-      : /^ios/.test(kind) && kind !== 'ios-chrome' && kind !== 'ios-firefox' && kind !== 'ios-edge' ? '<div class="vapl">' + T.safI + '<a class="big" style="display:block;text-align:center;text-decoration:none" href="' + esc('x-safari-' + location.href) + '">' + T.safB + '</a><p class="mut" style="margin:8px 0 0">' + T.safJinak + '</p>' + kopB + '</div>' : '';
-    const kroky = kind === 'ios-safari' ? [
-      T.s1 + IOS_BAR + '<span class="obr">' + T.s1o + '</span>',
-      T.s2 + IOS_SHARE + '<span class="obr">' + T.obr + '</span>',
-      T.s3 + IOS_ADD + '<span class="obr">' + T.obr + '</span>']
+      : '';
+    const kroky = kind === 'ios-safari' || kind === 'ios-inapp' ? [
+      T.s0 + '<a class="big" style="display:block;text-align:center;text-decoration:none;margin-top:8px" href="' + esc('x-safari-' + location.href) + '">' + T.safB + '</a>',
+      T.s1 + IOS_BAR, T.s2 + IOS_SHARE, T.s3 + IOS_ADD]
       : ((L === 'uk' ? GUIDE_UK : GUIDE)[kind] || (L === 'uk' ? GUIDE_UK : GUIDE).chrome).map(t => '<p>' + t + '</p>');
     kroky.push(T.posl);
     const sh = sheet('<h3>' + T.ikH + '</h3>' + ikona + vApl + '<div class="ios-g">' + kroky.map((t, i) => '<div class="ios-s"><span class="n">' + (i + 1) + '</span><div>' + t + '</div></div>').join('') +
