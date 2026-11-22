@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lbMSrC5w8ONaSHxX1HRlmGMZb/QyTcx9ZDHWzJ07S2U=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-5eM+7YK7+a1ckogCH3mdjCNSUclj/YfIRXXGgfw5zkU='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -12,6 +12,7 @@
 <script src="zprava.js"></script>
 <script src="dokumentace.js"></script>
 <script src="rozpocet.js"></script>
+<script src="dochazka.js"></script>
 <script src="stavby.js"></script>
 <script src="firmy.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
@@ -747,6 +748,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 @media (max-width:760px){.zh-row{grid-template-columns:24px minmax(0,1fr) 30px}.zh-side{grid-column:2}}
 /* 4.28: Kalendář úkolů (jen k nahlédnutí) */
 #v-rozp{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='3' width='14' height='18' rx='2'/%3E%3Cpath d='M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h6'/%3E%3C/svg%3E")}
+#v-doch{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='13' r='8'/%3E%3Cpath d='M12 9v4l3 2M9 2h6'/%3E%3C/svg%3E")}
 #v-dok{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpath d='M8 13h8M8 16h5'/%3E%3C/svg%3E")}
 #v-kal{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
 .kl-top select,.kl-top input{font-size:13px;padding:6px 8px}.kl-top input[type=date]{width:140px}
@@ -1034,6 +1036,7 @@ body.dfull-on{overflow:hidden}
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
       <button type="button" id="v-dok" aria-pressed="false">Dokumentace</button>
       <button type="button" id="v-rozp" aria-pressed="false">Rozpočet</button>
+      <button type="button" id="v-doch" aria-pressed="false" hidden>Docházka</button>
     </div>
   </nav>
   <div class="grow"></div>
@@ -1259,7 +1262,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.80';
+  const APP_VERSION = '4.81';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1442,7 +1445,7 @@ body.dfull-on{overflow:hidden}
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = ''; if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  const v0 = ''; if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
@@ -1521,12 +1524,14 @@ body.dfull-on{overflow:hidden}
   }
   const ACCESS = {zapisuje: 'Zapisuje (může měnit)', nahlizi: 'Jen nahlíží'};
   // 4.61: oprávnění osoby – zaškrtává správce v kartě osoby; správce smí vše
-  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí']];
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00']];
   const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
-  const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false}, 'Mistr': {rozp: false, fakt: false, fakU: false}};
+  const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
   function pravaOf(n) {
-    if (n && ADMINS().includes(n)) return {rozp: true, fakt: true, fakU: true};
+    if (n && ADMINS().includes(n)) return {rozp: true, fakt: true, fakU: true, doch: true};
     const p = n ? personOf(n) : {}, x = Object.assign({}, PRAVA_VYCH, p.prava || {});
+    // 4.81: docházku vidí jen vedení stavby – bez zaškrtnutí podle pozice (manažer projektu, stavbyvedoucí)
+    if (!(p.prava && 'doch' in p.prava)) x.doch = ['Manažer projektu', 'Stavbyvedoucí'].includes(p.role);
     if (p.access === 'nahlizi') { x.fakt = false; x.fakU = false; }
     if (x.fakU) x.fakt = true; if (x.fakt) x.rozp = true;
     return x;
@@ -2738,12 +2743,15 @@ body.dfull-on{overflow:hidden}
     document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
     if (S.view === 'rozp' && !smi('rozp')) S.view = 'list';
     $('#v-rozp').hidden = !smi('rozp');
+    if (S.view === 'doch' && !smi('doch')) S.view = 'list';
+    $('#v-doch').hidden = !smi('doch');
+    if (smi('doch')) dochPripoj();   // tlačítko „Docházka“ u pracovníků ve Firmy / osoby na projektu
     document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
-    ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
-    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
-    $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', firmy:'Firmy / osoby na projektu', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
+    ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
+    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp', 'doch'].includes(S.view);
+    $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp', 'doch'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', firmy:'Firmy / osoby na projektu', kal:'Kalendář úkolů', dok:'Dokumentace', doch:'Docházka'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = (S.view === 'zavady' && ZF.co === 'zapisy') || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').textContent = 'Denní záznamy'; $('#v-zavady').innerHTML = 'Zprávy, záznamy' + (n ? `<span class="cnt" title="Nové denní záznamy od minula">${n}</span>` : ''); }
@@ -2761,7 +2769,7 @@ body.dfull-on{overflow:hidden}
     { const t = hledejInfo(S.q), el = $('#q-hint'); if (el) { el.textContent = t ? 'Hledám i: ' + t : ''; el.hidden = !t; } }
     if (S.view !== 'diary' && $('#j-text')) dGrab();
     if (S.view !== 'diary') document.body.classList.remove('dfull-on');
-    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'rozp' ? renderRozp() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
+    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'firmy' ? renderFirmy() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'rozp' ? renderRozp() : S.view === 'doch' ? renderDoch() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
   renderList = (f => function () { f(); personSimpleBox(); })(renderList);
@@ -3545,6 +3553,24 @@ body.dfull-on{overflow:hidden}
       ulozPdf: async (name, b64, den) => { if (!SY) return null; const r = await call('POST', {key: SY.key, akce: 'foto', name, mime: 'application/pdf', den: den || new Date().toISOString().slice(0, 10), data: b64}); return r && r.id ? {id: r.id, url: r.url} : null; },
     };
     CXRozp.pripoj(rozpHost);
+  }
+  /* ---------- 4.81: Docházka pracovníků firem – kód v dochazka.js, záznamy na Disku Google po měsících (skript ≥ 16) ---------- */
+  let dochHost = null;
+  function dochPripoj() {
+    if (dochHost || !window.CXDochazka || !dokHost && (dokPripoj(), !dokHost)) return;
+    dochHost = {
+      volej: b => dokHost.volej(b), pripojeno: () => !!SY, ro: () => RO(), kdo: () => me(), toast: m => toast(m),
+      stavba: () => STAVBA, projekt: () => D.project || {}, firmy: () => firmyList(), smi: k => smi(k),
+      aktualizujSkript: dokHost.aktualizujSkript,
+      posliMail: o => SY ? call('POST', Object.assign({key: SY.key, akce: 'zavada', od: 'Constructo'}, o)) : Promise.resolve({error: 'Bez připojení ke Googlu.'}),
+    };
+    CXDochazka.pripoj(dochHost);
+  }
+  function renderDoch() {
+    const v = $('#view');
+    if (!window.CXDochazka) { v.innerHTML = '<div class="sl"><p style="padding:20px">Chybí část programu pro Docházku. Obnovte stránku (F5).</p></div>'; return; }
+    dochPripoj();
+    if (v.querySelector('.dc')) CXDochazka.obnov(); else CXDochazka.vykresli(v);
   }
   function renderRozp() {
     const v = $('#view');
@@ -4764,10 +4790,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 15
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 16
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 15;
+const SKRIPT_VERZE = 16;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -4788,6 +4814,7 @@ function doPost_(e) {
     try { return b.akce === 'foto' ? foto_(b) : b.akce === 'zapis' ? zapis_(b) : mail_(b); } finally { lock.releaseLock(); }
   }
   rpZapnout_();
+  dochZapnout_();
   if (b.akce === 'verze') return json_({verze: SKRIPT_VERZE, samo: true});
   if (b.akce === 'samo_aktualizace') return samoAktualizace_(b);
   if (b.akce === 'prehled') return prehled_(b, false);
@@ -4808,7 +4835,268 @@ function doPost_(e) {
   if (b.akce === 'kolega_odpoved') return kolegaOdpoved_(b);
   if (b.akce === 'stavba') return stavbaData_(b);
   if (b.akce === 'stavby') return stavbySeznam_(b);
+  if (b.akce === 'dochazka') return dochazka_(b);
+  if (b.akce === 'dochazka_cti') return dochazkaCti_(b);
+  if (b.akce === 'dochazka_uprav') return dochazkaUprav_(b);
+  if (b.akce === 'dochazka_klic') return dochazkaKlic_(b);
+  if (b.akce === 'dochazka_pdf') return dochazkaPdf_(b);
   return odpoved_(b.key, Number(b.rev), b.data || null);
+}
+// 16: Docházka pracovníků firem (stránka /dochazka/). Pracovník = kontakt firmy (D.project.firmy[].kontakty, panel Firmy / osoby na projektu).
+// Záznamy Příchod / Pauza / Konec pauzy / Odchod jsou v samostatných souborech na Disku po měsících (složka „Constructo – docházka“),
+// aby hlavní data zůstala malá. Poloha se ukládá jen v okamžiku potvrzení. Každý večer v 19:00 přijde vedení stavby PDF s docházkou a počasím.
+const DOCH_TYPY = {prichod: 'Příchod', pauza: 'Pauza', konec: 'Konec pauzy', odchod: 'Odchod'};
+function dochTok_(co) { return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature('doch:' + co, HESLO)).slice(0, 22); }
+function dochStavba_(sid) {
+  const p = PropertiesService.getScriptProperties();
+  if (sid === 'hybernska') return nacti_(p) || {};
+  const id = p.getProperty('sfile:' + sid);
+  return id ? JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString('UTF-8')) : null;
+}
+function dochKontakty_(d) {
+  const out = [], P = (d && d.project) || {}, sm = (P.smazane && P.smazane.firmy) || {};
+  (Array.isArray(P.firmy) ? P.firmy : []).forEach(function (f) {
+    if (!f || (f.id && sm[f.id] >= (f._ts || 0))) return;
+    (Array.isArray(f.kontakty) ? f.kontakty : []).forEach(function (k) {
+      if (k && k.id && k.jmeno) out.push({kid: String(k.id), jmeno: String(k.jmeno), funkce: String(k.funkce || ''), firma: String(f.firma || f.nazev || ''), fid: String(f.id || '')});
+    });
+  });
+  return out;
+}
+function dochDen_(iso) { return Utilities.formatDate(new Date(iso), 'Europe/Prague', 'yyyy-MM-dd'); }
+function dochSoubor_(sid, mes, vytvorit) {
+  const p = PropertiesService.getScriptProperties(), k = 'dochf:' + sid + ':' + mes;
+  const id = p.getProperty(k);
+  if (id) { try { return DriveApp.getFileById(id); } catch (x) {} }
+  if (!vytvorit) return null;
+  const sl = slozka_(slozka_(DriveApp.getRootFolder(), 'Constructo – docházka'), sid);
+  const f = sl.createFile(mes + '.json', '[]', 'application/json');
+  p.setProperty(k, f.getId());
+  const ms = JSON.parse(p.getProperty('dochm:' + sid) || '[]');
+  if (ms.indexOf(mes) < 0) { ms.push(mes); ms.sort(); p.setProperty('dochm:' + sid, JSON.stringify(ms)); }
+  return f;
+}
+function dochCti_(sid, mes) {
+  const f = dochSoubor_(sid, mes, false);
+  if (!f) return [];
+  try { return JSON.parse(f.getBlob().getDataAsString('UTF-8')) || []; } catch (x) { return []; }
+}
+function dochOznac_(sid, mes) {
+  const p = PropertiesService.getScriptProperties(), t = String(Date.now());
+  p.setProperty('dochrev:' + sid, t); p.setProperty('dochmr:' + sid + ':' + mes, t);
+}
+// Přidá záznamy do měsíčních souborů (pod zámkem); stejné id se nepřidá dvakrát (opakované odeslání z fronty telefonu)
+function dochPridej_(sid, recs) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    const po = {};
+    recs.forEach(function (r) { const m = dochDen_(r.at).slice(0, 7); (po[m] = po[m] || []).push(r); });
+    Object.keys(po).forEach(function (m) {
+      const f = dochSoubor_(sid, m, true);
+      let list = [];
+      try { list = JSON.parse(f.getBlob().getDataAsString('UTF-8')) || []; } catch (x) {}
+      const ix = {};
+      list.forEach(function (x, i) { ix[x.id] = i; });
+      let zmena = false;
+      po[m].forEach(function (r) {
+        if (ix[r.id] === undefined) { ix[r.id] = list.length; list.push(r); zmena = true; }
+        else if (r.prepsat) { delete r.prepsat; list[ix[r.id]] = r; zmena = true; }
+      });
+      if (zmena) { f.setContent(JSON.stringify(list)); dochOznac_(sid, m); }
+    });
+  } finally { lock.releaseLock(); }
+}
+function dochazka_(b) {
+  const pk = firmaPokusy_();
+  if (pk.moc) return json_({error: 'Příliš mnoho pokusů, zkuste to prosím za hodinu.'});
+  const sid = stavbaId_(b.sid) || 'hybernska';
+  const d = dochStavba_(sid);
+  if (!d) return json_({error: 'Stavba nenalezena.'});
+  const lidi = dochKontakty_(d), stavba = String((d.project && d.project.name) || '');
+  // QR kód stavby (cedule u vstupu): nejdřív jen seznam jmen k výběru, osobní klíč dostane až vybraný pracovník
+  if (b.qr) {
+    if (b.qr !== dochTok_('stavba:' + sid)) { pk.spatne(); return json_({error: 'odkaz'}); }
+    if (!b.kid) return json_({ok: true, stavba: stavba, lidi: lidi.map(function (x) { return {kid: x.kid, jmeno: x.jmeno, funkce: x.funkce, firma: x.firma}; })});
+    const v = lidi.filter(function (x) { return x.kid === String(b.kid); })[0];
+    if (!v) return json_({error: 'Pracovník nenalezen.'});
+    return json_({ok: true, tok: dochTok_(sid + ':' + v.kid)});
+  }
+  const kid = String(b.kid || '').slice(0, 60);
+  if (!kid || b.tok !== dochTok_(sid + ':' + kid)) { pk.spatne(); return json_({error: 'odkaz'}); }
+  const w = lidi.filter(function (x) { return x.kid === kid; })[0];
+  if (!w) return json_({error: 'konec', stavba: stavba});
+  const ted = new Date(), nyni = ted.toISOString();
+  const fronta = (Array.isArray(b.zaznamy) ? b.zaznamy : b.typ ? [b] : []).slice(0, 40), nove = [];
+  fronta.forEach(function (z) {
+    if (!DOCH_TYPY[z.typ]) return;
+    let at = new Date(z.at || nyni);
+    if (isNaN(at.getTime()) || ted.getTime() - at.getTime() > 3 * 86400000 || at.getTime() > ted.getTime() + 300000) at = ted;
+    const r = {id: String(z.cid || '').slice(0, 40) || (ted.getTime().toString(36) + nove.length), kid: kid, jmeno: w.jmeno, funkce: w.funkce, firma: w.firma, fid: w.fid, typ: z.typ, at: at.toISOString(), srv: nyni};
+    const g = z.poloha || {};
+    if (isFinite(g.lat) && isFinite(g.lng) && g.lat !== null && g.lng !== null) { r.lat = Math.round(Number(g.lat) * 1e6) / 1e6; r.lng = Math.round(Number(g.lng) * 1e6) / 1e6; r.acc = Math.round(Number(g.acc) || 0); }
+    else r.bezPolohy = String(g.chyba || 'nezjištěna').slice(0, 60);
+    if (z.zar) r.zar = String(z.zar).slice(0, 24);
+    nove.push(r);
+  });
+  if (nove.length) dochPridej_(sid, nove);
+  const dnes = dochDen_(nyni);
+  const moje = dochCti_(sid, dnes.slice(0, 7)).filter(function (x) { return x.kid === kid && !x.zrus && dochDen_(x.at) === dnes; })
+    .sort(function (a, c) { return a.at < c.at ? -1 : 1; }).map(function (x) { return {id: x.id, typ: x.typ, at: x.at}; });
+  return json_({ok: true, stavba: stavba, jmeno: w.jmeno, funkce: w.funkce, firma: w.firma, dnes: moje, ulozeno: nove.map(function (x) { return x.id; })});
+}
+// Management: čtení docházky (jen měsíce, které se od posledně změnily)
+function dochazkaCti_(b) {
+  const p = PropertiesService.getScriptProperties();
+  const ro = !!b.key && b.key !== HESLO && b.key === p.getProperty('cteni');
+  if (b.key !== HESLO && !ro) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba) || 'hybernska', rev = p.getProperty('dochrev:' + sid) || '0';
+  const ms = JSON.parse(p.getProperty('dochm:' + sid) || '[]'), mr = {};
+  ms.forEach(function (m) { mr[m] = p.getProperty('dochmr:' + sid + ':' + m) || '0'; });
+  if (b.rev && String(b.rev) === rev) return json_({ok: true, rev: rev, same: true, mesice: mr});
+  const mam = b.mam || {}, data = {};
+  const jen = Array.isArray(b.jen) ? b.jen.map(String) : null;   // Deník chce jen poslední měsíce
+  ms.filter(function (m) { return String(mam[m] || '') !== mr[m] && (!jen || jen.indexOf(m) >= 0); }).slice(-36).forEach(function (m) { data[m] = dochCti_(sid, m); });
+  return json_({ok: true, rev: rev, mesice: mr, data: data, qr: ro ? '' : dochTok_('stavba:' + sid), report: p.getProperty('dochvecer:' + sid) || ''});
+}
+// Management: ruční oprava (zapomenutý odchod apod.) – záznam má rucne = kdo ho zapsal; zrušení = zrus
+function dochazkaUprav_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba) || 'hybernska', ted = new Date().toISOString(), kdo = String(b.kdo || '').slice(0, 80);
+  const recs = (Array.isArray(b.zaznamy) ? b.zaznamy : []).slice(0, 500).filter(function (r) { return r && r.id && r.kid && DOCH_TYPY[r.typ] && !isNaN(new Date(r.at).getTime()); })
+    .map(function (r) { const o = JSON.parse(JSON.stringify(r)); o.prepsat = true; o.upraveno = ted; o.upravil = kdo; if (!o.srv) { o.srv = ted; o.rucne = kdo; } return o; });
+  if (recs.length) dochPridej_(sid, recs);
+  return json_({ok: true, n: recs.length});
+}
+// Management: osobní klíče pracovníků do odkazu /dochazka/ (posílá je jen ten, kdo zná heslo stavby)
+function dochazkaKlic_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const sid = stavbaId_(b.stavba) || 'hybernska', out = {};
+  (Array.isArray(b.kid) ? b.kid : [b.kid]).slice(0, 500).forEach(function (k) { if (k) out[k] = dochTok_(sid + ':' + String(k)); });
+  return json_({ok: true, klice: out, qr: dochTok_('stavba:' + sid)});
+}
+// výpočet odpracovaného času jednoho člověka za den (záznamy seřazené podle času)
+function dochSpocti_(ev, konecMs) {
+  let stav = '', od = 0, prace = 0, pauza = 0, prichod = '', odchod = '', pauz = 0;
+  ev.forEach(function (x) {
+    const t = new Date(x.at).getTime();
+    if (x.typ === 'prichod') { if (stav === 'prace') prace += t - od; if (stav === 'pauza') pauza += t - od; if (!prichod) prichod = x.at; stav = 'prace'; od = t; odchod = ''; }
+    else if (x.typ === 'pauza') { if (stav === 'prace') { prace += t - od; stav = 'pauza'; od = t; pauz++; } }
+    else if (x.typ === 'konec') { if (stav === 'pauza') { pauza += t - od; stav = 'prace'; od = t; } }
+    else if (x.typ === 'odchod') { if (stav === 'prace') prace += t - od; if (stav === 'pauza') pauza += t - od; if (stav) odchod = x.at; stav = ''; }
+  });
+  if (stav && konecMs > od) { if (stav === 'prace') prace += konecMs - od; else pauza += konecMs - od; }
+  return {prichod: prichod, odchod: odchod, prace: Math.round(prace / 60000), pauza: Math.round(pauza / 60000), pauz: pauz, stav: stav};
+}
+function dochSouhrn_(list, den) {
+  const dnes = dochDen_(new Date().toISOString()), po = {};
+  list.forEach(function (x) { (po[x.kid] = po[x.kid] || []).push(x); });
+  return Object.keys(po).map(function (k) {
+    const ev = po[k].sort(function (a, c) { return a.at < c.at ? -1 : 1; }), z = ev[ev.length - 1];
+    const s = dochSpocti_(ev, den === dnes ? Date.now() : 0);
+    s.jmeno = z.jmeno; s.funkce = z.funkce || ''; s.firma = z.firma || ''; s.bezPolohy = ev.some(function (x) { return x.bezPolohy; });
+    return s;
+  }).sort(function (a, c) { return (a.firma + a.jmeno).localeCompare(c.firma + c.jmeno, 'cs'); });
+}
+const DOCH_WMO = {0: 'jasno', 1: 'skoro jasno', 2: 'polojasno', 3: 'zataženo', 45: 'mlha', 48: 'mlha s námrazou', 51: 'slabé mrholení', 53: 'mrholení', 55: 'silné mrholení', 56: 'mrznoucí mrholení', 57: 'mrznoucí mrholení',
+  61: 'slabý déšť', 63: 'déšť', 65: 'silný déšť', 66: 'mrznoucí déšť', 67: 'mrznoucí déšť', 71: 'slabé sněžení', 73: 'sněžení', 75: 'silné sněžení', 77: 'sněhová zrna', 80: 'přeháňky', 81: 'přeháňky', 82: 'silné přeháňky', 85: 'sněhové přeháňky', 86: 'sněhové přeháňky', 95: 'bouřka', 96: 'bouřka s kroupami', 99: 'bouřka s kroupami'};
+// počasí zdarma z Open-Meteo (bez klíče) podle polohy záznamů, jinak Hybernská 8
+function dochPocasi_(list, den) {
+  let la = 0, lo = 0, n = 0;
+  list.forEach(function (x) { if (typeof x.lat === 'number' && typeof x.lng === 'number') { la += x.lat; lo += x.lng; n++; } });
+  const lat = n ? la / n : 50.0873, lng = n ? lo / n : 14.4323;
+  try {
+    const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat.toFixed(4) + '&longitude=' + lng.toFixed(4) +
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&hourly=temperature_2m&timezone=Europe%2FPrague&start_date=' + den + '&end_date=' + den;
+    const j = JSON.parse(UrlFetchApp.fetch(u, {muteHttpExceptions: true}).getContentText()), dd = j.daily || {}, hh = (j.hourly || {}).temperature_2m || [];
+    if (!dd.time || !dd.time.length) return null;
+    return {popis: DOCH_WMO[dd.weather_code[0]] || '', max: Math.round(dd.temperature_2m_max[0]), min: Math.round(dd.temperature_2m_min[0]), srazky: Math.round(dd.precipitation_sum[0] * 10) / 10,
+      vitr: Math.round(dd.wind_speed_10m_max[0]), rano: hh.length > 7 ? Math.round(hh[7]) : null, poledne: hh.length > 12 ? Math.round(hh[12]) : null, odpoledne: hh.length > 15 ? Math.round(hh[15]) : null};
+  } catch (x) { return null; }
+}
+function dochCas_(iso) { return iso ? Utilities.formatDate(new Date(iso), 'Europe/Prague', 'H:mm') : '–'; }
+function dochHod_(min) { return Math.floor(min / 60) + ':' + ('0' + (min % 60)).slice(-2); }
+function dochReportTelo_(lide, poc, den) {
+  const e = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  const fy = {};
+  lide.forEach(function (x) { const f = fy[x.firma || 'Bez firmy'] = fy[x.firma || 'Bez firmy'] || {n: 0, min: 0}; f.n++; f.min += x.prace; });
+  const celkem = lide.reduce(function (s, x) { return s + x.prace; }, 0);
+  // po 18:00 (večerní e-mail) nebo u starších dnů znamená chybějící odchod zapomenuté potvrzení
+  const vecer = den !== dochDen_(new Date().toISOString()) || Number(Utilities.formatDate(new Date(), 'Europe/Prague', 'H')) >= 18;
+  const td = 'padding:6px 8px;border-bottom:1px solid #e3e4e0;font-size:13px', th = 'padding:6px 8px;background:#f4f4f1;font-size:11.5px;text-align:left;color:#555;text-transform:uppercase;letter-spacing:.3px';
+  let h = '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;margin:4px 0 6px"><tr>' +
+    '<td style="padding:10px 14px;background:#131518;color:#fff;border-radius:8px 0 0 8px"><div style="font-size:26px;font-weight:800;color:#F4D23C">' + lide.length + '</div><div style="font-size:12px">osob na stavbě</div></td>' +
+    '<td style="padding:10px 14px;background:#131518;color:#fff"><div style="font-size:26px;font-weight:800;color:#F4D23C">' + Object.keys(fy).length + '</div><div style="font-size:12px">firem</div></td>' +
+    '<td style="padding:10px 14px;background:#131518;color:#fff;border-radius:0 8px 8px 0"><div style="font-size:26px;font-weight:800;color:#F4D23C">' + dochHod_(celkem) + '</div><div style="font-size:12px">odpracováno celkem (h:min)</div></td></tr></table>';
+  if (poc) h += '<p style="margin:10px 0 0;padding:9px 12px;background:#f4f4f1;border-radius:8px;font-size:13px"><b>Počasí:</b> ' + e(poc.popis) + ', ' + poc.min + ' až ' + poc.max + ' °C' +
+    (poc.rano !== null ? ' (7:00 ' + poc.rano + ' °C, 12:00 ' + poc.poledne + ' °C, 15:00 ' + poc.odpoledne + ' °C)' : '') + ', srážky ' + poc.srazky + ' mm, vítr až ' + poc.vitr + ' km/h</p>';
+  h += cxSekce('Firmy') + '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%"><tr><th style="' + th + '">Firma</th><th style="' + th + ';text-align:right">Osob</th><th style="' + th + ';text-align:right">Odpracováno</th></tr>' +
+    Object.keys(fy).sort(function (a, c) { return a.localeCompare(c, 'cs'); }).map(function (f) { return '<tr><td style="' + td + ';font-weight:700">' + e(f) + '</td><td style="' + td + ';text-align:right">' + fy[f].n + '</td><td style="' + td + ';text-align:right">' + dochHod_(fy[f].min) + ' h</td></tr>'; }).join('') + '</table>';
+  h += cxSekce('Osoby') + '<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%"><tr><th style="' + th + '">Jméno</th><th style="' + th + '">Firma</th><th style="' + th + '">Příchod</th><th style="' + th + '">Odchod</th><th style="' + th + ';text-align:right">Pauza</th><th style="' + th + ';text-align:right">Práce</th></tr>' +
+    lide.map(function (x) {
+      const chybi = !x.odchod ? (x.stav ? (vecer ? '<span style="color:#b3261e;font-weight:700">chybí odchod</span>' : '<span style="color:#2f8a52;font-weight:700">' + (x.stav === 'pauza' ? 'na pauze' : 'na stavbě') + '</span>') : '–') : dochCas_(x.odchod);
+      return '<tr><td style="' + td + '"><b>' + e(x.jmeno) + '</b>' + (x.funkce ? '<br><span style="color:#6b7279;font-size:11.5px">' + e(x.funkce) + '</span>' : '') + '</td><td style="' + td + '">' + e(x.firma) + '</td><td style="' + td + '">' + dochCas_(x.prichod) +
+        '</td><td style="' + td + '">' + chybi + '</td><td style="' + td + ';text-align:right">' + (x.pauza ? x.pauza + ' min' : '–') + '</td><td style="' + td + ';text-align:right;font-weight:700">' + dochHod_(x.prace) + '</td></tr>';
+    }).join('') + '</table>';
+  if (vecer && lide.some(function (x) { return x.stav; })) h += '<p style="font-size:11.5px;color:#6b7279;margin-top:8px">Kdo nepotvrdil odchod, má odpracovaný čas spočítaný do odeslání přehledu. Opravit to jde v Constructu: Docházka → Doplnit záznam.</p>';
+  if (lide.some(function (x) { return x.bezPolohy; })) h += '<p style="font-size:11.5px;color:#6b7279;margin-top:8px">U některých záznamů telefon nepovolil zjistit polohu – podrobnosti v Constructu, záložka Docházka.</p>';
+  return h;
+}
+function dochPrijemci_(d) {
+  const P = d.project || {}, pp = P.people || {}, adm = Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'], vych = {'Manažer projektu': 1, 'Stavbyvedoucí': 1}, out = [];
+  if (P.dochazka && P.dochazka.report === false) return out;
+  Object.keys(pp).forEach(function (n) {
+    const x = pp[n] || {}, pr = x.prava || {};
+    const smi = adm.indexOf(n) >= 0 || (pr.doch === undefined ? !!vych[x.role] : !!pr.doch);
+    const a = String(x.email || '').split(',')[0].trim();
+    if (smi && x.access !== 'nahlizi' && a.indexOf('@') > 0 && out.indexOf(a) < 0) out.push(a);
+  });
+  return out;
+}
+function dochReport_(sid, den, poslat) {
+  const d = dochStavba_(sid);
+  if (!d) return null;
+  const list = dochCti_(sid, den.slice(0, 7)).filter(function (x) { return !x.zrus && dochDen_(x.at) === den; });
+  if (!list.length) return null;
+  const lide = dochSouhrn_(list, den), poc = dochPocasi_(list, den), stavba = String((d.project && d.project.name) || 'Stavba'), p = den.split('-').map(Number), dt = p[2] + '. ' + p[1] + '. ' + p[0];
+  const logo = Utilities.newBlob(Utilities.base64Decode(CX_LOGO_PNG), 'image/png', 'logo.png');
+  const pdfHtml = cxVystup({nadpis: 'DOCHÁZKA NA STAVBĚ', pod: dt, logo: 'data:image/png;base64,' + CX_LOGO_PNG, stavba: stavba, pata: 'stav k ' + dt + ' ' + Utilities.formatDate(new Date(), 'Europe/Prague', 'H:mm'), telo: dochReportTelo_(lide, poc, den)});
+  const pdf = Utilities.newBlob(pdfHtml, 'text/html', 'dochazka.html').getAs('application/pdf').setName('Constructo-dochazka-' + den + '.pdf');
+  if (poslat) {
+    try { slozka_(slozka_(slozka_(DriveApp.getRootFolder(), 'Constructo – docházka'), sid), 'Denní reporty PDF').createFile(pdf.copyBlob().setName('Constructo-dochazka-' + den + '.pdf')); } catch (x) {}
+    const komu = dochPrijemci_(d);
+    if (komu.length) {
+      const html = cxVystup({mail: true, nadpis: 'DOCHÁZKA NA STAVBĚ', pod: dt, logo: 'cid:logo', stavba: stavba, pata: 'PDF v příloze',
+        telo: '<p style="margin:0 0 12px">Dobrý den,<br>posíláme denní přehled docházky na stavbě. Přehledy za týden a měsíc najdete v Constructu v záložce Docházka.</p>' + dochReportTelo_(lide, poc, den) +
+          '<p style="margin-top:14px"><a href="' + ODKAZ + '">Otevřít Constructo</a></p>'});
+      MailApp.sendEmail({to: komu.join(','), subject: 'Docházka ' + dt + ' – ' + lide.length + ' ' + (lide.length === 1 ? 'osoba' : lide.length > 1 && lide.length < 5 ? 'osoby' : 'osob') + ' · ' + stavba.split(',')[0], htmlBody: html, inlineImages: {logo: logo}, attachments: [pdf], name: 'Constructo'});
+    }
+    PropertiesService.getScriptProperties().setProperty('dochvecer:' + sid, den + ' ' + komu.length);
+  }
+  return pdf;
+}
+// Management: PDF docházky za zvolený den (náhled nebo stažení)
+function dochazkaPdf_(b) {
+  if (b.key !== HESLO) return json_({error: 'heslo'});
+  const den = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(String(b.den || '')) ? b.den : dochDen_(new Date().toISOString());
+  const pdf = dochReport_(stavbaId_(b.stavba) || 'hybernska', den, !!b.poslat);
+  if (!pdf) return json_({error: 'Ten den nikdo docházku nepotvrdil.'});
+  return json_({ok: true, pdf: Utilities.base64Encode(pdf.getBytes()), jmeno: pdf.getName()});
+}
+function dochazkaVecer() {
+  const p = PropertiesService.getScriptProperties(), dnes = dochDen_(new Date().toISOString());
+  p.getKeys().filter(function (k) { return k.indexOf('dochm:') === 0; }).forEach(function (k) {
+    try { dochReport_(k.slice(6), dnes, true); } catch (x) { console.error('Docházka ' + k + ': ' + ((x && x.message) || x)); }
+  });
+}
+function dochZapnout_() {
+  const p = PropertiesService.getScriptProperties(), z = p.getProperty('doch-zapnuto') || '';
+  if (z === '16' || (z.indexOf('chyba:') === 0 && Date.now() - Number(z.slice(6)) < 3600000)) return;
+  try {
+    ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'dochazkaVecer') ScriptApp.deleteTrigger(t); });
+    ScriptApp.newTrigger('dochazkaVecer').timeBased().everyDays(1).atHour(19).inTimezone('Europe/Prague').create();
+    p.setProperty('doch-zapnuto', '16');
+  } catch (x) { p.setProperty('doch-zapnuto', 'chyba:' + Date.now()); }
 }
 // 15: více staveb. Hybernská zůstává v původním souboru; každá další stavba má vlastní soubor dat a vlastní číslo verze,
 // takže se vždy načítá a ukládá jen otevřená stavba. Seznam staveb = záznamy st~ v datech Hybernské.
@@ -7463,7 +7751,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   const setView = v => { if (v === 'odeslane') { v = 'zavady'; ZF.co = 'odeslane'; store.set('hyb-zco', 'odeslane'); } if (v === 'list' && S.view !== 'list') S.ukSrc = 'all'; S.view = v; store.set('hyb-view', v); render();
     const sec = $('#view-title').closest('section'), r = sec.getBoundingClientRect();
     if (r.top > innerHeight * .55 || r.top < 0) window.scrollTo({top: scrollY + r.top - (innerWidth > 900 ? 0 : $('.side').offsetHeight) - 8, behavior: 'smooth'}); };
-  ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).onclick = () => setView(k));
+  ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch'].forEach(k => $('#v-' + k).onclick = () => setView(k));
   zavadyGo = (o) => { Object.assign(ZF, o || {}); setView('zavady'); };
   firmyGo = () => setView('firmy');
   $('#uk-src').querySelectorAll('[data-uk]').forEach(b => b.onclick = () => { S.ukSrc = b.dataset.uk; store.set('hyb-uksrc', S.ukSrc); render(); });

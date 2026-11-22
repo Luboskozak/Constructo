@@ -1,6 +1,6 @@
 /* Constructo mobil – service worker: aplikace se otevře i bez signálu a fronta se na Androidu odešle sama na pozadí. */
 importScripts('queue.js');
-const CACHE = 'constructo-mobil-42';
+const CACHE = 'constructo-mobil-43';
 const SHELL = ['./', 'index.html', 'queue.js', 'pc/qr.js', 'pc/zprava.js', 'pc/dokumentace.js', 'pc/stavby.js', 'pc/firmy.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -16,6 +16,7 @@ self.addEventListener('fetch', e => {
   if (u.pathname.startsWith('/dokumentace/')) return;   // Dokumentace (velké PDF/DWG knihovny) jde vždy rovnou ze sítě, bez 5s limitu a bez ukládání
   // Deník (/denik/) jde rovnou ze sítě a z běžné mezipaměti prohlížeče – dřív se každé otevření Deníku (19 MB) znovu stahovalo a ukládalo sem (pomalé přepínání)
   if (u.pathname.startsWith('/denik/')) return;
+  if (u.pathname.startsWith('/dochazka/')) return;   // Docházka má vlastní service worker (/dochazka/sw.js)
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     try {

@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-hou2FP2m3c0SMv8Vq/NsQeFGXBy2mSmwhrANZQlZWew='; object-src 'none'; base-uri 'self'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Docházka · Constructo</title>
+<meta name="theme-color" content="#131518">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Docházka">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
+<style>
+/* Constructo Docházka: pracovník firmy potvrzuje Příchod / Pauzu / Odchod. Poloha jen v okamžiku potvrzení. */
+:root{
+  --y:#F4D23C; --y2:#FFF4BF; --k:#131518; --bg:#f4f4f1; --card:#fff; --ink:#16191c; --mut:#6b7279; --line:#e4e4df;
+  --red:#b3261e; --red2:#fdeae6; --grn:#2f8a52; --grn2:#dcefe3; --blu:#2b6cb0;
+  --f:"Hanken Grotesk","Helvetica Neue",Arial,system-ui,sans-serif; color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 var(--f)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blu);outline-offset:2px}
+.head{background:var(--k);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 18px 0;border-bottom:6px solid var(--y)}
+.head .in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:6px;padding-bottom:16px}
+.logo{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:300}
+.logo svg{height:19px;width:auto;fill:#FAD805}
+.logo b{margin-left:auto;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--y)}
+.head h1{margin:4px 0 0;font-size:26px;font-weight:900;letter-spacing:-.01em;line-height:1.15}
+.head p{margin:0;color:#c9ced3;font-size:15px}
+main{max-width:560px;margin:0 auto;padding:16px 16px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 1px 0 var(--line)}
+.card h2{margin:0 0 10px;font-size:19px;font-weight:800;display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:6px;height:22px;background:var(--y);border-radius:2px;flex:none}
+.card p{margin:0 0 10px}
+.stav{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:var(--card);box-shadow:0 1px 0 var(--line)}
+.stav .dot{width:18px;height:18px;border-radius:50%;background:#c4c7c2;flex:none}
+.stav.prace .dot{background:var(--grn);box-shadow:0 0 0 6px var(--grn2)}
+.stav.pauza .dot{background:#e0a400;box-shadow:0 0 0 6px var(--y2)}
+.stav b{display:block;font-size:21px;font-weight:900;line-height:1.2}
+.stav small{color:var(--mut);font-size:15px}
+.tl{display:flex;flex-direction:column;gap:12px}
+.tl button{width:100%;border:0;border-radius:20px;padding:22px 18px;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:14px;min-height:92px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.tl button svg{width:34px;height:34px;flex:none}
+.tl .b-prichod,.tl .b-konec{background:var(--grn);color:#fff}
+.tl .b-pauza{background:var(--y);color:var(--k)}
+.tl .b-odchod{background:var(--k);color:#fff}
+.tl button:active{transform:translateY(1px);filter:brightness(.95)}
+.dnes .r{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:16px}
+.dnes .r:first-of-type{border-top:0}
+.dnes .r b{font-size:18px;font-weight:800}
+.dnes .r .q{font-size:12.5px;color:#9a6a00;font-weight:700}
+.dnes .r .g{font-size:12.5px;color:var(--mut)}
+.mut{color:var(--mut);font-size:14.5px}
+.big{width:100%;border:0;border-radius:16px;background:var(--y);color:var(--k);font-size:20px;font-weight:800;padding:17px;margin-top:6px}
+.big.sec{background:#fff;border:2px solid var(--k);font-size:18px}
+.big.ok{background:var(--grn);color:#fff}
+.big:disabled{opacity:.55}
+.err{color:var(--red);font-weight:700;margin:10px 0 0}
+.lidi{display:flex;flex-direction:column;gap:8px}
+.lidi h3{margin:10px 0 2px;font-size:14px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.lidi button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:800;font-size:18px}
+.lidi button small{font-weight:500;font-size:14px;color:var(--mut)}
+.lidi button[aria-pressed="true"]{border-color:var(--k);background:var(--y2)}
+input[type=search]{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;font-size:17px}
+.ios-g{display:flex;flex-direction:column;gap:14px}
+.ios-s{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+.ios-s .n{width:34px;height:34px;border-radius:50%;background:var(--k);color:#fff;display:grid;place-items:center;font-weight:900;font-size:17px}
+.ios-s p{margin:4px 0 0;font-size:16px;line-height:1.35}
+.ios-s svg{display:block;width:100%;height:auto;margin-top:8px;border-radius:12px}
+.ikona{display:flex;align-items:center;gap:12px;margin:2px 0 12px}
+.ikona img{width:62px;height:62px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.sheet-bg{position:fixed;inset:0;background:rgba(19,21,24,.55);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:560px;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px}
+.sheet h3{margin:0 0 4px;font-size:24px;font-weight:900}
+.sheet .cas{font-size:44px;font-weight:900;letter-spacing:-.02em;line-height:1}
+.fronta{background:var(--y2);border-radius:14px;padding:10px 14px;font-weight:700;font-size:15px}
+footer{max-width:560px;margin:0 auto;padding:0 16px 30px;color:var(--mut);font-size:12.5px;text-align:center}
+footer button{border:0;background:none;color:var(--mut);text-decoration:underline;font-size:12.5px;padding:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <symbol id="cx-mark" viewBox="190 130 516 310"><path d="M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z"/></symbol>
+</defs></svg>
+<header class="head"><div class="in">
+  <div class="logo"><svg viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg>Constructo<b>DOCHÁZKA</b></div>
+  <h1 id="h1">Docházka</h1>
+  <p id="sub">Načítám…</p>
+</div></header>
+<main id="main"><div class="card"><b>Načítám…</b></div></main>
+<footer id="foot">Constructo · Developed by Luboš Kozák</footer>
+<script>
+(() => {
+  'use strict';
+  const VERZE = '1.0';
+  const API = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
+  const ls = {get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: k => { try { localStorage.removeItem(k); } catch (e) {} }};
+  const ios = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = () => matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+  const TYP = {prichod: 'Příchod', pauza: 'Pauza', konec: 'Konec pauzy', odchod: 'Odchod'};
+  const IKO = {
+    prichod: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>',
+    pauza: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>',
+    konec: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9z"/></svg>',
+    odchod: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>'
+  };
+  const cas = iso => { const d = new Date(iso); return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+  const denKey = d => { const x = d ? new Date(d) : new Date(); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
+  const zarizeni = () => { let z = ls.get('cx-doch-zar'); if (!z) { z = Array.from(crypto.getRandomValues(new Uint8Array(8)), x => x.toString(16).padStart(2, '0')).join(''); ls.set('cx-doch-zar', z); } return z; };
+  const IOS_BAR = `<svg viewBox="0 0 320 64" aria-hidden="true"><rect width="320" height="64" fill="#e9e9ee"/><rect x="12" y="12" width="40" height="40" rx="20" fill="#fff"/><path d="M36 22l-10 10 10 10" stroke="#007aff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="60" y="12" width="200" height="40" rx="20" fill="#fff"/><text x="160" y="37" font-size="14" text-anchor="middle" fill="#333" font-family="-apple-system,system-ui">lovely-gumption…</text><rect x="268" y="12" width="40" height="40" rx="20" fill="#fff" stroke="#F4A20C" stroke-width="4"/><circle cx="279" cy="32" r="3" fill="#007aff"/><circle cx="288" cy="32" r="3" fill="#007aff"/><circle cx="297" cy="32" r="3" fill="#007aff"/></svg>`;
+  const IOS_SHARE = `<svg viewBox="0 0 320 64" aria-hidden="true"><rect width="320" height="64" fill="#f2f2f7"/><rect x="10" y="8" width="300" height="48" rx="12" fill="#fff" stroke="#F4A20C" stroke-width="4"/><path d="M36 40v8h18v-8M45 18v22M38 25l7-7 7 7" stroke="#007aff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="72" y="39" font-size="17" fill="#111" font-family="-apple-system,system-ui">Sdílet</text></svg>`;
+  const IOS_ADD = `<svg viewBox="0 0 320 112" aria-hidden="true"><rect width="320" height="112" fill="#f2f2f7"/><rect x="10" y="6" width="300" height="46" rx="12" fill="#fff"/><text x="24" y="35" font-size="16" fill="#999" font-family="-apple-system,system-ui">Přidat do záložek</text><rect x="10" y="60" width="300" height="46" rx="12" fill="#fff" stroke="#F4A20C" stroke-width="4"/><text x="24" y="89" font-size="17" fill="#111" font-weight="600" font-family="-apple-system,system-ui">Přidat na plochu</text><rect x="270" y="71" width="24" height="24" rx="6" fill="none" stroke="#111" stroke-width="2.2"/><path d="M282 77v12M276 83h12" stroke="#111" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+  function browserKind() {
+    const u = navigator.userAgent;
+    if (ios()) {
+      if (/CriOS/.test(u)) return 'ios-chrome';
+      if (/FxiOS/.test(u)) return 'ios-firefox';
+      if (/EdgiOS/.test(u)) return 'ios-edge';
+      if (/FBAN|FBAV|Instagram|Line\/|GSA\/|Messenger|WhatsApp/.test(u) || !/Safari\//.test(u)) return 'ios-inapp';
+      return 'ios-safari';
+    }
+    if (/SamsungBrowser/.test(u)) return 'samsung';
+    if (/Firefox/.test(u)) return 'firefox';
+    if (/EdgA/.test(u)) return 'edge';
+    if (/MiuiBrowser|XiaoMi/.test(u)) return 'miui';
+    if (/HuaweiBrowser|HuaweiBrowser/.test(u)) return 'huawei';
+    if (/; wv\)|FBAN|FBAV|Instagram|Line\//.test(u)) return 'inapp';
+    return 'chrome';
+  }
+  const GUIDE = {
+    'ios-chrome': ['Nahoře v adresním řádku vpravo klepněte na <b>Sdílet</b> (čtvereček se šipkou ⬆).', 'Posuňte nabídku dolů a klepněte na <b>Přidat na plochu</b>, pak na <b>Přidat</b>.'],
+    'ios-firefox': ['Dole vpravo klepněte na <b>menu ☰</b> a pak na <b>Sdílet</b>.', 'Klepněte na <b>Přidat na plochu</b>, pak na <b>Přidat</b>.'],
+    'ios-edge': ['Dole klepněte na <b>menu ⋯</b> a pak na <b>Sdílet</b>.', 'Klepněte na <b>Přidat na plochu</b>, pak na <b>Přidat</b>.'],
+    'ios-inapp': ['Tahle stránka je otevřená uvnitř jiné aplikace. Klepněte na <b>⋯</b> nebo na ikonu kompasu a zvolte <b>Otevřít v Safari</b>.', 'V Safari pak dole klepněte na <b>•••</b> → <b>Sdílet</b> → <b>Přidat na plochu</b>.'],
+    'chrome': ['Vpravo nahoře klepněte na <b>tři tečky ⋮</b>.', 'Klepněte na <b>Přidat na plochu</b> (nebo <b>Instalovat aplikaci</b>) a potvrďte <b>Instalovat</b>.'],
+    'samsung': ['Dole vpravo klepněte na <b>menu ≡</b>.', 'Klepněte na <b>Přidat stránku do</b> → <b>Domovská obrazovka</b> a potvrďte <b>Přidat</b>.'],
+    'firefox': ['Klepněte na <b>tři tečky ⋮</b> (nahoře nebo dole vpravo).', 'Klepněte na <b>Přidat na plochu</b> (nebo <b>Instalovat</b>) a potvrďte <b>Přidat</b>.'],
+    'edge': ['Dole klepněte na <b>menu ≡</b> nebo <b>⋯</b>.', 'Klepněte na <b>Přidat do telefonu</b> (nebo <b>Přidat na plochu</b>) a potvrďte <b>Instalovat</b>.'],
+    'miui': ['Dole klepněte na <b>menu ≡</b>.', 'Klepněte na <b>Přidat na plochu</b>. Když tam není, otevřete odkaz v Chrome a postupujte tam.'],
+    'huawei': ['Dole klepněte na <b>menu ≡</b>.', 'Klepněte na <b>Přidat na plochu</b> a potvrďte <b>Přidat</b>.'],
+    'inapp': ['Tahle stránka je otevřená uvnitř jiné aplikace (WhatsApp, Gmail…). Klepněte na <b>tři tečky ⋮</b> a zvolte <b>Otevřít v Chrome</b> (nebo v prohlížeči).', 'V Chrome pak klepněte na <b>⋮</b> → <b>Přidat na plochu</b> → <b>Instalovat</b>.'],
+  };
+
+  /* ---------- kdo jsem: z odkazu (?s=&k=&t=), z QR stavby (?s=&q=) nebo z paměti telefonu ---------- */
+  const par = new URLSearchParams(location.search);
+  const ok40 = v => /^[A-Za-z0-9_-]{1,60}$/.test(v || '');
+  let JA = null;
+  try { JA = JSON.parse(ls.get('cx-doch') || 'null'); } catch (e) { JA = null; }
+  if (ok40(par.get('s')) && ok40(par.get('k')) && ok40(par.get('t'))) {
+    const n = {s: par.get('s'), k: par.get('k'), t: par.get('t')};
+    if (!JA || JA.s !== n.s || JA.k !== n.k || JA.t !== n.t) JA = n;
+    ls.set('cx-doch', JSON.stringify(JA));
+  }
+  const QR = ok40(par.get('s')) && ok40(par.get('q')) ? {s: par.get('s'), q: par.get('q')} : null;
+  // iPhone: plocha si uloží celou adresu, ale jen bez manifestu (s manifestem by uložil úvodní adresu bez klíče)
+  if (ios()) { const l = document.querySelector('link[rel=manifest]'); if (l) l.remove(); }
+  const osobniAdresa = () => location.pathname + '?s=' + encodeURIComponent(JA.s) + '&k=' + encodeURIComponent(JA.k) + '&t=' + encodeURIComponent(JA.t);
+  if (JA && !QR && location.search !== osobniAdresa().slice(location.pathname.length)) history.replaceState(null, '', osobniAdresa());
+
+  async function volej(o, ms) {
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), ms || 25000);
+    try {
+      const r = await fetch(API, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({akce: 'dochazka'}, o)), redirect: 'follow', signal: ctl.signal});
+      const t = await r.text();
+      try { return JSON.parse(t); } catch (e) { return {error: 'server'}; }
+    } catch (e) { return {error: 'offline'}; }
+    finally { clearTimeout(tm); }
+  }
+
+  /* ---------- fronta: záznam se uloží hned do telefonu a odešle, až je signál ---------- */
+  const fronta = () => { try { return JSON.parse(ls.get('cx-doch-fronta') || '[]'); } catch (e) { return []; } };
+  const ulozFrontu = f => ls.set('cx-doch-fronta', JSON.stringify(f));
+  let STAV = {dnes: [], jmeno: '', firma: '', funkce: '', stavba: ''};
+  try { STAV = Object.assign(STAV, JSON.parse(ls.get('cx-doch-stav') || '{}')); } catch (e) {}
+  const ulozStav = () => ls.set('cx-doch-stav', JSON.stringify(STAV));
+  let posilam = false, chyba = '';
+  async function odesli() {
+    if (!JA || posilam) return;
+    posilam = true;
+    try {
+      const f = fronta();
+      const r = await volej({sid: JA.s, kid: JA.k, tok: JA.t, zaznamy: f});
+      if (r && r.ok) {
+        ulozFrontu(fronta().filter(x => !f.some(y => y.cid === x.cid)));   // odeslané uložil server (stejné id dvakrát nepřidá)
+        Object.assign(STAV, {jmeno: r.jmeno, firma: r.firma, funkce: r.funkce, stavba: r.stavba, dnes: r.dnes || [], den: denKey()});
+        ulozStav(); chyba = '';
+      } else if (r && r.error === 'odkaz') { chyba = 'odkaz'; }
+      else if (r && r.error === 'konec') { chyba = 'konec'; }
+      else if (r && r.error && r.error !== 'offline') { chyba = r.error === 'server' ? '' : r.error; }
+    } finally { posilam = false; vykresli(); }
+  }
+
+  /* ---------- poloha jen v okamžiku potvrzení ---------- */
+  function poloha() {
+    return new Promise(res => {
+      if (!navigator.geolocation) return res({chyba: 'telefon neumí'});
+      let hotovo = false;
+      const konec = v => { if (!hotovo) { hotovo = true; res(v); } };
+      setTimeout(() => konec({chyba: 'nezjištěna včas'}), 12000);
+      navigator.geolocation.getCurrentPosition(p => konec({lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy}),
+        e => konec({chyba: e && e.code === 1 ? 'nepovoleno' : 'nezjištěna'}), {enableHighAccuracy: true, timeout: 10000, maximumAge: 60000});
+    });
+  }
+
+  /* ---------- stav dne ---------- */
+  function dnesZaznamy() {
+    const dn = denKey(), srv = STAV.den === dn ? STAV.dnes || [] : [];
+    const fr = fronta().filter(x => denKey(x.at) === dn).map(x => ({id: x.cid, typ: x.typ, at: x.at, ceka: true}));
+    const vse = srv.concat(fr.filter(x => !srv.some(y => y.id === x.id)));
+    return vse.sort((a, b) => a.at < b.at ? -1 : 1);
+  }
+  function stavTed(z) {
+    let s = '', od = '';
+    z.forEach(x => { if (x.typ === 'prichod' || x.typ === 'konec') { s = 'prace'; od = x.at; } else if (x.typ === 'pauza' && s === 'prace') { s = 'pauza'; od = x.at; } else if (x.typ === 'odchod') { s = ''; od = x.at; } });
+    return {s, od};
+  }
+
+  function sheet(html) {
+    const bg = document.createElement('div'); bg.className = 'sheet-bg';
+    bg.innerHTML = '<div class="sheet" role="dialog" aria-modal="true">' + html + '</div>';
+    bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+    document.body.appendChild(bg);
+    return bg;
+  }
+  function potvrdit(typ) {
+    const ted = new Date();
+    const sh = sheet('<h3>' + esc(TYP[typ]) + '</h3><div class="cas">' + cas(ted.toISOString()) + '</div><p class="mut" style="margin:6px 0 8px">Při potvrzení se jednou zjistí poloha telefonu.</p>' +
+      '<button type="button" class="big ' + (typ === 'odchod' ? 'sec' : 'ok') + '" id="p-ano">Potvrdit ' + esc(TYP[typ].toLowerCase()) + '</button><button type="button" class="big sec" id="p-ne">Zpět</button>');
+    sh.querySelector('#p-ne').onclick = () => sh.remove();
+    sh.querySelector('#p-ano').onclick = async () => {
+      const b = sh.querySelector('#p-ano'); b.disabled = true; b.textContent = 'Zjišťuji polohu…';
+      const at = new Date().toISOString(), g = await poloha();
+      const cid = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      ulozFrontu(fronta().concat([{cid, typ, at, poloha: g, zar: zarizeni()}]));
+      sh.remove();
+      vykresli(TYP[typ] + ' ' + cas(at) + ' uloženo' + (g.chyba ? ' (bez polohy)' : '') + '.');
+      odesli();
+    };
+  }
+
+  function hlavni(zprava) {
+    const z = dnesZaznamy(), st = stavTed(z), ceka = fronta().length;
+    $('#h1').textContent = STAV.jmeno || 'Docházka';
+    $('#sub').textContent = [STAV.firma, STAV.funkce, STAV.stavba].filter(Boolean).join(' · ') || 'Constructo';
+    const tl = st.s === 'prace' ? ['pauza', 'odchod'] : st.s === 'pauza' ? ['konec', 'odchod'] : ['prichod'];
+    const stTxt = st.s === 'prace' ? '<b>Jste na stavbě</b><small>od ' + cas(st.od) + '</small>' : st.s === 'pauza' ? '<b>Máte pauzu</b><small>od ' + cas(st.od) + '</small>'
+      : z.length ? '<b>Odešli jste</b><small>v ' + cas(st.od) + ' · dobrou cestu domů</small>' : '<b>Dobrý den</b><small>Až přijdete na stavbu, klepněte na Příchod.</small>';
+    let h = (zprava ? '<div class="fronta" role="status" style="background:var(--grn2);color:#1d5e37">✓ ' + esc(zprava) + '</div>' : '') +
+      '<div class="stav ' + st.s + '"><span class="dot"></span><div>' + stTxt + '</div></div>' +
+      '<div class="tl">' + tl.map(t => '<button type="button" class="b-' + t + '" data-t="' + t + '">' + IKO[t] + esc(TYP[t]) + '</button>').join('') + '</div>' +
+      (ceka ? '<div class="fronta">Čeká na odeslání: ' + ceka + ' ' + (ceka === 1 ? 'záznam' : ceka < 5 ? 'záznamy' : 'záznamů') + '. Odešle se samo, až bude signál.</div>' : '') +
+      '<div class="card dnes"><h2>Dnes</h2>' + (z.length ? z.map(x => '<div class="r"><b>' + cas(x.at) + '</b><span>' + esc(TYP[x.typ] || x.typ) + '</span>' + (x.ceka ? '<span class="q">čeká</span>' : '<span class="g">✓</span>') + '</div>').join('') : '<p class="mut" style="margin:0">Zatím nic.</p>') + '</div>';
+    if (!standalone()) h += '<button type="button" class="big sec" id="b-plocha">Přidat ikonu Docházka na plochu</button>';
+    $('#main').innerHTML = h;
+    $('#main').querySelectorAll('[data-t]').forEach(b => b.onclick = () => potvrdit(b.dataset.t));
+    const bp = $('#b-plocha'); if (bp) bp.onclick = navodPlocha;
+  }
+
+  /* ---------- první spuštění: k čemu je poloha (GDPR) ---------- */
+  function souhlas() {
+    $('#h1').textContent = STAV.jmeno || 'Docházka';
+    $('#sub').textContent = [STAV.firma, STAV.stavba].filter(Boolean).join(' · ') || 'Constructo';
+    $('#main').innerHTML = '<div class="card"><h2>Než začnete</h2>' +
+      '<p>Touto aplikací potvrzujete <b>příchod, pauzu a odchod</b> na stavbě. Záznam se automaticky propíše do stavebního deníku jako osoba na stavbě.</p>' +
+      '<p><b>Poloha:</b> telefon zjistí polohu <b>jen ve chvíli, kdy klepnete na Příchod, Pauzu nebo Odchod</b>. Nikdy jindy, aplikace vás nesleduje.</p>' +
+      '<p><b>Kdo to vidí:</b> jen vedení stavby (manažer projektu, stavbyvedoucí). Slouží k evidenci docházky a bezpečnosti na stavbě.</p>' +
+      '<p class="mut">Aplikace nečte kontakty, fotky ani nic jiného v telefonu. Polohu můžete kdykoli zakázat v nastavení telefonu, záznam se pak uloží bez ní.</p>' +
+      '<button type="button" class="big" id="b-souhlas">Rozumím</button></div>';
+    $('#b-souhlas').onclick = () => { ls.set('cx-doch-souhlas', '1'); if (!standalone() && /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)) navodPlocha(); else vykresli(); };
+  }
+
+  /* ---------- ikona na plochu: Android jedním tlačítkem, iPhone podle obrázků ---------- */
+  let installEvt = null;
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+  addEventListener('appinstalled', () => { installEvt = null; vykresli('Ikona Docházka je na ploše.'); });
+  function navodPlocha() {
+    const kind = browserKind();
+    const ikona = '<div class="ikona"><img src="apple-touch-icon.png" alt=""><div><b>Docházka</b><br><span class="mut">takhle bude vypadat ikona na ploše</span></div></div>';
+    if (installEvt) {
+      const sh = sheet('<h3>Ikona na plochu</h3>' + ikona + '<p>Klepněte na tlačítko a potvrďte <b>Instalovat</b> (nebo <b>Přidat</b>).</p><button type="button" class="big" id="i-go">Přidat na plochu</button><button type="button" class="big sec" id="i-ne">Teď ne</button>');
+      sh.querySelector('#i-go').onclick = async () => { const e = installEvt; installEvt = null; sh.remove(); try { await e.prompt(); } catch (x) {} vykresli(); };
+      sh.querySelector('#i-ne').onclick = () => { sh.remove(); vykresli(); };
+      return;
+    }
+    const kroky = kind === 'ios-safari' ? [
+      '<p>Dole klepněte na <b>tři tečky •••</b> (na starším iPhonu rovnou na <b>Sdílet</b>).</p>' + IOS_BAR,
+      '<p>Klepněte na <b>Sdílet</b>.</p>' + IOS_SHARE,
+      '<p>Posuňte nabídku dolů, klepněte na <b>Přidat na plochu</b> a pak vpravo nahoře na <b>Přidat</b>.</p>' + IOS_ADD]
+      : (GUIDE[kind] || GUIDE.chrome).map(t => '<p>' + t + '</p>');
+    kroky.push('<p>Na ploše klepněte na ikonu <b>Docházka</b>. Jste přihlášený, nic neopisujete.</p>');
+    const sh = sheet('<h3>Ikona na plochu</h3>' + ikona + '<div class="ios-g">' + kroky.map((t, i) => '<div class="ios-s"><span class="n">' + (i + 1) + '</span><div>' + t + '</div></div>').join('') +
+      '</div><button type="button" class="big" id="i-ok" style="margin-top:12px">Rozumím</button>');
+    sh.querySelector('.sheet').style.maxHeight = '92vh'; sh.querySelector('.sheet').style.overflow = 'auto';
+    sh.querySelector('#i-ok').onclick = () => { sh.remove(); vykresli(); };
+  }
+
+  /* ---------- QR kód stavby: pracovník si jednou vybere své jméno ---------- */
+  let QRL = null, QRvyb = '';
+  async function qrVyber() {
+    $('#h1').textContent = 'Docházka na stavbě';
+    if (!QRL) {
+      $('#sub').textContent = 'Načítám seznam pracovníků…';
+      const r = await volej({sid: QR.s, qr: QR.q});
+      if (!r || !r.ok) { $('#sub').textContent = ''; $('#main').innerHTML = '<div class="card"><h2>Nejde načíst</h2><p>' + (r && r.error === 'offline' ? 'Telefon nemá signál. Zkuste to prosím za chvíli znovu.' : 'QR kód už neplatí nebo je poškozený. Zeptejte se stavbyvedoucího.') + '</p><button type="button" class="big" id="q-zn">Zkusit znovu</button></div>'; $('#q-zn').onclick = qrVyber; return; }
+      QRL = r;
+    }
+    $('#sub').textContent = QRL.stavba || '';
+    const po = {};
+    QRL.lidi.forEach(x => { (po[x.firma || 'Bez firmy'] = po[x.firma || 'Bez firmy'] || []).push(x); });
+    const firmy = Object.keys(po).sort((a, b) => a.localeCompare(b, 'cs'));
+    $('#main').innerHTML = '<div class="card"><h2>Kdo jste?</h2><p>Najděte svou firmu a klepněte na své jméno. Vybíráte jen jednou, telefon si vás zapamatuje.</p>' +
+      (QRL.lidi.length > 8 ? '<input type="search" id="q-hl" placeholder="Hledat jméno nebo firmu" autocomplete="off">' : '') +
+      '<div class="lidi" id="q-l">' + (firmy.length ? firmy.map(f => '<h3>' + esc(f) + '</h3>' + po[f].sort((a, b) => a.jmeno.localeCompare(b.jmeno, 'cs')).map(x => '<button type="button" data-k="' + esc(x.kid) + '" data-h="' + esc((x.jmeno + ' ' + f).toLowerCase()) + '">' + esc(x.jmeno) + (x.funkce ? '<small>' + esc(x.funkce) + '</small>' : '') + '</button>').join('')).join('')
+        : '<p>Na této stavbě zatím nejsou zapsaní žádní pracovníci. Požádejte svou firmu nebo stavbyvedoucího, ať vás zapíše do Constructa.</p>') + '</div>' +
+      '<p class="mut" style="margin-top:12px">Nejste v seznamu? Vaše firma vás musí nejdřív zapsat do Constructa (Firmy / osoby na projektu).</p></div>';
+    const hl = $('#q-hl');
+    if (hl) hl.oninput = () => { const q = hl.value.trim().toLowerCase(); $('#q-l').querySelectorAll('button').forEach(b => { b.hidden = q && !b.dataset.h.includes(q); }); };
+    $('#q-l').querySelectorAll('[data-k]').forEach(b => b.onclick = () => {
+      const x = QRL.lidi.find(y => y.kid === b.dataset.k);
+      const sh = sheet('<h3>Jste ' + esc(x.jmeno) + '?</h3><p>' + esc([x.firma, x.funkce].filter(Boolean).join(' · ')) + '</p><button type="button" class="big ok" id="q-ano">Ano, to jsem já</button><button type="button" class="big sec" id="q-ne">Ne, zpět</button>');
+      sh.querySelector('#q-ne').onclick = () => sh.remove();
+      sh.querySelector('#q-ano').onclick = async () => {
+        const bb = sh.querySelector('#q-ano'); bb.disabled = true; bb.textContent = 'Ukládám…';
+        const r = await volej({sid: QR.s, qr: QR.q, kid: x.kid});
+        if (!r || !r.ok) { bb.disabled = false; bb.textContent = 'Zkusit znovu'; return; }
+        JA = {s: QR.s, k: x.kid, t: r.tok};
+        ls.set('cx-doch', JSON.stringify(JA));
+        STAV = {dnes: [], jmeno: x.jmeno, firma: x.firma, funkce: x.funkce, stavba: QRL.stavba}; ulozStav();
+        history.replaceState(null, '', osobniAdresa());
+        sh.remove(); vykresli(); odesli();
+      };
+    });
+  }
+
+  function vykresli(zprava) {
+    if (QR && !JA) return qrVyber();
+    if (QR && JA && JA.s !== QR.s) return qrVyber();
+    if (!JA) {
+      $('#h1').textContent = 'Docházka'; $('#sub').textContent = 'Constructo';
+      $('#main').innerHTML = '<div class="card"><h2>Jak se přihlásit</h2><p>Naskenujte fotoaparátem telefonu <b>QR kód Docházka</b> na ceduli u vstupu na stavbu, nebo otevřete odkaz, který vám poslal stavbyvedoucí.</p></div>';
+      return;
+    }
+    if (chyba === 'odkaz' || chyba === 'konec') {
+      $('#main').innerHTML = '<div class="card"><h2>' + (chyba === 'konec' ? 'Už nejste na seznamu stavby' : 'Odkaz neplatí') + '</h2><p>' + (chyba === 'konec' ? 'Vaše firma vás ze stavby odebrala. Pokud je to omyl, ozvěte se stavbyvedoucímu.' : 'Požádejte stavbyvedoucího o nový odkaz, nebo naskenujte QR kód na stavbě.') + '</p><button type="button" class="big sec" id="b-odhl">Přihlásit se znovu</button></div>';
+      $('#b-odhl').onclick = odhlasit;
+      return;
+    }
+    if (!ls.get('cx-doch-souhlas')) return souhlas();
+    hlavni(zprava);
+  }
+  function odhlasit() {
+    if (fronta().length && !confirm('V telefonu jsou neodeslané záznamy. Opravdu se odhlásit?')) return;
+    ['cx-doch', 'cx-doch-stav', 'cx-doch-fronta'].forEach(ls.del);
+    JA = null; chyba = ''; history.replaceState(null, '', location.pathname); vykresli();
+  }
+  $('#foot').innerHTML = 'Constructo Docházka ' + VERZE + ' · Developed by Luboš Kozák<br><button type="button" id="b-gdpr">K čemu je poloha</button> · <button type="button" id="b-jiny">Jiný pracovník</button>';
+  $('#b-gdpr').onclick = () => { const sh = sheet('<h3>K čemu je poloha</h3><p>Poloha se zjistí <b>jen ve chvíli potvrzení</b> příchodu, pauzy nebo odchodu. Vidí ji jen vedení stavby. Slouží k evidenci docházky a k bezpečnosti na stavbě. Nikdy jindy se poloha nezjišťuje.</p><button type="button" class="big" id="g-ok">Zavřít</button>'); sh.querySelector('#g-ok').onclick = () => sh.remove(); };
+  $('#b-jiny').onclick = odhlasit;
+
+  vykresli();
+  if (JA) odesli();
+  addEventListener('online', odesli);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && JA) { odesli(); vykresli(); } });
+  setInterval(() => { if (JA && fronta().length) odesli(); }, 30000);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js', {scope: './'}).catch(() => {});
+})();
+</script>
+</body>
+</html>
