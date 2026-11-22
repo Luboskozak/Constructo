@@ -1,7 +1,7 @@
 /* Constructo mobil – service worker: aplikace se otevře i bez signálu a fronta se na Androidu odešle sama na pozadí. */
 importScripts('queue.js');
-const CACHE = 'constructo-mobil-41';
-const SHELL = ['./', 'index.html', 'queue.js', 'pc/qr.js', 'pc/zprava.js', 'pc/dokumentace.js', 'pc/stavby.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+const CACHE = 'constructo-mobil-42';
+const SHELL = ['./', 'index.html', 'queue.js', 'pc/qr.js', 'pc/zprava.js', 'pc/dokumentace.js', 'pc/stavby.js', 'pc/firmy.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -14,6 +14,8 @@ self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET' || u.origin !== location.origin) return;
   if (u.pathname.startsWith('/dokumentace/')) return;   // Dokumentace (velké PDF/DWG knihovny) jde vždy rovnou ze sítě, bez 5s limitu a bez ukládání
+  // Deník (/denik/) jde rovnou ze sítě a z běžné mezipaměti prohlížeče – dřív se každé otevření Deníku (19 MB) znovu stahovalo a ukládalo sem (pomalé přepínání)
+  if (u.pathname.startsWith('/denik/')) return;
   e.respondWith((async () => {
     const c = await caches.open(CACHE);
     try {

@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-X27mwQxjcDyajrmK1k92oPuynT6fuosu3Tzg02w9Rlc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-jqMkdFJOvl5YRWU8JWokbHeWmmuzPEH3mnoWzxk4jrc=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -305,9 +305,10 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/zprava.js"></script>
 <script src="pc/dokumentace.js"></script>
 <script src="pc/stavby.js"></script>
+<script src="pc/firmy.js"></script>
 <script>
 (() => {
-  const VERSION = '1.36';
+  const VERSION = '1.37';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -907,8 +908,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'plan') planViewer();
     else if (a === 'plan2') planViewer(true);
     else if (a === 'stavba') stavbySheet();
-    else if (a === 'firmy') firmyDlg();
-    else if (a === 'prijemci') prijemciDlg();
+    else if (a === 'firmy') { if (!firmyOsobyDlg('dod')) firmyDlg(); }
+    else if (a === 'prijemci') { if (!firmyOsobyDlg('obj')) prijemciDlg(); }
     else if (a === 'prtoggle') { Z.prOpen = !Z.prOpen; render(); }
     else if (a === 'planx') { zMistoPryc(); F.photos = F.photos.filter(x => !x.mi); render(); }
     else if (a === 'fnew') { zMistoPryc(); F.photos = []; F.to = new Set(); F.text = ''; F.obj = new Set(); F.info = false; F.end = addD(todayS(), 7); render(); scrollTo(0, 0); }
@@ -921,7 +922,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     else if (a === 'znahled') zNahled();
     else if (a === 'zlater') { const s = await zLater(false); if (s) zDomu(s); }
     else if (a === 'zavrit') zavrit();
-    else if (a === 'zemail') { const f = firma(); if (f && f.spol) toast('E-mail firmy doplňte v programu na počítači v záložce Firmy.'); else if (f) { firmyDlg(f.id); toast('Doplňte firmě e-mail.'); } }
+    else if (a === 'zemail') { const f = firma(); if (f && f.spol) toast('E-mail firmy doplňte ve Firmy / osoby na projektu.'); else if (f) { firmyDlg(f.id); toast('Doplňte firmě e-mail.'); } }
     else if (a === 'zfirma') { const e = document.querySelector('#z-firma, [data-act="firmy"]'); if (e) e.scrollIntoView({block: 'center', behavior: 'smooth'}); }
     else if (a === 'zgal') { closeSheet(); $('#in-gal').click(); }
   }
@@ -1114,14 +1115,33 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   // další příjemci kopie (TDS, investor…): pamatuje si je telefon, e-mail stačí doplnit jednou
   const PRIJ0 = [{id: 'tds', jmeno: 'TDS (technický dozor)', email: ''}, {id: 'inv', jmeno: 'Investor', email: ''}];
   // společný seznam se spravuje na počítači (Firmy → Další příjemci zpráv, D.project.prijemci); v telefonu jde přidat jen vlastní doplněk
-  const prijSpol = () => ((D && D.project && Array.isArray(D.project.prijemci)) ? D.project.prijemci : []).filter(x => x && x.id).map(x => ({id: 's-' + x.id, jmeno: [x.kdo, x.jmeno].filter(Boolean).join(' – ') || x.email, email: x.email || '', firma: x.firma || '', kdo: x.kdo || '', spol: true}));
-  const pSkup = r => { const k = r.kdo || r.jmeno || ''; return /investor/i.test(k) ? 'Investor' : /tds|technick/i.test(k) ? 'TDS' : /archit|projektant|autorsk/i.test(k) ? 'Architekt' : 'Ostatní'; };
+  const prijSpol = () => ((D && D.project && Array.isArray(D.project.prijemci)) ? D.project.prijemci : []).filter(x => x && x.id).map(x => ({id: 's-' + x.id, jmeno: [x.kdo, x.jmeno].filter(Boolean).join(' – ') || x.email, email: x.email || '', firma: x.firma || '', kdo: x.kdo || '', obl: x.obl || '', spol: true}));
+  const pSkup = r => window.CXFirmy ? CXFirmy.oblNazev(CXFirmy.oblast({obl: r.obl, kdo: r.kdo || r.jmeno || ''})) : 'Ostatní';
   const prijMistni = () => { try { const a = JSON.parse(ls.get('cx-prijemci') || 'null'); return Array.isArray(a) ? a : prijSpol().length ? [] : PRIJ0; } catch (e) { return PRIJ0; } };
   const prijemci = () => { const sp = prijSpol(), em = new Set(sp.map(x => fold(x.email)).filter(Boolean)); return sp.concat(prijMistni().filter(x => !x.email || !em.has(fold(x.email)))); };
+  // 1.37: Firmy / osoby na projektu – stejný panel jako v Managementu a Deníku (pc/firmy.js); bez připojení zůstane staré okno
+  function firmyOsobyDlg(obl0) {
+    if (!window.CXFirmy || !conn || ro) return false;
+    const s = sheet(`<h3>Firmy / osoby na projektu</h3><div id="cxf-host"></div><button type="button" class="big" data-close>Hotovo</button>`);
+    s.querySelector('[data-close]').onclick = () => { closeSheet(); zFm = null; render(); };
+    const upravit = async fn => {
+      const sid = SID, g = await CXQ.getS(conn, sid), cur = (g && g.data) || D || {};
+      const pr = Object.assign({}, cur.project || {}); fn(pr); pr._ts = Date.now();
+      const r = await CXQ.postS(conn, sid, {project: pr});
+      if (r && r.data && sid === SID) { D = r.data; dataAt = Date.now(); } else if (D) D.project = pr;
+    };
+    CXFirmy.panel(s.querySelector('#cxf-host'), {
+      obl0, nadpis: false, toast,
+      data: () => ({firmy: (D && D.project && D.project.firmy) || [], prijemci: (D && D.project && D.project.prijemci) || []}),
+      uloz: (k, x) => upravit(p => { p[k] = (Array.isArray(p[k]) ? p[k] : []).filter(y => y && y.id !== x.id).concat(x); }),
+      odeber: (k, id) => upravit(p => { const sm = Object.assign({}, p.smazane || {}); sm[k] = Object.assign({}, sm[k] || {}, {[id]: Date.now()}); p.smazane = sm; p[k] = (Array.isArray(p[k]) ? p[k] : []).filter(y => y && y.id !== id); }),
+    });
+    return true;
+  }
   function prijemciDlg(focusId) {
     const a = prijMistni(), sp = prijSpol();
     const s = sheet(`<h3>Další příjemci</h3>
-      <p class="hint">Třeba TDS nebo investor. Zaškrtnutí dostanou zprávu pro firmu v kopii. Společný seznam pro všechny se upravuje na počítači v záložce Firmy.</p>
+      <p class="hint">Třeba TDS nebo investor. Zaškrtnutí dostanou zprávu pro firmu v kopii. Společný seznam pro všechny se upravuje ve Firmy / osoby na projektu.</p>
       ${sp.map(x => `<div class="card"><b>${esc(x.jmeno)}</b><span class="hint">${esc(x.email || 'bez e-mailu')} · z počítače</span></div>`).join('')}
       ${a.length ? '<p class="hint" style="margin:6px 0 0">Čeká na odeslání do společného seznamu:</p>' : ''}
       ${a.map(r => `<div class="card fform" data-pr="${esc(r.id)}"><input class="date" data-pn placeholder="Kdo (např. TDS)" value="${esc(r.jmeno)}">
@@ -1291,7 +1311,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
       ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— bez firmy (jen další příjemci) —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
       <div class="chips"><button type="button" class="chip all" data-act="firmy">${fs.length ? 'Upravit firmy' : '+ Přidat firmu'}</button></div>
       ${f && !f.jenPrijemci ? (f.kontakty.length ? `<p class="hint" style="margin:6px 0 2px">Komu z firmy zprávu poslat:</p><div class="zks">${f.kontakty.map(k => `<button type="button" class="zk" data-zk="${esc(k.id)}" aria-pressed="${Z.komu.includes(k.id)}"><i>${Z.komu.includes(k.id) ? '✓' : ''}</i><span><b>${esc(k.jmeno || k.email || k.tel)}</b>${k.funkce ? ' · ' + esc(k.funkce) : ''}<small>${esc([k.email, k.tel].filter(Boolean).join(' · ') || 'bez e-mailu a telefonu')}</small></span></button>`).join('')}</div>`
-        : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je v programu na počítači v záložce Firmy.</p>`) : ''}
+        : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je ve Firmy / osoby na projektu.</p>`) : ''}
       ${(() => { const pr = prijemci(), vis = Z.prOpen ? pr : pr.filter(r => Z.dalsi.includes(r.id));
         return `${vis.length ? `<p class="hint" style="margin:8px 0 2px">${Z.prOpen ? 'Zaškrtněte, kdo zprávu dostane (TDS, investor…):' : 'Další příjemci:'}</p>
         ${['Investor', 'TDS', 'Architekt', 'Ostatní'].map(g => { const xs = vis.filter(r => pSkup(r) === g); return xs.length ? `<p class="zskup">${g}</p><div class="zks zpr">${xs.map(r => { const on = Z.dalsi.includes(r.id); return `<button type="button" class="zk" data-zp="${esc(r.id)}" aria-pressed="${on}"><i>${on ? '✓' : ''}</i><span><b>${esc(r.jmeno)}</b>${r.firma ? ` · ${esc(r.firma)}` : ''}<small>${r.email ? esc(r.email) : 'klepněte a doplňte e-mail'}</small></span></button>`; }).join('')}</div>` : ''; }).join('')}` : ''}
@@ -1336,7 +1356,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     });
     const zfs = $('#z-firma'); if (zfs) zfs.onchange = () => { Z.firma = zfs.value; ls.set('cx-firma', Z.firma); zFm = null; zfs.blur(); render(); };
     v.querySelectorAll('[data-zp]').forEach(b => b.onclick = () => { const id = b.dataset.zp, r = prijemci().find(x => x.id === id); if (!r) return;
-      if (!r.email) { if (r.spol) { toast('Příjemci chybí e-mail. Doplňte ho na počítači v záložce Firmy.'); return; } return prijemciDlg(id); }
+      if (!r.email) { if (r.spol) { toast('Příjemci chybí e-mail. Doplňte ho ve Firmy / osoby na projektu.'); return; } return prijemciDlg(id); }
       Z.dalsi = Z.dalsi.includes(id) ? Z.dalsi.filter(x => x !== id) : Z.dalsi.concat(id); zFm = null; render(); });
     v.querySelectorAll('[data-jz]').forEach(b => b.onclick = () => { ls.set('cx-jazyk', b.dataset.jz); render(); });
     v.querySelectorAll('[data-zkop]').forEach(b => b.onclick = () => { const n = b.dataset.zkop; Z.kopie = Z.kopie.includes(n) ? Z.kopie.filter(x => x !== n) : Z.kopie.concat(n); render(); });
@@ -1718,7 +1738,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     const f = firma();
     if (via === 'mail') {
       if (!f) { toast('Nejdřív v kroku 5 vyberte firmu nebo zaškrtněte příjemce (např. TDS).'); act('zfirma'); return; }
-      if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho v programu na počítači v záložce Firmy.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return; }
+      if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho ve Firmy / osoby na projektu.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return; }
     }
     const pripraveno = zFm && zFm.key === zFmKey() && zFm.hotovo;
     zSending = true;
@@ -1779,7 +1799,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     if (!jaJmeno()) { toast('Napište nahoře do podpisu své jméno.'); return null; }
     const f = firma();
     if (!f) { toast('Nejdřív v kroku 5 vyberte firmu nebo zaškrtněte příjemce (např. TDS).'); act('zfirma'); return null; }
-    if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho v programu na počítači v záložce Firmy.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return null; }
+    if (!f.email) { if (f.spol) toast('Firma nemá e-mail. Doplňte ho ve Firmy / osoby na projektu.'); else { firmyDlg(f.id); toast('Firma nemá e-mail. Doplňte ho a uložte.'); } return null; }
     const fo = $('#z-formal'); if (fo) Z.formal = fo.value;
     Z.later = true;   // od teď nejde klepnout podruhé
     try {
@@ -2158,7 +2178,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
   function firmyDlg(editId) {
     const a = mistniFirmy(), sp = spolecneFirmy(), ed = a.find(x => x.id === editId) || null;
     const s = sheet(`<h3>Firmy (subdodavatelé)</h3>
-      <p class="hint">Seznam firem se pohodlně spravuje v programu na počítači v záložce <b>Firmy</b>. Telefon si ho převezme sám.${conn ? '' : ' (Ve zkoušce bez připojení se firmy z počítače nenačtou.)'}</p>
+      <p class="hint">Seznam firem se pohodlně spravuje v záložce <b>Firmy / osoby na projektu</b>. Telefon si ho převezme sám.${conn ? '' : ' (Ve zkoušce bez připojení se firmy z počítače nenačtou.)'}</p>
       ${sp.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')} · z počítače</span></div>`).join('')}
       ${a.length ? '<p class="hint" style="margin:6px 0 0">Čeká na odeslání do společného seznamu:</p>' : ''}
       ${a.map(x => `<div class="card"><b>${esc(x.firma)}</b><span class="hint">${esc([x.email, x.tel].filter(Boolean).join(' · ') || 'bez kontaktu')}</span><div class="acts"><button type="button" class="big" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="big" data-fd="${esc(x.id)}" style="color:var(--red)">Smazat</button></div></div>`).join('')}

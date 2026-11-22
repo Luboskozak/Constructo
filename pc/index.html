@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-8ewhg25N5XBbosqDW+IkDoRMNjCTPV1q7QFhLXZWJXI=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lbMSrC5w8ONaSHxX1HRlmGMZb/QyTcx9ZDHWzJ07S2U=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -13,6 +13,7 @@
 <script src="dokumentace.js"></script>
 <script src="rozpocet.js"></script>
 <script src="stavby.js"></script>
+<script src="firmy.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap">
 <style>
 /* Layout: stavební deník jako nástroj — souhrn nahoře, lidé, pak seznam úkolů po odpovědných osobách nebo harmonogram */
@@ -722,6 +723,7 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 #zv-pdf::before{content:"↓"}
 #v-zavady{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2z'/%3E%3Cpath d='M12 10v5M12 18v.5'/%3E%3C/svg%3E")}
 #v-firmy{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E%3C/svg%3E")}
+.side .topnav .seg #v-firmy{white-space:normal;line-height:1.25}
 .zv-det .btn.primary::before{content:"↗"}
 #v-odeslane{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'/%3E%3Cpath d='M14 3v6h6M9 14l2 2 4-4'/%3E%3C/svg%3E")}
 /* 4.29: Vytvořit hromadně */
@@ -1028,7 +1030,7 @@ body.dfull-on{overflow:hidden}
       <button type="button" id="v-diary" aria-pressed="false">Denní záznamy</button>
       <button type="button" id="v-zavady" aria-pressed="false">Zprávy, záznamy</button>
       <button type="button" id="v-odeslane" aria-pressed="false" hidden>Odeslané zprávy</button>
-      <button type="button" id="v-firmy" aria-pressed="false">Firmy</button>
+      <button type="button" id="v-firmy" aria-pressed="false">Firmy / osoby na projektu</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
       <button type="button" id="v-dok" aria-pressed="false">Dokumentace</button>
       <button type="button" id="v-rozp" aria-pressed="false">Rozpočet</button>
@@ -1062,7 +1064,7 @@ body.dfull-on{overflow:hidden}
           <button type="button" data-act="lidezaloha">Načíst lidi a e-maily ze zálohy…</button>
           <hr>
           <span class="mh">Závady pro firmy</span>
-          <button type="button" data-act="firmy">Firmy – osoby a e-maily pro zprávy</button>
+          <button type="button" data-act="firmy">Firmy / osoby na projektu…</button>
           <hr>
           <span class="mh">Sdílení s kolegy</span>
           <button type="button" data-act="invite">Pozvat do Constructa…</button>
@@ -1257,7 +1259,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.79';
+  const APP_VERSION = '4.80';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2025,10 +2027,10 @@ body.dfull-on{overflow:hidden}
   const MAX_VIDEO = 25 * 1024 * 1024;
   // příjemci mimo Lidi: firmy (e-maily z karty firmy) a TDS / investor / BOZP (Firmy → Příjemci)
   const dFirmyRc = () => firmyList().map(f => ({id: f.id, jmeno: f.firma, email: firmaEmaily(f).join(','), typ: 'firma'}));
-  const dPrijRc = () => prijemciList().map(x => ({id: x.id, jmeno: `${x.jmeno || x.firma || x.kdo} (${x.kdo})`, email: x.email || '', typ: 'prij', kdo: x.kdo, jm: x.jmeno || x.firma || x.kdo, fi: x.jmeno && x.firma ? x.firma : ''}));
+  const dPrijRc = () => prijemciList().map(x => ({id: x.id, jmeno: `${x.jmeno || x.firma || x.kdo} (${x.kdo})`, email: x.email || '', typ: 'prij', kdo: x.kdo, obl: x.obl, jm: x.jmeno || x.firma || x.kdo, fi: x.jmeno && x.firma ? x.firma : ''}));
   // 4.71: příjemci rozřazení podle pozice (Firmy → Další příjemci)
-  const dSkup = kdo => /investor/i.test(kdo || '') ? 'inv' : /tds|technick/i.test(kdo || '') ? 'tds' : /archit|projektant|autorsk/i.test(kdo || '') ? 'arch' : 'ost';
-  const DSKUP = [['inv', 'Investor'], ['tds', 'TDS'], ['arch', 'Architekt'], ['ost', 'Ostatní']];
+  const dSkup = x => CXFirmy.oblast(typeof x === 'object' ? x : {kdo: x});
+  const DSKUP = CXFirmy.OBJ;
   const dEmail = n => String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
   function dPrijemci(d) {
     const kol = (d.komu || []).slice(), ext = [...dFirmyRc().filter(x => (d.firmy || []).includes(x.id)), ...dPrijRc().filter(x => (d.prij || []).includes(x.id))];
@@ -2083,8 +2085,8 @@ body.dfull-on{overflow:hidden}
               <h4>Komu poslat</h4>
               <div class="dsec">Kolegové</div>
               <div class="drc" id="j-komu"><button type="button" class="chip all" data-komu="*" aria-pressed="${kolegove.length > 0 && kolegove.every(n => d.komu.includes(n))}">Všem kolegům</button>${kolegove.map(n => `<button type="button" class="chip${dEmail(n) ? '' : ' off'}" data-komu="${esc(n)}" aria-pressed="${d.komu.includes(n)}" title="${dEmail(n) ? esc(dEmail(n)) : 'Chybí e-mail – doplňte ho v kartě osoby'}">${esc(n)}</button>`).join('')}</div>
-              <div class="rbox"><div class="rh">🏢 Firmy<em data-rn="f" ${d.firmy.length ? '' : 'hidden'}>${d.firmy.length}</em></div><div class="rl">${firmy.length ? firmy.map(f => `<label class="${f.email ? '' : 'off'}${d.firmy.includes(f.id) ? ' on' : ''}" title="${f.email ? esc(f.email) : 'Firma nemá e-mail – doplňte ho v záložce Firmy'}"><input type="checkbox" data-rf="${esc(f.id)}"${d.firmy.includes(f.id) ? ' checked' : ''}><span>${esc(f.jmeno)}</span>${f.email ? '' : '<small>bez e-mailu</small>'}</label>`).join('') : '<div class="re">Zatím žádná firma. Přidáte ji v záložce Firmy.</div>'}</div></div>
-              <div class="rgrid">${DSKUP.map(([k, l]) => { const xs = prij.filter(x => dSkup(x.kdo) === k), n = xs.filter(x => d.prij.includes(x.id)).length; return `<div class="rbox sm"><div class="rh">${l}<em data-rn="${k}" ${n ? '' : 'hidden'}>${n}</em></div><div class="rl">${xs.length ? xs.map(x => `<label class="${x.email ? '' : 'off'}${d.prij.includes(x.id) ? ' on' : ''}" title="${esc(x.email || 'Chybí e-mail – doplňte ho ve Firmy → Další příjemci')}"><input type="checkbox" data-rp="${esc(x.id)}"${d.prij.includes(x.id) ? ' checked' : ''}><span>${esc(x.jm)}${k === 'ost' ? ` <small style="margin:0">(${esc(x.kdo)})</small>` : ''}</span>${x.fi ? `<small>${esc(x.fi)}</small>` : ''}</label>`).join('') : `<div class="re">Nikdo. <button type="button" class="linkish" data-rpadd="${esc(l)}">Přidat</button></div>`}</div></div>`; }).join('')}</div>
+              <div class="rbox"><div class="rh">🏢 1. Dodavatel<em data-rn="f" ${d.firmy.length ? '' : 'hidden'}>${d.firmy.length}</em></div><div class="rl">${firmy.length ? firmy.map(f => `<label class="${f.email ? '' : 'off'}${d.firmy.includes(f.id) ? ' on' : ''}" title="${f.email ? esc(f.email) : 'Firma nemá e-mail – doplňte ho v záložce Firmy'}"><input type="checkbox" data-rf="${esc(f.id)}"${d.firmy.includes(f.id) ? ' checked' : ''}><span>${esc(f.jmeno)}</span>${f.email ? '' : '<small>bez e-mailu</small>'}</label>`).join('') : '<div class="re">Zatím žádná firma. Přidáte ji v záložce Firmy.</div>'}</div></div>
+              <div class="rgrid">${DSKUP.map(([k, l]) => { const xs = prij.filter(x => dSkup(x) === k), n = xs.filter(x => d.prij.includes(x.id)).length; return `<div class="rbox sm"><div class="rh">${l}<em data-rn="${k}" ${n ? '' : 'hidden'}>${n}</em></div><div class="rl">${xs.length ? xs.map(x => `<label class="${x.email ? '' : 'off'}${d.prij.includes(x.id) ? ' on' : ''}" title="${esc(x.email || 'Chybí e-mail – doplňte ho ve Firmy → Další příjemci')}"><input type="checkbox" data-rp="${esc(x.id)}"${d.prij.includes(x.id) ? ' checked' : ''}><span>${esc(x.jm)}${k === 'ost' ? ` <small style="margin:0">(${esc(x.kdo)})</small>` : ''}</span>${x.fi ? `<small>${esc(x.fi)}</small>` : ''}</label>`).join('') : `<div class="re">Nikdo. <button type="button" class="linkish" data-rpadd="${esc(l)}">Přidat</button></div>`}</div></div>`; }).join('')}</div>
               <div class="dsum" id="j-sum">${dSouhrn(d)}</div>
             </div>
             ${ed ? (ed.ukolId ? '<p class="share" style="margin:0">Úkol z tohoto záznamu upravíte kliknutím na něj v záznamu.</p>' : '') : `
@@ -2223,7 +2225,7 @@ body.dfull-on{overflow:hidden}
       v.querySelectorAll('.dside [data-rf]').forEach(x => { x.checked = d.firmy.includes(x.dataset.rf); x.closest('label').classList.toggle('on', x.checked); });
       v.querySelectorAll('.dside [data-rp]').forEach(x => { x.checked = d.prij.includes(x.dataset.rp); x.closest('label').classList.toggle('on', x.checked); });
       const pr = dPrijRc(), cnt = (k, n) => { const em = v.querySelector(`[data-rn="${k}"]`); if (em) { em.textContent = n; em.hidden = !n; } };
-      cnt('f', d.firmy.length); DSKUP.forEach(([k]) => cnt(k, pr.filter(x => dSkup(x.kdo) === k && d.prij.includes(x.id)).length)); };
+      cnt('f', d.firmy.length); DSKUP.forEach(([k]) => cnt(k, pr.filter(x => dSkup(x) === k && d.prij.includes(x.id)).length)); };
     const tog = (arr, x) => arr.includes(x) ? arr.filter(y => y !== x) : [...arr, x];
     v.querySelectorAll('[data-komu]').forEach(b => b.onclick = () => { const n = b.dataset.komu; d.komu = n === '*' ? (kolegove.every(x => d.komu.includes(x)) ? [] : kolegove.slice()) : tog(d.komu, n); prepocti(); });
     v.querySelectorAll('.dside [data-rf]').forEach(b => b.onchange = () => { d.firmy = tog(d.firmy, b.dataset.rf); prepocti(); });
@@ -2741,7 +2743,7 @@ body.dfull-on{overflow:hidden}
     ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp'].includes(S.view);
     $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', firmy:'Firmy', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', firmy:'Firmy / osoby na projektu', kal:'Kalendář úkolů', dok:'Dokumentace'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = (S.view === 'zavady' && ZF.co === 'zapisy') || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').textContent = 'Denní záznamy'; $('#v-zavady').innerHTML = 'Zprávy, záznamy' + (n ? `<span class="cnt" title="Nové denní záznamy od minula">${n}</span>` : ''); }
@@ -3608,61 +3610,38 @@ body.dfull-on{overflow:hidden}
   const kontaktyOf = f => Array.isArray(f.kontakty) && f.kontakty.length ? f.kontakty
     : (f.email || f.tel || f.kontakt) ? [{id: 'k0', jmeno: f.kontakt || '', funkce: '', email: f.email || '', tel: f.tel || '', posilat: true}] : [];
   const EMAIL_RE = /^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/;
+  // 4.80: „Firmy / osoby na projektu“ – společný kód pc/firmy.js (stejný v Managementu, Deníku i mobilu)
   function renderFirmy() {
-    const v = $('#view'), a = firmyList(), ro = RO(), cnt = new Map();
+    const cnt = new Map();
     ZAV().forEach(z => { const k = zFirmaKey(z.firma); cnt.set(k, (cnt.get(k) || 0) + 1); });
-    let html = `<div class="sl"><div class="sl-top"><b>Firmy</b><span>${a.length ? `${a.length} ${a.length === 1 ? 'firma' : a.length < 5 ? 'firmy' : 'firem'}` : 'zatím žádná'} · telefony si seznam převezmou samy</span><span class="sp"></span>${ro ? '' : '<button type="button" class="btn primary no-print" id="fm-add">Přidat firmu do projektu</button>'}</div>`;
-    if (!a.length) html += `<div class="empty"><strong>Zatím žádná firma.</strong>Sem patří subdodavatelé, kterým se z mobilu posílají zprávy: název, IČO (zbytek se doplní z ARES) a osoby s e-mailem a telefonem. Firmy se nepřidávají do Lidí ani do týmu.</div>`;
-    else html += `<div class="fm-hd"><span>Firma</span><span>Osoby, kterým chodí zprávy</span><span>Zprávy</span><span></span></div>` + a.map(x => {
-      const n = cnt.get(zFirmaKey(x.firma)) || 0, ks = kontaktyOf(x), maMail = ks.some(k => k.email && k.posilat !== false);
-      return `<div class="fm-row" data-fm="${esc(x.id)}">
-        <div><b>${esc(x.firma)}</b>${x.ico || x.dic ? `<small>${esc([x.ico ? 'IČO ' + x.ico : '', x.dic ? 'DIČ ' + x.dic : ''].filter(Boolean).join(' · '))}</small>` : ''}${x.adresa ? `<small>${esc(x.adresa)}</small>` : ''}${x.zkratky ? `<small>Zkratky: ${esc(x.zkratky)}</small>` : ''}${x.pozn ? `<small class="fm-pz">${esc(x.pozn)}</small>` : ''}</div>
-        <div class="fm-ks">${ks.length ? ks.map(k => `<div class="${k.posilat === false ? 'fm-off' : ''}"><b>${esc(k.jmeno || 'e-mail firmy')}</b>${k.funkce ? ` <span>· ${esc(k.funkce)}</span>` : ''}<small>${[k.email ? `<a href="mailto:${esc(k.email)}">${esc(k.email)}</a>` : '', k.tel ? esc(k.tel) : ''].filter(Boolean).join(' · ') || 'bez kontaktu'}${k.posilat === false ? ' · zprávy nedostává' : ''}</small></div>`).join('') : ''}${maMail ? '' : '<span class="fm-chybi">chybí e-mail pro zprávy</span>'}</div>
-        <div>${n ? `<button type="button" class="linkish" data-fz="${esc(x.firma)}">${n} ${n === 1 ? 'zpráva' : n < 5 ? 'zprávy' : 'zpráv'} →</button>` : '<span class="hcap" style="margin:0">0</span>'}</div>
-        <div class="fm-a no-print">${ro ? '' : `<button type="button" class="btn" data-fe="${esc(x.id)}">Upravit</button><button type="button" class="btn" data-fd="${esc(x.id)}">Smazat</button>`}</div></div>`;
-    }).join('');
-    // 4.30: příjemci kopií (TDS, investor…) – jen dostávají PDF zpráv z mobilu, v programu nepracují (nejsou v Lidech ani v týmu)
-    const pr = prijemciList();
-    // 4.43: příjemci nahoře, ať se nemusí rolovat na konec seznamu firem
-    let ph = `<div class="sl" style="margin-bottom:18px"><div class="sl-top"><b>Další příjemci zpráv</b><span>TDS, investor… dostávají PDF zpráv pro firmy v kopii · v programu nepracují · telefony si seznam převezmou samy</span><span class="sp"></span>${ro ? '' : '<button type="button" class="btn primary no-print" id="pr-add">Přidat příjemce</button>'}</div>`;
-    ph += pr.length ? pr.map(x => `<div class="fm-row" data-pr="${esc(x.id)}"><div><b>${esc(x.kdo || x.jmeno || 'Příjemce')}</b>${x.jmeno || x.firma ? `<small>${esc([x.jmeno, x.firma].filter(Boolean).join(' · '))}</small>` : ''}</div>
-        <div class="fm-ks"><div>${x.email ? `<a href="mailto:${esc(x.email)}">${esc(x.email)}</a>` : '<small>bez e-mailu – doplňte</small>'}</div></div><div></div>
-        <div class="fm-a no-print">${ro ? '' : `<button type="button" class="btn" data-pe="${esc(x.id)}">Upravit</button><button type="button" class="btn" data-pd="${esc(x.id)}">Smazat</button>`}</div></div>`).join('')
-      : '<div class="empty"><strong>Zatím nikdo.</strong>Přidejte třeba TDS nebo investora s e-mailem. V mobilu je pak u zprávy pro firmu stačí zaškrtnout a dostanou PDF v kopii.</div>';
-    v.innerHTML = ph + '</div>' + html + '</div>';
-    const pa = $('#pr-add'); if (pa) pa.onclick = () => prijemceEdit();
-    v.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => prijemceEdit(b.dataset.pe));
-    v.querySelectorAll('[data-pd]').forEach(b => b.onclick = () => {
-      if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
-      smazano('prijemci', b.dataset.pd); D.project.prijemci = prijemciList().filter(y => y.id !== b.dataset.pd); commit(); toast('Příjemce smazán');
-    });
-    const add = $('#fm-add'); if (add) add.onclick = () => firmaEdit();
-    v.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => firmaEdit(b.dataset.fe));
-    v.querySelectorAll('[data-fz]').forEach(b => b.onclick = () => zavadyGo({firma: b.dataset.fz, osoba: ''}));
-    v.querySelectorAll('[data-fd]').forEach(b => b.onclick = () => {
-      if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
-      const x = firmyList().find(y => y.id === b.dataset.fd);
-      smazano('firmy', b.dataset.fd); D.project.firmy = firmyList().filter(y => y.id !== b.dataset.fd); commit(); toast('Smazáno: ' + (x ? x.firma : 'firma'));
+    if (!window.CXFirmy) { $('#view').innerHTML = '<div class="empty"><strong>Firmy se nenačetly.</strong>Obnovte stránku.</div>'; return; }
+    CXFirmy.panel($('#view'), {
+      data: () => ({firmy: firmyList(), prijemci: prijemciList()}),
+      ro: RO, toast, ares: aresNajdi, nadpis: false,
+      pocetZprav: f => cnt.get(zFirmaKey(f)) || 0,
+      zpravy: f => zavadyGo({firma: f, osoba: ''}),
+      uloz: (k, x, ed) => {
+        if (k === 'firmy') {
+          // přejmenování firmy: starší zprávy zůstanou pod novým názvem
+          if (ed && foldName(ed.firma) !== foldName(x.firma)) ZAV().forEach(z => { if (zFirmaKey(z.firma) === foldName(ed.firma)) z.firma = x.firma; });
+          D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x);
+        } else D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x);
+        commit();
+      },
+      odeber: (k, id) => {
+        smazano(k, id);
+        if (k === 'firmy') D.project.firmy = firmyList().filter(y => y.id !== id); else D.project.prijemci = prijemciList().filter(y => y.id !== id);
+        commit();
+      },
     });
   }
   const prijemciList = () => (Array.isArray(D.project.prijemci) ? D.project.prijemci : []).filter(x => x && x.id);
+  // 4.80: přidání / úprava osoby objednatele – stejné okno jako v záložce Firmy / osoby na projektu (pc/firmy.js)
   function prijemceEdit(id, role0, po) {
-    const ed = prijemciList().find(x => x.id === id) || null, r0 = !ed && role0 && role0 !== 'Ostatní' ? role0 : '';
-    confirmModal(ed ? 'Upravit příjemce' : 'Přidat příjemce', `
-      <p class="hcap" style="margin-top:0">Příjemce dostává jen PDF zpráv pro firmy v kopii. Do programu se nepřihlašuje a nepřidává se do Lidí.</p>
-      <div class="fld"><label for="pr-sel">Pozice</label><select id="pr-sel">${PR_ROLE.map(r => `<option${(ed && ed.kdo === r) || r0 === r ? ' selected' : ''}>${r}</option>`).join('')}<option value=""${(ed && ed.kdo && !PR_ROLE.includes(ed.kdo)) || role0 === 'Ostatní' ? ' selected' : ''}>Vlastní…</option></select>
-        <input id="pr-kdo" style="margin-top:6px" value="${esc(ed && !PR_ROLE.includes(ed.kdo) ? ed.kdo || '' : '')}" placeholder="Napište vlastní pozici, např. Projektant"${(ed && ed.kdo && !PR_ROLE.includes(ed.kdo)) || role0 === 'Ostatní' ? '' : ' hidden'}></div>
-      <div class="fld"><label for="pr-jm">Jméno a příjmení</label><input id="pr-jm" value="${esc(ed ? ed.jmeno || '' : '')}" placeholder="např. Ing. Jan Novák"></div>
-      <div class="fld"><label for="pr-fi">Za jakou firmu</label><input id="pr-fi" value="${esc(ed ? ed.firma || '' : '')}" placeholder="např. Stavební dozor Praha s.r.o."></div>
-      <div class="fld"><label for="pr-em">E-mail</label><input id="pr-em" type="email" value="${esc(ed ? ed.email || '' : '')}" placeholder="např. tds@firma.cz"></div>`, 'Uložit', () => {
-      const kdo = $('#pr-sel').value || $('#pr-kdo').value.trim(), jmeno = $('#pr-jm').value.trim(), firma = $('#pr-fi').value.trim(), email = $('#pr-em').value.trim();
-      if (!kdo) { toast('Vyberte pozici, nebo napište vlastní.'); return 'keep'; }
-      if (!EMAIL_RE.test(email)) { toast('Doplňte platný e-mail.'); return 'keep'; }
-      const x = {id: ed ? ed.id : 'p' + Date.now().toString(36), kdo, jmeno, firma, email};
-      x._ts = Date.now(); D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x);
-      commit(); toast('Příjemce uložen');
-    });
-    const sel = $('#pr-sel'), vl = $('#pr-kdo'); sel.onchange = () => { vl.hidden = !!sel.value; if (!sel.value) vl.focus(); };
+    const obl = {Investor: 'inv', TDS: 'tds', BOZP: 'bozp', Architekt: 'arch', 'Ostatní': 'ost'}[role0] || (role0 ? CXFirmy.oblast({kdo: role0}) : 'inv');
+    const o = CXFirmy.okna({data: () => ({firmy: firmyList(), prijemci: prijemciList()}), toast, po,
+      uloz: (k, x, ed) => { D.project.prijemci = ed ? prijemciList().map(y => y.id === ed.id ? x : y) : prijemciList().concat(x); commit(); }});
+    o.upravOsobu(id || null, obl);
   }
   const PR_ROLE = ['TDS', 'Investor', 'Architekt', 'Koordinátor BOZP'];
   // údaje z ARES podle IČO: nejdřív přímo z prohlížeče, když to nejde, přes skript na Googlu
@@ -3695,61 +3674,8 @@ body.dfull-on{overflow:hidden}
     if (!r || r.error) throw new Error(r && r.error && r.error !== 'heslo' ? r.error : 'ARES se teď nepodařilo načíst (možná je potřeba aktualizovat skript na verzi 9).');
     return r;
   }
-  function firmaEdit(id) {
-    const ed = firmyList().find(x => x.id === id) || null;
-    let ks = (ed ? kontaktyOf(ed) : []).map(k => Object.assign({}, k));
-    if (!ks.length) ks = [{id: 'k' + Date.now().toString(36), jmeno: '', funkce: '', email: '', tel: '', posilat: true}];
-    const f = (k, l, ph, t) => `<div class="fld"><label for="fm-${k}">${l}</label><input id="fm-${k}"${t ? ` type="${t}"` : ''} value="${esc(ed ? ed[k] || '' : '')}" placeholder="${esc(ph)}"></div>`;
-    const ksHtml = () => ks.map((k, i) => `<div class="fm-k" data-ki="${i}">
-        <input data-kf="jmeno" value="${esc(k.jmeno || '')}" placeholder="Jméno a příjmení" aria-label="Jméno">
-        <input data-kf="funkce" value="${esc(k.funkce || '')}" placeholder="Funkce (např. stavbyvedoucí)" aria-label="Funkce">
-        <input data-kf="email" type="email" value="${esc(k.email || '')}" placeholder="E-mail" aria-label="E-mail">
-        <input data-kf="tel" type="tel" value="${esc(k.tel || '')}" placeholder="Telefon" aria-label="Telefon">
-        <label class="fm-pos"><input type="checkbox" data-kf="posilat"${k.posilat !== false ? ' checked' : ''}> posílat zprávy</label>
-        <button type="button" class="btn" data-krm="${i}" title="Odebrat osobu" aria-label="Odebrat osobu">✕</button></div>`).join('');
-    const sber = () => document.querySelectorAll('.fm-k').forEach(r => { const k = ks[+r.dataset.ki]; r.querySelectorAll('[data-kf]').forEach(i => { k[i.dataset.kf] = i.type === 'checkbox' ? i.checked : i.value.trim(); }); });
-    const kresli = () => { sber(); $('#fm-ks').innerHTML = ksHtml(); bindKs(); };
-    const bindKs = () => document.querySelectorAll('[data-krm]').forEach(b => b.onclick = () => { sber(); ks.splice(+b.dataset.krm, 1); $('#fm-ks').innerHTML = ksHtml(); bindKs(); });
-    confirmModal(ed ? 'Upravit firmu' : 'Přidat firmu do projektu', `<div class="fm-ed">
-      <div class="fm-ico">${f('ico', 'IČO', '12345678')}<button type="button" class="btn" id="fm-ares">Doplnit z ARES</button></div>
-      <p class="hcap" id="fm-ares-st" style="margin:-4px 0 0">Napište IČO a klikněte Doplnit z ARES: název, adresa a DIČ se vyplní samy.</p>
-      ${f('firma', 'Název firmy', 'např. ALPOD s.r.o.')}
-      <div class="fm-2">${f('dic', 'DIČ', 'CZ12345678')}${f('adresa', 'Sídlo', 'Ulice 1, 110 00 Praha 1')}</div>
-      ${f('zkratky', 'Zkratky pro hledání', 'např. MTS, MS (oddělte čárkou)')}
-      <div class="fld"><label>Osoby ve firmě <span class="hcap" style="margin:0">(zaškrtnutým se zpráva nabídne v mobilu jako první)</span></label><div id="fm-ks">${ksHtml()}</div>
-        <button type="button" class="btn" id="fm-kadd" style="align-self:flex-start">+ Další osoba</button></div>
-      <div class="fld"><label for="fm-pozn">Poznámka</label><textarea id="fm-pozn" placeholder="např. dělá SDK v objektu C">${esc(ed ? ed.pozn || '' : '')}</textarea></div></div>`, ed ? 'Uložit změny' : 'Přidat firmu', () => {
-      sber();
-      const g = k => $('#fm-' + k).value.trim(), n = g('firma');
-      if (!n) { toast('Napište název firmy (nebo IČO a Doplnit z ARES).'); $('#fm-firma').focus(); return 'keep'; }
-      const kk = ks.filter(k => k.jmeno || k.email || k.tel);
-      const spatny = kk.find(k => k.email && !EMAIL_RE.test(k.email));
-      if (spatny) { toast('E-mail ' + spatny.email + ' nevypadá správně.'); return 'keep'; }
-      if (firmyList().some(x => x.id !== (ed && ed.id) && foldName(x.firma) === foldName(n))) { toast('Firma ' + n + ' už v seznamu je.'); return 'keep'; }
-      kk.forEach((k, i) => { if (!k.id) k.id = 'k' + Date.now().toString(36) + i; });
-      // první osoba, které chodí zprávy, se ukládá i postaru (e-mail, telefon, kontakt) pro starší verze mobilu
-      const hl = kk.find(k => k.posilat !== false && k.email) || kk.find(k => k.posilat !== false) || kk[0] || {};
-      const x = Object.assign({}, ed || {}, {id: ed ? ed.id : 'f' + Date.now().toString(36), firma: n, ico: g('ico').replace(/\s/g, ''), dic: g('dic'), adresa: g('adresa'), pozn: g('pozn'), zkratky: g('zkratky'),
-        kontakty: kk, email: hl.email || '', tel: hl.tel || '', kontakt: [hl.jmeno, hl.funkce].filter(Boolean).join(', ')});
-      // přejmenování firmy: starší zprávy zůstanou pod novým názvem
-      if (ed && foldName(ed.firma) !== foldName(n)) ZAV().forEach(z => { if (zFirmaKey(z.firma) === foldName(ed.firma)) z.firma = n; });
-      x._ts = Date.now(); D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x);
-      commit(); toast(ed ? 'Uloženo' : 'Firma přidána: ' + n);
-    });
-    document.querySelector('#overlay .modal').classList.add('wide');
-    bindKs();
-    $('#fm-kadd').onclick = () => { sber(); ks.push({id: 'k' + Date.now().toString(36), jmeno: '', funkce: '', email: '', tel: '', posilat: true}); kresli(); const r = document.querySelectorAll('.fm-k'); r[r.length - 1].querySelector('input').focus(); };
-    $('#fm-ares').onclick = async () => {
-      const b = $('#fm-ares'), st = $('#fm-ares-st'); b.disabled = true; st.textContent = 'Hledám v ARES…'; st.style.color = '';
-      try {
-        const o = await aresNajdi($('#fm-ico').value);
-        if (o.firma) $('#fm-firma').value = o.firma; if (o.dic) $('#fm-dic').value = o.dic; if (o.adresa) $('#fm-adresa').value = o.adresa; $('#fm-ico').value = o.ico;
-        st.textContent = '✓ Doplněno z ARES: ' + String(o.firma || o.ico).replace(/\.$/, '') + '. Teď doplňte osoby s e-mailem a telefonem.';
-      } catch (e) { st.textContent = e.message; st.style.color = 'var(--bad)'; }
-      b.disabled = false;
-    };
-    setTimeout(() => { const i = $('#fm-ico'); if (i && !ed) i.focus(); }, 30);
-  }
+  function firmaEdit(id) { setView('firmy'); setTimeout(() => { const o = CXFirmy.okna({data: () => ({firmy: firmyList(), prijemci: prijemciList()}), toast, ares: aresNajdi, po: () => { if (S.view === 'firmy') renderFirmy(); },
+    uloz: (k, x, ed) => { D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x); commit(); }}); o.upravFirmu(id || null); }, 0); }
 
   /* ---------- záložka Zprávy pro firmy: všechny zprávy (závady, reklamace, úklid…) poslané firmám z mobilu (D.zavady) ---------- */
   const ZF = {co: ['zapisy', 'odeslane'].includes(store.get('hyb-zco')) ? store.get('hyb-zco') : 'zpravy', firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
@@ -3831,7 +3757,7 @@ body.dfull-on{overflow:hidden}
         <label>Objekt (nepovinné)</label><div class="nz-obj">${'ABCDEFG'.split('').map(o => `<button type="button" class="btn" data-no="${o}" aria-pressed="${NZ.obj.has(o)}">${o}</button>`).join('')}</div>`
       : `
         <label for="nz-firma">Firma</label><select id="nz-firma"><option value="">— vyberte firmu —</option>${firmy.map(f => `<option value="${esc(f.id)}"${NZ.firma === f.id ? ' selected' : ''}>${esc(f.firma)}${firmaEmaily(f).length ? '' : ' (bez e-mailu)'}</option>`).join('')}</select>
-        <div class="hcap" id="nz-firma-em">${(f => f ? (firmaEmaily(f).join(', ') || 'Firma nemá e-mail – doplňte ho v záložce Firmy.') : '')(firmy.find(f => f.id === NZ.firma))}</div>
+        <div class="hcap" id="nz-firma-em">${(f => f ? (firmaEmaily(f).join(', ') || 'Firma nemá e-mail – doplňte ho ve Firmy / osoby na projektu.') : '')(firmy.find(f => f.id === NZ.firma))}</div>
         <label for="nz-typ">Druh</label><select id="nz-typ">${NZ_TYPY.map(([k, l]) => `<option value="${k}"${NZ.typ === k ? ' selected' : ''}>${l}</option>`).join('')}</select>
         <label for="nz-misto">Místo (podlaží, místnost)</label><input id="nz-misto" value="${esc(NZ.misto)}" placeholder="např. 1. NP, místnost A1.23">
         <label for="nz-end">Odstranit nejpozději do</label><input type="date" id="nz-end" value="${esc(NZ.end)}">
@@ -3897,7 +3823,7 @@ body.dfull-on{overflow:hidden}
     }
     const f = firmyList().find(x => x.id === NZ.firma);
     if (!f) { toast('Vyberte firmu.'); return null; }
-    const em = firmaEmaily(f); if (!em.length) { toast('Firma nemá e-mail. Doplňte ho v záložce Firmy.'); return null; }
+    const em = firmaEmaily(f); if (!em.length) { toast('Firma nemá e-mail. Doplňte ho ve Firmy / osoby na projektu.'); return null; }
     const typ = NZ_TYPY.find(x => x[0] === NZ.typ) || NZ_TYPY[0], id = 'z' + Date.now().toString(36), tok = nzTok(), d = new Date();
     const cislo = 'Z-' + today.replace(/-/g, '') + '-' + id.slice(-4).toUpperCase(), predmet = `${typ[2]}${NZ.misto.trim() ? ' – ' + NZ.misto.trim() : ''}`;
     const o = {stavba, firma: true, typL: typ[1], cislo, datum: d.toLocaleDateString('cs-CZ'), predmet, text: text || typ[2], web: WEB_HOME + '/pc/', odkaz: `${WEB_HOME}/odpoved/#${id}.${tok}`,
@@ -7388,7 +7314,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       <div class="pm-co"><b>${esc(titul)}</b><span class="hcap" style="margin:0">${pocet} ${zN(pocet, 'položka', 'položky', 'položek')} · PDF půjde jako příloha</span></div>
       <label>Komu</label>
       <div class="pm-list">${S2.vid.length ? S2.vid.map(k => { const x = byK.get(k); return `<label class="pm-r"><input type="checkbox" data-pk="${esc(k)}"${S2.on.has(k) ? ' checked' : ''}><span><b>${esc(x.jmeno)}</b>${x.pozn ? ` <small>· ${esc(x.pozn)}</small>` : ''}<small class="pm-em">${esc(x.email)}</small></span></label>`; }).join('')
-        : '<div class="hcap" style="margin:0">Zatím nikdo. TDS a investora přidáte v záložce Firmy → Další příjemci zpráv, nebo vyberte níže.</div>'}</div>
+        : '<div class="hcap" style="margin:0">Zatím nikdo. TDS a investora přidáte ve Firmy / osoby na projektu → 2. Objednatel, nebo vyberte níže.</div>'}</div>
       <label for="pm-add">Přidat další osobu</label>
       <select id="pm-add"><option value="">— vyberte ze seznamu —</option>${['dozor', 'lide', 'firmy'].map(g => { const a = zbyva.filter(x => x.grp === g); return a.length ? `<optgroup label="${GRP[g]}">${a.map(x => `<option value="${esc(x.k)}">${esc(x.jmeno)} (${esc(x.email)})</option>`).join('')}</optgroup>` : ''; }).join('')}</select>
       <div class="pm-jiny"><input id="pm-em" type="email" placeholder="nebo napište jiný e-mail"><button type="button" class="btn" id="pm-em-ok">Přidat</button></div>

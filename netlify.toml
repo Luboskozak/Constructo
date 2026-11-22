@@ -1,3 +1,14 @@
 [build]
   publish = "."
   command = ""
+
+# Deník: soubory se jménem podle obsahu (main.abc123.js) se nikdy nemění – prohlížeč si je nechá a při přepnutí z Managementu je už nestahuje
+[[headers]]
+  for = "/denik/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/denik/resources/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
