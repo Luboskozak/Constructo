@@ -83,7 +83,7 @@
       if (r && r.error === 'heslo') S.chyba = 'Nesprávné heslo ke Googlu.';
       else if (!r || !r.ok) {
         S.chyba = r && r.error ? (/Unknown|neznám/i.test(r.error) ? '' : 'Google: ' + r.error) : 'Google nevrátil docházku.';
-        if (r && !r.error && !r.ok || (r && r.rev === undefined)) { S.chyba = 'Docházka potřebuje novější skript Google (verze 16). Constructo ho aktualizuje samo – zkuste to prosím za chvíli.'; if (H.aktualizujSkript) H.aktualizujSkript(); }
+        if (r && !r.error && !r.ok || (r && r.rev === undefined)) { S.chyba = 'Docházka potřebuje novější skript Google (verze 16). Constructo ho aktualizuje samo – zkuste to prosím za chvíli.'; if (H.aktualizujSkript) H.aktualizujSkript().then(x => { if (x && x.ok) { S.chyba = ''; setTimeout(() => nacti(), 1500); } else if (x && x.duvod) { S.chyba = 'Skript Google se nepodařilo aktualizovat: ' + String(x.duvod).slice(0, 200) + ' (postup je v červeném pruhu nahoře).'; obnov(); } }).catch(() => {}); }
       } else {
         S.chyba = '';
         if (!r.same) { Object.keys(r.data || {}).forEach(m => { S.data[m] = r.data[m]; }); S.mr = r.mesice || {}; S.rev = r.rev; if (r.qr) S.qr = r.qr; S.report = r.report || ''; idbSet('d:' + S.sid, {data: S.data, mr: S.mr, rev: S.rev, qr: S.qr}); }

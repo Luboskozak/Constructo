@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-5eM+7YK7+a1ckogCH3mdjCNSUclj/YfIRXXGgfw5zkU='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-0ag+maR3+Cm/5iuWWg/vwMze1p7QwWPE5L/q0Z9FEoY='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1262,7 +1262,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.81';
+  const APP_VERSION = '4.82';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -4790,10 +4790,10 @@ thead{display:table-header-group}tr{break-inside:avoid}
 
   const newKey = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), x => 'abcdefghjkmnpqrstuvwxyz23456789'[x % 31]).join('');
   function serverScript(key) {
-    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 16
+    return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 17
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 16;
+const SKRIPT_VERZE = 17;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -4815,7 +4815,8 @@ function doPost_(e) {
   }
   rpZapnout_();
   dochZapnout_();
-  if (b.akce === 'verze') return json_({verze: SKRIPT_VERZE, samo: true});
+  samoZapnout_();
+  if (b.akce === 'verze') return json_(samoStav_());
   if (b.akce === 'samo_aktualizace') return samoAktualizace_(b);
   if (b.akce === 'prehled') return prehled_(b, false);
   if (b.akce === 'prehled_ok') return prehled_(b, true);
@@ -5709,8 +5710,49 @@ function prehledTest_(b) {
 // Samoaktualizace (verze 12): skript si sám stáhne novou verzi z webu Constructa, nahraje ji a nasadí.
 // Potřebuje zapnuté Google Apps Script API (script.google.com/home/usersettings) a oprávnění z appsscript.json.
 // Kód se bere jen z oficiální adresy webu, ne od toho, kdo akci zavolá.
+// 17: skript se kontroluje sám každou hodinu (i bez otevřeného Constructa); poslední chybu ukazuje akce verze
+// (bez hesla, jen text chyby od Googlu) a správcům ji jednou denně pošle e-mailem.
 function samoAktualizace_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
+  return json_(samoZapis_(samoProved_()));
+}
+function samoStav_() {
+  const o = {verze: SKRIPT_VERZE, samo: true, hodinove: PropertiesService.getScriptProperties().getProperty('samo-zapnuto') === '17'};
+  try { const c = JSON.parse(PropertiesService.getScriptProperties().getProperty('samo-chyba') || 'null'); if (c && c.duvod) { o.chyba = c.duvod; o.chyba_t = c.t; } } catch (x) {}
+  return o;
+}
+function samoZapis_(r) {
+  const p = PropertiesService.getScriptProperties();
+  if (r && r.ok) p.deleteProperty('samo-chyba');
+  else if (r && r.duvod !== 'zaneprazdneno') { const c = JSON.parse(p.getProperty('samo-chyba') || '{}'); p.setProperty('samo-chyba', JSON.stringify({duvod: String(r.duvod || 'neznámá chyba').slice(0, 400), t: Date.now(), mail: c.mail || 0})); }
+  return r;
+}
+function samoHodinove() {
+  const r = samoZapis_(samoProved_());
+  if (r && r.ok) return;
+  const p = PropertiesService.getScriptProperties(), c = JSON.parse(p.getProperty('samo-chyba') || '{}');
+  if (!c.duvod || Date.now() - (c.mail || 0) < 86400000) return;
+  try {
+    const d = nacti_(p) || {}, P = d.project || {}, pp = P.people || {}, adm = Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
+    const komu = adm.map(function (n) { return String((pp[n] || {}).email || '').split(',')[0].trim(); }).filter(function (a) { return a.indexOf('@') > 0; });
+    if (!komu.length) return;
+    MailApp.sendEmail({to: komu.join(','), name: 'Constructo', subject: 'Constructo: skript na Googlu se nedaří aktualizovat',
+      htmlBody: '<p>Skript Constructa na Googlu je ve verzi ' + SKRIPT_VERZE + ' a novější verzi se nepodařilo nahrát.</p><p>Důvod od Googlu: <i>' + String(c.duvod).replace(/[<>&]/g, '') + '</i></p>' +
+        (/not enabled|has not been used|disabled/i.test(c.duvod) ? '<p><b>Oprava (jedno kliknutí):</b> otevřete <a href="https://script.google.com/home/usersettings">script.google.com/home/usersettings</a> a zapněte přepínač <b>Google Apps Script API</b>. Pak už se skript aktualizuje sám.</p>' : '<p>Otevřete Constructo, nahoře se ukáže červený pruh s postupem.</p>')});
+    c.mail = Date.now(); p.setProperty('samo-chyba', JSON.stringify(c));
+  } catch (x) { console.error('Samoaktualizace e-mail: ' + ((x && x.message) || x)); }
+}
+function samoZapnout_() {
+  const p = PropertiesService.getScriptProperties(), z = p.getProperty('samo-zapnuto') || '';
+  if (z === '17' || (z.indexOf('chyba:') === 0 && Date.now() - Number(z.slice(6)) < 3600000)) return;
+  try {
+    ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'samoHodinove') ScriptApp.deleteTrigger(t); });
+    ScriptApp.newTrigger('samoHodinove').timeBased().everyHours(1).create();
+    p.setProperty('samo-zapnuto', '17');
+  } catch (x) { p.setProperty('samo-zapnuto', 'chyba:' + Date.now()); }
+}
+function samoProved_() {
+  const json_ = function (o) { return o; };
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(20000)) return json_({ok: false, duvod: 'zaneprazdneno'});
   try {
@@ -5767,7 +5809,26 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   }, null, 2);
   // 4.53: nová verze skriptu v aplikaci = pokus hned (dřív až za 3 hodiny od posledního pokusu, i když šlo o starší verzi);
   // Dokumentace si může aktualizaci vyžádat (nutne), nejčastěji jednou za minutu. Vrací {ok, verze} nebo {ok: false, duvod}.
+  // 4.82: když se aktualizace nepovede, Constructo to ukáže červeným pruhem s důvodem a opravou (dřív jen do konzole).
+  function skriptPruh(r) {
+    let el = document.getElementById('skript-pruh');
+    if (!r || r.ok) { try { store.set('hyb-samo-duvod', ''); } catch (e) {} if (el) el.remove(); return r; }
+    const duvod = String(r.duvod || 'neznámá chyba');
+    try { store.set('hyb-samo-duvod', duvod); } catch (e) {}
+    if (/F5/.test(duvod)) return r;
+    if (!el) { el = document.createElement('div'); el.id = 'skript-pruh'; el.style.cssText = 'position:sticky;top:0;z-index:9000;background:#b42318;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.4'; document.body.prepend(el); }
+    const api = /not enabled|has not been used|disabled|usersettings/i.test(duvod), opr = /insufficient|scope|PERMISSION_DENIED|403/i.test(duvod) && !api;
+    el.innerHTML = `<span style="flex:1;min-width:240px"><b>Skript na Googlu se nepodařilo aktualizovat na verzi ${skriptWeb()}.</b> ${api ? 'Je potřeba jednou zapnout přepínač <b>Google Apps Script API</b> (stránka se otevře tlačítkem vpravo), pak klikněte Zkusit znovu.' : opr ? 'Google chce znovu povolit oprávnění skriptu.' : ''} <span style="opacity:.85">Důvod: ${esc(duvod.slice(0, 220))}</span></span>${api ? '<a class="btn" style="background:#fff;color:#b42318;text-decoration:none" href="https://script.google.com/home/usersettings" target="_blank" rel="noopener">Otevřít přepínač</a>' : opr ? '<button type="button" class="btn" data-sp="navod" style="background:#fff;color:#b42318">Postup…</button>' : ''}<button type="button" class="btn" data-sp="znovu" style="background:#fff;color:#b42318">Zkusit znovu</button>`;
+    el.querySelector('[data-sp="znovu"]').onclick = async e => { e.target.disabled = true; e.target.textContent = 'Zkouším…'; try { store.set('hyb-samo-t', '0'); } catch (x) {} const x = await skriptSamo(true); if (x && x.ok) toast(`Skript na Googlu je ve verzi ${x.verze}.`); };
+    const nv = el.querySelector('[data-sp="navod"]'); if (nv) nv.onclick = scriptUpdateDialog;
+    return r;
+  }
   async function skriptSamo(nutne) {
+    const r = await skriptSamo0(nutne);
+    if (r) skriptPruh(r);
+    return r;
+  }
+  async function skriptSamo0(nutne) {
     if (!SY || RO()) return null;
     const cil = skriptWeb();
     try {
@@ -5780,6 +5841,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       const ma = Number(v && v.verze) || 0;
       if (!v || !v.samo) return {ok: false, duvod: 'skript neumí sám aktualizovat'};
       if (ma >= cil) return {ok: true, verze: ma};
+      if (v.chyba && !nutne && Date.now() - (v.chyba_t || 0) < 3600000) return {ok: false, duvod: v.chyba};
       const t = await (await fetch('skript.txt?t=' + Date.now(), {cache: 'no-store'})).text();
       if (t !== serverScript('@@HESLO@@')) { console.warn('pc/skript.txt neodpovídá skriptu v aplikaci – samoaktualizace vynechána'); return {ok: false, duvod: 'stará kopie aplikace, obnovte stránku (F5)'}; }
       const r = await call('POST', {key: SY.key, akce: 'samo_aktualizace'});
@@ -5788,7 +5850,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
       return {ok: false, duvod: (r && (r.duvod || r.error)) || 'bez odpovědi'};
     } catch (e) { console.warn('Samoaktualizace skriptu:', e); return {ok: false, duvod: e.message || String(e)}; }
   }
-  window.CXSkriptSamo = skriptSamo;
+  window.CXSkriptSamo = skriptSamo; window.CXSkriptPruh = skriptPruh;
   setTimeout(skriptSamo, 8000);
   const copyText = async (txt, okMsg) => {
     try { await navigator.clipboard.writeText(txt); toast(okMsg); }
