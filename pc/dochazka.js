@@ -119,7 +119,13 @@
   const odkazOsoby = (kid, tok) => ODKAZ + '?s=' + encodeURIComponent(S.sid) + '&k=' + encodeURIComponent(kid) + '&t=' + encodeURIComponent(tok);
   const odkazQR = () => ODKAZ + '?s=' + encodeURIComponent(S.sid) + '&q=' + encodeURIComponent(S.qr);
   const qrSvg = (text, px) => { try { const q = qrcode(0, 'M'); q.addData(text); q.make(); const n = q.getModuleCount(), c = Math.max(2, Math.floor((px || 240) / (n + 8))); return q.createSvgTag(c, c * 4); } catch (e) { return '<p>QR kód se nepodařilo vytvořit.</p>'; } };
-  const zpravaPozvanky = (k, url) => 'Dobrý den, ' + k.jmeno.split(' ')[0] + ', tady je Docházka Constructo pro stavbu ' + projektNazev() + '. Otevřete odkaz v Safari (iPhone) nebo v Chrome (Android), klepněte na Rozumím a přidejte si ikonu Docházka na plochu. Ráno pak jen klepnete na Příchod. ' + url;
+  // 4.85: jazyk pozvánky CZ / UA (přepínač v okně pozvánky); odkaz s &l=uk otevře Docházku ukrajinsky
+  let POZJ = 'cs';
+  try { POZJ = localStorage.getItem('cx-doch-poz-jaz') === 'uk' ? 'uk' : 'cs'; } catch (e) {}
+  const urlJ = url => POZJ === 'uk' ? url + '&l=uk' : url;
+  const zpravaPozvanky = (k, url) => POZJ === 'uk'
+    ? 'Добрий день, ' + k.jmeno.split(' ')[0] + '! Це облік робочого часу Docházka Constructo для будови ' + projektNazev() + '. Відкрийте посилання і натисніть «Зрозуміло». Вранці на будові натисніть «Прихід», ввечері «Відхід». Більше нічого. Збережіть це повідомлення, щодня відкривайте посилання звідси. ' + url
+    : 'Dobrý den, ' + k.jmeno.split(' ')[0] + ', tady je Docházka Constructo pro stavbu ' + projektNazev() + '. Otevřete odkaz a klepněte na Rozumím. Ráno na stavbě klepnete na Příchod, večer na Odchod. Nic víc. Zprávu si nechte, odkaz otevírejte každý den odsud. ' + url;
   const projektNazev = () => String((H.projekt() || {}).name || 'stavba').split(',')[0];
 
   /* ---------- dialog ---------- */
@@ -131,9 +137,12 @@
     return bg;
   }
   // 4.84: odeslání osobního odkazu jedním tlačítkem (e-mail, WhatsApp, SMS, kopírovat, QR) – stejné z Docházky, Firem i Správy stavby
-  function cestyHtml(k, url) {
+  function cestyHtml(k, url) { return '<div class="dc-cw">' + cestyIn(k, url) + '</div>'; }
+  function cestyIn(k, url0) {
+    const url = urlJ(url0);
     const tel = String(k.tel || '').replace(/[^0-9+]/g, ''), txt = zpravaPozvanky(k, url), wa = tel.replace(/^00/, '+').replace(/^\+/, '');
-    return '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 200) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
+    return '<div class="dc-jaz"><span>Jazyk pozvánky:</span><button type="button" class="btn' + (POZJ === 'cs' ? ' dc-on' : '') + '" data-pj="cs">Čeština</button><button type="button" class="btn' + (POZJ === 'uk' ? ' dc-on' : '') + '" data-pj="uk">Українська</button></div>' +
+      '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 200) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
       (k.email ? '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>' : '<p class="dc-m">E-mail není vyplněný.</p>') +
       (wa ? '<a class="btn dc-wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">WhatsApp<small>' + esc(k.tel) + '</small></a>' : '') +
       (tel ? '<a class="btn" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">SMS z vašeho telefonu<small>zdarma podle vašeho tarifu</small></a>' : '') +
@@ -141,17 +150,26 @@
       '<button type="button" class="btn" data-p="kop">Kopírovat odkaz</button></div></div>' +
       '<p class="dc-m">Odkaz je osobní: kdo ho otevře, zapisuje docházku za ' + esc(k.jmeno) + '. Neposílejte ho nikomu jinému.</p>';
   }
-  function cestyBind(box, k, kid, url) {
-    const txt = zpravaPozvanky(k, url);
+  function cestyBind(box, k, kid, url0) {
+    const url = urlJ(url0), txt = zpravaPozvanky(k, url);
+    box.querySelectorAll('[data-pj]').forEach(b => b.onclick = () => {
+      POZJ = b.dataset.pj; try { localStorage.setItem('cx-doch-poz-jaz', POZJ); } catch (e) {}
+      box.querySelector('.dc-cw').innerHTML = cestyIn(k, url0); cestyBind(box, k, kid, url0);
+    });
     box.querySelector('[data-p="kop"]').onclick = async () => { try { await navigator.clipboard.writeText(url); H.toast('Odkaz zkopírován'); } catch (e) { prompt('Zkopírujte odkaz:', url); } };
     const bm = box.querySelector('[data-p="mail"]');
     if (bm) bm.onclick = async () => {
       bm.disabled = true;
-      const html = '<div style="font-family:Arial,sans-serif;font-size:16px;color:#16191c;max-width:560px"><p>Dobrý den,</p><p>tady je <b>Docházka Constructo</b> pro stavbu ' + esc(projektNazev()) + '. Na stavbě jí budete potvrzovat příchod, pauzu a odchod.</p>' +
-        '<p style="margin:22px 0"><a href="' + esc(url) + '" style="background:#F4D23C;color:#131518;padding:14px 26px;border-radius:10px;font-weight:800;text-decoration:none;font-size:18px">Otevřít Docházku</a></p>' +
-        '<ol><li>Otevřete odkaz v telefonu, na iPhonu v <b>Safari</b>, na Androidu v <b>Chrome</b>.</li><li>Klepněte na <b>Rozumím</b> a přidejte si ikonu <b>Docházka</b> na plochu.</li><li>Ráno na stavbě klepněte na <b>Příchod</b>, při obědě na <b>Pauza</b>, večer na <b>Odchod</b>.</li></ol>' +
-        '<p style="color:#6b7279;font-size:13px">Poloha telefonu se zjistí jen ve chvíli potvrzení, nikdy jindy. Odkaz je osobní, nikomu ho neposílejte.</p></div>';
-      const r = await H.posliMail({komu: k.email, predmet: 'Docházka Constructo – ' + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date())});
+      const uk = POZJ === 'uk';
+      const html = '<div style="font-family:Arial,sans-serif;font-size:16px;color:#16191c;max-width:560px">' + (uk
+        ? '<p>Добрий день,</p><p>це <b>Docházka Constructo</b> (облік робочого часу) для будови ' + esc(projektNazev()) + '.</p>'
+        : '<p>Dobrý den,</p><p>tady je <b>Docházka Constructo</b> pro stavbu ' + esc(projektNazev()) + '.</p>') +
+        '<p style="margin:22px 0"><a href="' + esc(url) + '" style="background:#F4D23C;color:#131518;padding:14px 26px;border-radius:10px;font-weight:800;text-decoration:none;font-size:18px">' + (uk ? 'Відкрити Docházku' : 'Otevřít Docházku') + '</a></p>' +
+        (uk ? '<ol><li>Відкрийте посилання в телефоні і натисніть <b>Зрозуміло</b>.</li><li>Вранці на будові натисніть велику зелену кнопку <b>Прихід</b>, ввечері <b>Відхід</b>. Більше нічого.</li><li>Збережіть цей лист, щодня відкривайте посилання звідси.</li></ol>' +
+          '<p style="color:#6b7279;font-size:13px">Місцезнаходження телефону визначається лише в мить натискання, ніколи інакше. Посилання особисте, нікому його не пересилайте.</p></div>'
+        : '<ol><li>Otevřete odkaz v telefonu a klepněte na <b>Rozumím</b>.</li><li>Ráno na stavbě klepněte na velké zelené tlačítko <b>Příchod</b>, večer na <b>Odchod</b>. Nic víc.</li><li>E-mail si nechte, odkaz otevírejte každý den odsud.</li></ol>' +
+          '<p style="color:#6b7279;font-size:13px">Poloha telefonu se zjistí jen ve chvíli klepnutí, nikdy jindy. Odkaz je osobní, nikomu ho neposílejte.</p></div>');
+      const r = await H.posliMail({komu: k.email, predmet: (POZJ === 'uk' ? 'Docházka Constructo (облік робочого часу) – ' : 'Docházka Constructo – ') + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date())});
       bm.disabled = false;
       H.toast(r && r.ok ? 'E-mail odeslán: ' + k.email : 'E-mail se nepodařilo poslat' + (r && r.error ? ': ' + r.error : '.'));
     };
@@ -244,8 +262,8 @@
       '.u{margin-top:22px;font-size:15px;color:#444}.p{margin-top:24px;font-size:12px;color:#777}</style></head><body>' +
       '<div class="h"><span>Constructo</span><b>DOCHÁZKA</b><span>' + esc(nazev) + '</span></div>' +
       '<div class="q">' + qrSvg(url, 330) + '</div><p class="s">Naskenujte fotoaparátem telefonu</p>' +
-      '<ol><li>Vyberte svou firmu a své jméno.</li><li>Přidejte si ikonu <b>Docházka</b> na plochu.</li><li>Každý den: <b>Příchod</b> · <b>Pauza</b> · <b>Odchod</b>.</li></ol>' +
-      '<p class="u">UA: Відскануйте QR-код камерою телефону, виберіть своє ім’я та додайте значок на головний екран.<br>EN: Scan the QR code, pick your name and add the icon to your home screen.</p>' +
+      '<ol><li>Vyberte své jméno (jen poprvé).</li><li>Ráno klepněte na <b>Příchod</b>, večer na <b>Odchod</b>.</li></ol>' +
+      '<p class="u" style="font-size:19px;color:#131518">UA: Відскануйте QR-код камерою телефону. Виберіть своє імʼя (лише перший раз). Вранці натисніть <b>Прихід</b>, ввечері <b>Відхід</b>. Мову змінює кнопка <b>CZ | UA</b> угорі.</p>' +
       '<p class="p">Poloha telefonu se zjistí jen ve chvíli potvrzení příchodu, pauzy nebo odchodu. Vidí ji jen vedení stavby.</p></body></html>');
     w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch (e) {} }, 400);
   }
@@ -493,6 +511,7 @@
 .dc-bg{position:fixed;inset:0;background:rgba(19,21,24,.5);display:flex;align-items:center;justify-content:center;z-index:400;padding:16px}
 .dc-dlg{background:var(--panel);color:var(--ink);border-radius:14px;padding:22px;max-width:680px;width:100%;max-height:92vh;overflow:auto;position:relative}
 .dc-dlg h3{margin:0 0 4px;font-size:21px;padding-right:110px}.dc-x{position:absolute;top:14px;right:14px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer;color:var(--ink)}
+.dc-jaz{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 0}.dc-jaz span{font-weight:700;font-size:14px}.dc-jaz .btn{padding:7px 14px;font-size:15px}.dc-jaz .btn.dc-on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .dc-poz{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0}.dc-cesty{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}.dc-cesty .btn{text-align:left;display:flex;flex-direction:column;align-items:flex-start;padding:10px 14px;font-size:15px;text-decoration:none}.dc-cesty .btn small{display:block;font-weight:400;font-size:12px;opacity:.8}
 .dc-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.dc-form label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}.dc-form .w{grid-column:1/-1}.dc-form select,.dc-form input{font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
 .dc-pri{background:#131518!important;color:#fff!important;border-color:#131518!important;font-weight:700}.dc-pri::before{display:none!important}
@@ -511,6 +530,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.1'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.2'
   };
 })();
