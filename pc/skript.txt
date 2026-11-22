@@ -1,7 +1,7 @@
-// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 18
+// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 19
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 18;
+const SKRIPT_VERZE = 19;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -951,7 +951,7 @@ function prehledTest_(b) {
 // Potřebuje zapnuté Google Apps Script API (script.google.com/home/usersettings) a oprávnění z appsscript.json.
 // Kód se bere jen z oficiální adresy webu, ne od toho, kdo akci zavolá.
 // 17: skript se kontroluje sám každou hodinu (i bez otevřeného Constructa); poslední chybu ukazuje akce verze
-// (bez hesla, jen text chyby od Googlu) a správcům ji jednou denně pošle e-mailem.
+// (bez hesla, jen text chyby od Googlu) a správcům ji nejvýš jednou týdně pošle e-mailem.
 function samoAktualizace_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
   return json_(samoZapis_(samoProved_()));
@@ -971,7 +971,7 @@ function samoHodinove() {
   const r = samoZapis_(samoProved_());
   if (r && r.ok) return;
   const p = PropertiesService.getScriptProperties(), c = JSON.parse(p.getProperty('samo-chyba') || '{}');
-  if (!c.duvod || Date.now() - (c.mail || 0) < 86400000) return;
+  if (!c.duvod || Date.now() - (c.mail || 0) < 7 * 86400000) return;   // 19: e-mail o chybě nejvýš jednou týdně
   try {
     const d = nacti_(p) || {}, P = d.project || {}, pp = P.people || {}, adm = Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
     const komu = adm.map(function (n) { return String((pp[n] || {}).email || '').split(',')[0].trim(); }).filter(function (a) { return a.indexOf('@') > 0; });
@@ -1012,6 +1012,12 @@ function samoProved_() {
       if (telo) { o.contentType = 'application/json'; o.payload = JSON.stringify(telo); }
       const x = UrlFetchApp.fetch(api + cesta, o);
       const t = x.getContentText();
+      if (x.getResponseCode() === 403) {
+        // 19: při chybějícím oprávnění zjistit, která oprávnění token opravdu má (jen jejich názvy, ne token)
+        let sc = '?';
+        try { const ti = JSON.parse(UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?access_token=' + encodeURIComponent(ScriptApp.getOAuthToken()), {muteHttpExceptions: true}).getContentText() || '{}'); sc = String(ti.scope || ti.error_description || '?').split('https://www.googleapis.com/auth/').join(''); } catch (y) { sc = 'tokeninfo: ' + ((y && y.message) || y); }
+        throw new Error('API 403 při ' + metoda.toUpperCase() + ' ' + (cesta || '/') + ' · token má: ' + sc + ' · ' + t.split(String.fromCharCode(10)).join(' ').slice(0, 160));
+      }
       if (x.getResponseCode() >= 300) throw new Error('API ' + x.getResponseCode() + ': ' + t.slice(0, 300));
       return t ? JSON.parse(t) : {};
     };
