@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-LOUyHLEnvlu0637gReFUPikBa0fENnLcdDv0vL7h50Y=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-adQ+VZkwy1oudwMp2CqCvBAI4aFCimVTkTzR2DL0GFc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-LR76kyHogzS6ekVEVN/2GqiU6nxQYtMhraAby2mBmgA=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -991,6 +991,8 @@ body.dfull-on{overflow:hidden}
 .dtile.mset b{position:relative;z-index:1;background:rgba(19,21,24,.86);color:#fff;padding:6px 8px;width:100%;display:flex;flex-direction:column;align-items:center;line-height:1.15}
 .dtile.mset b big{font-size:22px;font-weight:800;letter-spacing:.01em}.dtile.mset b small{color:#e8e8e2;font-size:12px;font-weight:600}
 .dtile.madd{border-style:dashed}
+.zv-klik{cursor:pointer}.zv-row.zv-klik:hover,.entry.zv-klik:hover{background:#FFFBE6}
+.pill.zv-new{background:#d63b24;color:#fff;font-weight:800;margin-left:4px}
 .dtile .tx{position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:13px;line-height:26px;cursor:pointer}
 .datt{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
 .datt .dph{width:auto;height:128px;border-radius:14px}
@@ -1274,7 +1276,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.92';
+  const APP_VERSION = '4.93';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2165,6 +2167,8 @@ body.dfull-on{overflow:hidden}
     bindDiaryFeed(v);
   }
   function bindDiaryFeed(v) {
+    // 4.93: klepnutí kamkoli na záznam ho otevře k úpravě (doplnit, poslat dál…)
+    v.querySelectorAll('.entry.dz[data-e]').forEach(r => { r.classList.add('zv-klik'); r.onclick = e => { if (e.target.closest('a,button,input,select,textarea,label,form,.att,.dpin')) return; const b = r.querySelector('[data-edit]'); if (b) b.click(); }; });
     v.querySelectorAll('[data-zco]').forEach(b => b.onclick = () => { ZF.co = b.dataset.zco; store.set('hyb-zco', ZF.co); render(); });
     v.querySelectorAll('[data-fil]').forEach(b => b.onclick = () => { S.dFil = b.dataset.fil; renderZavady(); });
     v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { if (!v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`)) { S.dFil = ''; ZF.q = ''; ZF.osoba = ''; renderZavady(); } const x = v.querySelector(`[data-e="${CSS.escape(b.dataset.go)}"]`); if (x) { x.scrollIntoView({block: 'center', behavior: 'smooth'}); x.classList.add('flash'); setTimeout(() => x.classList.remove('flash'), 1600); } });
@@ -3833,7 +3837,9 @@ body.dfull-on{overflow:hidden}
     uloz: (k, x, ed) => { D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x); commit(); }}); o.upravFirmu(id || null); }, 0); }
 
   /* ---------- záložka Zprávy pro firmy: všechny zprávy (závady, reklamace, úklid…) poslané firmám z mobilu (D.zavady) ---------- */
-  const ZF = {co: ['zapisy', 'odeslane'].includes(store.get('hyb-zco')) ? store.get('hyb-zco') : 'zpravy', firma: '', osoba: '', stav: '', sort: ['datum', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort')) ? store.get('hyb-zsort') : 'firma', q: ''};
+  const ZF = {co: ['zapisy', 'odeslane'].includes(store.get('hyb-zco')) ? store.get('hyb-zco') : 'zpravy', firma: '', osoba: '', stav: '', sort: ['firma', 'osoba', 'kolektiv'].includes(store.get('hyb-zsort4')) ? store.get('hyb-zsort4') : 'datum', q: ''};   // 4.93: výchozí Podle data (nejnovější nahoře)
+  let zvSeen0 = null;   // 4.93: zprávy novější než minulá návštěva záložky mají štítek NOVÉ
+  const zvNova = z => zvSeen0 !== null && String(z.at || '') > zvSeen0 && foldName(z.by || '') !== foldName(me() || '');
   /* 4.36: zprávy v kolektivu = úkoly a Na vědomí poslané z mobilu (úkoly se stejnou skupinou grp). Každá dostane PDF a e-mail; výsledek je v t.zprava. */
   const KOL = 'V kolektivu';
   function kolZpravy() {
@@ -4094,6 +4100,7 @@ body.dfull-on{overflow:hidden}
     const coHtml = zvCoHtml();
     if (ZF.co === 'zapisy') return renderZapisyArchiv($('#view'), coHtml);
     if (ZF.co === 'odeslane') return renderOdeslane();
+    if (zvSeen0 === null) { zvSeen0 = store.get('hyb-zv-seen') || ''; store.set('hyb-zv-seen', new Date().toISOString()); }
     const v = $('#view'), all = ZAV().concat(kolZpravy()), rows = zavadyVyber(), admin = isAdmin(), firmRows = rows.filter(z => !z.kol);
     const firmyN = [...new Map([...firmyList().map(f => f.firma), ...all.map(z => z.firma)].filter(Boolean).map(n => [zFirmaKey(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
     const osoby = [...new Map([...owners().filter(n => n !== 'Bez přiřazení'), ...all.map(z => z.by)].filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
@@ -4121,7 +4128,7 @@ body.dfull-on{overflow:hidden}
           const kt = (z.att[0] && attThumb(z.att[0])) || '', kp = kolPdfUrl(z), km = kolMail(z);
           html += `<div class="zv-row" data-zv="${esc(z.id)}">
           ${zvTh(z.att[0])}
-          <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ)}</span><span class="pill zv-st zv-kol">${KOL}</span> ${esc(z.popis.length > 220 ? z.popis.slice(0, 220) + '…' : z.popis || 'bez popisu')}</div>
+          <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ)}</span><span class="pill zv-st zv-kol">${KOL}</span>${zvNova(z) ? '<span class="pill zv-new">NOVÉ</span>' : ''} ${esc(z.popis.length > 220 ? z.popis.slice(0, 220) + '…' : z.popis || 'bez popisu')}</div>
             <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${z.obj ? `<span>objekt ${esc(z.obj)}</span>` : ''}${z.att.length ? `<span>${z.att.length} ${z.att.length === 1 ? 'fotka' : z.att.length < 5 ? 'fotky' : 'fotek'}</span>` : ''}<span${km.bad ? ' style="color:var(--red)"' : ''}>${esc(km.t)}</span></div>${kolReakce(z)}</div>
           <div><b>${KOL}</b><small class="zv-komu">${esc(z.komu.join(', ') || '–')}</small></div>
           <div>${esc(z.by || '–')}</div>
@@ -4131,7 +4138,7 @@ body.dfull-on{overflow:hidden}
         const th = zThumb(z), pdf = zPdfUrl(z);
         html += `<div class="zv-row" data-zv="${esc(z.id)}">
           ${(n => n > 1 ? zvTh(z.foto).replace('<div class="zv-th', `<div title="${n} fotek – všechny v Detailu" class="zv-pocet-${n} zv-th`).replace(/<\/div>$/, `<span class="zv-n">${n}</span></div>`) : zvTh(z.foto))((z.fotky || []).length)}
-          <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ || 'Závada')}</span><span class="pill zv-st zv-${zStav(z)}">${ZSTAV[zStav(z)]}</span> ${esc(zPopis(z) || 'bez popisu')}</div>
+          <div><div class="zv-t"><span class="pill zv-typ ${zTypCls(z.typ)}">${esc(z.typ || 'Závada')}</span><span class="pill zv-st zv-${zStav(z)}">${ZSTAV[zStav(z)]}</span>${zvNova(z) ? '<span class="pill zv-new">NOVÉ</span>' : ''} ${esc(zPopis(z) || 'bez popisu')}</div>
             <div class="sm"><span>${esc(zDatum(z))} ${esc(zCas(z))}</span>${zMisto(z) ? `<span>${esc(zMisto(z))}</span>` : ''}${z.cislo ? `<span class="zv-c">${esc(z.cislo)}</span>` : ''}${zVia(z) ? `<span>poslané ${esc(zVia(z))}</span>` : ''}</div>${(o => o ? `<div class="zv-odp"><b>${esc(ZCO[o.stav] || o.stav)}</b> · ${esc(o.jmeno || '')} · ${esc(zKdy(o.at))}${o.text ? ': ' + esc(o.text.length > 140 ? o.text.slice(0, 140) + '…' : o.text) : ''}${(o.fotky || []).length ? ` · ${o.fotky.length} ${o.fotky.length === 1 ? 'fotka' : o.fotky.length < 5 ? 'fotky' : 'fotek'}` : ''}</div>` : '')(zFirmaOdp(z))}</div>
           <div><b>${esc(z.firma || '–')}</b>${zKomu(z) ? `<small class="zv-komu">${esc(zKomu(z))}</small>` : ''}${z.email ? `<small>${esc(z.email)}</small>` : ''}</div>
           <div>${esc(z.by || '–')}</div>
@@ -4146,10 +4153,12 @@ body.dfull-on{overflow:hidden}
     $('#zv-osoba').onchange = e => { ZF.osoba = e.target.value; renderZavady(); };
     $('#zv-stav').onchange = e => { ZF.stav = e.target.value; renderZavady(); };
     $('#zv-q').oninput = e => { ZF.q = e.target.value; const p = e.target.selectionStart; renderZavady(); const i = $('#zv-q'); i.focus(); try { i.setSelectionRange(p, p); } catch (x) {} };
-    v.querySelectorAll('[data-zs]').forEach(b => b.onclick = () => { ZF.sort = b.dataset.zs; store.set('hyb-zsort', ZF.sort); renderZavady(); });
+    v.querySelectorAll('[data-zs]').forEach(b => b.onclick = () => { ZF.sort = b.dataset.zs; store.set('hyb-zsort4', ZF.sort); renderZavady(); });
     v.querySelectorAll('[data-zd]').forEach(b => b.onclick = () => zavadaDetail(b.dataset.zd));
     v.querySelectorAll('[data-zkd]').forEach(b => b.onclick = () => openEditor(b.dataset.zkd));
     v.querySelectorAll('[data-zkm]').forEach(b => b.onclick = () => kolPoslat(b.dataset.zkm, b));
+    // 4.93: klepnutí kamkoli na řádek zprávu otevře (jako tlačítko Detail)
+    v.querySelectorAll('.zv-row[data-zv]').forEach(r => { r.classList.add('zv-klik'); r.onclick = e => { if (e.target.closest('a,button,input,select,textarea,label')) return; const b = r.querySelector('[data-zd],[data-zkd]'); if (b) b.click(); }; });
     v.querySelectorAll('[data-zx]').forEach(b => b.onclick = () => {
       if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = 'Opravdu smazat?'; b.classList.add('danger'); return; }
       D.zavady = (D.zavady || []).filter(z => z.id !== b.dataset.zx); commit(); toast('Zpráva smazána ze seznamu (firmě už odešla).');
@@ -4227,7 +4236,7 @@ body.dfull-on{overflow:hidden}
       <p class="hcap" style="margin:0">${esc(zDatum(z))} ${esc(zCas(z))} · poslal ${esc(z.by || '–')}${zVia(z) ? ' · poslané ' + esc(zVia(z)) : ''}</p>
       <p style="margin:0"><b>${esc(z.firma || 'Bez firmy')}</b>${zKomu(z) ? ' · ' + esc(zKomu(z)) : ''}${z.email ? '<br>' + esc(z.email) : ''}${zMisto(z) ? '<br>' + esc(zMisto(z)) : ''}${(z.kopie || []).length ? '<br>Na vědomí: ' + esc(z.kopie.join(', ')) : ''}</p>
       ${z.text ? `<div class="zv-txt">${esc(z.text)}</div>` : ''}
-      <div class="zv-a" style="justify-content:flex-start">${pdf ? `<a class="btn" href="${esc(pdf)}" target="_blank" rel="noopener">Formulář PDF</a>` : ''}${odk ? '<button type="button" class="btn" id="zv-odkaz">Kopírovat odkaz pro firmu</button>' : ''}</div>
+      <div class="zv-a" style="justify-content:flex-start">${pdf ? `<a class="btn" href="${esc(pdf)}" target="_blank" rel="noopener">Formulář PDF</a>` : ''}${odk ? '<button type="button" class="btn" id="zv-odkaz">Kopírovat odkaz pro firmu</button>' : ''}${ro ? '' : '<button type="button" class="btn" id="zv-fwd">↪ Přeposlat dál</button><button type="button" class="btn" id="zv-ukol">✚ Udělat z toho úkol</button>'}</div>
       ${ro || !z.firma ? '' : `<h4 class="zv-h4">Poslat kopii kolegům (na vědomí)</h4>
       <div class="nz-lide">${(D.project.team || []).filter(n => n && n !== me()).map(n => `<label class="nz-ch"><input type="checkbox" data-zkk="${esc(n)}"> ${esc(n)}${(z.kopie || []).includes(n) ? ' ✓' : ''}</label>`).join('')}</div>
       <div class="zv-a" style="justify-content:flex-start"><button type="button" class="btn" id="zv-kopie">Poslat kopii vybraným</button><span class="hcap">Každý dostane zvlášť e-mail od Constructa s textem zprávy a odkazem na PDF, které dostala firma. Firmě se nic neposílá. ✓ = kopii už dostal.</span></div>`}
@@ -4243,6 +4252,17 @@ body.dfull-on{overflow:hidden}
       r.odpovedi = (r.odpovedi || []).concat([o]); r.stav = stav; commit(); return r;
     };
     zFotkyNapoj(z);
+    const fw = $('#zv-fwd'); if (fw) fw.onclick = () => {   // 4.93: otevře Novou zprávu s textem této zprávy a odkazem na PDF
+      zavri(); const p = zPdfUrl(z);
+      Object.assign(NZ, {druh: 'kol', info: true, to: new Set(), firma: '', misto: zMisto(z) || '', text: `Přeposílám zprávu ${z.cislo || ''} (${z.firma || 'bez firmy'}, poslal ${z.by || '–'} ${zDatum(z)}):\n\n${(z.text || zPopis(z) || '').trim()}${p ? '\n\nFormulář PDF: ' + p : ''}`, fotky: []});
+      setTimeout(novaZprava, 60);
+    };
+    const uk = $('#zv-ukol'); if (uk) uk.onclick = () => {   // 4.93: úkol se stejným textem, fotkami a firmou; otevře se hned k doplnění (komu, termín)
+      const now = new Date().toISOString(), id = uid(), fotky = (z.fotky && z.fotky.length ? z.fotky : z.foto ? [z.foto] : []).filter(x => x && x.id).map(x => ({id: x.id, url: x.url, thumb: x.thumb}));
+      D.tasks.push({id, kind: 'simple', title: `${z.predmet || z.typ || 'Zpráva'}${z.cislo ? ' (' + z.cislo + ')' : ''}`, owner: me() || 'Bez přiřazení', team: [], start: today, end: addD(today, 7), done: 0, status: 'todo',
+        note: (z.text || zPopis(z) || '').trim(), obj: '', supplier: z.firma || '', hmg: [], att: fotky, zprava0: z.id, createdAt: now, createdBy: me(), updatedAt: now, updatedBy: me()});
+      commit(); zavri(); setTimeout(() => { openEditor(id); toast('Úkol je založený. Doplňte, kdo ho udělá a do kdy.'); }, 60);
+    };
     const ob = $('#zv-odkaz'); if (ob) ob.onclick = async () => { try { await navigator.clipboard.writeText(odk); toast('Odkaz je zkopírovaný. Můžete ho firmě poslat třeba WhatsAppem.'); } catch (e) { prompt('Odkaz pro firmu:', odk); } };
     const kb = $('#zv-kopie'); if (kb) kb.onclick = () => zKopieKolegum(id, [...document.querySelectorAll('#overlay [data-zkk]:checked')].map(c => c.dataset.zkk), kb);
     const zb = $('#zv-zav'); if (zb) zb.onclick = () => { zapis('uzavreno', $('#zv-pozn').value.trim()); zavri(); toast('Zpráva uzavřena.'); };
