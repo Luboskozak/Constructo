@@ -99,7 +99,7 @@
   function mistoHtml(x, st) {
     if (typeof x.lat !== 'number') return '<span class="dc-np" title="Telefon polohu nezjistil: ' + esc(x.bezPolohy || '') + '">bez polohy</span>';
     const d = st ? vzd(st, x) : 0, daleko = st && d > 400 + (x.acc || 0);
-    return '<a href="' + mapa(x.lat, x.lng) + '" target="_blank" rel="noopener" class="dc-map' + (daleko ? ' far' : '') + '" title="Přesnost ±' + (x.acc || '?') + ' m' + (st ? ', ' + Math.round(d) + ' m od stavby' : '') + '">📍 ' + (daleko ? (d > 1500 ? (d / 1000).toFixed(1) + ' km' : Math.round(d) + ' m') + ' od stavby' : 'mapa') + '</a>';
+    return '<a href="' + mapa(x.lat, x.lng) + '" target="_blank" rel="noopener" class="dc-map' + (daleko ? ' far' : st ? ' ok' : '') + '" title="Přesnost ±' + (x.acc || '?') + ' m' + (st ? ', ' + Math.round(d) + ' m od stavby' : '') + '">📍 ' + (!st ? 'mapa' : daleko ? (d > 1500 ? (d / 1000).toFixed(1) + ' km' : Math.round(d) + ' m') + ' od stavby' : 'na stavbě') + '</a>';
   }
 
   /* ---------- načtení z Googlu ---------- */
@@ -585,7 +585,7 @@
 .dc-tiles{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .dc-tile{background:var(--soft);border-radius:10px;padding:10px 16px;min-width:130px;font-size:13px;color:var(--muted)}.dc-tile b{display:block;font-size:28px;line-height:1.1;color:var(--ink);font-weight:800}
 .dc-tile.g{background:var(--good-soft)}.dc-tile.g b{color:var(--good)}.dc-tile.y{background:#fff4bf}
-.dc-hl{display:flex;gap:8px;margin:10px 0 0}.dc-hl input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}.dc-t td.r .btn{margin:2px 0}.dc-bez p{margin:4px 0;font-size:14px;color:var(--muted,#6b7279)}.dc-bez p b{color:var(--ink,#131518)}.dc-npz{color:#b42318}.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
+.dc-map.ok{color:#1f7a3d;font-weight:600}.dc-hl{display:flex;gap:8px;margin:10px 0 0}.dc-hl input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}.dc-t td.r .btn{margin:2px 0}.dc-bez p{margin:4px 0;font-size:14px;color:var(--muted,#6b7279)}.dc-bez p b{color:var(--ink,#131518)}.dc-npz{color:#b42318}.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
 .dc-t{width:100%;border-collapse:collapse;font-size:14px}.dc-t th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line);font-weight:700}
 .dc-t td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}.dc-t td small{display:block;color:var(--muted);font-size:12px}.dc-t .r{text-align:right}
 .dc-arch tr.dh td{background:var(--soft);font-weight:800;font-size:13px}.dc-arch tr.zr td{color:var(--muted);text-decoration:line-through}

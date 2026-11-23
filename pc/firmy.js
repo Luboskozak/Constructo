@@ -225,7 +225,7 @@ const CXFirmy = (() => {
       const ukazObj = k => st.obl === 'vse' || st.obl === 'obj' || st.obl === k;
       if (ukazDod) {
         const xs = fs.filter(x => sedi(x, x.firma, x.ico, x.adresa, x.zkratky, x.pozn));
-        h += `<section class="cxf-sec" data-sec="dod"><div class="cxf-sh"><b>1. Dodavatel</b><span>firmy na stavbě a jejich pracovníci (jméno, e-mail, telefon) · použije se pro zprávy i docházku</span><span class="sp"></span>${R ? '' : '<button type="button" class="cxf-b add" data-add="dod">+ Přidat</button>'}</div>`;
+        h += `<section class="cxf-sec" data-sec="dod"><div class="cxf-sh"><b>1. Firmy / pracovníci</b><span>firmy na stavbě a jejich pracovníci (jméno, e-mail, telefon) · použije se pro zprávy i docházku</span><span class="sp"></span>${R ? '' : '<button type="button" class="cxf-b add" data-add="dod">+ Přidat firmu / pracovníky</button>'}</div>`;
         h += xs.length ? xs.map(x => {
           const ks = kontakty(x), maMail = ks.some(k => k.email && k.posilat !== false), n = host.pocetZprav ? host.pocetZprav(x.firma) : 0;
           return `<div class="cxf-row" data-id="${esc(x.id)}"><div><b class="n">${esc(x.firma)}</b>${x.ico || x.dic ? `<small>${esc([x.ico ? 'IČO ' + x.ico : '', x.dic ? 'DIČ ' + x.dic : ''].filter(Boolean).join(' · '))}</small>` : ''}${x.adresa ? `<small>${esc(x.adresa)}</small>` : ''}${x.zkratky ? `<small>Zkratky: ${esc(x.zkratky)}</small>` : ''}${x.pozn ? `<small><i>${esc(x.pozn)}</i></small>` : ''}${n && host.zpravy ? `<small><button type="button" class="cxf-b lnk" data-zpr="${esc(x.firma)}">${n} ${tvar(n, 'zpráva', 'zprávy', 'zpráv')} →</button></small>` : ''}</div>
@@ -279,7 +279,7 @@ const CXFirmy = (() => {
           <input data-kf="email" type="email" value="${esc(k.email || '')}" placeholder="E-mail" aria-label="E-mail">
           <input data-kf="tel" type="tel" value="${esc(k.tel || '')}" placeholder="Telefon" aria-label="Telefon">
           <div class="pa"><label><input type="checkbox" data-kf="posilat"${k.posilat !== false ? ' checked' : ''}> posílat zprávy</label><button type="button" class="cxf-b del" data-krm="${i}">Odebrat</button></div></div>`).join('');
-      const ov = okno(ed ? 'Upravit firmu' : 'Přidat firmu', `
+      const ov = okno(ed ? 'Upravit firmu / pracovníky' : 'Přidat firmu / pracovníky', `
         <div class="ico">${f('ico', 'IČO', '12345678')}<button type="button" class="cxf-b" id="cxf-ares">Hledat v ARES</button></div>
         <p class="hint" id="cxf-ares-st">Napište IČO nebo název firmy a klikněte Hledat v ARES: název, sídlo a DIČ se vyplní samy.</p>
         ${f('firma', 'Název firmy', 'např. TT Tech s.r.o.')}
