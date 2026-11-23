@@ -62,7 +62,35 @@
     }).sort((a, b) => (a.firma + a.jmeno).localeCompare(b.firma + b.jmeno, 'cs'));
   }
   // střed stavby = medián poloh příchodů (bez nastavení); záznam dál než 400 m se označí
+  // 4.88: střed stavby = skutečná adresa stavby (souřadnice uložené u stavby, jinak dohledané z adresy přes OpenStreetMap).
+  // Dřív se brala „obvyklá poloha příchodů“ – zkušební příchody z domova ji posunuly a lidé na stavbě pak byli „4 km od stavby“.
+  const gpsOk = g => g && typeof g.lat === 'number' && typeof g.lng === 'number';
+  function adresaStavby() {
+    const p = (H && H.projekt()) || {};
+    const a = [p.ulice, [p.psc, p.mesto].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    if (a) return a;
+    const m = String(p.name || '').match(/(\S+\s+\d+(?:\/\d+\w?)?)\s*,\s*([^,]+)$/);
+    return m ? m[1] + ', ' + m[2] : '';
+  }
+  let gpsHleda = '';
+  async function gpsStavby() {
+    const p = (H && H.projekt()) || {}, a = adresaStavby();
+    if (!a || (gpsOk(p.gps) && p.gps.adr === a) || gpsHleda === a) return;
+    gpsHleda = a;
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=cz,sk&q=' + encodeURIComponent(a), {headers: {Accept: 'application/json'}});
+      const o = (await r.json())[0];
+      if (!o) return;
+      const g = {lat: +(+o.lat).toFixed(6), lng: +(+o.lon).toFixed(6), adr: a};
+      if (H.ulozGps) H.ulozGps(g); else S.gps = g;
+      obnov();
+    } catch (e) {}
+  }
   function stred() {
+    const p = (H && H.projekt()) || {};
+    if (gpsOk(p.gps)) return p.gps;
+    if (gpsOk(S.gps)) return S.gps;
+    gpsStavby();
     const g = platne().filter(x => x.typ === 'prichod' && typeof x.lat === 'number' && (x.acc || 0) < 200);
     if (g.length < 3) return null;
     const md = a => { const s = a.slice().sort((p, q) => p - q); return s[Math.floor(s.length / 2)]; };
@@ -571,6 +599,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.5'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.6'
   };
 })();
