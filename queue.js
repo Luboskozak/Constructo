@@ -152,7 +152,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       if (!komu.length) return {at: new Date().toISOString(), sent: 0, missing, error: '', pdf};
       // 1.21: jeden e-mail všem najednou (jedno nahrání PDF – při slabém signálu mnohem rychlejší), odesílatel „Constructo“, bez kopie
       const obr = {logo: it.form.logo}; (it.form.fotky || []).forEach((b, i) => { if (b) obr['f' + i] = b; });
-      const adr = [...new Set(komu.map(em))];
+      const adr = [...new Set([...komu.map(em), em(it.by)].filter(Boolean))];   // mobil 1.42: kopie vždy i autorovi (Luboš 23. 11.)
       const r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid, komu: adr.join(','), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
         pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'});
       const ok = !!(r && (r.ok || r.opakovane));
