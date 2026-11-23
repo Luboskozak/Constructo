@@ -136,6 +136,14 @@ const CXFirmy = (() => {
   }
   let alertT = t => { try { console.warn(t); } catch (e) {} };
 
+  // 4.87: pozice (funkce) – stejný seznam všude: základní + každá vlastní pozice, kterou už někdo u osoby zapsal
+  const POZICE = ['dělník', 'pomocný dělník', 'mistr', 'parťák', 'technik', 'stavbyvedoucí', 'přípravář', 'elektrikář', 'instalatér', 'zedník', 'tesař', 'svářeč', 'řidič', 'jeřábník', 'brigádník'];
+  const pozice = firmy => {
+    const m = new Map();
+    POZICE.concat(...(Array.isArray(firmy) ? firmy : []).filter(Boolean).map(f => kontakty(f).map(k => String(k.funkce || '').trim())))
+      .forEach(x => { const k = fold(x); if (x && !m.has(k)) m.set(k, x); });
+    return [...m.values()].sort((a, b) => POZICE.indexOf(a) < 0 && POZICE.indexOf(b) < 0 ? a.localeCompare(b, 'cs') : POZICE.indexOf(a) < 0 ? 1 : POZICE.indexOf(b) < 0 ? -1 : POZICE.indexOf(a) - POZICE.indexOf(b));
+  };
   async function aresPrimo(ico) {
     ico = String(ico || '').replace(/\D/g, '');
     if (ico.length !== 8) throw new Error('IČO má mít 8 číslic.');
@@ -224,7 +232,7 @@ const CXFirmy = (() => {
       const f = (k, l, ph, t) => `<div><label class="l" for="cxf-${k}">${l}</label><input id="cxf-${k}"${t ? ` type="${t}"` : ''} value="${esc(ed ? ed[k] || '' : '')}" placeholder="${esc(ph)}"></div>`;
       const ksHtml = () => ks.map((k, i) => `<div class="cxf-pr" data-ki="${i}">
           <input data-kf="jmeno" value="${esc(k.jmeno || '')}" placeholder="Jméno a příjmení" aria-label="Jméno a příjmení">
-          <input data-kf="funkce" value="${esc(k.funkce || '')}" placeholder="Funkce (např. elektrikář)" aria-label="Funkce">
+          <input data-kf="funkce" list="cxf-pozl" value="${esc(k.funkce || '')}" placeholder="Pozice (vyberte nebo napište vlastní)" aria-label="Pozice">
           <input data-kf="email" type="email" value="${esc(k.email || '')}" placeholder="E-mail" aria-label="E-mail">
           <input data-kf="tel" type="tel" value="${esc(k.tel || '')}" placeholder="Telefon" aria-label="Telefon">
           <div class="pa"><label><input type="checkbox" data-kf="posilat"${k.posilat !== false ? ' checked' : ''}> posílat zprávy</label><button type="button" class="cxf-b del" data-krm="${i}">Odebrat</button></div></div>`).join('');
@@ -234,7 +242,7 @@ const CXFirmy = (() => {
         ${f('firma', 'Název firmy', 'např. TT Tech s.r.o.')}
         <div class="g2">${f('dic', 'DIČ', 'CZ12345678')}${f('adresa', 'Sídlo', 'Ulice 1, 110 00 Praha 1')}</div>
         ${f('zkratky', 'Zkratky pro hledání', 'např. TT, TTT (oddělte čárkou)')}
-        <div><label class="l">Pracovníci na stavbě <span class="hint" style="display:inline;font-weight:400">(jméno, e-mail, telefon – použije se pro zprávy i docházku)</span></label><div class="cxf-prs" id="cxf-ks">${ksHtml()}</div>
+        <div><label class="l">Pracovníci na stavbě <span class="hint" style="display:inline;font-weight:400">(jméno, e-mail, telefon – použije se pro zprávy i docházku)</span></label><div class="cxf-prs" id="cxf-ks">${ksHtml()}</div><datalist id="cxf-pozl">${pozice(data().firmy).map(x => `<option value="${esc(x)}">`).join('')}</datalist>
           <button type="button" class="cxf-b add" id="cxf-kadd" style="margin-top:8px">+ Přidat pracovníka</button></div>
         <div><label class="l" for="cxf-pozn">Poznámka</label><input id="cxf-pozn" value="${esc(ed ? ed.pozn || '' : '')}" placeholder="např. elektroinstalace, objekt B"></div>`, 'Uložit', async () => {
         sber();
@@ -299,6 +307,6 @@ const CXFirmy = (() => {
   // jen okno Přidat / Upravit (bez seznamu), např. z formuláře záznamu: CXFirmy.okna(host).upravOsobu(null, 'tds')
   const okna = host => panel(null, host);
 
-  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty};
+  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty, pozice, aresPrimo};
 })();
 if (typeof window !== 'undefined') window.CXFirmy = CXFirmy;

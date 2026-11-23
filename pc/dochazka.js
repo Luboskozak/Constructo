@@ -202,6 +202,8 @@
     const d = dlg('<h3>Docházka pro: ' + esc(k.jmeno) + '</h3><p class="dc-m">' + esc([k.firma, k.funkce].filter(Boolean).join(' · ')) + '</p>' + cestyHtml(k, url));
     cestyBind(d, k, kid, url);
   }
+  // 4.87: seznam pozic je společný (pc/firmy.js): základní + vlastní pozice zapsané kdekoli u osob
+  const pozice = () => window.CXFirmy && CXFirmy.pozice ? CXFirmy.pozice((H && H.firmy()) || []) : FUNKCE;
   const FUNKCE = ['dělník', 'pomocný dělník', 'mistr', 'parťák', 'technik', 'stavbyvedoucí', 'elektrikář', 'instalatér', 'zedník', 'tesař', 'svářeč', 'řidič', 'jeřábník', 'brigádník'];
   // Jedno tlačítko „Pozvat do stavby“: vybrat uložené jméno (nebo zapsat novou osobu, uloží se k firmě ve Firmy / osoby na projektu)
   // a hned poslat osobní odkaz. Volá se z Docházky, z Firem (CXFirmy) i ze Správy stavby: pozvatDoStavby({jmeno, kid, po}).
@@ -221,12 +223,14 @@
       '<div class="dc-pk"><label class="dc-l" for="dp-kdo">Kdo</label><div class="dc-row"><select id="dp-kdo"></select><button type="button" class="btn" id="dp-nova">+ Nová osoba</button></div></div>' +
       '<div id="dp-form" hidden class="dc-nf"><h4>Nová osoba</h4><div class="dc-g2">' +
       '<div><label class="dc-l" for="dp-j">Jméno a příjmení *</label><input id="dp-j" autocomplete="off"></div>' +
-      '<div><label class="dc-l" for="dp-f">Firma *</label><select id="dp-f"><option value="">– vyberte firmu –</option>' + fy.map(f => '<option value="' + esc(f.id) + '">' + esc(f.firma || '') + '</option>').join('') + '</select></div>' +
-      '<div><label class="dc-l" for="dp-fu">Pozice</label><input id="dp-fu" list="dp-ful" placeholder="dělník, mistr, technik… nebo vlastní"><datalist id="dp-ful">' + FUNKCE.map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></div>' +
+      '<div><label class="dc-l" for="dp-f">Firma *</label><select id="dp-f"><option value="">– vyberte firmu –</option><option value="+">＋ Nová firma…</option>' + fy.map(f => '<option value="' + esc(f.id) + '">' + esc(f.firma || '') + '</option>').join('') + '</select></div>' +
+      '<div><label class="dc-l" for="dp-fu">Pozice</label><select id="dp-fu"><option value="">– vyberte pozici –</option><option value="+">＋ Vlastní pozice…</option>' + pozice().map(x => '<option>' + esc(x) + '</option>').join('') + '</select>' +
+      '<input id="dp-fuv" hidden placeholder="Napište pozici, např. obkladač" autocomplete="off" style="margin-top:6px"></div>' +
+      '<div id="dp-nfi" hidden class="dc-g2s"><div><label class="dc-l" for="dp-ico">IČO nové firmy</label><div class="dc-row"><input id="dp-ico" inputmode="numeric" placeholder="12345678" style="flex:1;min-width:120px"><button type="button" class="btn" id="dp-ares">Doplnit z ARES</button></div></div>' +
+      '<div><label class="dc-l" for="dp-fn">Název nové firmy *</label><input id="dp-fn" autocomplete="off" placeholder="doplní se z ARES, nebo napište"></div><p class="dc-m" id="dp-ast"></p></div>' +
       '<div><label class="dc-l" for="dp-t">Telefon (pro WhatsApp / SMS)</label><input id="dp-t" type="tel" placeholder="+420 …"></div>' +
       '<div><label class="dc-l" for="dp-e">E-mail</label><input id="dp-e" type="email"></div></div>' +
-      (fy.length ? '' : '<p class="dc-m">Zatím tu není žádná firma. Přidejte ji nejdřív ve <b>Firmy / osoby na projektu</b>.</p>') +
-      '<p class="dc-m">Osoba se uloží k firmě ve <b>Firmy / osoby na projektu</b> a uvidí ji všichni.</p>' +
+      '<p class="dc-m">Osoba i nová firma se uloží do <b>Firmy / osoby na projektu</b> a uvidí je všichni (Management, Deník, mobil).</p>' +
       '<div class="dc-row"><button type="button" class="btn dc-pri" id="dp-ul">Uložit a pozvat</button><button type="button" class="btn" id="dp-zr">Zrušit</button></div></div>' +
       '<div id="dp-out"></div>', 640);
     const sel = d.querySelector('#dp-kdo'), form = d.querySelector('#dp-form'), out = d.querySelector('#dp-out');
@@ -252,16 +256,39 @@
     sel.onchange = () => { form.hidden = true; ukaz(sel.value); };
     d.querySelector('#dp-nova').onclick = () => { form.hidden = false; out.innerHTML = ''; sel.value = ''; vyber = ''; d.querySelector('#dp-j').value = o.jmeno && !o.kid ? o.jmeno : ''; d.querySelector('#dp-j').focus(); };
     d.querySelector('#dp-zr').onclick = () => { form.hidden = true; };
+    const nfi = d.querySelector('#dp-nfi'), fuv = d.querySelector('#dp-fuv'), ast = d.querySelector('#dp-ast');
+    d.querySelector('#dp-f').onchange = e => { nfi.hidden = e.target.value !== '+'; if (!nfi.hidden) d.querySelector('#dp-ico').focus(); };
+    d.querySelector('#dp-fu').onchange = e => { fuv.hidden = e.target.value !== '+'; if (!fuv.hidden) fuv.focus(); };
+    d.querySelector('#dp-ares').onclick = async () => {
+      const b = d.querySelector('#dp-ares'); b.disabled = true; ast.style.color = ''; ast.textContent = 'Hledám v ARES…';
+      try {
+        const o = await (H.ares || (window.CXFirmy && CXFirmy.aresPrimo))(d.querySelector('#dp-ico').value);
+        d.querySelector('#dp-fn').value = String(o.firma || '').trim(); nfi._ares = o;
+        ast.textContent = '✓ ' + (o.firma || o.ico) + (o.adresa ? ', ' + o.adresa : '');
+      } catch (e) { ast.style.color = '#b42318'; ast.textContent = e.message; }
+      b.disabled = false;
+    };
     d.querySelector('#dp-ul').onclick = async () => {
       const g = id => d.querySelector(id).value.trim();
-      const j = g('#dp-j'), fid = g('#dp-f'), em = g('#dp-e');
+      const j = g('#dp-j'), em = g('#dp-e');
+      let fid = g('#dp-f');
+      const fu = g('#dp-fu') === '+' ? g('#dp-fuv') : g('#dp-fu');
       if (!j) { H.toast('Napište jméno a příjmení.'); d.querySelector('#dp-j').focus(); return; }
       if (!fid) { H.toast('Vyberte firmu.'); d.querySelector('#dp-f').focus(); return; }
+      if (fid === '+' && !g('#dp-fn')) { H.toast('Napište název nové firmy (nebo IČO a Doplnit z ARES).'); d.querySelector('#dp-fn').focus(); return; }
+      if (g('#dp-fu') === '+' && !fu) { H.toast('Napište pozici.'); fuv.focus(); return; }
       if (em && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(em)) { H.toast('E-mail ' + em + ' nevypadá správně.'); return; }
       if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
       if (!H.pridejOsobu) { H.toast('Novou osobu zapište ve Firmy / osoby na projektu.'); return; }
+      if (fid === '+') {
+        if (!H.pridejFirmu) { H.toast('Obnovte stránku (F5).'); return; }
+        const a = nfi._ares || {};
+        fid = H.pridejFirmu({firma: g('#dp-fn'), ico: g('#dp-ico').replace(/\D/g, ''), dic: a.dic || '', adresa: a.adresa || ''});
+        if (!fid) return;
+        if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
+      }
       const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-      const ok = await H.pridejOsobu(fid, {id: kid, jmeno: j, funkce: g('#dp-fu'), tel: g('#dp-t'), email: em, posilat: false});
+      const ok = await H.pridejOsobu(fid, {id: kid, jmeno: j, funkce: fu, tel: g('#dp-t'), email: em, posilat: false});
       if (!ok) return;
       H.toast('Uloženo: ' + j);
       form.hidden = true; vyber = kid; plnSel();
@@ -538,7 +565,7 @@
 .dc-chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:14px;padding:2px 10px;font:600 12px var(--f-body);cursor:pointer;margin-left:6px;vertical-align:middle}.dc-chip:hover{border-color:var(--ink)}
 .dc-acts{display:flex;gap:8px;justify-content:flex-end}
 .dc-l{display:block;font-size:12px;font-weight:700;color:var(--muted,#6b7279);margin:0 0 4px}.dc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.dc-row select{flex:1;min-width:220px;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
-.dc-nf{margin:14px 0;padding:14px;border:1px solid var(--line,#d9dcdf);border-radius:12px}.dc-nf h4{margin:0 0 10px}.dc-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}.dc-g2 input,.dc-g2 select{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border-radius:9px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
+.dc-g2s{grid-column:1/-1;margin:0;padding:10px;border-radius:10px;background:rgba(244,210,60,.12)}.dc-g2s>div{margin-bottom:8px}.dc-g2s input{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border-radius:10px;border:1px solid var(--line,#d9dcdf)}.dc-g2 #dp-fuv{width:100%}.dc-nf{margin:14px 0;padding:14px;border:1px solid var(--line,#d9dcdf);border-radius:12px}.dc-nf h4{margin:0 0 10px}.dc-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}.dc-g2 input,.dc-g2 select{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border-radius:9px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
 .dc-uz{background:#dcefe3;color:#1d5e37;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14.5px;margin:12px 0 0}.dc-cesty .btn.dc-hotovo{background:#dcefe3!important;color:#1d5e37!important;border-color:#2f8a52!important}.dc-cesty .btn.dc-chyba{background:#fdeae6!important;color:#b3261e!important}
 .dc-ph{margin:16px 0 0}.dc-ph small{font-weight:400;color:var(--muted,#6b7279)}.dc-wa{background:#25D366!important;color:#fff!important;border-color:#25D366!important}.dc-pozv{white-space:nowrap;margin-right:8px}.dc-pozv::before{display:none!important}
 @media (max-width:700px){.dc-g2{grid-template-columns:1fr}}
@@ -551,6 +578,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.3'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.4'
   };
 })();
