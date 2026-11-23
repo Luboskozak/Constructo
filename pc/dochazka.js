@@ -143,9 +143,9 @@
   function stavPozvanky(k) {
     const pz = k.pozvano || {}, c = [];
     if (pz.mail) c.push('✉ e-mail ' + kdy(pz.mail));
-    if (pz.wa) c.push('WhatsApp ' + kdy(pz.wa));
-    if (pz.sms) c.push('SMS ' + kdy(pz.sms));
-    return c.length ? '<div class="dc-uz">✓ Pozvánka už odešla: ' + c.join(' · ') + '. Znovu posílat nemusíte.</div>' : '';
+    if (pz.wa) c.push('WhatsApp otevřen ' + kdy(pz.wa));
+    if (pz.sms) c.push('SMS otevřena ' + kdy(pz.sms));
+    return c.length ? '<div class="dc-uz">✓ ' + c.join(' · ') + '.' + (pz.mail ? ' Když e-mail nedorazil, ať se podívá do <b>Spamu / Nevyžádané pošty</b>.' : '') + (pz.wa || pz.sms ? ' WhatsApp a SMS odejdou, až je v telefonu odešlete tlačítkem ➤.' : '') + '</div>' : '';
   }
   function oznac(box, k, kid, url0, cesta) {
     k.pozvano = Object.assign({}, k.pozvano, {[cesta]: new Date().toISOString()});
@@ -159,8 +159,8 @@
       stavPozvanky(k) +
       '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 200) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
       (k.email ? (pz.mail ? '<button type="button" class="btn dc-hotovo" data-p="mail">✓ E-mail odeslán ' + kdy(pz.mail) + '<small>poslat znovu (klepněte 2×)</small></button>' : '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>') : '<p class="dc-m">E-mail není vyplněný.</p>') +
-      (wa ? '<a class="btn dc-wa" data-p="wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">' + (pz.wa ? '✓ ' : '') + 'WhatsApp<small>' + (pz.wa ? 'otevřeno ' + kdy(pz.wa) + ' · znovu' : esc(k.tel)) + '</small></a>' : '') +
-      (tel ? '<a class="btn' + (pz.sms ? ' dc-hotovo' : '') + '" data-p="sms" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">' + (pz.sms ? '✓ SMS otevřena ' + kdy(pz.sms) + '<small>znovu</small>' : 'SMS z vašeho telefonu<small>zdarma podle vašeho tarifu</small>') + '</a>' : '') +
+      (wa ? '<a class="btn dc-wa" data-p="wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">' + (pz.wa ? '✓ ' : '') + 'WhatsApp<small>' + (pz.wa ? 'otevřeno ' + kdy(pz.wa) + ' · znovu' : esc(k.tel)) + ' · ve WhatsAppu pak klepněte na ➤ Odeslat</small></a>' : '') +
+      (tel ? '<a class="btn' + (pz.sms ? ' dc-hotovo' : '') + '" data-p="sms" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">' + (pz.sms ? '✓ SMS otevřena ' + kdy(pz.sms) + '<small>znovu · ve Zprávách klepněte na ↑ Odeslat</small>' : 'SMS z vašeho telefonu<small>ve Zprávách pak klepněte na ↑ Odeslat</small>') + '</a>' : '') +
       (!k.email && !tel ? '<p class="dc-m">Bez e-mailu a telefonu: zkopírujte odkaz nebo nechte pracovníka naskenovat QR.</p>' : '') +
       '<button type="button" class="btn" data-p="kop">Kopírovat odkaz</button></div></div>' +
       '<p class="dc-m">Odkaz je osobní: kdo ho otevře, zapisuje docházku za ' + esc(k.jmeno) + '. Neposílejte ho nikomu jinému.</p>';
@@ -187,7 +187,8 @@
           '<p style="color:#6b7279;font-size:13px">Місцезнаходження телефону визначається лише в мить натискання, ніколи інакше. Посилання особисте, нікому його не пересилайте.</p></div>'
         : '<ol><li>Otevřete odkaz v telefonu a klepněte na <b>Rozumím</b>.</li><li>Ráno na stavbě klepněte na velké zelené tlačítko <b>Příchod</b>, večer na <b>Odchod</b>. Nic víc.</li><li>E-mail si nechte, odkaz otevírejte každý den odsud.</li></ol>' +
           '<p style="color:#6b7279;font-size:13px">Poloha telefonu se zjistí jen ve chvíli klepnutí, nikdy jindy. Odkaz je osobní, nikomu ho neposílejte.</p></div>');
-      const r = await H.posliMail({komu: k.email, predmet: (POZJ === 'uk' ? 'Docházka Constructo (облік робочого часу) – ' : 'Docházka Constructo – ') + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date())});
+      const opak = !!(k.pozvano || {}).mail;   // vědomé opakované poslání = nové číslo zprávy (jinak by ho Google ten den přeskočil)
+      const r = await H.posliMail({komu: k.email, predmet: (POZJ === 'uk' ? 'Docházka Constructo (облік робочого часу) – ' : 'Docházka Constructo – ') + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date()) + (opak ? '-' + Date.now().toString(36) : '')});
       bm.disabled = false;
       if (r && r.ok) { H.toast('✓ E-mail odeslán: ' + k.email); oznac(box, k, kid, url0, 'mail'); }
       else { bm.innerHTML = '✕ Neodešlo – zkusit znovu<small>' + esc(r && r.error ? String(r.error).slice(0, 80) : 'bez signálu?') + '</small>'; bm.classList.add('dc-chyba'); }
