@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-24DThBNqLScjE6H64eEdiJyBPyzS2F/z8afpCDii3x8='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-WMnyteUKLZLN+hSdWQgS+Ryvq12vw0efzmv1MOXrygo='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
@@ -136,7 +136,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
 <script>
 (() => {
   'use strict';
-  const VERZE = '1.6';
+  const VERZE = '1.7';
   const API = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
@@ -284,6 +284,9 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
     ls.set('cx-doch', JSON.stringify(JA));
   }
   const QR = ok40(par.get('s')) && ok40(par.get('q')) ? {s: par.get('s'), q: par.get('q')} : null;
+  // 1.7: přišel přes QR na stavbě (fotoaparát otevře rovnou Safari/Chrome) nebo přes odkaz (WhatsApp, e-mail) – podle toho návod a video
+  if (QR) ls.set('cx-doch-qr', '1'); else if (par.get('k')) ls.del('cx-doch-qr');
+  const zQR = () => !!ls.get('cx-doch-qr');
   // iPhone: plocha si uloží celou adresu, ale jen bez manifestu (s manifestem by uložil úvodní adresu bez klíče)
   // 1.4: manifest JEN mimo iPhone. iPhone (i nový Safari) by z manifestu vzal úvodní adresu bez přihlášení; bez něj uloží na plochu celou adresu s klíčem.
   if (!ios()) { const l = document.createElement('link'); l.rel = 'manifest'; l.href = 'manifest.webmanifest'; document.head.appendChild(l); }
@@ -441,7 +444,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
   };
   function prehrajVideo() {
     const d = document.createElement('div'); d.className = 'vidbg';
-    d.innerHTML = '<video src="navod-' + (ios() ? '' : 'android-') + (L === 'uk' ? 'uk' : 'cs') + '.mp4" autoplay muted loop playsinline controls></video><button type="button" aria-label="✕">✕</button>';
+    d.innerHTML = '<video src="navod-' + (ios() ? '' : 'android-') + (zQR() ? 'qr-' : '') + (L === 'uk' ? 'uk' : 'cs') + '.mp4" autoplay muted loop playsinline controls></video><button type="button" aria-label="✕">✕</button>';
     d.querySelector('button').onclick = () => d.remove();
     document.body.appendChild(d);
     const v = d.querySelector('video'); try { v.play().catch(() => {}); } catch (e) {}
@@ -471,7 +474,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
     if (!installEvt && (kind === 'ios-safari' || kind === 'ios-inapp')) {
       // nový Safari (iOS 26): dole šedý řádek s adresou, vlevo ≡ ; starší iPhone: Sdílet uprostřed dolní lišty
       const novy = +((navigator.userAgent.match(/Version\/(\d+)/) || [])[1] || 0) >= 26;
-      const k = [{g: PG.saf, l: 'Safari', href: 'x-safari-' + location.href}];
+      const k = zQR() && kind === 'ios-safari' ? [] : [{g: PG.saf, l: 'Safari', href: 'x-safari-' + location.href}];
       if (novy) k.push({lista: 1});
       k.push({g: PG.share, l: 'Sdílet'}, {g: PG.plus, l: 'Přidat na plochu'}, {g: PG.tlac('Přidat')});
       return piktogramy(k, 'bottom:calc(2px + env(safe-area-inset-bottom,0px));left:' + (novy ? 'calc(29.5% - 26px)' : 'calc(50% - 26px)'), prvni);
@@ -482,7 +485,7 @@ footer button{border:0;background:none;color:var(--mut);text-decoration:underlin
     if (/^(chrome|inapp|miui|oppo|vivo|opera|uc|yandex|firefox|edge)$/.test(kind)) {
       // odkaz z WhatsAppu (nebo z jiného prohlížeče telefonu) – první dlaždice ho přepne do Chrome; tam se pak samo ukáže jedno tlačítko Nainstalovat
       const chr = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;package=com.android.chrome;end';
-      return piktogramy([{g: PG.chrome, l: 'Chrome', href: chr}, {g: PG.dots}, {g: PG.plus, l: 'Přidat na plochu'}, {g: PG.tlac('Instalovat')}], 'top:calc(4px + env(safe-area-inset-top,0px));right:6px', prvni);
+      return piktogramy((zQR() && kind === 'chrome' ? [] : [{g: PG.chrome, l: 'Chrome', href: chr}]).concat([{g: PG.dots}, {g: PG.plus, l: 'Přidat na plochu'}, {g: PG.tlac('Instalovat')}]), 'top:calc(4px + env(safe-area-inset-top,0px));right:6px', prvni);
     }
     const ikona = '<div class="ikona"><img src="apple-touch-icon.png" alt=""><div><b>Docházka</b><br><span class="mut">' + T.ikVzhled + '</span></div></div>';
     if (installEvt) {
