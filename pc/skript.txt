@@ -1,7 +1,7 @@
 // Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 19
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 20;
+const SKRIPT_VERZE = 21;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
 function doPost(e) {
@@ -667,12 +667,12 @@ function ares_(b) {
   const o = JSON.parse(r.getContentText());
   return json_({ico: o.ico || ico, firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''});
 }
-// 4.87: hledání firmy v ARES podle názvu (až 8 výsledků)
+// 4.87: hledání firmy v ARES podle názvu (až 15 výsledků)
 function aresHledat_(b) {
   if (b.key !== HESLO) return json_({error: 'heslo'});
   const t = String(b.t || '').trim();
   if (t.length < 3) return json_({error: 'Napište aspoň 3 písmena z názvu firmy.'});
-  const r = UrlFetchApp.fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/vyhledat', {method: 'post', contentType: 'application/json', muteHttpExceptions: true, headers: {Accept: 'application/json'}, payload: JSON.stringify({obchodniJmeno: t, pocet: 8, start: 0})});
+  const r = UrlFetchApp.fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/vyhledat', {method: 'post', contentType: 'application/json', muteHttpExceptions: true, headers: {Accept: 'application/json'}, payload: JSON.stringify({obchodniJmeno: t, pocet: 15, start: 0})});
   if (r.getResponseCode() !== 200) return json_({firmy: []});
   const o = JSON.parse(r.getContentText());
   return json_({firmy: (o.ekonomickeSubjekty || []).map(function (x) { return {ico: x.ico || '', firma: x.obchodniJmeno || '', dic: x.dic || '', adresa: (x.sidlo && x.sidlo.textovaAdresa) || ''}; })});

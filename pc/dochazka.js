@@ -275,7 +275,7 @@
       if (em && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(em)) { H.toast('E-mail ' + em + ' nevypadá správně.'); return; }
       if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
       if (!H.pridejOsobu) { H.toast('Novou osobu zapište ve Firmy / osoby na projektu.'); return; }
-toString(36) + Math.random().toString(36).slice(2, 5);
+      const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
       const ok = await H.pridejOsobu(fid, {id: kid, jmeno: j, funkce: fu, tel: g('#dp-t'), email: em, posilat: false});
       if (!ok) return;
       H.toast('Uloženo: ' + j);
@@ -350,6 +350,11 @@ toString(36) + Math.random().toString(36).slice(2, 5);
             (x.stav && S.den !== dnes && H.smi('doch') && !H.ro() ? ' <button type="button" class="dc-lnk" data-dopl="' + esc(x.kid) + '">doplnit</button>' : '') + '</td><td>' + cas(x.prichod) + '</td><td>' + cas(x.odchod) + '</td><td class="r">' + (x.pauza ? x.pauza + ' min' : '–') + '</td><td class="r"><b>' + hod(x.prace) + '</b></td><td>' + mistoHtml(pr, st) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     });
+    // 4.88: i lidé bez záznamu – aby bylo vidět, že nová firma / osoba je v Docházce (propsaná z Firem)
+    const bez = kontakty().filter(k => !L.some(x => x.kid === k.kid)), fb = {};
+    bez.forEach(k => (fb[k.firma || 'Bez firmy'] = fb[k.firma || 'Bez firmy'] || []).push(k));
+    if (bez.length) h += '<div class="dc-card dc-bez"><h4>Bez záznamu ' + (S.den === dnes ? 'dnes' : 'tento den') + ' <small>' + bez.length + ' ' + osob(bez.length) + '</small></h4>' +
+      Object.keys(fb).sort((a, b) => a.localeCompare(b, 'cs')).map(f => '<p><b>' + esc(f) + ':</b> ' + fb[f].sort((a, b) => a.jmeno.localeCompare(b.jmeno, 'cs')).map(k => esc(k.jmeno) + (k.funkce ? ' <small>(' + esc(k.funkce) + ')</small>' : '') + (Object.keys(k.pozvano || {}).length ? '' : ' <small class="dc-npz">nepozván</small>')).join(', ') + '</p>').join('') + '</div>';
     if (S.den === dnes) h += '<p class="dc-m">Každý den v 19:00 přijde vedení stavby e-mail s PDF docházky a počasím' + (S.report ? ' (naposledy ' + esc(fDY(S.report.split(' ')[0])) + ')' : '') + '.</p>';
     return h;
   }
@@ -524,7 +529,7 @@ toString(36) + Math.random().toString(36).slice(2, 5);
 .dc-tiles{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .dc-tile{background:var(--soft);border-radius:10px;padding:10px 16px;min-width:130px;font-size:13px;color:var(--muted)}.dc-tile b{display:block;font-size:28px;line-height:1.1;color:var(--ink);font-weight:800}
 .dc-tile.g{background:var(--good-soft)}.dc-tile.g b{color:var(--good)}.dc-tile.y{background:#fff4bf}
-.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
+.dc-bez p{margin:4px 0;font-size:14px;color:var(--muted,#6b7279)}.dc-bez p b{color:var(--ink,#131518)}.dc-npz{color:#b42318}.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
 .dc-t{width:100%;border-collapse:collapse;font-size:14px}.dc-t th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line);font-weight:700}
 .dc-t td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}.dc-t td small{display:block;color:var(--muted);font-size:12px}.dc-t .r{text-align:right}
 .dc-arch tr.dh td{background:var(--soft);font-weight:800;font-size:13px}.dc-arch tr.zr td{color:var(--muted);text-decoration:line-through}
@@ -566,6 +571,6 @@ toString(36) + Math.random().toString(36).slice(2, 5);
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.4'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.5'
   };
 })();

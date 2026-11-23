@@ -159,14 +159,14 @@ const CXFirmy = (() => {
     finally { clearTimeout(tm); }
   }
 
-  // 4.87: hledání v ARES i podle názvu firmy (vrací až 8 firem); když prohlížeč ARES nedosáhne, zkusí to host (skript Google)
+  // 4.87: hledání v ARES i podle názvu firmy (vrací až 15 firem); když prohlížeč ARES nedosáhne, zkusí to host (skript Google)
   const aresSub = o => ({ico: o.ico || '', firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''});
   async function aresHledejPrimo(t) {
     t = String(t || '').trim();
     if (t.length < 3) throw new Error('Napište aspoň 3 písmena z názvu firmy.');
     const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 12000);
     try {
-      const r = await fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/vyhledat', {method: 'POST', headers: {Accept: 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({obchodniJmeno: t, pocet: 8, start: 0}), signal: ctl.signal});
+      const r = await fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/vyhledat', {method: 'POST', headers: {Accept: 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({obchodniJmeno: t, pocet: 15, start: 0}), signal: ctl.signal});
       if (!r.ok) throw new Error('ARES');
       const o = await r.json();
       return (o.ekonomickeSubjekty || []).map(aresSub);
