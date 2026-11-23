@@ -357,7 +357,23 @@
   /* ---------- vykreslení ---------- */
   function lista() {
     return '<div class="sl-top dc-top"><b>Docházka</b><span>' + (S.nacita ? 'načítám…' : S.nacteno ? 'pracovníci potvrzují v telefonu · obnovuje se samo' : '') + '</span><span class="sp" style="flex:1"></span>' + tlacitkoPozvat() +
-      '<div class="seg" role="tablist">' + [['dnes', 'Den'], ['prehled', 'Přehledy a grafy'], ['archiv', 'Archiv záznamů'], ['lide', 'Pracovníci a QR']].map(([k, l]) => '<button type="button" data-dt="' + k + '" aria-pressed="' + (S.tab === k) + '">' + l + '</button>').join('') + '</div></div>';
+      '<div class="seg" role="tablist">' + [['dnes', 'Den'], ['prehled', 'Přehledy a grafy'], ['archiv', 'Archiv záznamů'], ['lide', 'Pracovníci a QR']].map(([k, l]) => '<button type="button" data-dt="' + k + '" aria-pressed="' + (S.tab === k && !S.q) + '">' + l + '</button>').join('') + '</div></div>' +
+      '<div class="dc-hl"><input id="dc-q" type="search" autocomplete="off" placeholder="🔍 Vyhledat osobu, firmu, pozici, telefon… (stačí část textu)" value="' + esc(S.q || '') + '">' + (S.q ? '<button type="button" class="btn" id="dc-qx">✕ Zrušit hledání</button>' : '') + '</div>';
+  }
+  // 4.90: Vyhledat – osoby i firmy z celého Constructa (Firmy / osoby na projektu), i podle části textu, bez háčků, s překlepem
+  function vHledat() {
+    const q = S.q, sedi = (...co) => H.hledej ? H.hledej(q, ...co) : co.join(' ').toLowerCase().includes(q.toLowerCase());
+    const ks = kontakty().filter(k => sedi(k.jmeno, k.firma, k.funkce, k.tel, k.email));
+    const fy = (H.firmy() || []).filter(f => f && f.id && sedi(f.firma, f.ico, f.zkratky, f.adresa, (window.CXFirmy ? CXFirmy.kontakty(f) : []).map(k => k.jmeno)));
+    const zaz = vse().filter(x => !x.zrus), pocet = kid => zaz.filter(x => x.kid === kid).length;
+    const smi = H.smi('doch') && !H.ro();
+    let h = '<div class="dc-card"><h4>Osoby <small>' + ks.length + '</small></h4>';
+    h += ks.length ? '<table class="dc-t"><tbody>' + ks.sort((a, b) => a.jmeno.localeCompare(b.jmeno, 'cs')).map(k => '<tr><td><b>' + esc(k.jmeno) + '</b>' + (k.funkce ? '<small>' + esc(k.funkce) + '</small>' : '') + '</td><td>' + esc(k.firma) + '</td><td>' + esc([k.tel, k.email].filter(Boolean).join(' · ')) + '</td><td>' +
+      (Object.keys(k.pozvano || {}).length ? '<span class="dc-st g">pozván</span>' : '<span class="dc-npz">nepozván</span>') + '</td><td class="r">' +
+      (smi ? '<button type="button" class="btn" data-hpoz="' + esc(k.kid) + '">Pozvat / odkaz</button> ' : '') + '<button type="button" class="btn" data-hzaz="' + esc(k.kid) + '">Záznamy (' + pocet(k.kid) + ')</button>' + (smi && k.fid && H.upravFirmu ? ' <button type="button" class="btn" data-hupr="' + esc(k.fid) + '">✎ Upravit</button>' : '') + '</td></tr>').join('') + '</tbody></table>' : '<p class="dc-m">Žádná osoba neodpovídá.</p>';
+    h += '</div><div class="dc-card"><h4>Firmy <small>' + fy.length + '</small></h4>';
+    h += fy.length ? '<table class="dc-t"><tbody>' + fy.sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs')).map(f => { const n = (window.CXFirmy ? CXFirmy.kontakty(f) : []).length; return '<tr><td><b>' + esc(f.firma) + '</b>' + (f.ico ? '<small>IČO ' + esc(f.ico) + '</small>' : '') + '</td><td>' + n + ' ' + osob(n) + '</td><td class="r"><button type="button" class="btn" data-hfz="' + esc(f.firma) + '">Záznamy firmy</button>' + (smi && H.upravFirmu ? ' <button type="button" class="btn" data-hupr="' + esc(f.id) + '">✎ Upravit</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table>' : '<p class="dc-m">Žádná firma neodpovídá.</p>';
+    return h + '</div><p class="dc-m">Úpravy se ukládají do Firmy / osoby na projektu a propíšou se všude (Management, Deník, mobil).</p>';
   }
   function vDen() {
     const L = lideDne(S.den), st = stred(), dnes = den(new Date());
@@ -487,9 +503,11 @@
     let h = lista();
     if (S.chyba) h += '<p class="dc-err">' + esc(S.chyba) + '</p>';
     if (!S.nacteno && S.tab !== 'lide') h += '<p class="dc-empty">' + (S.nacita ? 'Načítám docházku z Googlu…' : 'Docházka zatím není načtená.') + '</p>';
-    else h += '<div class="dc-body">' + (S.tab === 'dnes' ? vDen() : S.tab === 'prehled' ? vPrehled() : S.tab === 'archiv' ? vArchiv() : vLide()) + '</div>';
+    else h += '<div class="dc-body">' + (S.q ? vHledat() : S.tab === 'dnes' ? vDen() : S.tab === 'prehled' ? vPrehled() : S.tab === 'archiv' ? vArchiv() : vLide()) + '</div>';
+    const fq = document.activeElement && document.activeElement.id === 'dc-q';
     box.innerHTML = h;
     window.scrollTo(0, y);
+    if (fq) { const i = box.querySelector('#dc-q'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }
   }
   function vykresli(el) {
     EL = el;
@@ -507,7 +525,12 @@
     if (pk && H) { e.preventDefault(); pozvat(pk.dataset.dochK); return; }
     if (!EL || !e.target.closest('.dc')) return;
     const t = e.target.closest('button, [data-tip]'); if (!t) return;
-    if (t.dataset.dt) { S.tab = t.dataset.dt; obnov(); return; }
+    if (t.dataset.dt) { S.tab = t.dataset.dt; S.q = ''; obnov(); return; }
+    if (t.id === 'dc-qx') { S.q = ''; obnov(); return; }
+    if (t.dataset.hpoz) { pozvatDoStavby({kid: t.dataset.hpoz, po: obnov}); return; }
+    if (t.dataset.hzaz) { S.q = ''; S.tab = 'archiv'; S.f = Object.assign({}, S.f, {firma: '', osoba: t.dataset.hzaz, od: '', do: ''}); obnov(); return; }
+    if (t.dataset.hfz) { S.q = ''; S.tab = 'archiv'; S.f = Object.assign({}, S.f, {firma: t.dataset.hfz, osoba: '', od: '', do: ''}); obnov(); return; }
+    if (t.dataset.hupr) { H.upravFirmu(t.dataset.hupr, obnov); return; }
     if (t.dataset.dd !== undefined) { S.den = t.dataset.dd === '0' ? den(new Date()) : plus(S.den, Number(t.dataset.dd)); obnov(); return; }
     if (t.dataset.ob) { S.obd = t.dataset.ob; obnov(); return; }
     if (t.dataset.or) { const n = Number(t.dataset.or); S.ref = S.obd === 'den' ? plus(S.ref, n) : S.obd === 'tyden' ? plus(S.ref, 7 * n) : den(new Date(pd(S.ref).getFullYear(), pd(S.ref).getMonth() + n, 1)); obnov(); return; }
@@ -526,6 +549,11 @@
         a.href = URL.createObjectURL(new Blob([b], {type: 'application/pdf'})); a.download = r.jmeno || 'dochazka.pdf'; a.click();
       }).catch(er => H.toast(er.message)).finally(() => obnov());
     }
+  });
+  let qT = 0;
+  document.addEventListener('input', e => {
+    if (!EL || e.target.id !== 'dc-q' || !e.target.closest('.dc')) return;
+    clearTimeout(qT); const v = e.target.value; qT = setTimeout(() => { S.q = v.trim(); obnov(); }, 200);
   });
   document.addEventListener('change', e => {
     if (!EL || !e.target.closest('.dc')) return;
@@ -557,7 +585,7 @@
 .dc-tiles{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .dc-tile{background:var(--soft);border-radius:10px;padding:10px 16px;min-width:130px;font-size:13px;color:var(--muted)}.dc-tile b{display:block;font-size:28px;line-height:1.1;color:var(--ink);font-weight:800}
 .dc-tile.g{background:var(--good-soft)}.dc-tile.g b{color:var(--good)}.dc-tile.y{background:#fff4bf}
-.dc-bez p{margin:4px 0;font-size:14px;color:var(--muted,#6b7279)}.dc-bez p b{color:var(--ink,#131518)}.dc-npz{color:#b42318}.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
+.dc-hl{display:flex;gap:8px;margin:10px 0 0}.dc-hl input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}.dc-t td.r .btn{margin:2px 0}.dc-bez p{margin:4px 0;font-size:14px;color:var(--muted,#6b7279)}.dc-bez p b{color:var(--ink,#131518)}.dc-npz{color:#b42318}.dc-firma{margin-bottom:16px}.dc-firma h4,.dc-card h4{margin:0 0 6px;font-size:16px}.dc-firma h4 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:6px}
 .dc-t{width:100%;border-collapse:collapse;font-size:14px}.dc-t th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line);font-weight:700}
 .dc-t td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}.dc-t td small{display:block;color:var(--muted);font-size:12px}.dc-t .r{text-align:right}
 .dc-arch tr.dh td{background:var(--soft);font-weight:800;font-size:13px}.dc-arch tr.zr td{color:var(--muted);text-decoration:line-through}
@@ -599,6 +627,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.6'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.7'
   };
 })();

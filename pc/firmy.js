@@ -145,6 +145,9 @@ const CXFirmy = (() => {
       .forEach(x => { const k = fold(x); if (x && !m.has(k)) m.set(k, x); });
     return [...m.values()].sort((a, b) => POZICE.indexOf(a) < 0 && POZICE.indexOf(b) < 0 ? a.localeCompare(b, 'cs') : POZICE.indexOf(a) < 0 ? 1 : POZICE.indexOf(b) < 0 ? -1 : POZICE.indexOf(a) - POZICE.indexOf(b));
   };
+  // 4.90: stejná firma i při jiném zápisu („Subterra a.s.“ = „S u b t e r r a a.s.“, „Auböck“ = „Auböck s.r.o.“)
+  const normFirma = n => { let x = fold(n).replace(/[^a-z0-9]/g, ''), y; do { y = x; x = x.replace(/(spolecnostsrucenimomezenym|akciovaspolecnost|spolsro|sro|as|vos|ks|se|spol)$/, ''); } while (x !== y && x.length > 2); return x || fold(n); };
+  const stejnaFirma = (a, b) => !!(a && b && ((a.ico && b.ico && String(a.ico).replace(/\s/g, '') === String(b.ico).replace(/\s/g, '')) || normFirma(a.firma) === normFirma(b.firma)));
   async function aresPrimo(ico) {
     ico = String(ico || '').replace(/\D/g, '');
     if (ico.length !== 8) throw new Error('IČO má mít 8 číslic.');
@@ -228,7 +231,7 @@ const CXFirmy = (() => {
           return `<div class="cxf-row" data-id="${esc(x.id)}"><div><b class="n">${esc(x.firma)}</b>${x.ico || x.dic ? `<small>${esc([x.ico ? 'IČO ' + x.ico : '', x.dic ? 'DIČ ' + x.dic : ''].filter(Boolean).join(' · '))}</small>` : ''}${x.adresa ? `<small>${esc(x.adresa)}</small>` : ''}${x.zkratky ? `<small>Zkratky: ${esc(x.zkratky)}</small>` : ''}${x.pozn ? `<small><i>${esc(x.pozn)}</i></small>` : ''}${n && host.zpravy ? `<small><button type="button" class="cxf-b lnk" data-zpr="${esc(x.firma)}">${n} ${tvar(n, 'zpráva', 'zprávy', 'zpráv')} →</button></small>` : ''}</div>
             <div class="cxf-ks">${ks.length ? ks.map(k => `<div class="k${k.posilat === false ? ' off' : ''}"><b>${esc(k.jmeno || 'e-mail firmy')}</b>${k.funkce ? ` <span>· ${esc(k.funkce)}</span>` : ''}<br><span>${[k.email ? `<a href="mailto:${esc(k.email)}">${esc(k.email)}</a>` : '', k.tel ? `<a href="tel:${esc(String(k.tel).replace(/\s/g, ''))}">${esc(k.tel)}</a>` : ''].filter(Boolean).join(' · ') || 'bez kontaktu'}${k.posilat === false ? ' · zprávy nedostává' : ''}</span>${window.CXDochazka && CXDochazka.tlacitko ? ' ' + CXDochazka.tlacitko(x, k) : ''}</div>`).join('') : '<span class="cxf-chybi">zatím žádní pracovníci</span>'}${ks.length && !maMail ? '<span class="cxf-chybi">chybí e-mail pro zprávy</span>' : ''}</div>
             <div class="cxf-a">${R ? '' : `<button type="button" class="cxf-b" data-ed="firmy" data-i="${esc(x.id)}">Upravit</button><button type="button" class="cxf-b del" data-od="firmy" data-i="${esc(x.id)}">Odebrat</button>`}</div></div>`;
-        }).join('') : `<div class="cxf-empty">${st.q ? 'Nic neodpovídá hledání.' : 'Zatím žádný dodavatel. Klikněte na + Přidat, napište IČO a zbytek se doplní z ARES.'}</div>`;
+        }).join('') : `<div class="cxf-empty">${st.q ? 'Nic neodpovídá hledání.' : 'Zatím žádná firma. Klikněte na + Přidat, napište IČO a zbytek se doplní z ARES.'}</div>`;
         h += '</section>';
       }
       const obl = OBJ.filter(([k]) => ukazObj(k));
@@ -276,7 +279,7 @@ const CXFirmy = (() => {
           <input data-kf="email" type="email" value="${esc(k.email || '')}" placeholder="E-mail" aria-label="E-mail">
           <input data-kf="tel" type="tel" value="${esc(k.tel || '')}" placeholder="Telefon" aria-label="Telefon">
           <div class="pa"><label><input type="checkbox" data-kf="posilat"${k.posilat !== false ? ' checked' : ''}> posílat zprávy</label><button type="button" class="cxf-b del" data-krm="${i}">Odebrat</button></div></div>`).join('');
-      const ov = okno(ed ? 'Upravit dodavatele' : 'Přidat dodavatele', `
+      const ov = okno(ed ? 'Upravit firmu' : 'Přidat firmu', `
         <div class="ico">${f('ico', 'IČO', '12345678')}<button type="button" class="cxf-b" id="cxf-ares">Hledat v ARES</button></div>
         <p class="hint" id="cxf-ares-st">Napište IČO nebo název firmy a klikněte Hledat v ARES: název, sídlo a DIČ se vyplní samy.</p>
         ${f('firma', 'Název firmy', 'např. TT Tech s.r.o.')}
@@ -291,14 +294,29 @@ const CXFirmy = (() => {
         const kk = ks.filter(k => k.jmeno || k.email || k.tel);
         const spatny = kk.find(k => k.email && !EMAIL_RE.test(k.email));
         if (spatny) { toast('E-mail ' + spatny.email + ' nevypadá správně.'); return 'keep'; }
-        if (data().firmy.some(x => x.id !== (ed && ed.id) && fold(x.firma) === fold(n))) { toast('Firma ' + n + ' už v seznamu je.'); return 'keep'; }
+        const ico0 = g('ico').replace(/\s/g, '');
+        const jina = data().firmy.find(x => x.id !== (ed && ed.id) && stejnaFirma(x, {firma: n, ico: ico0}));
+        if (jina && ed) { const st0 = ov.querySelector('#cxf-ares-st'); st0.style.color = '#c0332b'; st0.textContent = 'Firma ' + jina.firma + ' už v seznamu je zvlášť. Opravte název nebo IČO.'; st0.scrollIntoView({block: 'center'}); toast(st0.textContent); return 'keep'; }
         kk.forEach(k => { if (!k.id) k.id = nid('k'); });
+        // 4.90: firma už v seznamu je → nepřidává se znovu, ale doplní se do ní (údaje z ARES, noví pracovníci); vidí to všichni
+        if (jina) {
+          const ks0 = kontakty(jina).map(k => Object.assign({}, k)), nove = [];
+          kk.forEach(k => { const o = k.jmeno && ks0.find(y => fold(y.jmeno) === fold(k.jmeno)); if (o) ['funkce', 'email', 'tel'].forEach(f => { if (k[f] && !o[f]) o[f] = k[f]; }); else nove.push(k); });
+          const vse = ks0.concat(nove), hl0 = vse.find(k => k.posilat !== false && k.email) || vse[0] || {};
+          const y = Object.assign({}, jina, {ico: ico0 || jina.ico || '', dic: g('dic') || jina.dic || '', adresa: g('adresa') || jina.adresa || '', pozn: jina.pozn || g('pozn'), zkratky: jina.zkratky || g('zkratky'),
+            kontakty: vse, email: hl0.email || jina.email || '', tel: hl0.tel || jina.tel || '', _ts: Date.now()});
+          await host.uloz('firmy', y, jina);
+          if (host.poNove) try { host.poNove(y.id); } catch (e) {}
+          toast(jina.firma + ' už v seznamu byla – doplněno' + (nove.length ? ': ' + nove.map(k => k.jmeno).filter(Boolean).join(', ') : '') + '.'); render();
+          return;
+        }
         // první osoba, které chodí zprávy, se ukládá i postaru (e-mail, telefon, kontakt) pro starší verze
         const hl = kk.find(k => k.posilat !== false && k.email) || kk.find(k => k.posilat !== false) || kk[0] || {};
         const x = Object.assign({}, ed || {}, {id: ed ? ed.id : nid('f'), firma: n, ico: g('ico').replace(/\s/g, ''), dic: g('dic'), adresa: g('adresa'), pozn: g('pozn'), zkratky: g('zkratky'),
           kontakty: kk, email: hl.email || '', tel: hl.tel || '', kontakt: [hl.jmeno, hl.funkce].filter(Boolean).join(', '), _ts: Date.now()});
         await host.uloz('firmy', x, ed);
-        toast(ed ? 'Uloženo' : 'Dodavatel přidán: ' + n); render();
+        if (!ed && host.poNove) try { host.poNove(x.id); } catch (e) {}
+        toast(ed ? 'Uloženo' : 'Firma přidána: ' + n); render();
       });
       function sber() { ov.querySelectorAll('.cxf-pr').forEach(r => { const k = ks[+r.dataset.ki]; r.querySelectorAll('[data-kf]').forEach(i => { k[i.dataset.kf] = i.type === 'checkbox' ? i.checked : i.value.trim(); }); }); }
       function kresli() { ov.querySelector('#cxf-ks').innerHTML = ksHtml(); ov.querySelectorAll('[data-krm]').forEach(b => b.onclick = () => { sber(); ks.splice(+b.dataset.krm, 1); kresli(); }); }
@@ -347,6 +365,6 @@ const CXFirmy = (() => {
   // jen okno Přidat / Upravit (bez seznamu), např. z formuláře záznamu: CXFirmy.okna(host).upravOsobu(null, 'tds')
   const okna = host => panel(null, host);
 
-  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty, pozice, aresPrimo, aresTlacitko};
+  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty, pozice, aresPrimo, aresTlacitko, normFirma, stejnaFirma};
 })();
 if (typeof window !== 'undefined') window.CXFirmy = CXFirmy;
