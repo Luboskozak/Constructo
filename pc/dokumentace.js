@@ -101,7 +101,7 @@
 .dkv-stage canvas,.dkv-stage svg.ann{position:absolute;left:0;top:0;transform-origin:0 0}
 .dkv-stage canvas.zakl{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.35);image-rendering:auto}
 .dkv-stage .vyb{position:absolute;border:2px dashed #F4D23C;background:rgba(244,210,60,.15);pointer-events:none;display:none;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}
-.dkv-stage[data-n=posun]{cursor:grab}.dkv-stage[data-n=posun].drz{cursor:grabbing}.dkv-stage.nad{cursor:move!important}.dkv-stage.tah{cursor:grabbing!important}
+.dkv-stage[data-n=posun]{cursor:grab}.dkv-stage[data-n=posun].drz{cursor:grabbing}.dkv-stage.nad{cursor:move!important}.dkv-stage.rotk{cursor:alias!important}.dkv-stage.tah{cursor:grabbing!important}
 .dkv-stage:not([data-n=posun]):not([data-n=text]){cursor:crosshair}.dkv-stage[data-n=text]{cursor:text}.dkv-stage[data-n=guma]{cursor:cell}.dkv-stage[data-n=razitko]{cursor:copy}
 .dkv-msg{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:16px;text-align:center;padding:20px}
 .dkv-msg .bx{background:#16191c;border-radius:14px;padding:20px 24px;max-width:520px;line-height:1.5}
@@ -524,6 +524,8 @@
     zpet: '<svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',
     zvyraz: '<svg viewBox="0 0 24 24"><path d="M9 11l-5 5v4h4l5-5"/><path d="M9 11l4 4 7-7-4-4z"/></svg>',
     cara: '<svg viewBox="0 0 24 24"><path d="M4 20L20 4"/></svg>',
+    mnoho: '<svg viewBox="0 0 24 24"><path d="M12 3l9 6.5-3.5 10.5h-11L3 9.5z"/></svg>',
+    oblouk: '<svg viewBox="0 0 24 24"><path d="M3 18a9.5 9.5 0 0 1 18 0"/></svg>',
     obdelnik: '<svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="1"/></svg>',
     mrak: '<svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-1-7.9A5 5 0 0 1 15.5 8 4 4 0 0 1 18 15.9 3 3 0 0 1 16 18z"/></svg>',
     razitko: '<svg viewBox="0 0 24 24"><path d="M9 3h6v5l-1.5 3h3A2.5 2.5 0 0 1 19 13.5V16H5v-2.5A2.5 2.5 0 0 1 7.5 11h3L9 8z"/><path d="M4 20h16"/></svg>',
@@ -569,7 +571,9 @@
         ${T('cara', IK.cara, 'Čára')}
         ${T('sipka', IK.sipka, 'Šipka')}
         ${T('obdelnik', IK.obdelnik, 'Obdélník')}
+        ${T('mnoho', IK.mnoho, 'Mnohoúhel.', 'Mnohoúhelník – klikejte body, uzavřete klikem na první bod, dvojklikem nebo Enter')}
         ${T('kolecko', IK.kolecko, 'Kolečko', 'Kolečko – zakroužkovat')}
+        ${T('oblouk', IK.oblouk, 'Oblouk', 'Oblouk – táhněte od začátku do konce')}
         ${T('mrak', IK.mrak, 'Mráček', 'Mráček – označit změnu nebo vadu')}
         ${T('text', IK.text, 'Text')}
         ${T('razitko', IK.razitko, 'Razítko', 'Razítko: OK, CHYBA, DOTAZ, POZOR…')}
@@ -588,10 +592,10 @@
     V = {sour, el, st, zakl: st.querySelector('canvas.zakl'), det: st.querySelector('canvas.det'), svg: st.querySelector('svg.ann'), vyb: st.querySelector('.vyb'), msg: st.querySelector('.dkv-msg'), hint: st.querySelector('.dkv-hint'),
       rec: null, typ: '', doc: null, img: null, str: 1, pocet: 1, w: 1, h: 1, w0: 1, h0: 1, rot: 0, rotace: {}, s: 1, tx: 0, ty: 0, n: 'posun', barva: BARVY[0], tl: Number(pam('cx-dkv-tl')) || 2, razitko: RAZITKA[0], kresby: {}, det0: null, detUloha: null, detT: 0, gen: 0, ptr: new Map()};
     el.querySelectorAll('button[data-n]').forEach(b => b.onclick = () => b.dataset.n === 'razitko' ? menuRazitek(b) : nastroj(b.dataset.n));
-    el.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { V.barva = b.dataset.b; el.querySelectorAll('[data-b]').forEach(x => x.setAttribute('aria-pressed', x === b)); if (['posun', 'vyrez', 'guma', 'razitko'].includes(V.n)) nastroj('tuzka'); });
+    el.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { V.barva = b.dataset.b; el.querySelectorAll('[data-b]').forEach(x => x.setAttribute('aria-pressed', x === b)); if (vybrana()) { zapamatuj(); V.sel.b = V.sel.t === 'zvyraz' && V.barva === '#16191c' ? '#f2b705' : V.barva; kresliAnn(); return; } if (['posun', 'vyrez', 'guma', 'razitko'].includes(V.n)) nastroj('tuzka'); });
     el.querySelector('[data-b]').setAttribute('aria-pressed', 'true');
     const tlUi = () => el.querySelectorAll('[data-tl]').forEach(x => x.setAttribute('aria-pressed', Number(x.dataset.tl) === V.tl));
-    el.querySelectorAll('[data-tl]').forEach(b => b.onclick = () => { V.tl = Number(b.dataset.tl); pamSet('cx-dkv-tl', V.tl); tlUi(); if (['posun', 'vyrez', 'guma'].includes(V.n)) nastroj('tuzka'); });
+    el.querySelectorAll('[data-tl]').forEach(b => b.onclick = () => { V.tl = Number(b.dataset.tl); pamSet('cx-dkv-tl', V.tl); tlUi(); if (vybrana()) { zapamatuj(); zmenTl(V.sel, V.tl); kresliAnn(); return; } if (['posun', 'vyrez', 'guma'].includes(V.n)) nastroj('tuzka'); });
     tlUi();
     el.querySelector('[data-v="zavrit"]').onclick = zavri;
     const vp = el.querySelector('[data-v="vpred"]'), vd = el.querySelector('[data-v="vdal"]');
@@ -624,6 +628,8 @@
   }
   function klavesy(e) {
     if (!V || e.target.closest('input,textarea')) return;
+    if (V.poly && (e.key === 'Escape' || e.key === 'Enter')) { e.preventDefault(); e.stopImmediatePropagation(); e.key === 'Enter' ? polyHotovo() : (V.poly = null, kresliAnn()); return; }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && vybrana()) { e.preventDefault(); zapamatuj(); kresbyListu().splice(kresbyListu().indexOf(V.sel), 1); V.sel = null; kresliAnn(); return; }
     if (e.key === 'Escape') { if (document.querySelector('.dkv-menu')) { e.stopImmediatePropagation(); zavriMenu(); return; } if (document.querySelector('.dkv-out,.dkv-dlg')) return; e.preventDefault(); e.stopImmediatePropagation(); if (!zpet()) napoveda('Není co vrátit. Výkres zavřete žlutým tlačítkem ✕ Zavřít vlevo nahoře.'); }   // 4.94: Esc = Zpět (dřív zavřel výkres)
     else if (e.key === '+' || e.key === '=') zoomKolem(1.4);
     else if (e.key === '-') zoomKolem(1 / 1.4);
@@ -636,12 +642,14 @@
   let resT = 0;
   function naResize() { clearTimeout(resT); resT = setTimeout(() => { if (V) { pozice(); planujDetail(); } }, 120); }
   function nastroj(n) {
-    V.n = n; V.st.dataset.n = n;
+    if (V.poly) polyHotovo(); if (n !== V.n) V.sel = null;
+    V.n = n; V.st.dataset.n = n; kresliAnn();
     V.el.querySelectorAll('[data-n]').forEach(b => b.setAttribute('aria-pressed', b.dataset.n === n));
     const D_ = dotyk(), m = D_ ? 'prstem' : 'myší';
     const t = {posun: D_ ? 'Posun prstem · dvěma prsty zvětšíte · značku chytíte prstem a přesunete' : 'Táhněte myší pro posun · nakreslenou značku chytíte a přesunete · kolečko myši zvětšuje · Esc = Zpět',
       tuzka: 'Kreslete ' + m, zvyraz: 'Přejeďte ' + m + ' přes místo – zvýrazní se průhlednou barvou', cara: 'Táhněte ' + m + ' rovnou čáru', sipka: 'Táhněte od začátku ke špičce šipky',
-      obdelnik: 'Táhněte ' + m + ' obdélník', kolecko: 'Táhněte ' + m + ' přes místo, které chcete zakroužkovat', mrak: 'Táhněte ' + m + ' obdélník – nakreslí se mráček (označení změny nebo vady)',
+      obdelnik: 'Táhněte ' + m + ' obdélník', mnoho: (D_ ? 'Klepejte' : 'Klikejte') + ' body mnohoúhelníku – uzavřete ' + (D_ ? 'klepnutím' : 'klikem') + ' na první bod' + (D_ ? '' : ', dvojklikem nebo Enter'),
+      oblouk: 'Táhněte ' + m + ' od začátku do konce oblouku (otočením kolečkem se dá obrátit)', kolecko: 'Táhněte ' + m + ' přes místo, které chcete zakroužkovat', mrak: 'Táhněte ' + m + ' obdélník – nakreslí se mráček (označení změny nebo vady)',
       text: (D_ ? 'Klepněte' : 'Klikněte') + ', kam chcete napsat text', razitko: (D_ ? 'Klepněte' : 'Klikněte') + ', kam dát razítko „' + V.razitko[0] + '“',
       meritko: 'Táhněte ' + m + ' od bodu k bodu – ukáže se vzdálenost (měřítko ' + merTxt() + ')', guma: (D_ ? 'Klepněte' : 'Klikněte') + ' na značku, která se má smazat',
       vyrez: 'Táhněte ' + m + ' obdélník výřezu (i s nakreslenými značkami)'}[n];
@@ -815,7 +823,41 @@
       for (let j = 1; j <= n; j++) { const x = p[0] + (q[0] - p[0]) * j / n, y = p[1] + (q[1] - p[1]) * j / n; out += `A${f1(L / n / 2)},${f1(L / n / 2)} 0 0 1 ${f1(x)},${f1(y)}`; } }
     return out + 'Z';
   }
+  // 4.95: oblouk = kruhový oblouk nad tětivou r, vyboulení 30 % délky (strana podle směru tažení)
+  function obloukGeo(k) {
+    const [x0, y0, x1, y1] = k.r, dx = x1 - x0, dy = y1 - y0, c = Math.hypot(dx, dy); if (c < 1e-6) return null;
+    const h = c * 0.3, R = (c * c / 4 + h * h) / (2 * h), n = [dy / c, -dx / c], m = [(x0 + x1) / 2, (y0 + y1) / 2], C = [m[0] - n[0] * (R - h), m[1] - n[1] * (R - h)];
+    const a0 = Math.atan2(y0 - C[1], x0 - C[0]); let da = Math.atan2(y1 - C[1], x1 - C[0]) - a0; while (da <= 0) da += 2 * Math.PI;
+    return {R, C, a0, da, body: Array.from({length: 25}, (_, i) => [C[0] + R * Math.cos(a0 + da * i / 24), C[1] + R * Math.sin(a0 + da * i / 24)])};
+  }
+  function obal(k) {   // [x0, y0, x1, y1] značky bez vlastního otočení
+    let b = [];
+    if (k.t === 'oblouk') { const g = obloukGeo(k); b = g ? g.body : [[k.r[0], k.r[1]]]; }
+    else if (k.p) b = k.p; else if (k.r) b = [[k.r[0], k.r[1]], [k.r[2], k.r[3]]];
+    popisky(k).forEach(t => { if (t.stred) return; const sir = t.s.length * t.v * 0.66 + t.v * 0.9; b = b.concat([[t.x - t.v * 0.45, t.y - t.v * 1.08], [t.x - t.v * 0.45 + sir, t.y + t.v * 0.37]]); });
+    if (!b.length) return [0, 0, 0, 0];
+    return [Math.min(...b.map(q => q[0])), Math.min(...b.map(q => q[1])), Math.max(...b.map(q => q[0])), Math.max(...b.map(q => q[1]))];
+  }
+  const stred = k => { const o = obal(k); return [(o[0] + o[2]) / 2, (o[1] + o[3]) / 2]; };
+  const otocBod = (q, c, deg) => { const a = deg * Math.PI / 180, dx = q[0] - c[0], dy = q[1] - c[1]; return [c[0] + dx * Math.cos(a) - dy * Math.sin(a), c[1] + dx * Math.sin(a) + dy * Math.cos(a)]; };
+  function uchytOtoceni(k) { const o = obal(k), c = stred(k); return otocBod([c[0], o[1] - 26 / V.s], c, k.ot || 0); }
+  const TLF = {tuzka: tl => 1.5 * tl, zvyraz: tl => 8 + 4 * tl, razitko: tl => 1 + tl / 2, text: tl => 0.75 + tl / 4};
+  function zmenTl(k, tl) {   // nová tloušťka úměrně původní (nezávisle na zvětšení)
+    const f = TLF[k.t] || (x => 1.75 * x), o = k.tl || 2, q = f(tl) / f(o);
+    if (k.t === 'text' || k.t === 'razitko') k.v *= q; else k.w *= q;
+    k.tl = tl;
+  }
+  const vybrana = () => V && V.sel && kresbyListu().includes(V.sel);
+  function polyHotovo() {
+    const P = V.poly; V.poly = null; if (!P) return;
+    const b = P.p.slice(0, -1).filter((q, i, a) => !i || Math.hypot(q[0] - a[i - 1][0], q[1] - a[i - 1][1]) * V.s > 3);
+    if (b.length >= 3) { zapamatuj(); kresbyListu().push({t: 'mnoho', b: P.b, w: P.w, tl: P.tl, p: b, z: true}); }
+    else if (b.length === 2) { zapamatuj(); kresbyListu().push({t: 'cara', b: P.b, w: P.w, tl: P.tl, r: [b[0][0], b[0][1], b[1][0], b[1][1]]}); }
+    kresliAnn();
+  }
   function cestaD(k) {
+    if (k.t === 'mnoho') return 'M' + k.p.map(p => f1(p[0]) + ',' + f1(p[1])).join('L') + (k.z ? 'Z' : '');
+    if (k.t === 'oblouk') { const g = obloukGeo(k); if (!g) return ''; const [x0, y0, x1, y1] = k.r; return `M${f1(x0)},${f1(y0)}A${f1(g.R)},${f1(g.R)} 0 0 1 ${f1(x1)},${f1(y1)}`; }
     if (k.t === 'tuzka' || k.t === 'zvyraz') return 'M' + k.p.map(p => f1(p[0]) + ',' + f1(p[1])).join('L');
     const [x0, y0, x1, y1] = k.r || [0, 0, 0, 0];
     if (k.t === 'cara' || k.t === 'meritko') return `M${f1(x0)},${f1(y0)}L${f1(x1)},${f1(y1)}`;
@@ -846,9 +888,19 @@
     });
     return out;
   }
-  function kresliAnn(navic) { if (!V) return; V.svg.innerHTML = `<g transform="matrix(${rotM().join(' ')})">` + kresbyListu().map(tvarSvg).join('') + (navic ? tvarSvg(navic) : '') + '</g>'; }
+  function tvarSvgO(k) { if (!k.ot) return tvarSvg(k); const c = stred(k); return `<g transform="rotate(${f1(k.ot)} ${f1(c[0])} ${f1(c[1])})">${tvarSvg(k)}</g>`; }
+  function vyberSvg(k) {   // 4.95: rámeček vybrané značky + modré kolečko pro otočení
+    const o = obal(k), c = stred(k), pd = 5 / V.s, u = 26 / V.s, sw = f1(1.4 / V.s * 100) / 100;
+    return `<g transform="rotate(${f1(k.ot || 0)} ${f1(c[0])} ${f1(c[1])})" pointer-events="none"><rect x="${f1(o[0] - pd)}" y="${f1(o[1] - pd)}" width="${f1(o[2] - o[0] + 2 * pd)}" height="${f1(o[3] - o[1] + 2 * pd)}" fill="none" stroke="#1f6fd1" stroke-width="${sw}" stroke-dasharray="${f1(5 / V.s)} ${f1(4 / V.s)}"/>`
+      + `<path d="M${f1(c[0])},${f1(o[1] - pd)}V${f1(o[1] - u)}" stroke="#1f6fd1" stroke-width="${sw}"/><circle cx="${f1(c[0])}" cy="${f1(o[1] - u)}" r="${f1(7 / V.s)}" fill="#fff" stroke="#1f6fd1" stroke-width="${f1(2.2 / V.s * 100) / 100}"/>`
+      + `<path d="M${f1(c[0] - 3.2 / V.s)},${f1(o[1] - u - 1.5 / V.s)}A${f1(3.4 / V.s)},${f1(3.4 / V.s)} 0 1 1 ${f1(c[0] + 1 / V.s)},${f1(o[1] - u + 3.3 / V.s)}" fill="none" stroke="#1f6fd1" stroke-width="${f1(1.5 / V.s * 100) / 100}"/></g>`;
+  }
+  function kresliAnn(navic) {
+    if (!V) return; if (navic === undefined && V.poly) navic = V.poly;
+    V.svg.innerHTML = `<g transform="matrix(${rotM().join(' ')})">` + kresbyListu().map(tvarSvgO).join('') + (navic ? tvarSvg(navic) : '') + (vybrana() ? vyberSvg(V.sel) : '') + '</g>';
+  }
   function kresliNaCanvas(g, k) {
-    g.save(); g.strokeStyle = g.fillStyle = k.b; g.lineWidth = k.w; g.lineCap = k.t === 'zvyraz' ? 'butt' : 'round'; g.lineJoin = 'round';
+    g.save(); if (k.ot) { const c = stred(k); g.translate(c[0], c[1]); g.rotate(k.ot * Math.PI / 180); g.translate(-c[0], -c[1]); } g.strokeStyle = g.fillStyle = k.b; g.lineWidth = k.w; g.lineCap = k.t === 'zvyraz' ? 'butt' : 'round'; g.lineJoin = 'round';
     const d = cestaD(k);
     if (d) { if (k.t === 'zvyraz') g.globalAlpha = 0.38; g.stroke(new Path2D(d)); g.globalAlpha = 1; }
     if (k.t === 'meritko') { const [x0, y0, x1, y1] = k.r, a = Math.atan2(y1 - y0, x1 - x0) + Math.PI / 2, L = k.w * 2.5; g.beginPath(); [[x0, y0], [x1, y1]].forEach(([x, y]) => { g.moveTo(x - L * Math.cos(a), y - L * Math.sin(a)); g.lineTo(x + L * Math.cos(a), y + L * Math.sin(a)); }); g.stroke(); }
@@ -862,12 +914,13 @@
     g.restore();
   }
   // guma: najde značku nejblíž bodu (v souřadnicích listu)
-  function najdiTvar(p, tol) {
-    const kk = kresbyListu(); let nej = -1, nd = tol;
+  function najdiTvar(p0, tol) {
+    const kk = kresbyListu(); let nej = -1, nd = tol, p = p0;
     const dSeg = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = dx * dx + dy * dy, t = l ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l)) : 0; return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
     kk.forEach((k, i) => {
-      let d = Infinity;
-      if (k.p) for (let j = 1; j < k.p.length; j++) d = Math.min(d, dSeg(k.p[j - 1], k.p[j]) - k.w / 2);
+      let d = Infinity; p = k.ot ? otocBod(p0, stred(k), -k.ot) : p0;
+      if (k.p) { const q = k.z ? k.p.concat([k.p[0]]) : k.p; for (let j = 1; j < q.length; j++) d = Math.min(d, dSeg(q[j - 1], q[j]) - k.w / 2); }
+      else if (k.t === 'oblouk') { const g = obloukGeo(k); if (g) for (let j = 1; j < g.body.length; j++) d = Math.min(d, dSeg(g.body[j - 1], g.body[j])); }
       else if (k.r) { const [x0, y0, x1, y1] = k.r;
         if (k.t === 'cara' || k.t === 'sipka' || k.t === 'meritko') d = dSeg([x0, y0], [x1, y1]);
         else if (k.t === 'kolecko') { const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, rx = Math.abs(x1 - x0) / 2 || 1, ry = Math.abs(y1 - y0) / 2 || 1; d = Math.abs(Math.hypot((p[0] - cx) / rx, (p[1] - cy) / ry) - 1) * Math.min(rx, ry); }
@@ -881,6 +934,7 @@
   function zpet() {
     if (!V) return false;
     const h = V.hist || [], kl = klicListu();
+    V.sel = null;
     for (let i = h.length - 1; i >= 0; i--) if (h[i].k === kl) { V.kresby[kl] = JSON.parse(h.splice(i, 1)[0].a); kresliAnn(); return true; }
     const k = kresbyListu();
     if (k.length) { k.pop(); kresliAnn(); return true; }
@@ -942,7 +996,7 @@
   }
   const naList = (cx, cy) => zListu((cx - V.tx) / V.s, (cy - V.ty) / V.s);
   const naPohled = (cx, cy) => [(cx - V.tx) / V.s, (cy - V.ty) / V.s];   // otočený pohled (výřez)
-  const UCHOP = {posun: 10, cara: 6, sipka: 6, obdelnik: 6, kolecko: 6, mrak: 6, meritko: 6, text: 8, razitko: 8};   // tolerance chycení značky v px
+  const UCHOP = {posun: 10, cara: 6, sipka: 6, obdelnik: 6, kolecko: 6, mrak: 6, meritko: 6, oblouk: 6, text: 8, razitko: 8};   // tolerance chycení značky v px
   function napojUdalosti() {
     const st = V.st;
     let akce = null;
@@ -954,7 +1008,7 @@
       if (e.ctrlKey || e.metaKey || mys) zoomKolem(Math.exp(-e.deltaY * (e.ctrlKey && !mys ? 0.01 : 0.0022)), cx, cy);
       else { V.tx -= e.deltaX; V.ty -= e.deltaY; pozice(); planujDetail(); }
     }, {passive: false});
-    st.addEventListener('dblclick', e => { if (V.n !== 'posun') return; const [cx, cy] = bod(e); zoomKolem(e.shiftKey ? 1 / 2 : 2, cx, cy); });
+    st.addEventListener('dblclick', e => { if (V.n === 'mnoho' && V.poly) { e.preventDefault(); polyHotovo(); return; } if (V.n !== 'posun') return; const [cx, cy] = bod(e); zoomKolem(e.shiftKey ? 1 / 2 : 2, cx, cy); });
     st.addEventListener('pointerdown', e => {
       if (e.button > 1) return;
       st.setPointerCapture(e.pointerId);
@@ -964,20 +1018,34 @@
         const [a, b] = [...V.ptr.values()]; akce = {pinch: true, d: Math.hypot(a[0] - b[0], a[1] - b[1]), c: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]}; kresliAnn(); return;
       }
       const [cx, cy] = bod(e), p = naList(cx, cy), n = e.button === 1 ? 'posun' : V.n;
+      if (e.button === 0 && vybrana()) { const u = uchytOtoceni(V.sel); if (Math.hypot(p[0] - u[0], p[1] - u[1]) * V.s < 14) { zapamatuj(); const c = stred(V.sel); akce = {otoc: V.sel, c, a0: Math.atan2(p[1] - c[1], p[0] - c[0]), ot0: V.sel.ot || 0}; st.classList.add('tah'); e.preventDefault(); return; } }
+      if (n === 'mnoho' && e.button === 0) {   // 4.95: mnohoúhelník bod po bodu
+        e.preventDefault(); V.sel = null;
+        if (!V.poly) V.poly = {t: 'mnoho', b: V.barva, w: 1.75 * V.tl / V.s, tl: V.tl, p: [p, p]};
+        else { const f = V.poly.p[0]; if (V.poly.p.length >= 4 && Math.hypot(p[0] - f[0], p[1] - f[1]) * V.s < 12) { polyHotovo(); return; } V.poly.p[V.poly.p.length - 1] = p; V.poly.p.push(p); }
+        akce = {poly: true}; kresliAnn(); return;
+      }
       // 4.94: klik na nakreslenou značku = chytit a posunout (v Posunu i u nástrojů tvarů, textu, razítka a měření)
       const ti = e.button === 0 && UCHOP[n] ? najdiTvar(p, UCHOP[n] / V.s) : -1;
-      if (ti >= 0) { zapamatuj(); akce = {tah: kresbyListu()[ti], p0: p}; st.classList.add('tah'); e.preventDefault(); return; }
+      if (ti >= 0) { zapamatuj(); const k = kresbyListu()[ti]; akce = {tah: k, p0: p}; if (V.sel !== k) { V.sel = k; napoveda('Vybráno: táhnout = přesun · modré kolečko = otočit · barva a tloušťka vlevo změní tuto značku · Delete = smazat', 6000); } kresliAnn(); st.classList.add('tah'); e.preventDefault(); return; }
+      if (V.sel) { V.sel = null; kresliAnn(); }
       if (n === 'posun') { akce = {posun: true, x: cx, y: cy}; st.classList.add('drz'); }
-      else if (n === 'tuzka') akce = {tvar: {t: 'tuzka', b: V.barva, w: 1.5 * V.tl / V.s, p: [p]}};
-      else if (n === 'zvyraz') akce = {tvar: {t: 'zvyraz', b: V.barva === '#16191c' ? '#f2b705' : V.barva, w: (8 + 4 * V.tl) / V.s, p: [p]}};
-      else if (['kolecko', 'sipka', 'cara', 'obdelnik', 'mrak', 'meritko'].includes(n)) akce = {tvar: {t: n, b: V.barva, w: 1.75 * V.tl / V.s, r: [p[0], p[1], p[0], p[1]]}};
+      else if (n === 'tuzka') akce = {tvar: {t: 'tuzka', b: V.barva, w: 1.5 * V.tl / V.s, tl: V.tl, p: [p]}};
+      else if (n === 'zvyraz') akce = {tvar: {t: 'zvyraz', b: V.barva === '#16191c' ? '#f2b705' : V.barva, w: (8 + 4 * V.tl) / V.s, tl: V.tl, p: [p]}};
+      else if (['kolecko', 'sipka', 'cara', 'obdelnik', 'mrak', 'meritko', 'oblouk'].includes(n)) akce = {tvar: {t: n, b: V.barva, w: 1.75 * V.tl / V.s, tl: V.tl, r: [p[0], p[1], p[0], p[1]]}};
       else if (n === 'guma') { const i = najdiTvar(p, 10 / V.s); if (i >= 0) { zapamatuj(); kresbyListu().splice(i, 1); kresliAnn(); } else napoveda('Tady žádná značka není – klepněte přímo na čáru nebo text.'); }
-      else if (n === 'razitko') { const [t, b] = V.razitko; zapamatuj(); kresbyListu().push({t: 'razitko', b, s: t, x: p[0], y: p[1], v: 7 * (1 + V.tl / 2) / V.s, a: -V.rot}); kresliAnn(); }
+      else if (n === 'razitko') { const [t, b] = V.razitko; zapamatuj(); kresbyListu().push({t: 'razitko', b, s: t, x: p[0], y: p[1], v: 7 * (1 + V.tl / 2) / V.s, tl: V.tl, a: -V.rot}); kresliAnn(); }
       else if (n === 'vyrez') { akce = {vyrez: true, x: cx, y: cy}; Object.assign(V.vyb.style, {display: 'block', left: cx + 'px', top: cy + 'px', width: '0px', height: '0px'}); }
       else if (n === 'text') { e.preventDefault(); textNa(cx, cy); }
     });
     st.addEventListener('pointermove', e => {
-      if (!V.ptr.has(e.pointerId)) { if (e.pointerType === 'mouse' && UCHOP[V.n]) { const [cx, cy] = bod(e); st.classList.toggle('nad', najdiTvar(naList(cx, cy), UCHOP[V.n] / V.s) >= 0); } return; }
+      if (!V.ptr.has(e.pointerId)) {
+        if (e.pointerType !== 'mouse') return;
+        const [cx, cy] = bod(e), q = naList(cx, cy);
+        if (V.poly) { V.poly.p[V.poly.p.length - 1] = q; kresliAnn(); return; }
+        const u = vybrana() ? uchytOtoceni(V.sel) : null, nadU = !!u && Math.hypot(q[0] - u[0], q[1] - u[1]) * V.s < 14;
+        st.classList.toggle('rotk', nadU); st.classList.toggle('nad', !nadU && !!UCHOP[V.n] && najdiTvar(q, UCHOP[V.n] / V.s) >= 0); return;
+      }
       V.ptr.set(e.pointerId, bod(e));
       if (!akce) return;
       const [cx, cy] = bod(e);
@@ -989,6 +1057,12 @@
       if (akce.posun) { V.tx += cx - akce.x; V.ty += cy - akce.y; akce.x = cx; akce.y = cy; pozice(); planujDetail(); return; }
       const p = naList(cx, cy);
       if (akce.tah) { posunTvar(akce.tah, p[0] - akce.p0[0], p[1] - akce.p0[1]); akce.p0 = p; akce.hnul = true; kresliAnn(); return; }
+      if (akce.otoc) {   // 4.95: otočení kolem středu; přichytí se k násobkům 15° (Shift = jen 15° kroky)
+        let a = akce.ot0 + (Math.atan2(p[1] - akce.c[1], p[0] - akce.c[0]) - akce.a0) * 180 / Math.PI; a = ((a % 360) + 540) % 360 - 180;
+        const r15 = Math.round(a / 15) * 15; if (e.shiftKey || Math.abs(a - r15) < 3) a = r15;
+        akce.otoc.ot = a; akce.hnul = true; napoveda('Otočení ' + Math.round(a) + '°', 1500); kresliAnn(); return;
+      }
+      if (akce.poly) { if (V.poly) { V.poly.p[V.poly.p.length - 1] = p; kresliAnn(); } return; }
       if (akce.tvar) {
         if (akce.tvar.p) { const l = akce.tvar.p[akce.tvar.p.length - 1]; if (Math.hypot(p[0] - l[0], p[1] - l[1]) * V.s > 1.5) akce.tvar.p.push(p); }
         else { akce.tvar.r[2] = p[0]; akce.tvar.r[3] = p[1]; }
@@ -1000,7 +1074,8 @@
       V.ptr.delete(e.pointerId);
       if (!akce) return;
       st.classList.remove('drz', 'tah');
-      if (akce.tah) { if (!akce.hnul && V.hist) V.hist.pop(); akce = null; return; }
+      if (akce.tah || akce.otoc) { if (!akce.hnul && V.hist) V.hist.pop(); akce = null; return; }
+      if (akce.poly) { akce = null; return; }
       if (akce.pinch) { if (V.ptr.size < 2) akce = null; return; }
       if (akce.tvar) {
         const t = akce.tvar, mal = t.p ? t.p.length < 2 : Math.hypot(t.r[2] - t.r[0], t.r[3] - t.r[1]) * V.s < 6;
@@ -1025,7 +1100,7 @@
     st.appendChild(inp); inp.focus(); setTimeout(() => inp.focus(), 0);
     const p = naList(cx, cy + 8), vel = 18 / V.s;
     let hotovo = false;
-    const ok = () => { if (hotovo) return; hotovo = true; const s = inp.value.trim(); inp.remove(); if (s && V) { zapamatuj(); kresbyListu().push({t: 'text', b: V.barva, x: p[0], y: p[1], v: vel * (0.75 + V.tl / 4), s, a: -V.rot}); kresliAnn(); } };
+    const ok = () => { if (hotovo) return; hotovo = true; const s = inp.value.trim(); inp.remove(); if (s && V) { zapamatuj(); kresbyListu().push({t: 'text', b: V.barva, x: p[0], y: p[1], v: vel * (0.75 + V.tl / 4), tl: V.tl, s, a: -V.rot}); kresliAnn(); } };
     inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') ok(); if (e.key === 'Escape') { hotovo = true; inp.remove(); } };
     inp.onblur = ok;
     inp.onpointerdown = e => e.stopPropagation();
