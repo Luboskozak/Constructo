@@ -42,6 +42,14 @@ const CXSprava = (() => {
     {id: 'vedeni', nazev: 'Vedení stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: false, doch: true}},
     {id: 'subdodavatel', nazev: 'Subdodavatel (firma)', mgmt: false, denik: 'zapis', prava: NIC},
     {id: 'dozor', nazev: 'TDS, investor, BOZP', mgmt: false, denik: 'cteni', prava: NIC}];
+  // 4.92: přístup do Deníku zvlášť pro vlastní deník (deník své firmy) a pro deníky ostatních firem – nahlíží / zapisuje.
+  // Uloženo u role jako denikPr {svC, svZ, ostC, ostZ}; r.denik (zapis / cteni / ne) zůstává pro starší verze.
+  // Příklad (Luboš 23. 11. 2026): GD (vedení) vše; TDS / investor svůj píše i čte, ostatní jen čte; subdodavatel jen svůj.
+  const DEN_SL = [['svC', 'Nahlíží'], ['svZ', 'Zapisuje'], ['ostC', 'Nahlíží'], ['ostZ', 'Zapisuje']];
+  const DEN_VSE = {svC: true, svZ: true, ostC: true, ostZ: true};
+  const DEN_VYCH = {spravce: DEN_VSE, vedeni: DEN_VSE, subdodavatel: {svC: true, svZ: true, ostC: false, ostZ: false}, dozor: {svC: true, svZ: true, ostC: true, ostZ: false}};
+  const denZeStareho = d => d === 'zapis' ? {svC: true, svZ: true, ostC: false, ostZ: false} : d === 'cteni' ? {svC: true, svZ: false, ostC: false, ostZ: false} : {svC: false, svZ: false, ostC: false, ostZ: false};
+  const denKod = x => x.svZ || x.ostZ ? 'zapis' : x.svC || x.ostC ? 'cteni' : 'ne';
   // sloupce „co vidí“ v tabulce rolí (krátké názvy)
   const PRAVA_KRATCE = {rozp: 'Rozpočet a ceny', fakt: 'Připravuje faktury', fakU: 'Uzavírá faktury', doch: 'Docházka'};
   const STAV = {aktivni: 'Probíhá', priprava: 'V přípravě', pozastavena: 'Pozastavená', dokoncena: 'Dokončená'};
@@ -65,6 +73,8 @@ const CXSprava = (() => {
   const rolesOf = P => (Array.isArray(P.roleStavby) && P.roleStavby.length ? P.roleStavby : ROLE_DEF).map(r => {
     const d = ROLE_DEF.find(x => x.id === r.id), x = Object.assign({}, r);
     x.prava = Object.assign({}, NIC, (d && d.prava) || {}, r.prava || {}); if (x.id === 'spravce') x.prava = Object.assign({}, ROLE_DEF[0].prava);
+    x.denikPr = Object.assign({}, r.denikPr ? {} : DEN_VYCH[x.id] || denZeStareho(r.denik), r.denikPr || {}); if (x.id === 'spravce') x.denikPr = Object.assign({}, DEN_VSE);
+    x.denik = denKod(x.denikPr);
     return x;
   });
   // oprávnění role se propíšou kolegům s touto rolí (pak je jde u člověka ještě upravit v Upravit)
@@ -142,6 +152,7 @@ const CXSprava = (() => {
 .cxs-tag.y{background:var(--y)}
 .cxs-tab-r{width:100%;border-collapse:collapse}
 .cxs-tab-r th{text-align:left;font-size:11.5px;color:var(--m);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--l)}
+.cxs-tab-r th.cxs-dg{border-bottom:0;text-align:center;background:rgba(244,210,60,.14)}.cxs-tab-r th.cxs-dg small{display:block;font-weight:500;font-size:10.5px}.cxs-tab-r th.cxs-ds{background:rgba(244,210,60,.14);font-weight:600}
 .cxs-tab-r td{padding:6px 8px;border-bottom:1px solid #eeeee8;vertical-align:middle}
 .cxs-tab-r td.c,.cxs-tab-r th.c{text-align:center}
 .cxs-tab-r input[type=checkbox]{width:18px;height:18px;accent-color:#131518}
@@ -335,14 +346,14 @@ const CXSprava = (() => {
         <div>${roleSel(x, i)}</div><div class="cxs-a">${A ? (x.skup === 'ruc' ? `<button type="button" class="cxs-b" data-red="${i}">Upravit</button><button type="button" class="cxs-b del" data-rod="${i}">Odebrat</button>` : `<button type="button" class="cxs-b" data-kde="firmy" title="Kontakt se upravuje ve Firmy / osoby na projektu">Upravit</button>`) : ''}</div></div>`;
       const ch = (r, i, k, dis) => `<td class="c"><input type="checkbox" data-k="${k}"${(k === 'mgmt' ? r.mgmt : r.prava[k]) ? ' checked' : ''}${dis ? ' disabled' : ''} aria-label="${esc(r.nazev)}: ${k === 'mgmt' ? 'Management' : PRAVA_KRATCE[k]}"></td>`;
       box.innerHTML = `<section class="cxs-card"><div class="cxs-h"><b>Role – co kdo vidí a kam smí</b><span>zaškrtněte, co role smí; platí pro všechny lidi s touto rolí (kolegy i firmy)</span><span class="sp"></span>${A ? '<button type="button" class="cxs-b add" id="cxs-radd">+ Přidat roli</button>' : ''}</div>
-          <div class="cxs-body" style="padding:6px 8px;overflow-x:auto"><table class="cxs-tab-r"><thead><tr><th>Role</th><th class="c">Lidí</th><th class="c">Management</th><th>Deník</th>${Object.values(PRAVA_KRATCE).map(l => `<th class="c">${l}</th>`).join('')}<th></th></tr></thead><tbody>${roles.map((r, i) => { const z = r.id === 'spravce' || !A; return `<tr data-r="${i}">
+          <div class="cxs-body" style="padding:6px 8px;overflow-x:auto"><table class="cxs-tab-r"><thead><tr><th rowspan="2">Role</th><th class="c" rowspan="2">Lidí</th><th class="c" rowspan="2">Management</th><th class="c cxs-dg" colspan="2">Deník – svůj<small>deník své firmy</small></th><th class="c cxs-dg" colspan="2">Deník – ostatních<small>deníky ostatních firem</small></th>${Object.values(PRAVA_KRATCE).map(l => `<th class="c" rowspan="2">${l}</th>`).join('')}<th rowspan="2"></th></tr><tr>${DEN_SL.map(([, l]) => `<th class="c cxs-ds">${l}</th>`).join('')}</tr></thead><tbody>${roles.map((r, i) => { const z = r.id === 'spravce' || !A; return `<tr data-r="${i}">
             <td style="min-width:170px"><input data-k="nazev" value="${esc(r.nazev)}" aria-label="Název role"${A ? '' : ' disabled'}></td>
             <td class="c">${pocet(r.id)}</td>
             ${ch(r, i, 'mgmt', z)}
-            <td style="min-width:130px"><select data-k="denik"${z ? ' disabled' : ''} aria-label="Přístup do Deníku">${Object.entries(DENIK_PR).map(([k, l]) => `<option value="${k}"${r.denik === k ? ' selected' : ''}>${l}</option>`).join('')}</select></td>
+            ${DEN_SL.map(([k, l]) => `<td class="c"><input type="checkbox" data-d="${k}"${r.denikPr[k] ? ' checked' : ''}${z ? ' disabled' : ''} aria-label="${esc(r.nazev)}: ${k.startsWith('sv') ? 'svůj deník' : 'deníky ostatních'} – ${l.toLowerCase()}"></td>`).join('')}
             ${Object.keys(PRAVA_KRATCE).map(k => ch(r, i, k, z)).join('')}
             <td>${A && !ROLE_DEF.some(d => d.id === r.id) ? `<button type="button" class="cxs-b del" data-rdel="${i}">Odebrat</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>
-          ${A ? '<div class="cxs-foot"><span class="hint">Management = smí do počítačové aplikace vedení. Deník = zapisuje / jen čte / nic. Po uložení dostanou kolegové s danou rolí tato oprávnění (u jednotlivce je jde změnit v Upravit).</span><button type="button" class="cxs-b pri" id="cxs-rsave">Uložit role</button></div>' : ''}</section>
+          ${A ? '<div class="cxs-foot"><span class="hint">Management = smí do počítačové aplikace vedení. Deník – svůj = deník vlastní firmy, Deník – ostatních = deníky ostatních firem (Nahlíží = čte, Zapisuje = píše). Po uložení dostanou kolegové s danou rolí tato oprávnění (u jednotlivce je jde změnit v Upravit).</span><button type="button" class="cxs-b pri" id="cxs-rsave">Uložit role</button></div>' : ''}</section>
         <div id="cxs-kol"></div>
         <section class="cxs-card"><div class="cxs-h"><b>Lidé z firem a objednatele</b><span>pracovníci firem, Investor, TDS, BOZP, Architekt… – u každého vyberte roli</span><span class="sp"></span>${A && window.CXDochazka && CXDochazka.pozvatDoStavby ? '<button type="button" class="cxs-b" id="cxs-poz">Pozvat do stavby</button>' : ''}${A ? '<button type="button" class="cxs-b add" id="cxs-ladd">+ Přidat osobu</button>' : ''}</div>
           ${SK.map(([k, nm]) => { const xs = L.map((x, i) => [x, i]).filter(([x]) => x.skup === k); return xs.length || k !== 'ruc' ? `<div class="cxs-sub">${nm} <span class="hint" style="display:inline;font-weight:400">(${xs.length})</span></div>${xs.length ? xs.map(([x, i]) => radek(x, i)).join('') : '<div class="cxs-empty">Nikdo.</div>'}` : ''; }).join('')}
@@ -362,14 +373,16 @@ const CXSprava = (() => {
       });
       box.querySelectorAll('[data-kde]').forEach(b => b.onclick = () => { if (host.prepni) host.prepni('firmy'); else { zal = 'firmy'; render(); } });
       const rs = box.querySelector('#cxs-rsave');
-      const sberRole = () => { box.querySelectorAll('tr[data-r]').forEach(tr => { const r = roles[+tr.dataset.r]; r.nazev = tr.querySelector('[data-k=nazev]').value.trim() || 'Role'; if (r.id !== 'spravce') { r.mgmt = tr.querySelector('[data-k=mgmt]').checked; r.denik = tr.querySelector('[data-k=denik]').value; Object.keys(PRAVA_KRATCE).forEach(k => { r.prava[k] = tr.querySelector(`[data-k=${k}]`).checked; }); if (r.prava.fakU) r.prava.fakt = true; if (r.prava.fakt) r.prava.rozp = true; } }); };
+      const sberRole = () => { box.querySelectorAll('tr[data-r]').forEach(tr => { const r = roles[+tr.dataset.r]; r.nazev = tr.querySelector('[data-k=nazev]').value.trim() || 'Role'; if (r.id !== 'spravce') { r.mgmt = tr.querySelector('[data-k=mgmt]').checked; r.denikPr = Object.fromEntries(DEN_SL.map(([k]) => [k, tr.querySelector(`[data-d=${k}]`).checked])); if (r.denikPr.svZ) r.denikPr.svC = true; if (r.denikPr.ostZ) r.denikPr.ostC = true; r.denik = denKod(r.denikPr); Object.keys(PRAVA_KRATCE).forEach(k => { r.prava[k] = tr.querySelector(`[data-k=${k}]`).checked; }); if (r.prava.fakU) r.prava.fakt = true; if (r.prava.fakt) r.prava.rozp = true; } }); };
       if (rs) rs.onclick = async () => { sberRole(); try { await uloz(p0 => { p0.roleStavby = roles; pravaRoleKolegum(p0, L, roles); }); toast('Role uloženy a propsány lidem'); render(); } catch (e) { toast('Nepodařilo se uložit: ' + (e.message || e)); } };
       const rt = box.querySelector('.cxs-tab-r');
-      if (rt) rt.onchange = e => { const k = e.target.dataset.k, tr = e.target.closest('tr'); if (!tr || !(k in PRAVA_KRATCE)) return; const c = x => tr.querySelector(`[data-k=${x}]`);
+      if (rt) rt.onchange = e => { const dk = e.target.dataset.d, tr = e.target.closest('tr');
+        if (dk && tr) { const c = x => tr.querySelector(`[data-d=${x}]`), p = dk.replace(/[CZ]$/, ''); if (e.target.checked && dk.endsWith('Z')) c(p + 'C').checked = true; if (!e.target.checked && dk.endsWith('C')) c(p + 'Z').checked = false; return; }
+        const k = e.target.dataset.k; if (!tr || !(k in PRAVA_KRATCE)) return; const c = x => tr.querySelector(`[data-k=${x}]`);
         if (e.target.checked && k === 'fakU') { c('fakt').checked = true; c('rozp').checked = true; } if (e.target.checked && k === 'fakt') c('rozp').checked = true;
         if (!e.target.checked && k === 'rozp') { c('fakt').checked = false; c('fakU').checked = false; } if (!e.target.checked && k === 'fakt') c('fakU').checked = false; };
       const ra = box.querySelector('#cxs-radd');
-      if (ra) ra.onclick = async () => { sberRole(); roles.push({id: 'r' + uid(), nazev: 'Nová role', mgmt: false, denik: 'cteni', prava: Object.assign({}, NIC)}); try { await uloz(p0 => { p0.roleStavby = roles; }); render(); const i = el.querySelector('tr[data-r]:last-child input'); if (i) { i.focus(); i.select(); } } catch (e) { toast(e.message || e); } };
+      if (ra) ra.onclick = async () => { sberRole(); roles.push({id: 'r' + uid(), nazev: 'Nová role', mgmt: false, denik: 'cteni', denikPr: {svC: true, svZ: false, ostC: false, ostZ: false}, prava: Object.assign({}, NIC)}); try { await uloz(p0 => { p0.roleStavby = roles; }); render(); const i = el.querySelector('tr[data-r]:last-child input'); if (i) { i.focus(); i.select(); } } catch (e) { toast(e.message || e); } };
       box.querySelectorAll('[data-rdel]').forEach(b => b.onclick = async () => {
         if (!b.classList.contains('arm')) { b.classList.add('arm'); b.textContent = 'Opravdu odebrat?'; return; }
         sberRole(); const r = roles[+b.dataset.rdel]; roles.splice(+b.dataset.rdel, 1);
@@ -407,6 +420,6 @@ const CXSprava = (() => {
     return {render, prepni: z => { zal = z; render(); }, upravKolegu};
   }
 
-  return {panel, ZALOZKY, ALIAS, IKONY, PRAVA_KRATCE, POZICE, PRAVA, PRAVA_VYCH, PRAVA_POZICE, ACCESS, ROLE_DEF, DENIK_PR, STAV, lideNaStavbe, rolesOf, pravaOf, emaily};
+  return {panel, ZALOZKY, ALIAS, IKONY, PRAVA_KRATCE, POZICE, PRAVA, PRAVA_VYCH, PRAVA_POZICE, ACCESS, ROLE_DEF, DENIK_PR, DEN_SL, DEN_VYCH, STAV, lideNaStavbe, rolesOf, pravaOf, emaily};
 })();
 if (typeof window !== 'undefined') window.CXSprava = CXSprava;
