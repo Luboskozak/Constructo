@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-zeWTDKW0ojiIA50maMKef3lmPvRDQpgu5fxzZbg0LAg=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-MMsPHSTS8SBlzn041KHqQmj/UDoQgfTzkRrDnbC4++k='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -725,6 +725,7 @@ tr.zp-new td{animation:zpflash 1.6s}
 a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center}
 #zv-pdf::before{content:"↓"}
 #v-zavady{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2z'/%3E%3Cpath d='M12 10v5M12 18v.5'/%3E%3C/svg%3E")}
+#v-pred{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6v18h12V7z'/%3E%3Cpath d='M14 3v4h4'/%3E%3Cpath d='M9 14l2 2 4-4'/%3E%3C/svg%3E")}
 #v-firmy{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='7' width='18' height='13' rx='2'/%3E%3Cpath d='M8 7V4h8v3M3 13h18'/%3E%3C/svg%3E")}
 .side .topnav .seg #v-firmy{white-space:normal;line-height:1.25}
 #nav-sprava{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M3 21h18M8 7h4M8 11h4M8 15h4'/%3E%3C/svg%3E")}
@@ -1005,6 +1006,10 @@ body.dfull-on{overflow:hidden}
 .za-ch{width:22px;height:22px;border:2px solid #9aa0a6;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#fff;flex:none}.za-ch.on{background:#2f8a52;border-color:#2f8a52}
 .za-ok{color:#2f8a52;font-size:13px}.za-del{margin-top:12px;text-align:right}
 @media (max-width:900px){.za-row{grid-template-columns:56px minmax(0,1fr) 100px}.za-k{display:none}}
+.za-1 .dtyp{white-space:nowrap}.pp-th{width:64px;height:52px;border-radius:8px;display:flex;align-items:center;justify-content:center;font:800 12px var(--f-body);text-align:center;line-height:1.1;background:#EEF4FF;color:#2456a6}.pp-th.k{background:#16191c;color:#FAD805}
+.pp-vady{width:100%;border-collapse:collapse;margin-top:6px}.pp-vady td{padding:4px 4px;border-bottom:1px solid var(--line);vertical-align:middle}.pp-vady input[type=text]{width:100%}.pp-vady td.n{width:28px;color:var(--muted);text-align:right}.pp-vady td.t{width:150px}.pp-vady td.h{width:70px;text-align:center;font-size:12px}
+.pp-f{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}.pp-f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted)}.pp-f .cela{grid-column:1/-1}.pp-f input,.pp-f select,.pp-f textarea{font-size:14px}
+@media (max-width:700px){.pp-f{grid-template-columns:1fr}}
 .zv-klik{cursor:pointer}.zv-row.zv-klik:hover,.entry.zv-klik:hover{background:#FFFBE6}
 .pill.zv-new{background:#d63b24;color:#fff;font-weight:800;margin-left:4px}
 .dtile .tx{position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:13px;line-height:26px;cursor:pointer}
@@ -1059,6 +1064,7 @@ body.dfull-on{overflow:hidden}
       <button type="button" id="v-list" aria-pressed="true">Úkoly</button>
       <button type="button" id="v-diary" aria-pressed="false">Denní záznamy</button>
       <button type="button" id="v-zavady" aria-pressed="false">Zprávy, záznamy</button>
+      <button type="button" id="v-pred" aria-pressed="false">Předání a převzetí díla</button>
       <button type="button" id="v-odeslane" aria-pressed="false" hidden>Odeslané zprávy</button>
       <button type="button" id="v-firmy" aria-pressed="false">Firmy / osoby na projektu</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
@@ -1290,7 +1296,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '4.97';
+  const APP_VERSION = '4.98';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1350,7 +1356,7 @@ body.dfull-on{overflow:hidden}
       x.project.people = {}; x.project.clenove.forEach(c => { if (c.jmeno && c.email) x.project.people[c.jmeno] = {email: c.email, emails: [{a: c.email, rep: true}], company: c.firma}; });
       x.project.peopleV2 = true;
     }
-    ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady', 'dokumenty', 'rozpocty', 'rozpKat', 'faktury'].forEach(k => { x[k] = []; }); x.tomb = {};
+    ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady', 'dokumenty', 'rozpocty', 'rozpKat', 'faktury', 'predani'].forEach(k => { x[k] = []; }); x.tomb = {};
     x.hmgInfo = {source: '', date: today};
     return x;
   }
@@ -1358,7 +1364,7 @@ body.dfull-on{overflow:hidden}
   try { localStorage.setItem('hyb-test', '1'); localStorage.removeItem('hyb-test'); } catch(e) { storageOk = false; }
   // 4.58: rozpočty, druhy prací a fakturace se posílají i uvnitř kolekce dokumenty (záznamy „rz~…“),
   // takže se propíšou mezi počítači i se starším skriptem Google, který kolekce rozpocty/rozpKat/faktury nezná a zahodil by je.
-  const RZK = ['rozpocty', 'rozpKat', 'faktury'];
+  const RZK = ['rozpocty', 'rozpKat', 'faktury', 'predani'];   // 4.98: + předání díla
   function rzRozbal(d) {
     if (!d || !Array.isArray(d.dokumenty)) return d;
     const tb = (d.tomb && d.tomb.dokumenty) || {};
@@ -1367,13 +1373,13 @@ body.dfull-on{overflow:hidden}
     RZK.forEach(c => { x[c] = Array.isArray(d[c]) ? d[c].slice() : []; tomb[c] = Object.assign({}, (d.tomb || {})[c] || {}); });
     x.dokumenty = [];
     d.dokumenty.forEach(r => {
-      const m = r && /^rz~(rozpocty|rozpKat|faktury)~/.exec(String(r.id));
+      const m = r && /^rz~(rozpocty|rozpKat|faktury|predani)~/.exec(String(r.id));
       if (!m) { x.dokumenty.push(r); return; }
       const z = Object.assign({}, r); z.id = r._rzid; delete z._rzid; delete z._rzk;
       const i = x[m[1]].findIndex(o => o.id === z.id);
       if (i < 0) x[m[1]].push(z); else if ((z._ts || 0) > (x[m[1]][i]._ts || 0)) x[m[1]][i] = z;
     });
-    Object.keys(tb).forEach(k => { const m = /^rz~(rozpocty|rozpKat|faktury)~(.*)$/.exec(k); if (!m) { tdk[k] = tb[k]; return; } if (!(tomb[m[1]][m[2]] >= tb[k])) tomb[m[1]][m[2]] = tb[k]; });
+    Object.keys(tb).forEach(k => { const m = /^rz~(rozpocty|rozpKat|faktury|predani)~(.*)$/.exec(k); if (!m) { tdk[k] = tb[k]; return; } if (!(tomb[m[1]][m[2]] >= tb[k])) tomb[m[1]][m[2]] = tb[k]; });
     return x;
   }
   function rzZabal(d) {
@@ -1392,7 +1398,7 @@ body.dfull-on{overflow:hidden}
     const x = Object.assign({version:1, project:clone(SEED.project), hmgInfo:clone(SEED.hmgInfo), hmg:[], hmgGroups:[], tasks:[], diary:[], log:[], zavady:[], tomb:{}}, d || {});
     if (!x.tomb || typeof x.tomb !== 'object') x.tomb = {};
     if (!x.project) x.project = clone(SEED.project); if (!x.hmgInfo) x.hmgInfo = clone(SEED.hmgInfo);
-    ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty','rozpocty','rozpKat','faktury'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
+    ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty','rozpocty','rozpKat','faktury','predani'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
     x.tasks.forEach(t => { t.id ||= uid(); t.hmg = (t.hmg || []).map(String); if (!t.supplier) { const f = supZText(t.title); if (f) t.supplier = f; } });   // 4.64: úkol ze zprávy firmě má firmu jako Dodavatele (i starší úkoly)
     // stejný úkol z porady může přijít dvakrát (zabudovaná data + sdílení) – nechat novější
     const bySrc = new Map();
@@ -1404,9 +1410,9 @@ body.dfull-on{overflow:hidden}
     return x;
   };
   /* ---------- slučování dat (stejný kód běží i na serveru Google) ---------- */
-  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id};
+  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id};
   function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {
@@ -1473,7 +1479,7 @@ body.dfull-on{overflow:hidden}
   const commit = () => { if (roBlock()) return; syncTeam(); D.diary.forEach(e => { if (e.kind === 'porada') zPull(e, true); }); stampChanges(); persist(); render(); markDirty(); };
 
   const S = { hstat: '', hmgHideDone: false, hmgRange: 'month', hmgFrom: null, hmgOpen: new Set(), hmgEdit: null, editHmg: [], owner: '', fstat: '', q: '', obj: '', view: 'list', gStart: null, editing: null };
-  const v0 = ''; if (['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch','detail','lide'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
+  const v0 = ''; if (['list','diary','hmg','zavady','odeslane','pred','firmy','kal','dok','rozp','doch','detail','lide'].includes(v0)) S.view = v0; else if (v0 === 'gantt') S.view = 'hmg'; else if (v0 === 'simple') S.view = 'list';
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
@@ -1647,7 +1653,7 @@ body.dfull-on{overflow:hidden}
     $('#eyebrow').textContent = `${D.project.company || ''}`;
     { const pn = String(D.project.name || ''), sh = pn.split(',')[0].replace(/^Rekonstrukce( objektu)?\s*/i, '') || pn, rest = pn.slice(pn.split(',')[0].length).replace(/^,\s*/, '');
       $('#app-h1').innerHTML = esc(sh).replace(/(\s[\d/]+)$/, '<span>$1</span>'); $('#side-proj').textContent = sh; $('#side-ver').textContent = 'Constructo ' + APP_VERSION; $('#side-co').textContent = [D.project.ulice, D.project.mesto].filter(Boolean).join(', ') || rest || ''; }
-    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní záznamy',hmg:'Harmonogram',zavady:'Zprávy, záznamy'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
+    $('#print-head').innerHTML = `<b>Tisk ${fmtDY(today)}</b> · ${esc({list:'Úkoly',gantt:'Harmonogram úkolů',diary:'Denní záznamy',hmg:'Harmonogram',zavady:'Zprávy, záznamy',pred:'Předání a převzetí díla'}[S.view])}${S.owner ? ' · ' + esc(S.owner) : ''}${S.obj ? (SECT.includes(S.obj) ? ' · objekty ' : ' · ') + esc(S.obj) : ''} · HMG ke dni ${hmgDateTxt()}`;
     $('#foot').innerHTML = `<span>Constructo ${APP_VERSION} · samostatná aplikace, data jsou uložená v tomto prohlížeči${fileHandle ? ' a v souboru ' + esc(fileName) : ''}</span><span>HMG: ${esc(D.hmgInfo.source || '')}, stav ke dni ${hmgDateTxt()}</span><span>${SY ? 'Synchronizace zapnutá' : 'Bez synchronizace'}</span><span>Naposledy uloženo ${D.savedAt ? new Date(D.savedAt).toLocaleString('cs-CZ') : '–'}</span>`;
   }
 
@@ -2191,6 +2197,66 @@ body.dfull-on{overflow:hidden}
       if (!ro) { const s = document.createElement('div'); s.className = 'za-del no-print'; s.innerHTML = `<button type="button" class="del" data-del="${esc(id)}">Smazat záznam</button>`; full.appendChild(s); bindDiaryFeed(s); s.querySelector('[data-del]').addEventListener('click', () => { if (!D.diary.some(x => x.id === id)) $('#m-cancel').click(); }); }
       full.querySelectorAll('form[data-rf]').forEach(fm => fm.addEventListener('submit', () => setTimeout(() => zaDetail(id, 'zaznam'), 50)));
     }
+  }
+
+  /* ---------- 4.98: Předání a převzetí díla – Dílčí / Konečné předání (kostra; podrobnosti doplní Luboš) ----------
+     Data D.predani: {id, typ:'dilci'|'konecne', date, nazev, obj, predava, prebira, stav, pozn, vady:[{id, text, termin, hotovo}], by, at} */
+  const PDV_TYP = {dilci: 'Dílčí předání', konecne: 'Konečné předání'};
+  const PDV_STAV = {priprava: 'Připravuje se', predano: 'Předáno a převzato', vady: 'Převzato s vadami', odmitnuto: 'Nepřevzato'};
+  let ppCo = store.get('hyb-ppco') === 'konecne' ? 'konecne' : 'dilci';
+  const PRED = () => (Array.isArray(D.predani) ? D.predani : (D.predani = []));
+  function ppRadek(r) {
+    const vO = (r.vady || []).filter(x => x.text && !x.hotovo), vPo = vO.filter(x => x.termin && x.termin < today).length;
+    return `<div class="za-row${vPo ? ' prob' : ''}" data-ppo="${esc(r.id)}" role="button" tabindex="0" title="Otevřít protokol"><span class="pp-th${r.typ === 'konecne' ? ' k' : ''}">${r.typ === 'konecne' ? 'KONEČNÉ' : 'DÍLČÍ'}</span>
+      <div class="za-m"><div class="za-1"><b>${esc(r.nazev || 'Bez názvu')}</b>${r.obj ? `<span class="pill">${esc(r.obj)}</span>` : ''}<span class="dtyp" style="--c:${r.stav === 'predano' ? '#2f8a52' : r.stav === 'odmitnuto' ? '#d63b24' : r.stav === 'vady' ? '#c77700' : '#6b7280'}">${esc(PDV_STAV[r.stav] || PDV_STAV.priprava)}</span></div>
+        <div class="za-2">${esc((r.pozn || '').replace(/\s+/g, ' ').slice(0, 140) || (r.by ? 'Zapsal ' + r.by : ''))}</div></div>
+      <div class="za-k"><small>Předává → přebírá</small>${esc(r.predava || '?')} → ${esc(r.prebira || '?')}</div>
+      <div class="za-d"><b>${esc(fmtDY(r.date))}</b><small class="za-st">${(r.vady || []).length ? `vady a nedodělky: ${vO.length} otevřené${vPo ? ` · <span style="color:var(--red)">${vPo} po termínu</span>` : ''}` : 'bez vad'}</small></div></div>`;
+  }
+  function renderPred() {
+    const v = $('#view'), all = PRED(), n = k => all.filter(r => r.typ === k).length;
+    const list = all.filter(r => r.typ === ppCo).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.at || '').localeCompare(String(a.at || '')));
+    const co = `<div class="zv-co no-print" role="group" aria-label="Druh předání">${Object.keys(PDV_TYP).map(k => `<button type="button" data-ppco="${k}" aria-pressed="${ppCo === k}">${PDV_TYP[k]}<span class="cnt">${n(k)}</span></button>`).join('')}</div>`;
+    const prazdno = `<div class="day"><div class="empty"><strong>Zatím žádné ${ppCo === 'konecne' ? 'konečné předání' : 'dílčí předání'}.</strong>${ppCo === 'konecne' ? 'Konečné předání = předání celého díla investorovi, s protokolem a soupisem vad a nedodělků.' : 'Dílčí předání = předání části díla (patro, objekt, profese) – např. od subdodavatele.'}</div></div>`;
+    v.innerHTML = `<div class="sl">${co}<div class="sl-top zv-top"><span>Protokoly o předání a převzetí díla · soupis vad a nedodělků s termíny odstranění</span><span class="sp"></span><span>${list.length} ${list.length === 1 ? 'protokol' : list.length > 1 && list.length < 5 ? 'protokoly' : 'protokolů'}</span>
+      ${RO() ? '' : '<button type="button" class="btn primary no-print" id="pp-novy">+ Nový protokol</button>'}</div>
+      <div class="za-feed"><div class="day">${list.length ? list.map(ppRadek).join('') : prazdno}</div></div></div>`;
+    v.querySelectorAll('[data-ppco]').forEach(b => b.onclick = () => { ppCo = b.dataset.ppco; store.set('hyb-ppco', ppCo); renderPred(); });
+    v.querySelectorAll('[data-ppo]').forEach(r => { r.onclick = () => ppOkno(r.dataset.ppo); r.onkeydown = e => { if (e.key === 'Enter') ppOkno(r.dataset.ppo); }; });
+    const nb = $('#pp-novy'); if (nb) nb.onclick = () => ppOkno(null);
+  }
+  function ppOkno(id) {
+    const old = id && PRED().find(x => x.id === id), ro = RO();
+    const r = old ? JSON.parse(JSON.stringify(old)) : {id: 'pp' + uid(), typ: ppCo, date: today, nazev: '', obj: '', predava: '', prebira: me() || '', stav: 'priprava', pozn: '', vady: []};
+    if (!r.vady.length) r.vady.push({id: uid(), text: '', termin: '', hotovo: false});
+    const firmy = firmyList().map(f => f.firma).filter(Boolean), lide = owners().filter(x => x !== 'Bez přiřazení');
+    const dl = `<datalist id="pp-dl">${[...new Set([...firmy, ...lide])].map(x => `<option value="${esc(x)}">`).join('')}</datalist>`;
+    const vadyHtml = () => r.vady.map((x, i) => `<tr data-pv="${i}"><td class="n">${i + 1}.</td><td><input type="text" data-k="text" value="${esc(x.text)}" placeholder="Vada nebo nedodělek, kde přesně"${ro ? ' disabled' : ''}></td><td class="t"><input type="date" data-k="termin" value="${esc(x.termin || '')}" title="Termín odstranění"${ro ? ' disabled' : ''}></td><td class="h"><label><input type="checkbox" data-k="hotovo"${x.hotovo ? ' checked' : ''}${ro ? ' disabled' : ''}> odstr.</label></td></tr>`).join('');
+    const body = `${dl}<div class="pp-f">
+      <label>Druh<select id="pp-typ"${ro ? ' disabled' : ''}>${Object.keys(PDV_TYP).map(k => `<option value="${k}"${r.typ === k ? ' selected' : ''}>${PDV_TYP[k]}</option>`).join('')}</select></label>
+      <label>Datum předání<input type="date" id="pp-date" value="${esc(r.date || '')}"${ro ? ' disabled' : ''}></label>
+      <label class="cela">Předmět předání (co se předává)<input type="text" id="pp-nazev" value="${esc(r.nazev)}" placeholder="např. Objekt B – 3. NP, sádrokartony"${ro ? ' disabled' : ''}></label>
+      <label>Předává (firma / osoba)<input type="text" id="pp-predava" list="pp-dl" value="${esc(r.predava)}"${ro ? ' disabled' : ''}></label>
+      <label>Přebírá (firma / osoba)<input type="text" id="pp-prebira" list="pp-dl" value="${esc(r.prebira)}"${ro ? ' disabled' : ''}></label>
+      <label>Objekt<input type="text" id="pp-obj" value="${esc(r.obj)}" placeholder="A–G"${ro ? ' disabled' : ''}></label>
+      <label>Výsledek<select id="pp-stav"${ro ? ' disabled' : ''}>${Object.keys(PDV_STAV).map(k => `<option value="${k}"${(r.stav || 'priprava') === k ? ' selected' : ''}>${PDV_STAV[k]}</option>`).join('')}</select></label>
+      <div class="cela"><b style="font-size:14px">Soupis vad a nedodělků</b> <span class="hcap">· termín odstranění u každé položky</span>
+        <table class="pp-vady"><tbody id="pp-vb">${vadyHtml()}</tbody></table>${ro ? '' : '<button type="button" class="btn" id="pp-vadd" style="margin-top:6px">+ Přidat vadu / nedodělek</button>'}</div>
+      <label class="cela">Poznámka<textarea id="pp-pozn" rows="3"${ro ? ' disabled' : ''}>${esc(r.pozn || '')}</textarea></label></div>`;
+    const cti = () => {
+      r.typ = $('#pp-typ').value; r.date = $('#pp-date').value; r.nazev = $('#pp-nazev').value.trim(); r.predava = $('#pp-predava').value.trim(); r.prebira = $('#pp-prebira').value.trim();
+      r.obj = $('#pp-obj').value.trim(); r.stav = $('#pp-stav').value; r.pozn = $('#pp-pozn').value.trim();
+      $('#pp-vb').querySelectorAll('tr[data-pv]').forEach(tr => { const x = r.vady[+tr.dataset.pv]; x.text = tr.querySelector('[data-k=text]').value.trim(); x.termin = tr.querySelector('[data-k=termin]').value; x.hotovo = tr.querySelector('[data-k=hotovo]').checked; });
+    };
+    const extra = old && !ro ? [['Smazat protokol', () => confirmModal('Smazat protokol?', `<p>${esc(r.nazev || 'Bez názvu')} · ${esc(fmtDY(r.date))}</p>`, 'Smazat', () => { D.predani = PRED().filter(x => x.id !== id); commit(); toast('Protokol smazán'); })]] : null;
+    confirmModal(`${old ? '' : 'Nový protokol – '}${PDV_TYP[r.typ] || 'Předání díla'}`, body, ro ? null : 'Uložit', () => {
+      cti(); if (!r.nazev) { toast('Napište, co se předává.'); $('#pp-nazev').focus(); return 'keep'; }
+      r.vady = r.vady.filter(x => x.text); r.by = r.by || me() || ''; r.at = r.at || new Date().toISOString();
+      const i = PRED().findIndex(x => x.id === r.id); if (i < 0) D.predani.push(r); else D.predani[i] = r;
+      ppCo = r.typ; store.set('hyb-ppco', ppCo); commit(); toast('Protokol uložen');
+    }, extra);
+    const ov = $('#overlay'); ov.querySelector('.modal').classList.add('wide', 'za-modal');
+    const add = $('#pp-vadd'); if (add) add.onclick = () => { cti(); r.vady.push({id: uid(), text: '', termin: '', hotovo: false}); $('#pp-vb').innerHTML = vadyHtml(); const l = $('#pp-vb').querySelector('tr:last-child [data-k=text]'); if (l) l.focus(); };
   }
   function zaEdit(id) {
     const e = D.diary.find(x => x.id === id); if (!e) return;
@@ -2830,11 +2896,11 @@ body.dfull-on{overflow:hidden}
     if (smi('doch')) dochPripoj();   // tlačítko „Docházka“ u pracovníků ve Firmy / osoby na projektu
     document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
-    ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch','detail','lide'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
+    ['list','diary','hmg','zavady','odeslane','pred','firmy','kal','dok','rozp','doch','detail','lide'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     { const o = ['detail', 'lide'].includes(S.view) || store.get('hyb-nav-sprava') === '1'; $('#nav-sprava').setAttribute('aria-expanded', o); $('#v-detail').hidden = $('#v-lide').hidden = !o; }
-    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'firmy', 'kal', 'dok', 'rozp', 'doch', 'detail', 'lide'].includes(S.view);
-    $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp', 'doch', 'detail', 'firmy', 'lide'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
-    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', firmy:'Firmy / osoby na projektu', detail:'Správa stavby – Detail', lide:'Správa stavby – Role a lidé', kal:'Kalendář úkolů', dok:'Dokumentace', doch:'Docházka'}[S.view];
+    $('.toolbar').hidden = ['diary', 'zavady', 'odeslane', 'pred', 'firmy', 'kal', 'dok', 'rozp', 'doch', 'detail', 'lide'].includes(S.view);
+    $('#summary').style.display = $('.section-people').style.display = ['dok', 'rozp', 'doch', 'detail', 'firmy', 'lide', 'pred'].includes(S.view) ? 'none' : '';   // 4.52: Dokumentace potřebuje místo, souhrn a Lidé se schovají
+    $('#view-title').textContent = {list:'Úkoly', gantt:'Harmonogram úkolů', diary:'Denní záznamy', hmg:'Harmonogram', zavady:'Zprávy, záznamy', odeslane:'Odeslané zprávy', pred:'Předání a převzetí díla', firmy:'Firmy / osoby na projektu', detail:'Správa stavby – Detail', lide:'Správa stavby – Role a lidé', kal:'Kalendář úkolů', dok:'Dokumentace', doch:'Docházka'}[S.view];
     const sOpen = UKOLY().filter(t => eff(t) !== 'done').length;
     $('#v-list').innerHTML = 'Úkoly' + (sOpen ? `<span class="cnt">${sOpen}</span>` : '');
     { const sk = store.get(dSeenKey()); if (!sk && me()) store.set(dSeenKey(), new Date().toISOString()); const n = (S.view === 'zavady' && ZF.co === 'zapisy') || !sk ? 0 : D.diary.filter(e => isZapis(e) && dIsNew(e, sk)).length; $('#v-diary').textContent = 'Denní záznamy'; $('#v-zavady').innerHTML = 'Zprávy, záznamy' + (n ? `<span class="cnt" title="Nové denní záznamy od minula">${n}</span>` : ''); }
@@ -2852,7 +2918,7 @@ body.dfull-on{overflow:hidden}
     { const t = hledejInfo(S.q), el = $('#q-hint'); if (el) { el.textContent = t ? 'Hledám i: ' + t : ''; el.hidden = !t; } }
     if (S.view !== 'diary' && $('#j-text')) dGrab();
     if (S.view !== 'diary') document.body.classList.remove('dfull-on');
-    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : ['firmy', 'detail', 'lide'].includes(S.view) ? renderSprava() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'rozp' ? renderRozp() : S.view === 'doch' ? renderDoch() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
+    S.view === 'zavady' ? renderZavady() : S.view === 'odeslane' ? renderOdeslane() : S.view === 'pred' ? renderPred() : ['firmy', 'detail', 'lide'].includes(S.view) ? renderSprava() : S.view === 'kal' ? renderKal() : S.view === 'dok' ? renderDok() : S.view === 'rozp' ? renderRozp() : S.view === 'doch' ? renderDoch() : S.view === 'diary' ? renderDiary() : S.view === 'hmg' ? renderHmg() : renderList();
   }
   // rámeček drobných úkolů vybrané osoby se kreslí po každém překreslení seznamu i harmonogramu
   renderList = (f => function () { f(); personSimpleBox(); })(renderList);
@@ -8055,7 +8121,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   const setView = v => { if (v === 'odeslane') { v = 'zavady'; ZF.co = 'odeslane'; store.set('hyb-zco', 'odeslane'); } if (v === 'list' && S.view !== 'list') S.ukSrc = 'all'; S.view = v; store.set('hyb-view', v); render();
     const sec = $('#view-title').closest('section'), r = sec.getBoundingClientRect();
     if (r.top > innerHeight * .55 || r.top < 0) window.scrollTo({top: scrollY + r.top - (innerWidth > 900 ? 0 : $('.side').offsetHeight) - 8, behavior: 'smooth'}); };
-  ['list','diary','hmg','zavady','odeslane','firmy','kal','dok','rozp','doch','detail','lide'].forEach(k => $('#v-' + k).onclick = () => setView(k));
+  ['list','diary','hmg','zavady','odeslane','pred','firmy','kal','dok','rozp','doch','detail','lide'].forEach(k => $('#v-' + k).onclick = () => setView(k));
   $('#nav-sprava').onclick = () => { const o = $('#nav-sprava').getAttribute('aria-expanded') !== 'true'; store.set('hyb-nav-sprava', o ? '1' : '0'); if (o && !['detail', 'lide'].includes(S.view)) setView('detail'); else render(); };
   zavadyGo = (o) => { Object.assign(ZF, o || {}); setView('zavady'); };
   firmyGo = () => setView('firmy');

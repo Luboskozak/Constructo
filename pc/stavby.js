@@ -66,7 +66,7 @@
 
   /* ---------- slučování dat: stejný kód jako mergeData v Managementu (pc/index.html) a ve skriptu Google ---------- */
   function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {
