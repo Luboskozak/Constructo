@@ -1833,6 +1833,15 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   function aresDo(ov, p, b) {
     const ico = ov.querySelector(`[data-${p}="ico"]`).value;
     if (!H || !H.ares) return toast('ARES teď není k dispozici.');
+    // 4.87: bez IČO se hledá podle názvu firmy (výběr ze seznamu), vybraná firma se pak načte celá podle IČO
+    const nz = ov.querySelector(`[data-${p}="firma"]`);
+    if (!/^\d{8}$/.test(String(ico).replace(/\s/g, '')) && nz && nz.value.trim() && window.CXFirmy && CXFirmy.aresTlacitko) {
+      const row = b.closest('.rz-pole') || b.parentNode;
+      let st = row.nextElementSibling && row.nextElementSibling.classList.contains('rz-ares-st') ? row.nextElementSibling : null;
+      if (!st) { st = document.createElement('div'); st.className = 'rz-ares-st'; st.style.cssText = 'font-size:13px;margin:0 0 10px'; row.after(st); }
+      CXFirmy.aresTlacitko({ares: H.ares, aresHledej: H.aresHledej}, '', nz.value, st, o => { ov.querySelector(`[data-${p}="ico"]`).value = o.ico; st.textContent = ''; aresDo(ov, p, b); });
+      return;
+    }
     b.disabled = true; const t0 = b.textContent; b.textContent = 'Hledám…';
     H.ares(ico).then(x => { [['firma', x.firma], ['dic', x.dic], ['adresa', x.adresa], ['ico', x.ico], ['rejstrik', x.rejstrik]].forEach(([k, v]) => { const el = ov.querySelector(`[data-${p}="${k}"]`); if (v && el) el.value = v; }); toast(p === 'd' && !x.rejstrik ? 'Načteno z ARES (zápis v rejstříku ARES neuvádí – firma v obchodním rejstříku není, nebo ho doplňte ručně).' : 'Načteno z ARES.'); })
       .catch(x => toast(x.message || String(x))).finally(() => { b.disabled = false; b.textContent = t0; });
@@ -1842,7 +1851,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const U = JSON.parse(JSON.stringify(udaje())), d = U.dod || {};
     let logo = d.logo || '';
     const ov = okno('Kdo fakturuje – vaše firma', `
-      <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted)">Zadává se jednou pro celou stavbu (Údaje o stavbě). Objeví se na každé faktuře. Po zadání IČO klikněte <b>Načíst z ARES</b> – název, DIČ, adresa i zápis v obchodním rejstříku se doplní samy.</p>
+      <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted)">Zadává se jednou pro celou stavbu (Údaje o stavbě). Objeví se na každé faktuře. Po zadání IČO (nebo názvu firmy) klikněte <b>Načíst z ARES</b> – název, DIČ, adresa i zápis v obchodním rejstříku se doplní samy.</p>
       <div class="rz-pole"><label>Splatnost faktur (dní)<input data-u="splatnost" inputmode="numeric" value="${esc(U.splatnost || 14)}"></label>
         <label>DPH obvykle<select data-u="dph">${DPH.map(([k, t]) => `<option value="${k}"${(U.dph || '21') === k ? ' selected' : ''}>${t}</option>`).join('')}</select></label></div>
       <h4 style="margin:12px 0 6px">Vaše firma (dodavatel – hlavní firma, která stavbu spravuje)</h4>

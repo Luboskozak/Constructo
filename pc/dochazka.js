@@ -226,8 +226,6 @@
       '<div><label class="dc-l" for="dp-f">Firma *</label><select id="dp-f"><option value="">– vyberte firmu –</option><option value="+">＋ Nová firma…</option>' + fy.map(f => '<option value="' + esc(f.id) + '">' + esc(f.firma || '') + '</option>').join('') + '</select></div>' +
       '<div><label class="dc-l" for="dp-fu">Pozice</label><select id="dp-fu"><option value="">– vyberte pozici –</option><option value="+">＋ Vlastní pozice…</option>' + pozice().map(x => '<option>' + esc(x) + '</option>').join('') + '</select>' +
       '<input id="dp-fuv" hidden placeholder="Napište pozici, např. obkladač" autocomplete="off" style="margin-top:6px"></div>' +
-      '<div id="dp-nfi" hidden class="dc-g2s"><div><label class="dc-l" for="dp-ico">IČO nové firmy</label><div class="dc-row"><input id="dp-ico" inputmode="numeric" placeholder="12345678" style="flex:1;min-width:120px"><button type="button" class="btn" id="dp-ares">Doplnit z ARES</button></div></div>' +
-      '<div><label class="dc-l" for="dp-fn">Název nové firmy *</label><input id="dp-fn" autocomplete="off" placeholder="doplní se z ARES, nebo napište"></div><p class="dc-m" id="dp-ast"></p></div>' +
       '<div><label class="dc-l" for="dp-t">Telefon (pro WhatsApp / SMS)</label><input id="dp-t" type="tel" placeholder="+420 …"></div>' +
       '<div><label class="dc-l" for="dp-e">E-mail</label><input id="dp-e" type="email"></div></div>' +
       '<p class="dc-m">Osoba i nová firma se uloží do <b>Firmy / osoby na projektu</b> a uvidí je všichni (Management, Deník, mobil).</p>' +
@@ -256,38 +254,28 @@
     sel.onchange = () => { form.hidden = true; ukaz(sel.value); };
     d.querySelector('#dp-nova').onclick = () => { form.hidden = false; out.innerHTML = ''; sel.value = ''; vyber = ''; d.querySelector('#dp-j').value = o.jmeno && !o.kid ? o.jmeno : ''; d.querySelector('#dp-j').focus(); };
     d.querySelector('#dp-zr').onclick = () => { form.hidden = true; };
-    const nfi = d.querySelector('#dp-nfi'), fuv = d.querySelector('#dp-fuv'), ast = d.querySelector('#dp-ast');
-    d.querySelector('#dp-f').onchange = e => { nfi.hidden = e.target.value !== '+'; if (!nfi.hidden) d.querySelector('#dp-ico').focus(); };
-    d.querySelector('#dp-fu').onchange = e => { fuv.hidden = e.target.value !== '+'; if (!fuv.hidden) fuv.focus(); };
-    d.querySelector('#dp-ares').onclick = async () => {
-      const b = d.querySelector('#dp-ares'); b.disabled = true; ast.style.color = ''; ast.textContent = 'Hledám v ARES…';
-      try {
-        const o = await (H.ares || (window.CXFirmy && CXFirmy.aresPrimo))(d.querySelector('#dp-ico').value);
-        d.querySelector('#dp-fn').value = String(o.firma || '').trim(); nfi._ares = o;
-        ast.textContent = '✓ ' + (o.firma || o.ico) + (o.adresa ? ', ' + o.adresa : '');
-      } catch (e) { ast.style.color = '#b42318'; ast.textContent = e.message; }
-      b.disabled = false;
+    const fuv = d.querySelector('#dp-fuv'), fsel = d.querySelector('#dp-f');
+    // 4.87: nová firma se zakládá stejným oknem jako ve Firmy / osoby na projektu (IČO nebo název → ARES)
+    const plnFirmy = v => { fsel.innerHTML = '<option value="">– vyberte firmu –</option><option value="+">＋ Nová firma…</option>' + (H.firmy() || []).filter(f => f && f.id).sort((a, b) => String(a.firma || '').localeCompare(String(b.firma || ''), 'cs')).map(f => '<option value="' + esc(f.id) + '">' + esc(f.firma || '') + '</option>').join(''); fsel.value = v || ''; };
+    fsel.onchange = () => {
+      if (fsel.value !== '+') return;
+      fsel.value = '';
+      if (!H.novaFirma) { H.toast('Obnovte stránku (F5).'); return; }
+      H.novaFirma(id => plnFirmy(id));
     };
+    d.querySelector('#dp-fu').onchange = e => { fuv.hidden = e.target.value !== '+'; if (!fuv.hidden) fuv.focus(); };
     d.querySelector('#dp-ul').onclick = async () => {
       const g = id => d.querySelector(id).value.trim();
       const j = g('#dp-j'), em = g('#dp-e');
-      let fid = g('#dp-f');
+      const fid = g('#dp-f');
       const fu = g('#dp-fu') === '+' ? g('#dp-fuv') : g('#dp-fu');
       if (!j) { H.toast('Napište jméno a příjmení.'); d.querySelector('#dp-j').focus(); return; }
       if (!fid) { H.toast('Vyberte firmu.'); d.querySelector('#dp-f').focus(); return; }
-      if (fid === '+' && !g('#dp-fn')) { H.toast('Napište název nové firmy (nebo IČO a Doplnit z ARES).'); d.querySelector('#dp-fn').focus(); return; }
       if (g('#dp-fu') === '+' && !fu) { H.toast('Napište pozici.'); fuv.focus(); return; }
       if (em && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(em)) { H.toast('E-mail ' + em + ' nevypadá správně.'); return; }
       if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
       if (!H.pridejOsobu) { H.toast('Novou osobu zapište ve Firmy / osoby na projektu.'); return; }
-      if (fid === '+') {
-        if (!H.pridejFirmu) { H.toast('Obnovte stránku (F5).'); return; }
-        const a = nfi._ares || {};
-        fid = H.pridejFirmu({firma: g('#dp-fn'), ico: g('#dp-ico').replace(/\D/g, ''), dic: a.dic || '', adresa: a.adresa || ''});
-        if (!fid) return;
-        if (kontakty().some(k => k.fid === fid && fold(k.jmeno) === fold(j))) { H.toast(j + ' už u této firmy je, vyberte ho v seznamu.'); return; }
-      }
-      const kid = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+toString(36) + Math.random().toString(36).slice(2, 5);
       const ok = await H.pridejOsobu(fid, {id: kid, jmeno: j, funkce: fu, tel: g('#dp-t'), email: em, posilat: false});
       if (!ok) return;
       H.toast('Uloženo: ' + j);

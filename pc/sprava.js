@@ -249,7 +249,7 @@ const CXSprava = (() => {
     function firmy(box) {
       if (!window.CXFirmy) { box.innerHTML = '<p>Firmy se nenačetly. Obnovte stránku.</p>'; return; }
       const d = document.createElement('div'); box.appendChild(d);
-      CXFirmy.panel(d, Object.assign({nadpis: false, toast, ares: host.ares, ro, data: () => ({firmy: P().firmy || [], prijemci: P().prijemci || []}),
+      CXFirmy.panel(d, Object.assign({nadpis: false, toast, ares: host.ares, aresHledej: host.aresHledej, ro, data: () => ({firmy: P().firmy || [], prijemci: P().prijemci || []}),
         uloz: (k, x, ed) => uloz(p => { if (host.firmy && host.firmy.poUprave) host.firmy.poUprave(k, x, ed); p[k] = (Array.isArray(p[k]) ? p[k] : []).filter(y => y && y.id !== x.id).concat(x); }),
         odeber: (k, id) => uloz(p => { smazano(p, k, id); p[k] = (Array.isArray(p[k]) ? p[k] : []).filter(y => y && y.id !== id); })}, host.firmy || {}));
     }

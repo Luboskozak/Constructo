@@ -97,6 +97,7 @@ const CXFirmy = (() => {
 .cxf-m .g2{display:grid;grid-template-columns:200px 1fr;gap:10px}
 .cxf-m .ico{display:flex;gap:8px;align-items:flex-end}.cxf-m .ico>div{flex:0 0 200px}
 .cxf-m .hint{font-size:12.5px;color:#5f676d;margin:0}
+.cxf-ares-o{display:block;width:100%;text-align:left;margin:6px 0 0;padding:9px 11px;border:1px solid #d9dcdf;border-radius:10px;background:#fff;color:#131518;font:inherit;font-size:14px;cursor:pointer}.cxf-ares-o:hover{border-color:#F4D23C;background:#fffbe6}.cxf-ares-o span{display:block;font-size:12px;color:#5f676d}
 .cxf-m .cxf-b{font-size:14px;padding:9px 15px;border:1px solid #c9c9c1;background:#fff;border-radius:10px;font-weight:600;cursor:pointer;color:#131518}
 .cxf-m .cxf-b.pri{background:#131518;color:#fff;border-color:#131518}
 .cxf-m .cxf-b.add{background:#F4D23C;border-color:#131518;font-weight:700}
@@ -156,6 +157,45 @@ const CXFirmy = (() => {
       return {ico: o.ico || ico, firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''};
     } catch (e) { if (/ARES/.test(e.message) || /IČO/.test(e.message)) throw e; throw new Error('ARES se teď nepodařilo načíst. Údaje doplňte ručně.'); }
     finally { clearTimeout(tm); }
+  }
+
+  // 4.87: hledání v ARES i podle názvu firmy (vrací až 8 firem); když prohlížeč ARES nedosáhne, zkusí to host (skript Google)
+  const aresSub = o => ({ico: o.ico || '', firma: o.obchodniJmeno || '', dic: o.dic || '', adresa: (o.sidlo && o.sidlo.textovaAdresa) || ''});
+  async function aresHledejPrimo(t) {
+    t = String(t || '').trim();
+    if (t.length < 3) throw new Error('Napište aspoň 3 písmena z názvu firmy.');
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 12000);
+    try {
+      const r = await fetch('https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/vyhledat', {method: 'POST', headers: {Accept: 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify({obchodniJmeno: t, pocet: 8, start: 0}), signal: ctl.signal});
+      if (!r.ok) throw new Error('ARES');
+      const o = await r.json();
+      return (o.ekonomickeSubjekty || []).map(aresSub);
+    } finally { clearTimeout(tm); }
+  }
+  // záloha pro Deník a mobil: stejný skript Google, ke kterému je zařízení připojené (hyb-sync)
+  async function aresPresSkript(t) {
+    let sy = null; try { sy = JSON.parse(localStorage.getItem('hyb-sync') || 'null'); } catch (e) {}
+    if (!sy || !sy.url || !sy.key) throw new Error('ARES se teď nepodařilo načíst. Napište IČO, nebo údaje doplňte ručně.');
+    const r = await fetch(sy.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({key: sy.key, akce: 'ares_hledat', t}), redirect: 'follow'}).then(x => x.json()).catch(() => null);
+    if (!r || !Array.isArray(r.firmy)) throw new Error('ARES se teď nepodařilo načíst. Napište IČO, nebo údaje doplňte ručně.');
+    return r.firmy;
+  }
+  // jedno tlačítko „Hledat v ARES“: 8 číslic = IČO, jinak název. Víc výsledků = nabídka k výběru, vybraná firma se předá do vyber(o)
+  async function aresTlacitko(host, ico, nazev, st, vyber) {
+    css();
+    const c = String(ico || '').replace(/\s/g, ''), n = String(nazev || '').trim();
+    st.style.color = ''; st.textContent = 'Hledám v ARES…';
+    try {
+      if (/^\d{8}$/.test(c)) { const o = await (host.ares || aresPrimo)(c); vyber(o); return; }
+      if (c && !n) throw new Error('IČO má mít 8 číslic.');
+      if (!n) throw new Error('Napište IČO nebo název firmy.');
+      let L;
+      try { L = await aresHledejPrimo(n); } catch (e) { if (/3 písmena/.test(e.message)) throw e; L = await (host.aresHledej || aresPresSkript)(n); }
+      if (!L.length) throw new Error('V ARES není žádná firma s názvem „' + n + '“. Zkuste kratší část názvu.');
+      if (L.length === 1) { vyber(L[0]); return; }
+      st.innerHTML = '<b>Vyberte firmu:</b>' + L.map((o, i) => `<button type="button" class="cxf-ares-o" data-ai="${i}"><b>${esc(o.firma)}</b><span>IČO ${esc(o.ico)}${o.adresa ? ' · ' + esc(o.adresa) : ''}</span></button>`).join('');
+      st.querySelectorAll('[data-ai]').forEach(b => b.onclick = () => vyber(L[+b.dataset.ai]));
+    } catch (e) { st.textContent = /ARES|IČO|název|písmena/.test(e.message) ? e.message : 'ARES se teď nepodařilo načíst. Údaje doplňte ručně.'; st.style.color = '#c0332b'; }
   }
 
   function panel(el, host) {
@@ -237,8 +277,8 @@ const CXFirmy = (() => {
           <input data-kf="tel" type="tel" value="${esc(k.tel || '')}" placeholder="Telefon" aria-label="Telefon">
           <div class="pa"><label><input type="checkbox" data-kf="posilat"${k.posilat !== false ? ' checked' : ''}> posílat zprávy</label><button type="button" class="cxf-b del" data-krm="${i}">Odebrat</button></div></div>`).join('');
       const ov = okno(ed ? 'Upravit dodavatele' : 'Přidat dodavatele', `
-        <div class="ico">${f('ico', 'IČO', '12345678')}<button type="button" class="cxf-b" id="cxf-ares">Doplnit z ARES</button></div>
-        <p class="hint" id="cxf-ares-st">Napište IČO a klikněte Doplnit z ARES: název, sídlo a DIČ se vyplní samy.</p>
+        <div class="ico">${f('ico', 'IČO', '12345678')}<button type="button" class="cxf-b" id="cxf-ares">Hledat v ARES</button></div>
+        <p class="hint" id="cxf-ares-st">Napište IČO nebo název firmy a klikněte Hledat v ARES: název, sídlo a DIČ se vyplní samy.</p>
         ${f('firma', 'Název firmy', 'např. TT Tech s.r.o.')}
         <div class="g2">${f('dic', 'DIČ', 'CZ12345678')}${f('adresa', 'Sídlo', 'Ulice 1, 110 00 Praha 1')}</div>
         ${f('zkratky', 'Zkratky pro hledání', 'např. TT, TTT (oddělte čárkou)')}
@@ -247,7 +287,7 @@ const CXFirmy = (() => {
         <div><label class="l" for="cxf-pozn">Poznámka</label><input id="cxf-pozn" value="${esc(ed ? ed.pozn || '' : '')}" placeholder="např. elektroinstalace, objekt B"></div>`, 'Uložit', async () => {
         sber();
         const g = k => ov.querySelector('#cxf-' + k).value.trim(), n = g('firma');
-        if (!n) { toast('Napište název firmy (nebo IČO a Doplnit z ARES).'); ov.querySelector('#cxf-firma').focus(); return 'keep'; }
+        if (!n) { toast('Napište název firmy (nebo IČO a Hledat v ARES).'); ov.querySelector('#cxf-firma').focus(); return 'keep'; }
         const kk = ks.filter(k => k.jmeno || k.email || k.tel);
         const spatny = kk.find(k => k.email && !EMAIL_RE.test(k.email));
         if (spatny) { toast('E-mail ' + spatny.email + ' nevypadá správně.'); return 'keep'; }
@@ -265,14 +305,14 @@ const CXFirmy = (() => {
       kresli();
       ov.querySelector('#cxf-kadd').onclick = () => { sber(); ks.push({id: nid('k'), jmeno: '', funkce: '', email: '', tel: '', posilat: true}); kresli(); const r = ov.querySelectorAll('.cxf-pr'); r[r.length - 1].querySelector('input').focus(); };
       ov.querySelector('#cxf-ares').onclick = async () => {
-        const b = ov.querySelector('#cxf-ares'), s = ov.querySelector('#cxf-ares-st'); b.disabled = true; s.textContent = 'Hledám v ARES…'; s.style.color = '';
-        try {
-          const o = await (host.ares || aresPrimo)(ov.querySelector('#cxf-ico').value);
+        const b = ov.querySelector('#cxf-ares'), s = ov.querySelector('#cxf-ares-st'); b.disabled = true;
+        await aresTlacitko(host, ov.querySelector('#cxf-ico').value, ov.querySelector('#cxf-firma').value, s, o => {
           if (o.firma) ov.querySelector('#cxf-firma').value = o.firma; if (o.dic) ov.querySelector('#cxf-dic').value = o.dic; if (o.adresa) ov.querySelector('#cxf-adresa').value = o.adresa; if (o.ico) ov.querySelector('#cxf-ico').value = o.ico;
-          s.textContent = '✓ Doplněno z ARES: ' + String(o.firma || o.ico).replace(/\.$/, '') + '. Teď doplňte pracovníky s e-mailem a telefonem.';
-        } catch (e) { s.textContent = e.message; s.style.color = '#c0332b'; }
+          s.style.color = ''; s.textContent = '✓ Doplněno z ARES: ' + String(o.firma || o.ico).replace(/\.$/, '') + '. Teď doplňte pracovníky s e-mailem a telefonem.';
+        });
         b.disabled = false;
       };
+      ['#cxf-ico', '#cxf-firma'].forEach(q => { const i = ov.querySelector(q); if (i) i.addEventListener('keydown', e => { if (e.key === 'Enter' && !(ed && q === '#cxf-firma')) { e.preventDefault(); ov.querySelector('#cxf-ares').click(); } }); });
       setTimeout(() => { const i = ov.querySelector(ed ? '#cxf-firma' : '#cxf-ico'); if (i) i.focus(); }, 30);
     }
 
@@ -307,6 +347,6 @@ const CXFirmy = (() => {
   // jen okno Přidat / Upravit (bez seznamu), např. z formuláře záznamu: CXFirmy.okna(host).upravOsobu(null, 'tds')
   const okna = host => panel(null, host);
 
-  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty, pozice, aresPrimo};
+  return {VERZE, panel, okna, oblast, oblNazev, OBJ, kontakty, pozice, aresPrimo, aresTlacitko};
 })();
 if (typeof window !== 'undefined') window.CXFirmy = CXFirmy;
