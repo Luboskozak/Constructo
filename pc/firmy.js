@@ -298,6 +298,8 @@ const CXFirmy = (() => {
         const jina = data().firmy.find(x => x.id !== (ed && ed.id) && stejnaFirma(x, {firma: n, ico: ico0}));
         if (jina && ed) { const st0 = ov.querySelector('#cxf-ares-st'); st0.style.color = '#c0332b'; st0.textContent = 'Firma ' + jina.firma + ' už v seznamu je zvlášť. Opravte název nebo IČO.'; st0.scrollIntoView({block: 'center'}); toast(st0.textContent); return 'keep'; }
         kk.forEach(k => { if (!k.id) k.id = nid('k'); });
+        // 4.90: čas změny u každé osoby (pro propsání opravy křížem – novější vyhrává)
+        { const puv = ed ? kontakty(ed) : [], t = Date.now(); kk.forEach(k => { const o = puv.find(y => y.id === k.id); if (!o || ['jmeno', 'funkce', 'email', 'tel'].some(f => String(o[f] || '') !== String(k[f] || ''))) k._ts = t; }); }
         // 4.90: firma už v seznamu je → nepřidává se znovu, ale doplní se do ní (údaje z ARES, noví pracovníci); vidí to všichni
         if (jina) {
           const ks0 = kontakty(jina).map(k => Object.assign({}, k)), nove = [];
