@@ -101,7 +101,7 @@
 .dkv-stage canvas,.dkv-stage svg.ann{position:absolute;left:0;top:0;transform-origin:0 0}
 .dkv-stage canvas.zakl{background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.35);image-rendering:auto}
 .dkv-stage .vyb{position:absolute;border:2px dashed #F4D23C;background:rgba(244,210,60,.15);pointer-events:none;display:none;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}
-.dkv-stage[data-n=posun]{cursor:grab}.dkv-stage[data-n=posun].drz{cursor:grabbing}
+.dkv-stage[data-n=posun]{cursor:grab}.dkv-stage[data-n=posun].drz{cursor:grabbing}.dkv-stage.nad{cursor:move!important}.dkv-stage.tah{cursor:grabbing!important}
 .dkv-stage:not([data-n=posun]):not([data-n=text]){cursor:crosshair}.dkv-stage[data-n=text]{cursor:text}.dkv-stage[data-n=guma]{cursor:cell}.dkv-stage[data-n=razitko]{cursor:copy}
 .dkv-msg{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:16px;text-align:center;padding:20px}
 .dkv-msg .bx{background:#16191c;border-radius:14px;padding:20px 24px;max-width:520px;line-height:1.5}
@@ -548,7 +548,7 @@
     el.innerHTML = `
       <div class="dkv-bar">
         <div class="dkv-r1">
-        <button type="button" class="dkv-b" data-v="zavrit" title="Zavřít (Esc)">✕ Zavřít</button>
+        <button type="button" class="dkv-b zl" data-v="zavrit" title="Zavřít výkres">✕ Zavřít</button>
         <span class="nm" id="dkv-nm"></span>
         ${sour.length > 1 ? `<span class="dkv-g"><button type="button" class="dkv-b" data-v="vpred" title="Předchozí výkres ve složce (Alt+↑)">▲</button><span class="zoom" id="dkv-poradi"></span><button type="button" class="dkv-b" data-v="vdal" title="Další výkres ve složce (Alt+↓)">▼</button></span>` : ''}
         </div><div class="dkv-r2">
@@ -603,13 +603,13 @@
     el.querySelector('[data-v="pred"]').onclick = () => list(V.str - 1);
     el.querySelector('[data-v="dal"]').onclick = () => list(V.str + 1);
     el.querySelector('[data-v="zpet"]').onclick = zpet;
-    el.querySelector('[data-v="smazat"]').onclick = () => { if (!kresbyListu().length) return; V.zaloha = {k: klicListu(), a: kresbyListu().slice()}; V.kresby[klicListu()] = []; kresliAnn(); napoveda('Kresba smazána. Vrátit ji jde tlačítkem Zpět.'); };
+    el.querySelector('[data-v="smazat"]').onclick = () => { if (!kresbyListu().length) return; zapamatuj(); V.kresby[klicListu()] = []; kresliAnn(); napoveda('Kresba smazána. Vrátit ji jde tlačítkem Zpět.'); };
     el.querySelector('[data-v="meritko"]').onclick = e => menuMeritek(e.currentTarget);
     el.querySelector('[data-v="tisk"]').onclick = () => tisk();
     el.querySelector('[data-v="stahnout"]').onclick = () => V.rec && stahnout(V.rec);
     napojUdalosti();
     nastroj('posun');
-    document.addEventListener('keydown', klavesy);
+    document.addEventListener('keydown', klavesy, true);   // 4.94: zachytit dřív než okna pod výkresem (Esc je nezavře)
     window.addEventListener('resize', naResize);
     nacti(r);
   }
@@ -617,14 +617,14 @@
   function zavri() {
     if (!V) return;
     zavriMenu();
-    document.removeEventListener('keydown', klavesy); window.removeEventListener('resize', naResize);
+    document.removeEventListener('keydown', klavesy, true); window.removeEventListener('resize', naResize);
     try { if (V.doc) V.doc.destroy(); } catch (e) {}
     if (V.imgUrl) URL.revokeObjectURL(V.imgUrl);
     V.el.remove(); V = null;
   }
   function klavesy(e) {
     if (!V || e.target.closest('input,textarea')) return;
-    if (e.key === 'Escape') { if (document.querySelector('.dkv-menu')) { zavriMenu(); return; } if (document.querySelector('.dkv-out,.dkv-dlg')) return; zavri(); }
+    if (e.key === 'Escape') { if (document.querySelector('.dkv-menu')) { e.stopImmediatePropagation(); zavriMenu(); return; } if (document.querySelector('.dkv-out,.dkv-dlg')) return; e.preventDefault(); e.stopImmediatePropagation(); if (!zpet()) napoveda('Není co vrátit. Výkres zavřete žlutým tlačítkem ✕ Zavřít vlevo nahoře.'); }   // 4.94: Esc = Zpět (dřív zavřel výkres)
     else if (e.key === '+' || e.key === '=') zoomKolem(1.4);
     else if (e.key === '-') zoomKolem(1 / 1.4);
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') { e.preventDefault(); zpet(); }
@@ -639,7 +639,7 @@
     V.n = n; V.st.dataset.n = n;
     V.el.querySelectorAll('[data-n]').forEach(b => b.setAttribute('aria-pressed', b.dataset.n === n));
     const D_ = dotyk(), m = D_ ? 'prstem' : 'myší';
-    const t = {posun: D_ ? 'Posun prstem · dvěma prsty zvětšíte' : 'Táhněte myší pro posun · kolečko myši zvětšuje · dvojklik = zvětšit',
+    const t = {posun: D_ ? 'Posun prstem · dvěma prsty zvětšíte · značku chytíte prstem a přesunete' : 'Táhněte myší pro posun · nakreslenou značku chytíte a přesunete · kolečko myši zvětšuje · Esc = Zpět',
       tuzka: 'Kreslete ' + m, zvyraz: 'Přejeďte ' + m + ' přes místo – zvýrazní se průhlednou barvou', cara: 'Táhněte ' + m + ' rovnou čáru', sipka: 'Táhněte od začátku ke špičce šipky',
       obdelnik: 'Táhněte ' + m + ' obdélník', kolecko: 'Táhněte ' + m + ' přes místo, které chcete zakroužkovat', mrak: 'Táhněte ' + m + ' obdélník – nakreslí se mráček (označení změny nebo vady)',
       text: (D_ ? 'Klepněte' : 'Klikněte') + ', kam chcete napsat text', razitko: (D_ ? 'Klepněte' : 'Klikněte') + ', kam dát razítko „' + V.razitko[0] + '“',
@@ -796,6 +796,13 @@
   /* ---------- kresba (souřadnice v jednotkách listu, takže drží při zvětšení i ve výřezu) ---------- */
   const klicListu = () => (V.rec ? V.rec.id : '') + ':' + V.str;
   const kresbyListu = () => (V.kresby[klicListu()] ||= []);
+  // 4.94: historie pro Zpět / Esc – před každou změnou kresby se uloží stav listu (přidání, guma, přesun, smazat vše)
+  const zapamatuj = () => { (V.hist ||= []).push({k: klicListu(), a: JSON.stringify(kresbyListu())}); if (V.hist.length > 200) V.hist.shift(); };
+  function posunTvar(k, dx, dy) {
+    if (k.p) k.p = k.p.map(q => [q[0] + dx, q[1] + dy]);
+    if (k.r) k.r = [k.r[0] + dx, k.r[1] + dy, k.r[2] + dx, k.r[3] + dy];
+    if (k.x != null) { k.x += dx; k.y += dy; }
+  }
   // 4.54: tvary jsou uložené v souřadnicích neotočeného listu; při otočení se jen přepočítají (rotM)
   function rotM() { const w = V.w0, h = V.h0; return V.rot === 90 ? [0, 1, -1, 0, h, 0] : V.rot === 180 ? [-1, 0, 0, -1, w, h] : V.rot === 270 ? [0, -1, 1, 0, 0, w] : [1, 0, 0, 1, 0, 0]; }
   const rotPdf = () => ((V.page ? V.page.rotate : 0) + V.rot) % 360;
@@ -872,10 +879,12 @@
     return nej;
   }
   function zpet() {
-    if (!V) return;
+    if (!V) return false;
+    const h = V.hist || [], kl = klicListu();
+    for (let i = h.length - 1; i >= 0; i--) if (h[i].k === kl) { V.kresby[kl] = JSON.parse(h.splice(i, 1)[0].a); kresliAnn(); return true; }
     const k = kresbyListu();
-    if (k.length) { k.pop(); kresliAnn(); return; }
-    if (V.zaloha && V.zaloha.k === klicListu()) { V.kresby[V.zaloha.k] = V.zaloha.a; V.zaloha = null; kresliAnn(); napoveda('Kresba vrácena.'); }
+    if (k.length) { k.pop(); kresliAnn(); return true; }
+    return false;
   }
   function otocit() {
     if (!V || !V.rec) return;
@@ -933,6 +942,7 @@
   }
   const naList = (cx, cy) => zListu((cx - V.tx) / V.s, (cy - V.ty) / V.s);
   const naPohled = (cx, cy) => [(cx - V.tx) / V.s, (cy - V.ty) / V.s];   // otočený pohled (výřez)
+  const UCHOP = {posun: 10, cara: 6, sipka: 6, obdelnik: 6, kolecko: 6, mrak: 6, meritko: 6, text: 8, razitko: 8};   // tolerance chycení značky v px
   function napojUdalosti() {
     const st = V.st;
     let akce = null;
@@ -954,17 +964,20 @@
         const [a, b] = [...V.ptr.values()]; akce = {pinch: true, d: Math.hypot(a[0] - b[0], a[1] - b[1]), c: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]}; kresliAnn(); return;
       }
       const [cx, cy] = bod(e), p = naList(cx, cy), n = e.button === 1 ? 'posun' : V.n;
+      // 4.94: klik na nakreslenou značku = chytit a posunout (v Posunu i u nástrojů tvarů, textu, razítka a měření)
+      const ti = e.button === 0 && UCHOP[n] ? najdiTvar(p, UCHOP[n] / V.s) : -1;
+      if (ti >= 0) { zapamatuj(); akce = {tah: kresbyListu()[ti], p0: p}; st.classList.add('tah'); e.preventDefault(); return; }
       if (n === 'posun') { akce = {posun: true, x: cx, y: cy}; st.classList.add('drz'); }
       else if (n === 'tuzka') akce = {tvar: {t: 'tuzka', b: V.barva, w: 1.5 * V.tl / V.s, p: [p]}};
       else if (n === 'zvyraz') akce = {tvar: {t: 'zvyraz', b: V.barva === '#16191c' ? '#f2b705' : V.barva, w: (8 + 4 * V.tl) / V.s, p: [p]}};
       else if (['kolecko', 'sipka', 'cara', 'obdelnik', 'mrak', 'meritko'].includes(n)) akce = {tvar: {t: n, b: V.barva, w: 1.75 * V.tl / V.s, r: [p[0], p[1], p[0], p[1]]}};
-      else if (n === 'guma') { const i = najdiTvar(p, 10 / V.s); if (i >= 0) { kresbyListu().splice(i, 1); kresliAnn(); } else napoveda('Tady žádná značka není – klepněte přímo na čáru nebo text.'); }
-      else if (n === 'razitko') { const [t, b] = V.razitko; kresbyListu().push({t: 'razitko', b, s: t, x: p[0], y: p[1], v: 7 * (1 + V.tl / 2) / V.s, a: -V.rot}); kresliAnn(); }
+      else if (n === 'guma') { const i = najdiTvar(p, 10 / V.s); if (i >= 0) { zapamatuj(); kresbyListu().splice(i, 1); kresliAnn(); } else napoveda('Tady žádná značka není – klepněte přímo na čáru nebo text.'); }
+      else if (n === 'razitko') { const [t, b] = V.razitko; zapamatuj(); kresbyListu().push({t: 'razitko', b, s: t, x: p[0], y: p[1], v: 7 * (1 + V.tl / 2) / V.s, a: -V.rot}); kresliAnn(); }
       else if (n === 'vyrez') { akce = {vyrez: true, x: cx, y: cy}; Object.assign(V.vyb.style, {display: 'block', left: cx + 'px', top: cy + 'px', width: '0px', height: '0px'}); }
       else if (n === 'text') { e.preventDefault(); textNa(cx, cy); }
     });
     st.addEventListener('pointermove', e => {
-      if (!V.ptr.has(e.pointerId)) return;
+      if (!V.ptr.has(e.pointerId)) { if (e.pointerType === 'mouse' && UCHOP[V.n]) { const [cx, cy] = bod(e); st.classList.toggle('nad', najdiTvar(naList(cx, cy), UCHOP[V.n] / V.s) >= 0); } return; }
       V.ptr.set(e.pointerId, bod(e));
       if (!akce) return;
       const [cx, cy] = bod(e);
@@ -975,6 +988,7 @@
       }
       if (akce.posun) { V.tx += cx - akce.x; V.ty += cy - akce.y; akce.x = cx; akce.y = cy; pozice(); planujDetail(); return; }
       const p = naList(cx, cy);
+      if (akce.tah) { posunTvar(akce.tah, p[0] - akce.p0[0], p[1] - akce.p0[1]); akce.p0 = p; akce.hnul = true; kresliAnn(); return; }
       if (akce.tvar) {
         if (akce.tvar.p) { const l = akce.tvar.p[akce.tvar.p.length - 1]; if (Math.hypot(p[0] - l[0], p[1] - l[1]) * V.s > 1.5) akce.tvar.p.push(p); }
         else { akce.tvar.r[2] = p[0]; akce.tvar.r[3] = p[1]; }
@@ -985,13 +999,14 @@
     const konec = e => {
       V.ptr.delete(e.pointerId);
       if (!akce) return;
-      st.classList.remove('drz');
+      st.classList.remove('drz', 'tah');
+      if (akce.tah) { if (!akce.hnul && V.hist) V.hist.pop(); akce = null; return; }
       if (akce.pinch) { if (V.ptr.size < 2) akce = null; return; }
       if (akce.tvar) {
         const t = akce.tvar, mal = t.p ? t.p.length < 2 : Math.hypot(t.r[2] - t.r[0], t.r[3] - t.r[1]) * V.s < 6;
         if (t.p && t.p.length === 1) t.p.push([t.p[0][0] + 0.5 / V.s, t.p[0][1]]);
         if (t.t === 'meritko' && !mal && (V.kalibrace || !mpj())) { V.kalibrace = false; kresliAnn(); kalibruj(t); }
-        else { if (!mal || t.p) kresbyListu().push(t); kresliAnn(); }
+        else { if (!mal || t.p) { zapamatuj(); kresbyListu().push(t); } kresliAnn(); }
       }
       if (akce.vyrez) {
         const [cx, cy] = bod(e); V.vyb.style.display = 'none';
@@ -1010,7 +1025,7 @@
     st.appendChild(inp); inp.focus(); setTimeout(() => inp.focus(), 0);
     const p = naList(cx, cy + 8), vel = 18 / V.s;
     let hotovo = false;
-    const ok = () => { if (hotovo) return; hotovo = true; const s = inp.value.trim(); inp.remove(); if (s && V) { kresbyListu().push({t: 'text', b: V.barva, x: p[0], y: p[1], v: vel * (0.75 + V.tl / 4), s, a: -V.rot}); kresliAnn(); } };
+    const ok = () => { if (hotovo) return; hotovo = true; const s = inp.value.trim(); inp.remove(); if (s && V) { zapamatuj(); kresbyListu().push({t: 'text', b: V.barva, x: p[0], y: p[1], v: vel * (0.75 + V.tl / 4), s, a: -V.rot}); kresliAnn(); } };
     inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') ok(); if (e.key === 'Escape') { hotovo = true; inp.remove(); } };
     inp.onblur = ok;
     inp.onpointerdown = e => e.stopPropagation();
