@@ -103,7 +103,7 @@
     const fy = (H && H.firmy()) || [], out = [];
     fy.forEach(f => {
       const ks = window.CXFirmy && CXFirmy.kontakty ? CXFirmy.kontakty(f) : (Array.isArray(f.kontakty) ? f.kontakty : []);
-      (ks || []).forEach(k => { if (k && k.id && k.jmeno) out.push({kid: String(k.id), jmeno: k.jmeno, funkce: k.funkce || '', tel: k.tel || k.telefon || '', email: k.email || '', firma: f.firma || f.nazev || '', fid: f.id || ''}); });
+      (ks || []).forEach(k => { if (k && k.id && k.jmeno) out.push({kid: String(k.id), jmeno: k.jmeno, funkce: k.funkce || '', tel: k.tel || k.telefon || '', email: k.email || '', firma: f.firma || f.nazev || '', fid: f.id || '', pozvano: k.pozvano || {}}); });
     });
     return out;
   }
@@ -138,14 +138,29 @@
   }
   // 4.84: odeslání osobního odkazu jedním tlačítkem (e-mail, WhatsApp, SMS, kopírovat, QR) – stejné z Docházky, Firem i Správy stavby
   function cestyHtml(k, url) { return '<div class="dc-cw">' + cestyIn(k, url) + '</div>'; }
+  // 4.86: jasně vidět, co už odešlo (uloženo u osoby, vidí to všichni kolegové) – nic se neposílá omylem vícekrát
+  const kdy = iso => { const d = new Date(iso), t = new Date(); const h = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); return d.toDateString() === t.toDateString() ? 'dnes ' + h : d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + h; };
+  function stavPozvanky(k) {
+    const pz = k.pozvano || {}, c = [];
+    if (pz.mail) c.push('✉ e-mail ' + kdy(pz.mail));
+    if (pz.wa) c.push('WhatsApp ' + kdy(pz.wa));
+    if (pz.sms) c.push('SMS ' + kdy(pz.sms));
+    return c.length ? '<div class="dc-uz">✓ Pozvánka už odešla: ' + c.join(' · ') + '. Znovu posílat nemusíte.</div>' : '';
+  }
+  function oznac(box, k, kid, url0, cesta) {
+    k.pozvano = Object.assign({}, k.pozvano, {[cesta]: new Date().toISOString()});
+    if (H.oznacPozvanku) H.oznacPozvanku(k.fid, kid, cesta, k.pozvano[cesta]);
+    const w = box.querySelector('.dc-cw'); if (w) { w.innerHTML = cestyIn(k, url0); cestyBind(box, k, kid, url0); }
+  }
   function cestyIn(k, url0) {
-    const url = urlJ(url0);
+    const url = urlJ(url0), pz = k.pozvano || {};
     const tel = String(k.tel || '').replace(/[^0-9+]/g, ''), txt = zpravaPozvanky(k, url), wa = tel.replace(/^00/, '+').replace(/^\+/, '');
     return '<div class="dc-jaz"><span>Jazyk pozvánky:</span><button type="button" class="btn' + (POZJ === 'cs' ? ' dc-on' : '') + '" data-pj="cs">Čeština</button><button type="button" class="btn' + (POZJ === 'uk' ? ' dc-on' : '') + '" data-pj="uk">Українська</button></div>' +
+      stavPozvanky(k) +
       '<div class="dc-poz"><div class="dc-qr">' + qrSvg(url, 200) + '<small>Pracovník může QR naskenovat i přímo z obrazovky.</small></div><div class="dc-cesty">' +
-      (k.email ? '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>' : '<p class="dc-m">E-mail není vyplněný.</p>') +
-      (wa ? '<a class="btn dc-wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">WhatsApp<small>' + esc(k.tel) + '</small></a>' : '') +
-      (tel ? '<a class="btn" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">SMS z vašeho telefonu<small>zdarma podle vašeho tarifu</small></a>' : '') +
+      (k.email ? (pz.mail ? '<button type="button" class="btn dc-hotovo" data-p="mail">✓ E-mail odeslán ' + kdy(pz.mail) + '<small>poslat znovu (klepněte 2×)</small></button>' : '<button type="button" class="btn dc-pri" data-p="mail">✉ Poslat e-mailem<small>' + esc(k.email) + '</small></button>') : '<p class="dc-m">E-mail není vyplněný.</p>') +
+      (wa ? '<a class="btn dc-wa" data-p="wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(wa) + '?text=' + encodeURIComponent(txt) + '">' + (pz.wa ? '✓ ' : '') + 'WhatsApp<small>' + (pz.wa ? 'otevřeno ' + kdy(pz.wa) + ' · znovu' : esc(k.tel)) + '</small></a>' : '') +
+      (tel ? '<a class="btn' + (pz.sms ? ' dc-hotovo' : '') + '" data-p="sms" href="sms:' + esc(tel) + '?&body=' + encodeURIComponent(txt) + '">' + (pz.sms ? '✓ SMS otevřena ' + kdy(pz.sms) + '<small>znovu</small>' : 'SMS z vašeho telefonu<small>zdarma podle vašeho tarifu</small>') + '</a>' : '') +
       (!k.email && !tel ? '<p class="dc-m">Bez e-mailu a telefonu: zkopírujte odkaz nebo nechte pracovníka naskenovat QR.</p>' : '') +
       '<button type="button" class="btn" data-p="kop">Kopírovat odkaz</button></div></div>' +
       '<p class="dc-m">Odkaz je osobní: kdo ho otevře, zapisuje docházku za ' + esc(k.jmeno) + '. Neposílejte ho nikomu jinému.</p>';
@@ -157,9 +172,12 @@
       box.querySelector('.dc-cw').innerHTML = cestyIn(k, url0); cestyBind(box, k, kid, url0);
     });
     box.querySelector('[data-p="kop"]').onclick = async () => { try { await navigator.clipboard.writeText(url); H.toast('Odkaz zkopírován'); } catch (e) { prompt('Zkopírujte odkaz:', url); } };
+    box.querySelectorAll('[data-p="wa"],[data-p="sms"]').forEach(a => a.addEventListener('click', () => setTimeout(() => oznac(box, k, kid, url0, a.dataset.p), 400)));
     const bm = box.querySelector('[data-p="mail"]');
+    let znovu = 0;
     if (bm) bm.onclick = async () => {
-      bm.disabled = true;
+      if ((k.pozvano || {}).mail && !znovu) { znovu = 1; bm.innerHTML = 'Opravdu poslat znovu?<small>klepněte ještě jednou</small>'; setTimeout(() => { znovu = 0; }, 6000); return; }
+      bm.disabled = true; bm.innerHTML = '⏳ Odesílám…<small>' + esc(k.email) + '</small>';
       const uk = POZJ === 'uk';
       const html = '<div style="font-family:Arial,sans-serif;font-size:16px;color:#16191c;max-width:560px">' + (uk
         ? '<p>Добрий день,</p><p>це <b>Docházka Constructo</b> (облік робочого часу) для будови ' + esc(projektNazev()) + '.</p>'
@@ -171,7 +189,8 @@
           '<p style="color:#6b7279;font-size:13px">Poloha telefonu se zjistí jen ve chvíli klepnutí, nikdy jindy. Odkaz je osobní, nikomu ho neposílejte.</p></div>');
       const r = await H.posliMail({komu: k.email, predmet: (POZJ === 'uk' ? 'Docházka Constructo (облік робочого часу) – ' : 'Docházka Constructo – ') + projektNazev(), html, text: txt, cid: 'doch-' + kid + '-' + den(new Date())});
       bm.disabled = false;
-      H.toast(r && r.ok ? 'E-mail odeslán: ' + k.email : 'E-mail se nepodařilo poslat' + (r && r.error ? ': ' + r.error : '.'));
+      if (r && r.ok) { H.toast('✓ E-mail odeslán: ' + k.email); oznac(box, k, kid, url0, 'mail'); }
+      else { bm.innerHTML = '✕ Neodešlo – zkusit znovu<small>' + esc(r && r.error ? String(r.error).slice(0, 80) : 'bez signálu?') + '</small>'; bm.classList.add('dc-chyba'); }
     };
   }
   async function pozvat(kid) {
@@ -519,6 +538,7 @@
 .dc-acts{display:flex;gap:8px;justify-content:flex-end}
 .dc-l{display:block;font-size:12px;font-weight:700;color:var(--muted,#6b7279);margin:0 0 4px}.dc-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.dc-row select{flex:1;min-width:220px;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
 .dc-nf{margin:14px 0;padding:14px;border:1px solid var(--line,#d9dcdf);border-radius:12px}.dc-nf h4{margin:0 0 10px}.dc-g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}.dc-g2 input,.dc-g2 select{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border-radius:9px;border:1px solid var(--line,#d9dcdf);background:var(--card,#fff);color:inherit}
+.dc-uz{background:#dcefe3;color:#1d5e37;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14.5px;margin:12px 0 0}.dc-cesty .btn.dc-hotovo{background:#dcefe3!important;color:#1d5e37!important;border-color:#2f8a52!important}.dc-cesty .btn.dc-chyba{background:#fdeae6!important;color:#b3261e!important}
 .dc-ph{margin:16px 0 0}.dc-ph small{font-weight:400;color:var(--muted,#6b7279)}.dc-wa{background:#25D366!important;color:#fff!important;border-color:#25D366!important}.dc-pozv{white-space:nowrap;margin-right:8px}.dc-pozv::before{display:none!important}
 @media (max-width:700px){.dc-g2{grid-template-columns:1fr}}
 @media (max-width:700px){.dc-t th:nth-child(7),.dc-t td:nth-child(7){display:none}.dc-form{grid-template-columns:1fr}}
@@ -530,6 +550,6 @@
     vykresli, obnov: () => { obnov(); nacti(true); },
     // tlačítko u pracovníka v panelu Firmy / osoby na projektu (klik obslouží CXDochazka sám)
     tlacitko: (firma, k) => H && H.smi('doch') && k && k.id && k.jmeno ? '<button type="button" class="dc-chip" data-doch-k="' + esc(k.id) + '" title="Poslat pracovníkovi odkaz na Docházku">⏱ Docházka</button>' : '',
-    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.2'
+    pozvat, pozvatDoStavby, tlacitkoPozvat, cedule, spocti, verze: '1.3'
   };
 })();
