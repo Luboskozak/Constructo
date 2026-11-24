@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-dkUxgWKxJ00VrFD1FeL/VxI3cnjdTPvE8bdp1e1I46Y=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-fzZNCzQqiKhFQd46aeIt8yZsMfLnEcURolSROxzbpQc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -691,6 +691,12 @@ tr.zp-new td{animation:zpflash 1.6s}
 .pp-tbl input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#2c4a6e}
 .pp-tbl .c{text-align:center}.pp-tbl .r{text-align:right}.pp-tbl .nw{white-space:nowrap}
 .pp-red{color:var(--bad);font-weight:700}
+.pp-rem{display:inline-flex;align-items:center;gap:3px;font-weight:600}
+.pp-rem input{width:58px;padding:4px 6px;border:1px solid #e2c44a;background:#fff9dc;border-radius:7px;font:inherit;font-weight:700;text-align:right}
+.pp-rem input:focus{outline:2px solid #F4D23C;background:#fff}
+.pp-rem.red input{color:var(--bad)}
+.pp-hot{display:block;font-size:11.5px;color:var(--muted)}
+.pp-tbl td.pp-zb{cursor:default}
 .pp-foot{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
 .pp-foot .btn{font-size:15px;padding:10px 18px;font-weight:600}
 .pp-arch{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
@@ -1272,9 +1278,9 @@ body.dfull-on{overflow:hidden}
           <button type="button" class="btn pp-todo" id="pp-notodo">Odstranit z tisku nezahájené činnosti</button>
           <button type="button" class="btn" id="pp-all">Vybrat vše</button>
           <button type="button" class="btn" id="pp-none">Zrušit výběr</button>
-          <span class="hcap">Zaškrtnuté položky půjdou do PDF. Kliknutím na řádek položku přidáte nebo odeberete.</span>
+          <span class="hcap">Zaškrtnuté položky půjdou do PDF. Kliknutím na řádek položku přidáte nebo odeberete. Ve žlutém políčku Zbývá opravíte rozestavěnost – propíše se do úkolu i Harmonogramu.</span>
         </div>
-        <div style="overflow:auto"><table class="pp-tbl"><thead><tr><th class="c">Tisk</th><th class="c">Č.</th><th>Objekt</th><th>Činnost</th><th>Dodavatel</th><th>Odpovídá</th><th>Plán prací</th><th class="r">Zbývá</th><th>Stav</th></tr></thead><tbody id="pp-rows"></tbody></table></div>
+        <div style="overflow:auto"><table class="pp-tbl"><thead><tr><th class="c">Tisk</th><th class="c">Č.</th><th>Objekt</th><th>Činnost</th><th>Dodavatel</th><th>Odpovídá</th><th>Plán prací</th><th class="r">Zbývá <span style="font-weight:400">(opravit)</span></th><th>Stav</th></tr></thead><tbody id="pp-rows"></tbody></table></div>
       </div>
       <div class="pp-foot">
         <b id="pp-count"></b>
@@ -1300,7 +1306,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.01';
+  const APP_VERSION = '5.02';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -7924,8 +7930,24 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
     $('#pp-rows').innerHTML = PP.rows.length ? PP.rows.map(t => {
       const on = !PP.off.has(t.id), st = stOf(t), rem = 100 - (Number(t.done) || 0), a = t.start && t.start > o.from ? t.start : o.from, b = t.end && t.end < o.to ? t.end : o.to;
       const noPct = !(Number(t.done) > 0) && t.status === 'doing';
-      return `<tr data-id="${esc(t.id)}" class="${on ? '' : 'off'}"><td class="c"><input type="checkbox" ${on ? 'checked' : ''} aria-label="Zahrnout do PDF"></td><td class="c">${on ? ++n : ''}</td><td>${esc(t.obj || '')}</td><td class="pp-t">${esc(t.title)}</td><td>${esc(t.supplier || '')}</td><td>${esc(ownOf(t))}</td><td class="nw">${dd(a)} – ${dd(b)}</td><td class="r nw">${noPct ? '<span class="hcap">neuvedeno</span>' : `<span class="${rem === 100 ? 'pp-red' : ''}">${rem} %</span>`}</td><td class="${st === 'todo' || st === 'late' ? 'pp-red' : ''}">${PP_STAV[st]}${on ? '' : '<br><span class="hcap">nebude v tisku</span>'}</td></tr>`;
+      return `<tr data-id="${esc(t.id)}" class="${on ? '' : 'off'}"><td class="c"><input type="checkbox" ${on ? 'checked' : ''} aria-label="Zahrnout do PDF"></td><td class="c">${on ? ++n : ''}</td><td>${esc(t.obj || '')}</td><td class="pp-t">${esc(t.title)}</td><td>${esc(t.supplier || '')}</td><td>${esc(ownOf(t))}</td><td class="nw">${dd(a)} – ${dd(b)}</td><td class="r nw pp-zb">${RO() ? (noPct ? '<span class="hcap">neuvedeno</span>' : `<span class="${rem === 100 ? 'pp-red' : ''}">${rem} %</span>`) : `<label class="pp-rem${rem === 100 && !noPct ? ' red' : ''}" title="Kolik procent práce ještě zbývá. Opravte a stiskněte Enter – hotovo se dopočítá a propíše do úkolu i Harmonogramu."><input type="number" min="0" max="100" step="5" inputmode="numeric" value="${noPct ? '' : rem}" placeholder="?" aria-label="Zbývá v procentech"> %</label><span class="pp-hot">hotovo ${noPct ? '?' : 100 - rem} %</span>`}</td><td class="${st === 'todo' || st === 'late' ? 'pp-red' : ''}">${PP_STAV[st]}${on ? '' : '<br><span class="hcap">nebude v tisku</span>'}</td></tr>`;
     }).join('') : '<tr><td colspan="9" class="c" style="padding:18px">V tomto období nejsou žádné otevřené úkoly.</td></tr>';
+    // 5.02: rozestavěnost (zbývá) jde opravit přímo v řádku – hotovo = 100 − zbývá, uloží se do úkolu (setDone),
+    // takže se propíše do Úkolů, Harmonogramu (pruh i činnost HMG z propojených úkolů), historie postupu i ke kolegům.
+    $('#pp-rows').querySelectorAll('.pp-zb').forEach(td => {
+      const inp = td.querySelector('input'); if (!inp) return;
+      td.onclick = e => e.stopPropagation();
+      const t = PP.rows.find(x => x.id === td.parentNode.dataset.id);
+      const save = () => {
+        if (inp.value === '') return;
+        const zb = pct(inp.value);
+        if (setDone(t, 100 - zb)) toast(`${t.title}: zbývá ${zb} %, hotovo ${100 - zb} %`);
+        ppRender();
+      };
+      inp.onchange = save;
+      inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } else if (e.key === 'Escape') { e.stopPropagation(); ppRender(); } };
+      inp.onfocus = () => inp.select();
+    });
     $('#pp-rows').querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = e => {
       const id = tr.dataset.id, cb = tr.querySelector('input'), on = e.target === cb ? cb.checked : PP.off.has(id);
       if (on) PP.off.delete(id); else PP.off.add(id);
