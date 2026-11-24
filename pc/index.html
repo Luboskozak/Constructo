@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-fzZNCzQqiKhFQd46aeIt8yZsMfLnEcURolSROxzbpQc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-tmVBEAsugAcdEbJgn6oWKI2CVQtuMZzpKxacmKme0ws=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -404,6 +404,7 @@ body.rz-full .wrap>section{gap:0!important}
 .appsw button{border:0;background:none;cursor:pointer;font-family:inherit;width:100%}
 .appsw a,.appsw button{display:block;text-align:center;padding:8px 4px;border-radius:9px;font-size:13px;font-weight:700;color:#c9ced3;text-decoration:none}
 .appsw.jen{grid-template-columns:1fr}
+.dstr{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-right:10px}.dstr select{font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--line,#ccc)}
 body.rezim-denik #btn-plan,body.rezim-denik #btn-porada,body.rezim-denik #btn-new,body.rezim-denik #btn-simple{display:none!important}
 .appsw [hidden],.side-stary[hidden]{display:none}
 .side-stary{display:block;margin:6px 0 0;padding:6px 10px;font-size:12px;color:#9aa1a8;text-decoration:underline}
@@ -1306,7 +1307,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.02';
+  const APP_VERSION = '5.03';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2028,13 +2029,13 @@ body.dfull-on{overflow:hidden}
     if (diaryDraft && !Array.isArray(diaryDraft.mista)) { diaryDraft.mista = diaryDraft.misto ? [diaryDraft.misto] : []; delete diaryDraft.misto; }
     if (!$('#j-text') || !diaryDraft) return;
     const d = diaryDraft, v = id => $('#' + id) ? $('#' + id).value : undefined;
-    d.date = v('j-date') || d.date; d.text = v('j-text');
+    d.date = v('j-date') || d.date; d.text = v('j-text'); if (v('j-strana') !== undefined) d.strana = v('j-strana');
     if (v('j-ukkomu') !== undefined) d.ukKomu = v('j-ukkomu'); if (v('j-ukend') !== undefined) d.ukEnd = v('j-ukend');
     d.akce = d.ukKomu ? 'ukol' : 'zapis';
   }
   const filteredDiary = () => {
     const s = dSeen0 || '', q = S.q || '';
-    return D.diary.filter(e => isZapis(e)
+    return D.diary.filter(e => isZapis(e) && denikVidi(e)
       && (!S.owner || e.owner === S.owner || e.by === S.owner || (e.komu || []).includes(S.owner) || e.ukKomu === S.owner)
       && (!S.obj || (e.obj && objHit(e.obj, S.obj)))
       && (S.dFil !== 'me' || dForMe(e)) && (S.dFil !== 'problem' || (e.typ === 'problem' && !e.vyreseno)) && (S.dFil !== 'term' || !!e.ukolId)
@@ -2101,6 +2102,7 @@ body.dfull-on{overflow:hidden}
     const d = dDraft(), ed = d.edit ? D.diary.find(e => e.id === d.edit) : null;
     if (d.edit && !ed) { diaryDraft = null; return renderDiary(); }
     d.firmy ||= []; d.prij ||= [];
+    { const pr = denikPrOf(); if (!ed && !pr.svZ && !pr.ostZ) { v.innerHTML = `<div class="diary"><div class="card" style="padding:22px"><h3 style="margin:0 0 8px">Do deníku jen nahlížíte</h3><p class="hcap">Vaše role na stavbě smí záznamy jen číst. Najdete je ve Zprávy → Denní záznamy.</p></div></div>`; return; } }
     const m = me(), team = owners().filter(n => n !== 'Bez přiřazení');
     const fri = (() => { const x = pd(today), w = x.getDay(); return addD(today, w <= 5 ? 5 - w : 6); })();
     const sch = window.CXDok && CXDok.schranka && CXDok.schranka();
@@ -2111,7 +2113,7 @@ body.dfull-on{overflow:hidden}
     const form = `
       <form class="card dform${dFull ? ' full' : ''}" id="j-form" autocomplete="off">
         <div class="dform-h"><h3>${ed ? 'Upravit záznam' : 'Nový záznam'}</h3><span class="hcap">${esc((D.project && D.project.name) || '')} · napište, co se dělo · vpravo vyberte, komu to poslat</span><span class="dopen">klepněte kamkoli – otevře se na celou obrazovku</span>
-          <span class="dwho">${m ? `<span class="av" style="background:${pcol(m)}">${esc(initials(m))}</span><span>Píše <b>${esc(m)}</b></span><button type="button" class="del" id="j-who">nejsem to já</button>` : `<button type="button" class="btn primary" id="j-who">Kdo píše? Vyberte své jméno</button>`}</span>
+          ${denikStranyHtml(d, ed)}<span class="dwho">${m ? `<span class="av" style="background:${pcol(m)}">${esc(initials(m))}</span><span>Píše <b>${esc(m)}</b></span><button type="button" class="del" id="j-who">nejsem to já</button>` : `<button type="button" class="btn primary" id="j-who">Kdo píše? Vyberte své jméno</button>`}</span>
           <button type="button" class="btn dclose" id="j-close" title="Zavřít (rozepsaný záznam zůstane)">✕ Zavřít</button></div>
         <div class="dgrid">
           <div class="dmain">
@@ -2177,7 +2179,7 @@ body.dfull-on{overflow:hidden}
     const c = zaCteni(e), komu = c ? c.o.poslano || [] : e.komu || [];
     const txt = (e.text || '').replace(/\s+/g, ' ').trim();
     return `<div class="za-row${dIsNew(e, seen) ? ' new' : ''}${e.typ === 'problem' && !e.vyreseno ? ' prob' : ''}" data-zao="${esc(e.id)}" role="button" tabindex="0" title="Otevřít záznam">${th}
-      <div class="za-m"><div class="za-1"><span class="av" style="background:${pcol(who)}">${esc(initials(who))}</span><b>${esc(who)}</b>${e.typ ? `<span class="dtyp" style="--c:${t.c}">${esc(t.l)}</span>` : ''}${dIsNew(e, seen) ? '<span class="nw">nové</span>' : ''}</div>
+      <div class="za-m"><div class="za-1"><span class="av" style="background:${pcol(who)}">${esc(initials(who))}</span><b>${esc(who)}</b>${e.typ ? `<span class="dtyp" style="--c:${t.c}">${esc(t.l)}</span>` : ''}${denikStit(e)}${dIsNew(e, seen) ? '<span class="nw">nové</span>' : ''}</div>
         <div class="za-2">${esc(txt.length > 140 ? txt.slice(0, 140) + '…' : txt || 'bez textu')}</div></div>
       <div class="za-k"><small>${c ? `Rozesláno e-mailem (${c.n + (c.o.autor ? 1 : 0)})` : 'Komu'}</small>${c ? `<div class="za-kl">${c.lidi.map(x => `<span class="za-kp${x.r ? ' ok' : ''}" title="${x.r ? 'přečteno' : 'zatím nepřečteno'}">${x.r ? '☑' : '☐'} ${esc(x.n)}</span>`).join('')}${c.o.autor ? `<span class="za-kp au" title="kopie autorovi na ${esc(c.o.autor)}">✉ ${esc(who)} (kopie)</span>` : ''}${!c.n && !c.o.autor ? '<span class="hcap">nikomu</span>' : ''}</div>` : komu.length ? `<div class="za-kl">${komu.map(n => `<span class="za-kp">${esc(n)}</span>`).join('')}</div>` : '<span class="hcap">nikomu – jen uloženo</span>'}</div>
       <div class="za-d"><b>${esc(fmtDY(e.date))}</b><small>${e.at ? new Date(e.at).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}) : ''}</small>${c ? `<small class="za-st" title="Přečteno = kolega reagoval na e-mail">📨 ${c.n} · ☑ ${c.cteno}</small>` : ''}</div></div>`;
@@ -2185,7 +2187,7 @@ body.dfull-on{overflow:hidden}
   // okno záznamu: Otevřít a upravit / Náhled PDF / Odesláno (komu, kdy, přečteno) + celý záznam s odpověďmi
   function zaDetail(id, kde) {
     const e = D.diary.find(x => x.id === id); if (!e) return;
-    const c = zaCteni(e), pdf = c && c.o.pdf, ro = RO(), tab = kde || 'zaznam';
+    const c = zaCteni(e), pdf = c && c.o.pdf, ro = RO() || !denikPise(e), tab = kde || 'zaznam';
     const pdfId = pdf && (pdf.id || ((pdf.url || '').match(/\/d\/([\w-]+)/) || [])[1]);
     const odesl = c ? `<div class="za-od"><p class="hcap" style="margin:0 0 6px">Odesláno ${esc(dWhen(c.o.at))}${c.o.by ? '' : ''} · jeden formulář PDF e-mailem, každému zvlášť. ☑ = přečteno (kolega reagoval na e-mail: Beru na vědomí, Potvrzuji, Nesouhlasím nebo odpověď).</p>
       ${c.lidi.map(x => `<div class="za-p"><span class="za-ch${x.r ? ' on' : ''}">${x.r ? '✓' : ''}</span><b>${esc(x.n)}</b><span class="hcap">odesláno ${esc(dWhen(c.o.at))}</span><span class="sp"></span>${x.r ? `<span class="za-ok">přečteno ${esc(dWhen(x.r.at))}${x.r.stav ? ' · ' + esc(KOL_CO[x.r.stav] || x.r.stav) : ''}${x.r.text ? ': ' + esc(String(x.r.text).slice(0, 80)) : ''}</span>` : '<span class="hcap">zatím nepřečteno</span>'}</div>`).join('')}
@@ -2216,7 +2218,7 @@ body.dfull-on{overflow:hidden}
   function renderZapisyArchiv(v, coHtml) {
     if (dSeenFor !== me()) { dSeenFor = me(); dSeen0 = store.get(dSeenKey()) || ''; }
     if (me()) store.set(dSeenKey(), new Date().toISOString());
-    const seen = dSeen0, all = D.diary.filter(isZapis);
+    const seen = dSeen0, all = D.diary.filter(e => isZapis(e) && denikVidi(e));
     const lim = addD(today, 21);
     const up = all.filter(e => e.ukolId).map(e => ({e, t: D.tasks.find(x => x.id === e.ukolId)})).filter(x => x.t && eff(x.t) !== 'done' && x.t.end && x.t.end <= lim)
       .map(({e, t}) => ({d: t.end, e, h: `✔ ${esc(t.title.split('\n')[0].replace(/^\s*(•|-|\d+\.)\s+/, '').slice(0, 70))} <span class="hcap">· ${esc(t.owner || '')}</span>`, w: (t.end < today ? 'po termínu · ' : 'do ') + fmtD(t.end), late: t.end < today}))
@@ -2437,7 +2439,7 @@ body.dfull-on{overflow:hidden}
       if (entry) Object.assign(entry, base, {editedAt: at, editedBy: m});
       if (!entry) { diaryDraft = null; dFull = false; commit(); toast('Záznam mezitím někdo smazal'); return; }
     } else {
-      entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce}, base);
+      entry = Object.assign({id: uid(), at, by: m, owner: m, akce: d.akce, strana: d.strana || stranaOf(m)}, base);
       if (d.akce === 'ukol') {
         const id = uid();
         D.tasks.push({id, kind: 'simple', title: text, owner: d.ukKomu, team: [], start: today, end: d.ukEnd || '', done: 0, status: 'todo', note: '', obj, supplier: '', hmg: [], att, zapis: entry.id, createdAt: at, createdBy: m, updatedAt: at, updatedBy: m});
@@ -4268,9 +4270,9 @@ body.dfull-on{overflow:hidden}
     const q = ZF.q;
     const kol = ZF.firma || ZF.stav ? [] : kolZpravy().filter(z => (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
       && hledej(q, z.typ, z.popis, z.by, z.komu, z.obj, KOL));
-    const a = (ZF.sort === 'kolektiv' ? [] : ZAV()).filter(z => (!ZF.firma || zFirmaKey(z.firma) === zFirmaKey(ZF.firma)) && (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
+    const a = (ZF.sort === 'kolektiv' ? [] : ZAV()).filter(z => zpravaVidi(z) && (!ZF.firma || zFirmaKey(z.firma) === zFirmaKey(ZF.firma)) && (!ZF.osoba || foldName(z.by || '') === foldName(ZF.osoba))
       && (!ZF.stav || (ZF.stav === 'otevrene' ? zStav(z) !== 'uzavreno' : zStav(z) === ZF.stav))
-      && hledej(q, z.cislo, z.firma, zKomu(z), z.typ, zMisto(z), zPopis(z), z.by)).concat(kol);
+      && hledej(q, z.cislo, z.firma, zKomu(z), z.typ, zMisto(z), zPopis(z), z.by)).concat(mgmtSmi() ? kol : []);
     const byDate = (x, y) => String(y.at || '').localeCompare(String(x.at || ''));
     if (ZF.sort === 'datum' || ZF.sort === 'kolektiv') return a.sort(byDate);
     const k = ZF.sort === 'osoba' ? 'by' : 'firma';
@@ -4278,7 +4280,7 @@ body.dfull-on{overflow:hidden}
   }
   // 4.69: Zprávy, záznamy = jedno místo se třemi okny (Odeslané zprávy už nejsou v hlavním menu)
   function zvCoHtml() {
-    const nZap = D.diary.filter(isZapis).length, nZpr = ZAV().length + kolZpravy().length, nOd = ZAV().length;
+    const zv = ZAV().filter(zpravaVidi), nZap = D.diary.filter(e => isZapis(e) && denikVidi(e)).length, nZpr = zv.length + (mgmtSmi() ? kolZpravy().length : 0), nOd = zv.length;
     return `<div class="zv-co no-print" role="group" aria-label="Archiv"><button type="button" data-zco="zpravy" aria-pressed="${ZF.co === 'zpravy'}">Zprávy firmám a kolegům<span class="cnt">${nZpr}</span></button><button type="button" data-zco="zapisy" aria-pressed="${ZF.co === 'zapisy'}">Denní záznamy<span class="cnt">${nZap}</span></button><button type="button" data-zco="odeslane" aria-pressed="${ZF.co === 'odeslane'}">Odeslané zprávy<span class="cnt">${nOd}</span></button></div>`;
   }
   function renderZavady() {
@@ -4746,6 +4748,37 @@ body.dfull-on{overflow:hidden}
     if (z === 'denik') { if (!DEN_V.includes(S.view)) store.set('cx-mgmt-view', S.view); store.set('cx-rezim', 'denik'); setView(DEN_V.includes(S.view) ? S.view : 'diary'); }
     else { store.set('cx-rezim', 'mgmt'); const v = store.get('cx-mgmt-view'); setView(v && !DEN_V.includes(S.view) ? S.view : (v || S.view)); }
   });
+  // 5.03: oprávnění k deníkům (Správa stavby → Role a lidé: svůj / ostatních × nahlíží / zapisuje). Vedení stavby smí vše.
+  // Každá strana (firma) má svůj deník; záznam nese stranu (e.strana), staré záznamy = strana autora (tým = generální dodavatel).
+  const DEN_VSE2 = {svC: true, svZ: true, ostC: true, ostZ: true};
+  const clenOf = n => { const P = D.project || {}; return n && Array.isArray(P.clenove) ? P.clenove.find(x => x.jmeno && foldName(x.jmeno) === foldName(n)) : null; };
+  function denikPrOf(n) {
+    n = n === undefined ? me() : n; if (mgmtSmi(n)) return DEN_VSE2;
+    const c = clenOf(n), r = c && rolesVse(D.project || {}).find(x => x.id === c.role);
+    return (r && r.denikPr) || {svC: true, svZ: true, ostC: false, ostZ: false};
+  }
+  const gdNazev = () => (D.project && D.project.company) || 'Generální dodavatel';
+  function stranaOf(n) { n = n === undefined ? me() : n; if (!n || mgmtSmi(n)) return gdNazev(); const c = clenOf(n); return (c && c.firma) || gdNazev(); }
+  const stranaZaznamu = e => e.strana || (e.by ? stranaOf(e.by) : gdNazev());
+  const jeSvuj = e => foldName(stranaZaznamu(e)) === foldName(stranaOf());
+  function denikVidi(e) { const p = denikPrOf(); return jeSvuj(e) ? !!(p.svC || p.svZ) : !!(p.ostC || p.ostZ); }
+  function denikPise(e) { const p = denikPrOf(); return jeSvuj(e) ? !!p.svZ : !!p.ostZ; }
+  function denikStrany() {
+    const P = D.project || {}, m = new Map(), add = n => { if (n && !m.has(foldName(n))) m.set(foldName(n), n); };
+    add(gdNazev()); (P.clenove || []).forEach(c => { if (c.firma && !mgmtSmi(c.jmeno)) add(c.firma); }); firmyList().forEach(f => add(f.firma));
+    return [...m.values()];
+  }
+  function denikStranyHtml(d, ed) {
+    const pr = denikPrOf(), moje = stranaOf(); if (ed || !pr.ostZ) return '';
+    const vse = denikStrany(); if (vse.length < 2) return '';
+    const cur = d.strana || moje;
+    return `<label class="dstr" title="Do čího deníku se záznam zapíše">Deník <select id="j-strana">${vse.map(n => `<option value="${esc(n)}"${foldName(n) === foldName(cur) ? ' selected' : ''}>${esc(n)}${foldName(n) === foldName(moje) ? ' (náš)' : ''}</option>`).join('')}</select></label>`;
+  }
+  const denikStit = e => { const s0 = stranaZaznamu(e); return foldName(s0) === foldName(gdNazev()) ? '' : `<span class="dtyp" style="--c:#5b6470" title="Deník strany">📘 ${esc(s0)}</span>`; };
+  function zpravaVidi(z) {
+    if (mgmtSmi()) return true; const n = me(), f = foldName(stranaOf());
+    return zFirmaKey(z.firma) === f || foldName(z.by || '') === foldName(n) || foldName(String(zKomu(z) || '')).includes(foldName(n));
+  }
   function hlidejPristup() { try { if (!mgmtSmi()) render(); } catch (e) {} }
   setTimeout(hlidejPristup, 0);
   $('#me').addEventListener('change', hlidejPristup);
