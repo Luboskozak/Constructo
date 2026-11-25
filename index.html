@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-V4mC5pw2EeIztQcH/h6o6OTpygXUf8KeQJ/Sgt7y5JA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-jtlGS6vCkQVEKtMmadftoK5wYA77XAVTIjAy28PoB3c='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -278,6 +278,13 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   .nav{left:50%;right:auto;width:560px;transform:translateX(-50%)}
   .sheet{left:50%;right:auto;width:560px;transform:translateX(-50%)}
 }
+
+/* 5.11 (Luboš 25. 11.): jednotná zaškrtávací pole všude – zaškrtnuto = zelená fajfka ✅, nezaškrtnuto = červený křížek ❌ */
+html input[type=checkbox]{-webkit-appearance:none!important;appearance:none!important;width:20px!important;height:20px!important;min-width:20px;min-height:20px!important;flex:none;margin:0 2px;padding:0!important;border-radius:5px!important;border:1.5px solid #e3a0a0!important;background:#fdeeee url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6.5 6.5l7 7M13.5 6.5l-7 7' stroke='%23d23c3c' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/16px no-repeat!important;cursor:pointer;vertical-align:-5px;box-shadow:none!important;transition:background-color .12s,border-color .12s}
+html input[type=checkbox]:checked{border-color:#2f9e4f!important;background:#34a853 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3.2L15 7' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat!important}
+html input[type=checkbox]:indeterminate{border-color:#bbb!important;background:#f1f1f1!important}
+html input[type=checkbox]:disabled{opacity:.55;cursor:default}
+html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -308,7 +315,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/firmy.js"></script>
 <script>
 (() => {
-  const VERSION = '1.43';
+  const VERSION = '1.44';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
