@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-qCFAMdKigx/mE+LA2eLxDCy6FuvsiFnLkdTNCgwSW5Y='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-Zo+XUfG3dUuaanp9k1epolt4z+CmIX4euGcRPUevXyg='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -318,11 +318,20 @@ img{max-width:100%}
 .shist{list-style:none;padding:0!important;margin:4px 0 0!important;font-size:13px;display:flex;flex-direction:column;gap:4px}
 .hconv{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);background:var(--warn-soft);color:var(--warn);font-size:13px}
 .hconv .btn{padding:4px 10px;font-size:12.5px}
-/* 5.04: Harmonogram – seskupení, skupiny a podskupiny, firma provádějící, Gantt pro investora */
+/* 5.04: Harmonogram – seskupení, skupiny a podskupiny, firma provádějící, Podrobný harmonogram */
 .hfil{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);font-size:13px}
 .hfil .hfl{font:500 11px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .hfil label{display:inline-flex;gap:6px;align-items:center;color:var(--muted)}.hfil select{padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
-.hfil .seg button{padding:6px 11px}.hfil .btn{padding:6px 12px}
+.hfil .seg button{padding:6px 11px}
+.hfd{position:relative}.hfd summary{list-style:none;cursor:pointer;padding:6px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);white-space:nowrap;user-select:none}
+.hfd summary::-webkit-details-marker{display:none}.hfd summary::after{content:' ▾';color:var(--muted)}.hfd[open] summary{border-color:var(--ink)}
+.hfd summary b{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;text-align:center}
+.hfp{position:absolute;z-index:30;top:calc(100% + 4px);left:0;min-width:230px;max-height:360px;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+.hfp label{display:flex;align-items:center;gap:8px;padding:4px 2px;cursor:pointer;color:var(--ink);white-space:nowrap}.hfp input{width:17px;height:17px;flex:none}
+.hfp-a{display:flex;gap:14px;padding:2px 2px 6px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:12.5px}
+.hfq{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;min-width:220px}
+.hfd.dk summary{background:#2a2f34;color:#fff;border-color:#4a5157}.hfd.dk .hfp{background:#fff;color:#1f2a36;border-color:#ccd}.hfd.dk .hfp label{color:#1f2a36}
+.ig-bar .hfq{background:#24292d;color:#fff;border-color:#444;min-width:180px}.ig-bar .linkish{color:#F4D23C}.hfil .btn{padding:6px 12px}
 body.ro #h-sel{display:none!important}
 .hrow.hsum{background:var(--soft);font-weight:600}.hrow.hsum:hover{background:color-mix(in srgb,var(--accent) 9%,var(--soft))}
 .hrow.hsum.l1{background:color-mix(in srgb,var(--soft) 45%,transparent);padding-left:26px}
@@ -342,7 +351,7 @@ body.ro #h-sel{display:none!important}
 .skd{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center}.skd label{font-weight:600;font-size:13px}
 .skd input,.skd select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
 @media (max-width:860px){.hrow.hsum.l1{padding-left:14px}.skd{grid-template-columns:1fr}}
-/* Gantt pro investora: vždy světlý „papír“, aby vypadal stejně na projektoru, v tisku i v PDF */
+/* Podrobný harmonogram: vždy světlý „papír“, aby vypadal stejně na projektoru, v tisku i v PDF */
 body.ig-on{overflow:hidden}
 #ig{position:fixed;inset:0;z-index:40;background:#e9ecef;overflow:auto;color:#1f2a36;font-family:var(--f-body,inherit)}
 .ig-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 16px;background:#16191c;color:#fff;font-size:13px}
@@ -1575,7 +1584,7 @@ body.dfull-on{overflow:hidden}
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
   // 5.04: Harmonogram – seskupení (objekty / činnosti / patra), filtr patra a činnosti, řazení, sbalené skupiny, výběr ke sloučení
-  S.hmgBy = ['obj', 'skup', 'patro'].includes(store.get('hyb-hmgby')) ? store.get('hyb-hmgby') : 'obj'; S.hmgPatro = ''; S.hmgSkup = '';
+  S.hmgBy = ['obj', 'skup', 'patro'].includes(store.get('hyb-hmgby')) ? store.get('hyb-hmgby') : 'obj'; S.hf = {obj: new Set(), patro: new Set(), skup: new Set(), q: ''}; S.hfOpen = '';
   S.hmgSort = ['hmg', 'start', 'name'].includes(store.get('hyb-hmgsort')) ? store.get('hyb-hmgsort') : 'hmg'; S.hmgFold = new Set(); S.hmgSel = null;
   S.gZoom = store.get('hyb-gzoom') === 'week' ? 'week' : 'all';
   const me = () => $('#me').value.trim();
@@ -2794,7 +2803,7 @@ body.dfull-on{overflow:hidden}
       while (iso(m) < hi) { const s = iso(m); t.push([x(s), i % step === 0 ? `${MNS[m.getMonth()]}${r === 'all' && (m.getMonth() === 0 || i === 0) ? ' ' + String(m.getFullYear()).slice(2) : ''}` : '', true]); m.setMonth(m.getMonth() + 1, 1); i++; } }
     return t;
   }
-  /* ---------- 5.04: Harmonogram – seskupení podle objektů / činností (skupiny a podskupiny) / pater, firma provádějící, Gantt pro investora ----------
+  /* ---------- 5.04: Harmonogram – seskupení podle objektů / činností (skupiny a podskupiny) / pater, firma provádějící, Podrobný harmonogram (dřív Gantt pro investora) ----------
      Každá činnost HMG může mít: skup (skupina, např. Dveře), pod (podskupina, např. repase), firma (firma provádějící z Firem), patro (např. 3.–6. NP).
      Když nejsou vyplněné, navrhnou se automaticky z názvu činnosti (Dveře REPASE → Dveře › repase) a firma z dodavatele propojených úkolů.
      Pole jsou přímo v řádku HMG, takže se synchronizují jako všechno ostatní a propíšou se všem. */
@@ -2866,6 +2875,39 @@ body.dfull-on{overflow:hidden}
   const dtK = a => { const f = x => { const d = pd(x); return `${d.getDate()}.${d.getMonth() + 1}.${String(d.getFullYear()).slice(2)}`; }; return `${f(a.start)}–${f(a.end)}`; };
   const ptSuf = h => patroTxt(h) && S.hmgBy !== 'patro' && !/\b(NP|PP)\b/.test(h.name) ? patroTxt(h) : '';
 
+  /* 5.04: zaškrtávací filtr Harmonogramu (Luboš 25. 11.): objekty, patra, profese – víc najednou – a vlastní hledání.
+     Stejný v Harmonogramu i v Podrobném harmonogramu. */
+  const HF_NEURC = 'celý objekt / neurčeno';
+  const hfObjVse = () => { const L = new Set(), O = new Set(); D.hmg.forEach(h => { objLetters(h.obj).forEach(x => L.add(x)); objOthers(h.obj).forEach(x => O.add(x)); });
+    const Om = new Map(); [...O].sort((a, b) => a.localeCompare(b, 'cs')).forEach(x => { if (!Om.has(foldName(x))) Om.set(foldName(x), x); }); return [...[...L].sort(), ...Om.values()]; };
+  const hfPatraVse = () => { const v = hmgPatraVse(); return D.hmg.some(h => !patraOf(h).length) ? v.concat(HF_NEURC) : v; };
+  const hfOk = h => { const F = S.hf;
+    if (F.obj.size && !objLetters(h.obj).some(x => F.obj.has(x)) && !objOthers(h.obj).some(x => [...F.obj].some(y => foldName(y) === foldName(x)))) return false;
+    if (F.patro.size) { const pp = patraOf(h); if (!(pp.length ? pp.some(x => F.patro.has(x)) : F.patro.has(HF_NEURC))) return false; }
+    if (F.skup.size && !F.skup.has(skupOf(h))) return false;
+    if (F.q && !hledej(F.q, h.name, h.owner, h.obj, 'objekt ' + h.obj, String(h.hid), skupOf(h), podOf(h), firmaOf(h), patroTxt(h), linkedTasks(h).map(hlUkolTxt))) return false;
+    return true; };
+  const hfTxt = () => { const F = S.hf, j = (st, n) => st.size ? n + ' ' + [...st].join(', ') : ''; return [j(F.obj, 'objekty'), j(F.patro, 'patra'), j(F.skup, 'profese'), F.q ? '„' + F.q + '“' : ''].filter(Boolean).join(' · '); };
+  function hfUi(dark) {
+    const F = S.hf, box = (k, nazev, vse) => `<details class="hfd${dark ? ' dk' : ''}" data-hfk="${k}"${S.hfOpen === k ? ' open' : ''}><summary>${nazev}${F[k].size ? ` <b>${F[k].size}</b>` : ''}</summary><div class="hfp">
+        <div class="hfp-a"><button type="button" class="linkish" data-hfa="${k}">vše</button><button type="button" class="linkish" data-hfn="${k}">nic</button></div>
+        ${vse.map(x => `<label><input type="checkbox" data-hfc="${k}" value="${esc(x)}"${F[k].has(x) ? ' checked' : ''}> ${k === 'obj' && /^[A-G]$/.test(x) ? `<i class="hob" style="background:${OBJ_COL[x]}">${x}</i>objekt ${x}` : esc(x)}</label>`).join('')}</div></details>`;
+    const any = F.obj.size || F.patro.size || F.skup.size || F.q;
+    return `${box('obj', 'Objekty', hfObjVse())}${box('patro', 'Patra', hfPatraVse())}${box('skup', 'Profese', hmgSkupVse())}
+      <input type="search" class="hfq" data-hfq placeholder="Hledat (název, firma, osoba…)" value="${esc(F.q)}" aria-label="Hledat v harmonogramu">${any ? '<button type="button" class="linkish" data-hfclr>zrušit filtr</button>' : ''}`;
+  }
+  function hfBind(root, again) {
+    root.querySelectorAll('[data-hfc]').forEach(c => c.onchange = () => { const st = S.hf[c.dataset.hfc]; c.checked ? st.add(c.value) : st.delete(c.value); S.hfOpen = c.dataset.hfc; again(); });
+    root.querySelectorAll('[data-hfa]').forEach(b => b.onclick = () => { const k = b.dataset.hfa; (k === 'obj' ? hfObjVse() : k === 'patro' ? hfPatraVse() : hmgSkupVse()).forEach(x => S.hf[k].add(x)); S.hfOpen = k; again(); });
+    root.querySelectorAll('[data-hfn]').forEach(b => b.onclick = () => { S.hf[b.dataset.hfn].clear(); S.hfOpen = b.dataset.hfn; again(); });
+    root.querySelectorAll('details[data-hfk]').forEach(d => d.ontoggle = () => { if (d.open) { S.hfOpen = d.dataset.hfk; root.querySelectorAll('details[data-hfk]').forEach(o => { if (o !== d) o.open = false; }); } else if (S.hfOpen === d.dataset.hfk) S.hfOpen = ''; });
+    const q = root.querySelector('[data-hfq]'); let t = null;
+    if (q) q.oninput = () => { clearTimeout(t); t = setTimeout(() => { S.hf.q = q.value.trim(); S.hfFocus = q.selectionStart; again(); }, 300); };
+    if (q && S.hfFocus != null) { q.focus(); try { q.setSelectionRange(S.hfFocus, S.hfFocus); } catch (e) {} S.hfFocus = null; }
+    const clr = root.querySelector('[data-hfclr]'); if (clr) clr.onclick = () => { S.hf = {obj: new Set(), patro: new Set(), skup: new Set(), q: ''}; S.hfOpen = ''; again(); };
+  }
+  if (!window.__hfDoc) { window.__hfDoc = 1; document.addEventListener('click', e => { if (e.target.isConnected && !e.target.closest('details[data-hfk]')) { document.querySelectorAll('details[data-hfk][open]').forEach(d => { d.open = false; }); S.hfOpen = ''; } }); }
+
   /* okno „Skupina, firma, patro“ – pro jednu činnost, výběr více činností (sloučení) nebo celou skupinu / podskupinu */
   function hmgSkupDialog(ids, title) {
     if (RO()) { toast('Jen prohlížení – skupiny nejde měnit.'); return; }
@@ -2882,7 +2924,7 @@ body.dfull-on{overflow:hidden}
         <label for="sk-firma">Firma provádějící</label><span style="display:flex;gap:6px"><select id="sk-firma" style="flex:1;min-width:0">${opts()}</select><button type="button" class="btn" id="sk-nova" style="white-space:nowrap">+ Nová firma</button></span>
         <label for="sk-patro">Patro</label><input id="sk-patro" list="sk-patral" value="${esc(pa ?? '')}" placeholder="${pa === null ? 'různé – ponechat' : patroAuto(hs[0]) ? 'podle názvu: ' + patroAuto(hs[0]) : 'např. 1. NP nebo 3.–6. NP (prázdné = celý objekt)'}"><datalist id="sk-patral">${PATRA.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
       </div>
-      <p class="hcap" style="margin:10px 0 0">Firma se ukáže v Harmonogramu i v Ganttu pro investora a propíše se jako dodavatel do propojených úkolů, které ho ještě nemají. Prázdná skupina = navrhne se sama podle názvu činnosti.</p>`;
+      <p class="hcap" style="margin:10px 0 0">Firma se ukáže v Harmonogramu i v Podrobném harmonogramu a propíše se jako dodavatel do propojených úkolů, které ho ještě nemají. Prázdná skupina = navrhne se sama podle názvu činnosti.</p>`;
     confirmModal(title || (hs.length > 1 ? 'Sloučit do skupiny' : 'Skupina, firma, patro'), body, 'Uložit', () => {
       const vSk = $('#sk-skup').value.trim(), vPod = $('#sk-pod').value.trim(), vFi = $('#sk-firma').value, vPa = $('#sk-patro').value.trim();
       let nT = 0;
@@ -2907,15 +2949,14 @@ body.dfull-on{overflow:hidden}
     };
   }
 
-  /* ---------- Gantt pro investora: čistý pohled do konce roku, tisk a PDF ---------- */
+  /* ---------- Podrobný harmonogram: čistý pohled do konce roku, tisk a PDF ---------- */
   const IG = {from: null, to: null, hideDone: false, owners: false, fold: new Set()};
   function igRows() {
     const from = IG.from, to = IG.to;
     return D.hmg.filter(h => h.start && h.end && h.start <= to && h.end >= from)
       .filter(h => !(IG.hideDone && actualOf(h).v >= 100))
       .filter(h => !S.obj || objMatch(h, S.obj))
-      .filter(h => !S.hmgPatro || patraOf(h).includes(S.hmgPatro))
-      .filter(h => !S.hmgSkup || skupOf(h) === S.hmgSkup);
+      .filter(hfOk);
   }
   function igTicks(from, to) {
     const span = dayDiff(from, addD(to, 1)), x = s => dayDiff(from, s) / span * 100, months = [], weeks = [];
@@ -2924,7 +2965,7 @@ body.dfull-on{overflow:hidden}
     return {span, x, months, weeks};
   }
   function igLabel() { const a = pd(IG.from), b = pd(IG.to); return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() ? `${MNL[a.getMonth()]} ${a.getFullYear()}` : `${MNL[a.getMonth()]}${a.getFullYear() !== b.getFullYear() ? ' ' + a.getFullYear() : ''} – ${MNL[b.getMonth()]} ${b.getFullYear()}`; }
-  function igFiltr() { return [S.obj ? (SECT.includes(S.obj) ? 'objekty ' : '') + S.obj : '', S.hmgPatro ? 'patro ' + S.hmgPatro : '', S.hmgSkup ? S.hmgSkup : ''].filter(Boolean).join(' · '); }
+  function igFiltr() { return [S.obj ? (SECT.includes(S.obj) ? 'objekty ' : '') + S.obj : '', hfTxt()].filter(Boolean).join(' · '); }
   function hmgInvestor() {
     if (!IG.from) { IG.from = today.slice(0, 8) + '01'; IG.to = today.slice(0, 4) + '-12-31'; if (IG.to <= IG.from) IG.to = addD(IG.from, 60); }
     let ov = $('#ig'); if (!ov) { ov = document.createElement('div'); ov.id = 'ig'; document.body.appendChild(ov); }
@@ -2949,8 +2990,9 @@ body.dfull-on{overflow:hidden}
     const objsIn = [...new Map(rows.map(h => [objCol(h.obj), sectKey(h.obj)])).entries()];
     const sum = hAgg(rows.length ? rows : [{start: IG.from, end: IG.to, pct: 0, hid: 0, obj: ''}]);
     ov.innerHTML = `<div class="ig-bar no-print">
-        <b>Gantt pro investora</b>
-        <span class="seg" role="tablist" aria-label="Seskupit">${[['skup', 'Činnosti'], ['obj', 'Objekty'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-igb="${k}" aria-pressed="${(S.hmgBy || 'skup') === k}">${l}</button>`).join('')}</span>
+        <b>Podrobný harmonogram</b>
+        <span class="seg" role="tablist" aria-label="Seskupit">${[['skup', 'Profese'], ['obj', 'Objekty'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-igb="${k}" aria-pressed="${(S.hmgBy || 'skup') === k}">${l}</button>`).join('')}</span>
+        ${hfUi(true)}
         <label>Od <input type="date" id="ig-from" value="${IG.from}"></label><label>Do <input type="date" id="ig-to" value="${IG.to}"></label>
         <label><input type="checkbox" id="ig-hd" ${IG.hideDone ? 'checked' : ''}> Skrýt hotové</label>
         <label><input type="checkbox" id="ig-ow" ${IG.owners ? 'checked' : ''}> Odpovědné osoby</label>
@@ -2971,7 +3013,8 @@ body.dfull-on{overflow:hidden}
     const close = () => { document.body.classList.remove('ig-on'); ov.remove(); document.removeEventListener('keydown', onKey); };
     const onKey = e => { if (e.key === 'Escape' && !$('#overlay:not([hidden])')) close(); };
     document.removeEventListener('keydown', IG.key || (() => {})); IG.key = onKey; document.addEventListener('keydown', onKey);
-    $('#ig-x').onclick = close;
+    $('#ig-x').onclick = () => { close(); render(); };
+    hfBind(ov.querySelector('.ig-bar'), hmgInvestor);
     $('#ig-print').onclick = () => window.print();
     $('#ig-pdf').onclick = async () => { const b = $('#ig-pdf'); b.disabled = true; b.textContent = 'Připravuji PDF…';
       try { const r = await igPdf(groups, rows); download(r.name, r.blob, 'application/pdf'); } catch (e) { toast('PDF se nepodařilo vytvořit: ' + (e && e.message || e)); }
@@ -3064,8 +3107,7 @@ body.dfull-on{overflow:hidden}
       if (S.owner && !(h.owner || '').split(/\s*\/\s*/).map(canonOwner).includes(S.owner) && !linkedTasks(h).some(t => hasPerson(t, S.owner))) return false;
       if (S.q && !hledej(S.q, h.name, h.owner, h.obj, 'objekt ' + h.obj, String(h.hid), skupOf(h), podOf(h), firmaOf(h), patroTxt(h), linkedTasks(h).map(hlUkolTxt))) return false;
       if (S.obj && !objMatch(h, S.obj)) return false;
-      if (S.hmgPatro && !patraOf(h).includes(S.hmgPatro)) return false;
-      if (S.hmgSkup && skupOf(h) !== S.hmgSkup) return false;
+      if (!hfOk(h)) return false;
       if (!hstatOk(h)) return false;
       return true;
     });
@@ -3083,14 +3125,12 @@ body.dfull-on{overflow:hidden}
       <div class="hnav"><div class="seg no-print" role="tablist" aria-label="Období">${HRANGES.map(([k, l]) => `<button type="button" role="tab" data-hr="${k}" aria-pressed="${S.hmgRange === k}">${l}</button>`).join('')}</div>
         ${S.hmgRange === 'all' ? '' : `<span class="no-print" style="display:inline-flex;gap:6px"><button class="btn" type="button" id="hr-prev" aria-label="Předchozí">←</button><button class="btn" type="button" id="hr-today">Dnes</button><button class="btn" type="button" id="hr-next" aria-label="Další">→</button></span>`}
         <b class="hper">${esc((l => l.charAt(0).toUpperCase() + l.slice(1))(hmgLabel(lo, hi)))}</b></div>
-      <div class="hfil no-print"><span class="hfl">Seskupit</span><span class="seg" role="tablist" aria-label="Seskupit">${[['obj', 'Objekty'], ['skup', 'Činnosti'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-hby="${k}" aria-pressed="${S.hmgBy === k}">${l}</button>`).join('')}</span>
-        <label>Patro <select id="hf-patro"><option value="">všechna</option>${hmgPatraVse().map(x => `<option${S.hmgPatro === x ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
-        <label>Činnost <select id="hf-skup"><option value="">všechny</option>${hmgSkupVse().map(x => `<option${S.hmgSkup === x ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
+      <div class="hfil no-print"><span class="hfl">Seskupit</span><span class="seg" role="tablist" aria-label="Seskupit">${[['obj', 'Objekty'], ['skup', 'Profese'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-hby="${k}" aria-pressed="${S.hmgBy === k}">${l}</button>`).join('')}</span>
+        ${hfUi(false)}
         <label>Řadit <select id="hf-sort">${[['hmg', 'jako v HMG'], ['start', 'podle zahájení'], ['name', 'podle názvu']].map(([k, l]) => `<option value="${k}"${S.hmgSort === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
-        ${S.hmgPatro || S.hmgSkup ? '<button type="button" class="linkish" id="hf-clr">zrušit filtr</button>' : ''}
         <span style="flex:1"></span>
         <button type="button" class="btn ro-hide" id="h-sel" aria-pressed="${!!S.hmgSel}">${S.hmgSel ? 'Ukončit slučování' : 'Sloučit do skupiny…'}</button>
-        <button type="button" class="btn ig-open" id="h-inv">Gantt pro investora</button></div>
+        <button type="button" class="btn ig-open" id="h-inv">Podrobný harmonogram</button></div>
       <div class="hrow head"><span>ID</span><span>Činnost</span><span class="hdt">Termín</span><span class="hscale">${ticks.map(t => t[1] ? `<span style="left:${t[0]}%">${esc(t[1])}</span>` : '').join('')}</span><span class="hplan" style="text-align:right">Plán dnes</span><span style="text-align:right">Hotovo</span><span style="text-align:right">Odchylka</span></div>`;
     if (S.hmgEdit === 'new') html += hmgForm({hid: Math.max(0, ...D.hmg.map(h => h.hid)) + 1, name:'', obj: S.obj && hmgObjs().find(o => objMatch({obj:o}, S.obj)) || hmgObjs()[0] || '', owner: S.owner || '', start: today, end: today, pct: 0}, true);
     if (!rows.length) html += `<div class="empty">V tomto období (podle filtru) nemá žádná činnost HMG termín. Zkuste delší období nebo šipky.</div>`;
@@ -3149,10 +3189,8 @@ body.dfull-on{overflow:hidden}
     if ($('#h-behind')) $('#h-behind').onclick = () => { S.hstat = S.hstat === 'b10' ? '' : 'b10'; render(); };
     $('#h-all').onchange = e => { S.hmgHideDone = e.target.checked; renderHmg(); };
     v.querySelectorAll('[data-hby]').forEach(b => b.onclick = () => { S.hmgBy = b.dataset.hby; store.set('hyb-hmgby', S.hmgBy); S.hmgFold.clear(); renderHmg(); });
-    $('#hf-patro').onchange = e => { S.hmgPatro = e.target.value; renderHmg(); };
-    $('#hf-skup').onchange = e => { S.hmgSkup = e.target.value; renderHmg(); };
+    hfBind(v.querySelector('.hfil'), renderHmg);
     $('#hf-sort').onchange = e => { S.hmgSort = e.target.value; store.set('hyb-hmgsort', S.hmgSort); renderHmg(); };
-    if ($('#hf-clr')) $('#hf-clr').onclick = () => { S.hmgPatro = S.hmgSkup = ''; renderHmg(); };
     $('#h-inv').onclick = () => hmgInvestor();
     $('#h-sel').onclick = () => { if (S.hmgSel) S.hmgSel = null; else { S.hmgSel = new Set(); if (S.hmgBy === 'obj') { S.hmgBy = 'skup'; store.set('hyb-hmgby', 'skup'); } toast('Klikněte na činnosti, které chcete sloučit do jedné skupiny.'); } renderHmg(); };
     if ($('#hs-x')) { $('#hs-x').onclick = () => { S.hmgSel = null; renderHmg(); }; $('#hs-go').onclick = () => hmgSkupDialog([...S.hmgSel], 'Sloučit do skupiny'); }
