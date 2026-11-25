@@ -30,7 +30,7 @@ const CXSprava = (() => {
 
   // pozice a oprávnění kolegů (stejná pravidla v Managementu i Deníku)
   const POZICE = ['Mistr', 'Stavbyvedoucí', 'Přípravář', 'Rozpočtář', 'Manažer projektu'];
-  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'nastavení aplikace: Správa stavby, role a lidé, mazání činností z Harmonogramu – jen manažer projektu']];
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'mazání z Harmonogramu, seznam podlaží, role a oprávnění, Správa stavby a nastavení – jen manažer projektu']];
   const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
   const PRAVA_POZICE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true, adm: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
   const ACCESS = {zapisuje: ['Zapisuje', 'zadává úkoly, píše záznamy'], nahlizi: ['Jen nahlíží', 'vidí vše, nic nemění']};

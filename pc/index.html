@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-sD03DQuet4TUkztRIwG3LfIsS404pczLiLrIn93A3QY='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-FxcwVVGeCkqfl3QufYIQ7h5aOw0V5nW41t8YNvKqXB4='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -705,7 +705,7 @@ h2{font:800 22px/1.2 var(--f-display);font-stretch:normal;text-transform:none;le
 .zp-t .miss{background:#FFF4BF;border-color:#e0b100;font-weight:600}
 .zp-t .hcap{margin-top:3px}
 .zp-okt{color:#2f7d4f;font-weight:600}
-body.noadmin #btn-person,body.noadmin #p-new,body.noadmin #p-edit,body.noadmin #p-del,body.noadmin [data-act="rename"],body.noadmin [data-act="lidezaloha"]{display:none!important}
+body.noadmin #btn-person,body.noadmin #p-edit,body.noadmin #p-del,body.noadmin [data-act="rename"],body.noadmin [data-act="lidezaloha"]{display:none!important}
 .person .pcard{display:inline-block;margin-top:3px;font-size:12px;font-weight:500;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 8px;cursor:pointer;background:var(--bg)}.person .pcard:hover{border-color:var(--ink)}.person .nm small.role+.pcard{margin-top:4px}.person .nm .pcard{display:table}
 .trow .tchk{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:2px solid var(--line);border-radius:5px;margin-right:9px;vertical-align:-4px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;background:var(--panel);flex:none}.trow .tchk:hover{border-color:var(--good)}.trow .tchk.on{background:var(--good);border-color:var(--good)}body.ro .trow .tchk{pointer-events:none}
 .hide-done{display:flex;align-items:center;gap:7px;font-size:13.5px;white-space:nowrap;cursor:pointer;padding:0 6px}.hide-done[hidden]{display:none}.hide-done input{width:17px;height:17px;margin:0}.tags.zt{background:var(--info-soft);color:var(--info);padding:1px 6px;border-radius:4px}
@@ -1686,7 +1686,7 @@ body.dfull-on{overflow:hidden}
   }
   const ACCESS = {zapisuje: 'Zapisuje (může měnit)', nahlizi: 'Jen nahlíží'};
   // 4.61: oprávnění osoby – zaškrtává správce v kartě osoby; správce smí vše
-  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'nastavení aplikace: Správa stavby, role a lidé, mazání činností z Harmonogramu – jen manažer projektu']];
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'mazání z Harmonogramu, seznam podlaží, role a oprávnění, Správa stavby a nastavení – jen manažer projektu']];
   const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
   const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true, adm: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
   function pravaOf(n) {
@@ -1702,7 +1702,7 @@ body.dfull-on{overflow:hidden}
   }
   const smi = (k, n) => !!pravaOf(n === undefined ? me() : n)[k];
   const canHmg = () => !RO() && smi('adm');
-  const hmgZakaz = () => { if (canHmg()) return false; toast('Mazat z harmonogramu smí jen ten, kdo má Administraci (manažer projektu).'); return true; };
+  const hmgZakaz = () => { if (canHmg()) return false; toast('Tohle smí jen ten, kdo má Administraci (manažer projektu).'); return true; };
   function personDialog(n) {
     const p = n ? personOf(n) : {};
     if (!isAdmin()) {
@@ -2879,8 +2879,8 @@ body.dfull-on{overflow:hidden}
       const draw = () => {
         const v = vyb(), list = patraSeznam(), extra = v.filter(x => !list.includes(x)), all = [...list, ...extra];
         pan.innerHTML = `<div class="ppk-top"><button type="button" class="btn" data-pa="all">Vybrat vše</button><button type="button" class="btn" data-pa="none">Zrušit výběr</button></div>
-          <div class="ppk-list">${all.map(x => `<div class="ppk-r"><label><input type="checkbox" value="${esc(x)}"${v.includes(x) ? ' checked' : ''}> ${esc(x)}</label>${list.includes(x) && !RO() ? `<button type="button" class="ppk-del" data-pdel="${esc(x)}" title="Odebrat podlaží ze seznamu stavby">×</button>` : ''}</div>`).join('')}</div>
-          ${RO() ? '' : `<div class="ppk-add"><input placeholder="Nové podlaží, např. 8. NP" aria-label="Nové podlaží"><button type="button" class="btn" data-pa="add">+ Přidat</button></div>`}
+          <div class="ppk-list">${all.map(x => `<div class="ppk-r"><label><input type="checkbox" value="${esc(x)}"${v.includes(x) ? ' checked' : ''}> ${esc(x)}</label>${list.includes(x) && canHmg() ? `<button type="button" class="ppk-del" data-pdel="${esc(x)}" title="Odebrat podlaží ze seznamu stavby">×</button>` : ''}</div>`).join('')}</div>
+          ${!canHmg() ? '' : `<div class="ppk-add"><input placeholder="Nové podlaží, např. 8. NP" aria-label="Nové podlaží"><button type="button" class="btn" data-pa="add">+ Přidat</button></div>`}
           <div class="ppk-foot"><span class="hcap">Nic nezaškrtnuto = ${esc(ph)}</span><button type="button" class="btn primary" data-pa="ok">Hotovo</button></div>`;
         const put = () => { inp.value = all.filter(x => pan.querySelector(`input[type=checkbox][value="${CSS.escape(x)}"]`)?.checked).join(', '); show(); };
         pan.querySelectorAll('input[type=checkbox]').forEach(c => c.onchange = put);
