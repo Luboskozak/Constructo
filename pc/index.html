@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-Wg4sssfGMxv/mZqLmxQo32QbyWSwd6DwabS/PtIosqg='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-GGpT58/kw/VWVWZXvj8+goAKRa2nJc1hEWEIYPjXXzo='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -257,7 +257,7 @@ h2{font:700 16px/1.2 var(--f-display);font-stretch:90%;margin:0;text-transform:u
 .hnav .seg button{padding:6px 11px}
 .hper{font:600 14px var(--f-body)}
 .hscale{position:relative;height:14px;text-transform:none;letter-spacing:0;overflow:hidden}
-.hscale span{position:absolute;top:0;padding-left:3px;border-left:1px solid var(--line);white-space:nowrap;font-size:10.5px}
+.hscale span{position:absolute;top:0;padding-left:3px;border-left:1px solid var(--line);white-space:nowrap;font-size:10.5px;overflow:hidden;text-overflow:clip}
 .htl .gl{position:absolute;top:0;bottom:0;width:1px;background:color-mix(in srgb,var(--muted) 18%,transparent)}
 .sync-st{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
 .sync-st i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
@@ -1951,7 +1951,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
         html += `<button type="button" class="trow" data-id="${esc(t.id)}">
           <span class="t-title"><span class="tchk no-print${st === 'done' ? ' on' : ''}" role="checkbox" aria-checked="${st === 'done'}" tabindex="-1" title="${st === 'done' ? 'Splněno (klikněte pro vrácení)' : 'Označit jako splněné'}">${st === 'done' ? '✓' : ''}</span>${esc(t.title)}${taskPeople(t).length > 1 ? `<span class="tags">${esc(taskPeople(t).filter(x => x !== (S.owner && hasPerson(t, S.owner) ? S.owner : t.owner || 'Bez přiřazení')).map(x => x === t.owner ? x + ' (hlavní)' : x).join(', '))}</span>` : ''}${(t.sub || []).length ? `<span class="tags subtag${subOpen(t).some(u => u.end && u.end < today) ? ' late' : ''}">dílčí úkoly ${t.sub.length - subOpen(t).length}/${t.sub.length} splněno${S.owner && subHas(t, S.owner) ? ' · ' + esc(S.owner) + ': ' + subOpen(t).filter(u => u.owner === S.owner).length : ''}</span>` : ''}${(t.hmg||[]).length ? `<span class="tags">HMG ${t.hmg.map(esc).join(' · ')}</span>` : ''}${zo[t.id] ? `<span class="tags zt">z porady${zo[t.id].no ? ' č. ' + esc(zo[t.id].no) : ''}${t.perm ? ' · trvalý' : ''}</span>` : t.src ? '<span class="tags zt">z porady (tabulka)</span>' : ''}<small>${esc(t.supplier || (isSimple(t) && t.createdBy ? 'zadal ' + t.createdBy : '—'))}${t.note ? ' · ' + esc(t.note) : ''}</small>${t.missed && st !== 'done' ? `<span class="t-miss">Důvod nesplnění: ${esc(t.missed)}</span>` : ''}</span>
           <span class="t-obj">${esc(t.obj || '–')}</span>
-          <span class="t-date${st === 'late' ? ' late' : ''}">${fmtD(t.start)} – ${fmtD(t.end)}</span>
+          <span class="t-date${st === 'late' ? ' late' : ''}">${!t.end ? (t.start ? 'od ' + fmtD(t.start) + ' · bez termínu' : 'bez termínu') : !t.start || t.start > t.end ? 'do ' + fmtD(t.end) : fmtD(t.start) + ' – ' + fmtD(t.end)}</span>
           <span class="prog" title="Klikněte a posuňte hotovo"><span class="meter"><i style="width:${done}%;background:${st==='late'?'var(--bad)':st==='done'?'var(--good)':'var(--accent)'}"></i></span><span class="num">${done} %</span><span class="rem">zbývá ${100-done} %</span></span>
           <span class="t-st"><span class="pill s-${st}">${STATUS[st]}</span></span>
           <span class="t-upd${stale ? ' stale' : ''}">${t.updatedAt ? relTime(t.updatedAt) : ''}${t.updatedBy ? ' · ' + esc(t.updatedBy) : t.updatedAt ? ' · import z plánu' : ''}</span>
@@ -2838,13 +2838,21 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     if (r === 'all') return `celá stavba ${a.getMonth() + 1}/${a.getFullYear()} – ${last.getMonth() + 1}/${last.getFullYear()}`;
     return `${fmtD(lo)} – ${fmtD(iso(last))} ${last.getFullYear()}`;
   }
+  // 5.13: popisky osy se na užší obrazovce (notebook) přetíraly (po 23út 24…, ledúnbře…) – když se nevejdou, ukáže se krátký tvar (23 / 1, 2, 3…), a když ani ten, jen každý druhý
+  function hScaleFit(root) {
+    const sc = root && root.querySelector('.hrow.head .hscale'); if (!sc) return;
+    const sp = [...sc.querySelectorAll('span[style]')], over = () => sp.some(x => x.style.display !== 'none' && x.scrollWidth > x.clientWidth + 1);
+    if (!over()) return;
+    sp.forEach(x => { if (x.dataset.kr) { x.title = x.textContent; x.textContent = x.dataset.kr; } });
+    for (let k = 2; k <= 6 && over(); k++) sp.forEach((x, i) => { x.style.display = i % k ? 'none' : ''; if (!(i % k)) { const nx = sp[i + k]; x.style.width = ((nx ? parseFloat(nx.style.left) : 100) - parseFloat(x.style.left)).toFixed(3) + '%'; } });
+  }
   function hmgTicks(lo, hi) {
     const span = dayDiff(lo, hi), x = s => dayDiff(lo, s) / span * 100, t = [], r = S.hmgRange;
-    if (r === 'week' || r === '2w') { for (let i = 0; i < span; i++) { const s = addD(lo, i), d = pd(s); t.push([x(s), r === 'week' ? `${WD[d.getDay()]} ${d.getDate()}.` : `${d.getDate()}.`, d.getDay() === 1]); } }
+    if (r === 'week' || r === '2w') { for (let i = 0; i < span; i++) { const s = addD(lo, i), d = pd(s); t.push([x(s), r === 'week' ? `${WD[d.getDay()]} ${d.getDate()}.` : `${d.getDate()}.`, d.getDay() === 1, `${d.getDate()}`]); } }
     else if (r === 'month') { for (let s = lo; s < hi; s = addD(s, 1)) { const d = pd(s); if (d.getDay() === 1) t.push([x(s), `${d.getDate()}. ${d.getMonth() + 1}.`, true]); } }
     else { const m = pd(lo); const step = r === 'all' ? (span > 900 ? 3 : 2) : 1; let i = 0;
       // 5.13: v Celé stavbě se rok psal za měsíc (pro 25) a přetékal přes další popisek – leden ukáže jen rok, popisky jdou od ledna po krocích
-      while (iso(m) < hi) { const s = iso(m), mo = m.getMonth(); t.push([x(s), r === 'all' ? (mo % step === 0 ? (mo === 0 ? String(m.getFullYear()) : MNS[mo]) : '') : i % step === 0 ? MNS[mo] : '', true]); m.setMonth(m.getMonth() + 1, 1); i++; } }
+      while (iso(m) < hi) { const s = iso(m), mo = m.getMonth(); t.push([x(s), r === 'all' ? (mo % step === 0 ? (mo === 0 ? String(m.getFullYear()) : MNS[mo]) : '') : i % step === 0 ? MNS[mo] : '', true, r === 'all' && mo === 0 ? `'${String(m.getFullYear()).slice(2)}` : String(mo + 1)]); m.setMonth(m.getMonth() + 1, 1); i++; } }
     return t;
   }
   /* ---------- 5.04: Harmonogram – seskupení podle objektů / činností (skupiny a podskupiny) / pater, firma provádějící, Podrobný harmonogram (dřív Gantt pro investora) ----------
@@ -3316,7 +3324,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
         <span style="flex:1"></span>
         <button type="button" class="btn ro-hide" id="h-sel" aria-pressed="${!!S.hmgSel}">${S.hmgSel ? 'Ukončit slučování' : 'Sloučit do skupiny…'}</button>
         <button type="button" class="btn ig-open" id="h-inv">Podrobný harmonogram</button></div>
-      <div class="hrow head"><span>ID</span><span>Činnost</span><span class="hdt">Termín</span><span class="hscale">${ticks.map(t => t[1] ? `<span style="left:${t[0]}%">${esc(t[1])}</span>` : '').join('')}</span><span class="hplan" style="text-align:right">Plán dnes</span><span style="text-align:right">Hotovo</span><span style="text-align:right">Odchylka</span></div>`;
+      <div class="hrow head"><span>ID</span><span>Činnost</span><span class="hdt">Termín</span><span class="hscale">${ticks.map((t, i) => { if (!t[1]) return ''; const nx = ticks.slice(i + 1).find(u => u[1]); return `<span style="left:${t[0]}%;width:${((nx ? nx[0] : 100) - t[0]).toFixed(3)}%"${t[3] ? ` data-kr="${esc(t[3])}"` : ''}>${esc(t[1])}</span>`; }).join('')}</span><span class="hplan" style="text-align:right">Plán dnes</span><span style="text-align:right">Hotovo</span><span style="text-align:right">Odchylka</span></div>`;
     if (S.hmgEdit === 'new') html += hmgForm(Object.assign({hid: Math.max(0, ...D.hmg.map(h => h.hid)) + 1, name:'', obj: S.obj && hmgObjs().find(o => objMatch({obj:o}, S.obj)) || hmgObjs()[0] || '', owner: S.owner || '', start: today, end: today, pct: 0}, S.hmgNewPreset || {}), true);
     if (!rows.length) html += `<div class="empty">V tomto období (podle filtru) nemá žádná činnost HMG termín. Zkuste delší období nebo šipky.</div>`;
     // 5.04: skupiny podle zvoleného seskupení; záhlaví skupiny má souhrnný pruh (od prvního zahájení do posledního dokončení, hotovo vážené délkou)
@@ -3378,6 +3386,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     $('#h-all').onchange = e => { S.hmgHideDone = e.target.checked; renderHmg(); };
     $('#hf-by').onchange = e => { S.hmgBy = e.target.value; store.set('hyb-hmgby', S.hmgBy); S.hmgFold.clear(); renderHmg(); };
     hfBind(v.querySelector('.hfil'), renderHmg);
+    hScaleFit(v);
     $('#h-inv').onclick = () => hmgInvestor();
     $('#h-sel').onclick = () => { if (S.hmgSel) S.hmgSel = null; else { S.hmgSel = new Set(); if (S.hmgBy === 'obj') { S.hmgBy = 'skup'; store.set('hyb-hmgby', 'skup'); } toast('Klikněte na činnosti, které chcete sloučit do jedné skupiny.'); } renderHmg(); };
     if ($('#hs-x')) { $('#hs-x').onclick = () => { S.hmgSel = null; renderHmg(); }; $('#hs-go').onclick = () => hmgSkupDialog([...S.hmgSel], 'Sloučit do skupiny'); }
