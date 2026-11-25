@@ -116,7 +116,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-war{color:var(--bad);font-weight:800;cursor:help}.rz-war.o{color:#c77700}
 .rz-ok{color:#2f7d4f}
 .rz-empty{padding:40px 18px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:14px;background:var(--panel)}
-.rz-empty b{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}.rz-empty ol{text-align:left;display:inline-block;margin:10px auto;color:var(--ink);font-size:15px;line-height:1.7}
+.rz-empty>b{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}.rz-empty b{color:var(--ink)}.rz-empty ol{text-align:left;display:inline-block;margin:10px auto;color:var(--ink);font-size:15px;line-height:1.7}
 .rz-info{font-size:13.5px;color:#7a5600;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:8px 12px}
 .rz-info.cerv{color:#fff;background:var(--bad);border-color:var(--bad)}
 .rz-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}

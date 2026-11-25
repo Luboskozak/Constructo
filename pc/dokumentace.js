@@ -454,7 +454,7 @@
           </div>`;
         }).join('')}
         ${cekaji.map(x => `<div class="dk-row ceka" role="row"><span class="dk-ik ${druh(x.nazev)}">${IKONA[druh(x.nazev)]}</span><div class="dk-n"><b>${esc(x.nazev)}</b><small>nahrává se…</small></div><span class="dk-m">${velTxt(x.vel)}</span><span class="dk-m">${esc(x.kdo || '')}</span><span></span><span></span></div>`).join('')}
-        ${!polozky.length && !cekaji.length ? `<div class="dk-empty">${q ? '<b>Nic nenalezeno</b>Zkuste jiné slovo.' : S.slozka ? '<b>Složka je prázdná</b>Přetáhněte sem soubory nebo klikněte na + Nahrát soubory.' : '<b>Zatím žádná dokumentace</b>Přetáhněte sem složku s projektovou dokumentací (třeba celou „DPS“ i s podsložkami), nebo klikněte na + Nahrát.'}</div>` : ''}
+        ${!polozky.length && !cekaji.length ? `<div class="dk-empty">${q ? '<b>Nic nenalezeno</b>Zkuste jiné slovo.' : ri ? (S.slozka ? '<b>Složka je prázdná</b>' : '<b>Zatím žádná dokumentace</b>Výkresy a dokumenty nahrává vedení stavby v počítači (záložka Dokumentace). Jakmile je nahraje, ukážou se tady.') : S.slozka ? '<b>Složka je prázdná</b>Přetáhněte sem soubory nebo klikněte na + Nahrát soubory.' : '<b>Zatím žádná dokumentace</b>Přetáhněte sem složku s projektovou dokumentací (třeba celou „DPS“ i s podsložkami), nebo klikněte na + Nahrát.'}</div>` : ''}
       </div>
     </div>`;
     EL.querySelectorAll('[data-cesta]').forEach(b => b.onclick = () => { S.slozka = b.dataset.cesta; S.q = ''; vykresli(); });

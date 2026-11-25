@@ -315,7 +315,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
 <script src="pc/firmy.js"></script>
 <script>
 (() => {
-  const VERSION = '1.44';
+  const VERSION = '1.45';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -689,7 +689,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     { const pp = (D && D.project && D.project.people) || {}, nah = !!me && Object.keys(pp).some(n => isMe(n) && pp[n] && pp[n].access === 'nahlizi'), r = ls.get('cx-ro') === '1' || nah;
       if (r !== ro) { ro = r; document.body.classList.toggle('ro', ro); if (ro) { view = 'archiv'; ufilter = 'vse'; } } }
     document.querySelectorAll('.nav [data-v]').forEach(b => b.setAttribute('aria-current', b.dataset.v === view));
-    const myOpen = simple().filter(t => !t.info && mine(t) && eff(t) !== 'done').length;
+    const myOpen = tasks().filter(t => !t.info && mine(t) && eff(t) !== 'done').length;   // 1.45: stejné číslo jako „Otevřené“ v Úkolech → Moje (dřív jen drobné úkoly, 16 vs 25)
     $('#cnt-ukoly').hidden = !myOpen; $('#cnt-ukoly').textContent = myOpen;
     const waiting = Q.filter(x => x.state !== 'sent').length;
     $('#cnt-q').hidden = !waiting; $('#cnt-q').textContent = waiting;
