@@ -30,15 +30,15 @@ const CXSprava = (() => {
 
   // pozice a oprávnění kolegů (stejná pravidla v Managementu i Deníku)
   const POZICE = ['Mistr', 'Stavbyvedoucí', 'Přípravář', 'Rozpočtář', 'Manažer projektu'];
-  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00']];
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'smí měnit strukturu a nastavení aplikace: úpravy a mazání v Harmonogramu, podlaží, Správa stavby, role a lidé – jen manažer projektu']];
   const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
-  const PRAVA_POZICE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
+  const PRAVA_POZICE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true, adm: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
   const ACCESS = {zapisuje: ['Zapisuje', 'zadává úkoly, píše záznamy'], nahlizi: ['Jen nahlíží', 'vidí vše, nic nemění']};
   // role na stavbě: kdo smí do Managementu a jak do Deníku
   const DENIK_PR = {zapis: 'Zapisuje', cteni: 'Jen čte', ne: 'Bez přístupu'};
-  const NIC = {rozp: false, fakt: false, fakU: false, doch: false};
+  const NIC = {rozp: false, fakt: false, fakU: false, doch: false, adm: false};
   const ROLE_DEF = [
-    {id: 'spravce', nazev: 'Správce stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: true, doch: true}},
+    {id: 'spravce', nazev: 'Správce stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: true, doch: true, adm: true}},
     {id: 'vedeni', nazev: 'Vedení stavby', mgmt: true, denik: 'zapis', prava: {rozp: true, fakt: true, fakU: false, doch: true}},
     {id: 'subdodavatel', nazev: 'Subdodavatel (firma)', mgmt: false, denik: 'zapis', prava: NIC},
     {id: 'dozor', nazev: 'TDS, investor, BOZP', mgmt: false, denik: 'cteni', prava: NIC}];
@@ -51,10 +51,10 @@ const CXSprava = (() => {
   const denZeStareho = d => d === 'zapis' ? {svC: true, svZ: true, ostC: false, ostZ: false} : d === 'cteni' ? {svC: true, svZ: false, ostC: false, ostZ: false} : {svC: false, svZ: false, ostC: false, ostZ: false};
   const denKod = x => x.svZ || x.ostZ ? 'zapis' : x.svC || x.ostC ? 'cteni' : 'ne';
   // sloupce „co vidí“ v tabulce rolí (krátké názvy)
-  const PRAVA_KRATCE = {rozp: 'Rozpočet a ceny', fakt: 'Připravuje faktury', fakU: 'Uzavírá faktury', doch: 'Docházka'};
+  const PRAVA_KRATCE = {rozp: 'Rozpočet a ceny', fakt: 'Připravuje faktury', fakU: 'Uzavírá faktury', doch: 'Docházka', adm: 'Administrace'};
   const STAV = {aktivni: 'Probíhá', priprava: 'V přípravě', pozastavena: 'Pozastavená', dokoncena: 'Dokončená'};
 
-  const ADMINS = P => Array.isArray(P.admins) && P.admins.length ? P.admins : ['Luboš Kozák'];
+  const ADMINS = P => [...new Set(['Luboš Kozák', ...(Array.isArray(P.admins) ? P.admins : [])])]; // autor Luboš Kozák je správce vždy
   const tym = P => Array.isArray(P.team) ? P.team.filter(n => n && n !== 'Bez přiřazení') : [];
   const osoba = (P, n) => (P.people && P.people[n]) || {};
   function emaily(p) {
@@ -63,9 +63,11 @@ const CXSprava = (() => {
     return [...rep.map(a => ({a, rep: true})), ...list.filter(x => !rep.includes(x.a)).map(x => ({a: x.a, rep: false}))];
   }
   function pravaOf(P, n) {
-    if (n && ADMINS(P).includes(n)) return {rozp: true, fakt: true, fakU: true, doch: true};
+    if (n && ADMINS(P).includes(n)) return {rozp: true, fakt: true, fakU: true, doch: true, adm: true};
     const p = n ? osoba(P, n) : {}, x = Object.assign({}, PRAVA_VYCH, p.prava || {});
     if (!(p.prava && 'doch' in p.prava)) x.doch = ['Manažer projektu', 'Stavbyvedoucí'].includes(p.role);
+    if (!(p.prava && 'adm' in p.prava)) x.adm = p.role === 'Manažer projektu';
+    if (p.access === 'nahlizi') x.adm = false;
     if (p.access === 'nahlizi') { x.fakt = false; x.fakU = false; }
     if (x.fakU) x.fakt = true; if (x.fakt) x.rozp = true;
     return x;

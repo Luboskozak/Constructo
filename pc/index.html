@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-Zo+55fNt3EUSMB++tvlLi3wVIqXKOBseRGc/9zadD/A='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-1pyrJuwVTtV76DnoD3AvDK+PUM2NRvJCFlcTAiEUU6A='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -341,6 +341,7 @@ img{max-width:100%}
 .hfd.dk summary{background:#2a2f34;color:#fff;border-color:#4a5157}.hfd.dk .hfp{background:#fff;color:#1f2a36;border-color:#ccd}.hfd.dk .hfp label{color:#1f2a36}
 .ig-bar .hfq{background:#24292d;color:#fff;border-color:#444;min-width:180px}.ig-bar .linkish{color:#F4D23C}.hfil .btn{padding:6px 12px}
 body.ro #h-sel{display:none!important}
+body.nohmg #h-new,body.nohmg #h-sel,body.nohmg [data-he],body.nohmg [data-hsk],body.nohmg .hplus,body.nohmg [data-kadd],body.nohmg [data-gadd],body.nohmg .hsk-ed,body.nohmg #h-conv,body.nohmg .hconv,body.nohmg .gacts,body.nohmg #hf-del{display:none!important}
 .hrow.hsum{background:var(--soft);font-weight:600}.hrow.hsum:hover{background:color-mix(in srgb,var(--accent) 9%,var(--soft))}
 .hrow.hsum.l1{background:color-mix(in srgb,var(--soft) 45%,transparent);padding-left:26px}
 .hrow.hsum.l1 .hname{font-weight:600;font-size:13.5px}
@@ -1675,8 +1676,8 @@ body.dfull-on{overflow:hidden}
   const ROLES = ['Mistr', 'Stavbyvedoucí', 'Přípravář', 'Rozpočtář', 'Manažer projektu'];
   const personOf = n => (D.project.people && D.project.people[n]) || {};
   // správce (jen on upravuje lidi): Luboš Kozák, případně D.project.admins
-  const ADMINS = () => Array.isArray(D.project.admins) && D.project.admins.length ? D.project.admins : ['Luboš Kozák'];
-  const isAdmin = () => !RO() && ADMINS().includes(me());
+  const ADMINS = () => [...new Set(['Luboš Kozák', ...(Array.isArray(D.project.admins) ? D.project.admins : [])])]; // autor je správce vždy
+  const isAdmin = () => !RO() && (ADMINS().includes(me()) || !!(typeof pravaOf === 'function' && pravaOf(me()).adm));
   // e-maily osoby: [{a: adresa, rep: posílat reporty}]; p.email = adresy pro reporty oddělené čárkou (čte server i e-maily)
   function pEmails(p) {
     const rep = String(p.email || '').split(/[,;\s]+/).filter(Boolean), list = Array.isArray(p.emails) ? p.emails.filter(x => x && x.a) : [];
@@ -1685,19 +1686,23 @@ body.dfull-on{overflow:hidden}
   }
   const ACCESS = {zapisuje: 'Zapisuje (může měnit)', nahlizi: 'Jen nahlíží'};
   // 4.61: oprávnění osoby – zaškrtává správce v kartě osoby; správce smí vše
-  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00']];
+  const PRAVA = [['rozp', 'Vidí rozpočet a ceny', 'záložka Rozpočet, ceny, fakturace'], ['fakt', 'Připravuje faktury', 'vybírá položky, rozsah v MJ nebo %, vytvoří fakturu'], ['fakU', 'Uzavírá faktury kódem z e-mailu', 'jen manažer projektu, případně stavbyvedoucí'], ['doch', 'Vidí docházku', 'záložka Docházka: kdo je na stavbě, poloha, přehledy, denní PDF e-mailem v 19:00'], ['adm', 'Administrace', 'smí měnit strukturu a nastavení aplikace: úpravy a mazání v Harmonogramu, podlaží, Správa stavby, role a lidé – jen manažer projektu']];
   const PRAVA_VYCH = {rozp: true, fakt: true, fakU: false};
-  const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
+  const PRAVA_ROLE = {'Manažer projektu': {rozp: true, fakt: true, fakU: true, doch: true, adm: true}, 'Stavbyvedoucí': {rozp: true, fakt: true, fakU: true, doch: true}, 'Rozpočtář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Přípravář': {rozp: true, fakt: true, fakU: false, doch: false}, 'Mistr': {rozp: false, fakt: false, fakU: false, doch: false}};
   function pravaOf(n) {
-    if (n && ADMINS().includes(n)) return {rozp: true, fakt: true, fakU: true, doch: true};
+    if (n && ADMINS().includes(n)) return {rozp: true, fakt: true, fakU: true, doch: true, adm: true};
     const p = n ? personOf(n) : {}, x = Object.assign({}, PRAVA_VYCH, p.prava || {});
     // 4.81: docházku vidí jen vedení stavby – bez zaškrtnutí podle pozice (manažer projektu, stavbyvedoucí)
     if (!(p.prava && 'doch' in p.prava)) x.doch = ['Manažer projektu', 'Stavbyvedoucí'].includes(p.role);
-    if (p.access === 'nahlizi') { x.fakt = false; x.fakU = false; }
+    // 5.10 (Luboš 25. 11.): Administrace = smí měnit strukturu a nastavení (harmonogram, podlaží, Správa stavby, role a lidé) – jen manažer projektu a vždy autor
+    if (!(p.prava && 'adm' in p.prava)) x.adm = p.role === 'Manažer projektu';
+    if (p.access === 'nahlizi') { x.fakt = false; x.fakU = false; x.adm = false; }
     if (x.fakU) x.fakt = true; if (x.fakt) x.rozp = true;
     return x;
   }
   const smi = (k, n) => !!pravaOf(n === undefined ? me() : n)[k];
+  const canHmg = () => !RO() && smi('adm');
+  const hmgZakaz = () => { if (canHmg()) return false; toast('Tohle smí jen ten, kdo má Administraci (manažer projektu).'); return true; };
   function personDialog(n) {
     const p = n ? personOf(n) : {};
     if (!isAdmin()) {
@@ -2922,6 +2927,7 @@ body.dfull-on{overflow:hidden}
       if (k.start !== s0 || k.end !== e0) n++; n += hClampKids(k); }); return n; }
   // 5.06 (Luboš 25. 11.): související činnost se zakládá ve STEJNÉM okně jako činnost (okno úkolu), jen prázdném; v HMG se pak ukáže ve stromu pod nadřazenou
   function hKidNew(parent) {
+    if (hmgZakaz()) return;
     if (RO()) { toast('Jen prohlížení – harmonogram nejde měnit.'); return; }
     if (!parent) return;
     const obj = /^(Dvůr|Před)/.test(parent.obj) ? '' : parent.obj.length <= 4 && !parent.obj.includes(',') ? parent.obj.split('').join(', ') : parent.obj;
@@ -2947,6 +2953,7 @@ body.dfull-on{overflow:hidden}
   }
   // související činnost pod činnost = existující činnost se stane její souvisejících činností (termín musí být v bloku)
   function hLinkKids(parent) {
+    if (hmgZakaz()) return;
     if (RO() || !parent) return;
     const anc = new Set(); for (let x = parent; x; x = D.hmg.find(y => y.hid === x.par)) { if (anc.has(x.hid)) break; anc.add(x.hid); }
     const zakazane = new Set([...anc, ...hDesc(parent).map(h => h.hid)]);
@@ -2978,6 +2985,7 @@ body.dfull-on{overflow:hidden}
     if ($('#g-ed')) $('#g-ed').onclick = () => { zavri(); hmgSkupDialog(g.hs.map(h => h.hid), sub ? 'Upravit podskupinu' : 'Upravit skupinu'); };
   }
   function hKidDialog(parent, kid) {
+    if (hmgZakaz()) return;
     if (RO()) { toast('Jen prohlížení – harmonogram nejde měnit.'); return; }
     const k = kid || {name: '', firma: '', owner: '', start: parent.start, end: parent.end, pct: 0, patro: ''};
     const names = firmyJmena(); if (k.firma && !names.some(n => foldName(n) === foldName(k.firma))) names.unshift(k.firma);
@@ -3079,6 +3087,7 @@ body.dfull-on{overflow:hidden}
 
   /* okno „Skupina, firma, patro“ – pro jednu činnost, výběr více činností (sloučení) nebo celou skupinu / podskupinu */
   function hmgSkupDialog(ids, title) {
+    if (hmgZakaz()) return;
     if (RO()) { toast('Jen prohlížení – skupiny nejde měnit.'); return; }
     const hs = ids.map(id => D.hmg.find(h => h.hid === id)).filter(Boolean); if (!hs.length) return;
     const same = f => { const v = [...new Set(hs.map(f))]; return v.length === 1 ? v[0] : null; };
@@ -3431,7 +3440,7 @@ body.dfull-on{overflow:hidden}
         if (orig && (old.start !== orig.start || old.end !== orig.end)) askTaskDates(orig, old);
       };
       const del = $('#hf-del');
-      if (del) { let armed = null; del.onclick = () => {
+      if (del) { let armed = null; del.onclick = () => { if (hmgZakaz()) return;
         if (!armed) { del.classList.add('armed'); del.textContent = 'Opravdu smazat?'; armed = setTimeout(() => { armed = null; del.classList.remove('armed'); del.textContent = 'Smazat z HMG'; }, 4000); return; }
         const id = Number(hf.dataset.hid);
         { const h0 = D.hmg.find(h => h.hid === id), ids = new Set([id, ...(h0 ? hDesc(h0).map(k => k.hid) : [])]);   // 5.05: i s podpoložkami
@@ -3459,7 +3468,7 @@ body.dfull-on{overflow:hidden}
 
   function render() {
     if (peopleV2()) toast('Lidé sjednoceni na tým projektu');
-    document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
+    document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin()); document.body.classList.toggle('nohmg', !canHmg());
     if (S.view === 'rozp' && !smi('rozp')) S.view = 'list';
     $('#v-rozp').hidden = !smi('rozp');
     if (S.view === 'doch' && !smi('doch')) S.view = 'list';
@@ -3656,6 +3665,7 @@ body.dfull-on{overflow:hidden}
     D.log.push({id: uid(), taskId: t.id, at: now, by: me(), done: t.done, status: t.status, comment: `${why} jako činnost ${hid}`, title: t.title});
   }
   function convertToHmg() {
+    if (hmgZakaz()) return;
     const unl = TR().filter(t => !fromMeeting(t) && !(t.hmg || []).length).sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || '') || a.id.localeCompare(b.id));
     if (!unl.length) return;
     const noEnd = unl.filter(t => !t.end).length;
@@ -8982,7 +8992,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   fixAliases();
   render(); renderSync();
   if (SY) syncNow(); else uklidZkousky();
-  document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin());
+  document.body.classList.toggle('ro', RO()); document.body.classList.toggle('noadmin', !isAdmin()); document.body.classList.toggle('nohmg', !canHmg());
   if (!me() && !RO() && !(WEB_SCRIPT && !SY)) setTimeout(whoDialog, 300);  // na webu se jméno nastaví zvacím kódem
   window.__app = {get data() { return D; }, hmgFromCsv, serverScript, syncNow, get sync() { return sync; }};
 })();
