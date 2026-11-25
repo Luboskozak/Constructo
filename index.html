@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-YMKrFuqYP2axl7uDOI+StkMF93ahB6VozL0R/K5LCY8=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-V4mC5pw2EeIztQcH/h6o6OTpygXUf8KeQJ/Sgt7y5JA=' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -308,7 +308,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
 <script src="pc/firmy.js"></script>
 <script>
 (() => {
-  const VERSION = '1.42';
+  const VERSION = '1.43';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu stavby; vyplní se při sestavení webové verze (zvací kódy)
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -565,14 +565,22 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   let installEvt = null;
 
   let regAt = 0;
-  async function refresh(first) {
+  // 1.43: vždy jen jedno načítání najednou (dřív se při slabém signálu stahování vršila na sebe) a překreslit jen když se něco změnilo
+  let refreshing = null;
+  function refresh(first) {
+    if (refreshing && refreshing.sid === SID) return refreshing.p;
+    const o = {sid: SID}; o.p = refresh1(first).finally(() => { if (refreshing === o) refreshing = null; });
+    refreshing = o; return o.p;
+  }
+  async function refresh1(first) {
     if (!conn) return false;
     spojit();
-    const sid = SID;
+    const sid = SID, bylo = online && !lastErr;
     try {
       const r = await CXQ.getS(conn, sid);
       if (sid !== SID) return true;   // mezitím přepnuto na jinou stavbu
       if (r.data) { D = r.data; dataAt = Date.now(); fixMe(); }
+      if (r.same && bylo && !first) { online = true; lastErr = ''; netTick(); return true; }
       // seznam staveb: u Hybernské se vezme z jejích dat (bez dalšího dotazu), u ostatních jednou za minutu ze serveru
       if (CXS) {
         if (jeHyb() && D) CXS.prevezmi(D, r.rev);
@@ -623,11 +631,20 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
   async function novaVerze() {
     if (!navigator.onLine || Date.now() - verzeAt < 60000) return; verzeAt = Date.now();
     try {
-      const r = await fetch('index.html?v=' + Date.now(), {cache: 'no-store'}); if (!r.ok) return;
+      // 1.43: dotaz s „no-cache“ → když se nic nezměnilo, Netlify vrátí jen krátké „beze změny“ (dřív se pokaždé stahovalo 220 kB)
+      const r = await fetch('index.html', {cache: 'no-cache'}); if (!r.ok) return;
       const m = (await r.text()).match(/const VERSION = '([0-9.]+)'/); if (!m || m[1] === VERSION) return;
       const rozpsano = F.photos.length || F.text.trim() || (Z && (Z.text || '').trim()) || pise();
       if (rozpsano) { toast('Je nová verze aplikace. Načte se sama, až hlášení odešlete.', 4000); return; }
-      try { const rg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (rg) await rg.update(); } catch (e) {}
+      // aplikace se otevírá z uložené kopie v telefonu – přenačíst až po uložení nové verze (jinak by se znovu otevřela stará)
+      try {
+        const rg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+        if (rg) {
+          await rg.update();
+          const w = rg.installing || rg.waiting;
+          if (w) await new Promise(res => { const t = setTimeout(res, 30000); w.addEventListener('statechange', () => { if (w.state === 'activated' || w.state === 'redundant') { clearTimeout(t); res(); } }); });
+        }
+      } catch (e) {}
       location.reload();
     } catch (e) {}
   }
@@ -641,7 +658,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     try { const r = await CXQ.process(); await afterQueue(r); } finally { pumping = false; }
   }
   async function afterQueue(r) {
-    const c = await CXQ.kvGet(CXQ.dk(SID)).catch(() => null); if (c && c.data && c.at >= dataAt) { D = c.data; dataAt = c.at; }
+    // 1.43: data z paměti (dřív se po každém odeslání znovu četla celá z úložiště telefonu)
+    const c = await (jeHyb() ? CXQ.cache() : CXQ.kvGet(CXQ.dk(SID))).catch(() => null); if (c && c.data && c.at >= dataAt) { D = c.data; dataAt = c.at; }
     await loadQ();
     if (r && r.err && r.err !== 'OFFLINE') lastErr = r.err;
     if (r && r.sent && F.result && F.result.cid && Q.some(x => x.cid === F.result.cid && x.state === 'sent')) F.result.sent = true;
@@ -712,6 +730,8 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     bind();
     CXDok.vykresli($('#m-dok'));
   }
+  // 1.43: jen přepsat řádek „Aktuální · čas“ (celé překreslení by mohlo spolknout klepnutí)
+  function netTick() { document.querySelectorAll('#view .netline').forEach(e => { const n = document.createElement('div'); n.innerHTML = netline(); e.replaceWith(n.firstChild); }); }
   const netline = () => {
     const t = dataAt ? new Date(dataAt).toLocaleTimeString('cs-CZ', {hour: '2-digit', minute: '2-digit'}) : '';
     return online && !lastErr ? `<div class="netline"><b></b>Aktuální · ${t}</div>` : `<div class="netline off"><b></b>${online ? 'Spojení s Googlem nejde' : 'Bez signálu'}${t ? ' · data z ' + t : ''}</div>`;
@@ -1059,7 +1079,7 @@ body.ro .nav [data-v="hlaseni"],body.ro .nav [data-v="odeslane"]{display:none}
     const nt = Object.assign({}, t, {status: 'done', done: 100, doneAt: now, doneBy: me, updatedAt: now, updatedBy: me, _ts: ts});
     const lg = {id: 'l' + ts.toString(36) + Math.random().toString(36).slice(2, 6), taskId: id, at: now, by: me, done: 100, status: 'done', comment: 'Splněno (z telefonu)', title: t.title, _ts: ts};
     D.tasks = tasks().map(x => x.id === id ? nt : x); D.log = (D.log || []).concat(lg);
-    dataAt = Date.now(); await CXQ.kvSet(CXQ.dk(SID), {rev: jeHyb() ? 0 : '', data: D, at: dataAt}).catch(() => {});
+    dataAt = Date.now(); await CXQ.mistne(SID, D).catch(() => {});
     await CXQ.put({cid: 'u' + ts.toString(36), kind: 'upd', at: now, data: {tasks: [nt], log: [lg]}, state: 'wait'});
     toast('Splněno: ' + t.title); closeSheet(); await loadQ(); render(); kick();
   }
@@ -2375,7 +2395,7 @@ ${zOdkaz() ? `<table role="presentation" cellpadding="0" cellspacing="0" style="
     $('#st-ref').onclick = async () => { toast('Načítám…'); const ok = await refresh(); toast(ok ? 'Načteno' : 'Bez spojení'); closeSheet(); };
     const off = $('#st-off'); off.onclick = async () => {
       if (!off.dataset.arm) { off.dataset.arm = 1; off.textContent = 'Opravdu odpojit?'; return; }
-      await CXQ.kvSet('conn', null); await CXQ.kvSet('data', null); await CXQ.kvSet('stavba', null); SID = HYB; CXQ.stavba(HYB); conn = null; D = null; setRo(false); closeSheet(); setupCode();
+      await CXQ.kvSet('conn', null); await CXQ.kvSet('data', null); await CXQ.kvSet('datarev', null); await CXQ.kvSet('stavba', null); SID = HYB; CXQ.stavba(HYB); conn = null; D = null; setRo(false); closeSheet(); setupCode();
     };
   }
 

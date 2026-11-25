@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-bBA5P6YWPguH9PRbutozvSgVUQQGFEZjMuaaviHg2HA='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-y73fcnlHxAW6csE0rjedZh6+F1VMGXm07kaVdEfLNKI='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -5765,9 +5765,9 @@ thead{display:table-header-group}tr{break-inside:avoid}
     return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 19
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 21;
+const SKRIPT_VERZE = 22;
 
-function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null); }
+function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null, {mobil: e.parameter.mobil === '1'}); }
 function doPost(e) {
   // chyba uvnitř skriptu se vrátí aplikaci jako text (jinak Google pošle jen stránku „Nezdařilo se“ bez důvodu)
   try { return doPost_(e); } catch (x) { return json_({error: 'Google: ' + ((x && x.message) || String(x))}); }
@@ -5814,7 +5814,7 @@ function doPost_(e) {
   if (b.akce === 'dochazka_uprav') return dochazkaUprav_(b);
   if (b.akce === 'dochazka_klic') return dochazkaKlic_(b);
   if (b.akce === 'dochazka_pdf') return dochazkaPdf_(b);
-  return odpoved_(b.key, Number(b.rev), b.data || null);
+  return odpoved_(b.key, Number(b.rev), b.data || null, {malo: !!b.malo, mobil: !!b.mobil});
 }
 // 16: Docházka pracovníků firem (stránka /dochazka/). Pracovník = kontakt firmy (D.project.firmy[].kontakty, panel Firmy / osoby na projektu).
 // Záznamy Příchod / Pauza / Konec pauzy / Odchod jsou v samostatných souborech na Disku po měsících (složka „Constructo – docházka“),
@@ -6277,7 +6277,63 @@ function mail_(b) {
   p.setProperty('mail:' + b.cid, '1');
   return json_({ok: true, sent: komu.length, missing: chybi});
 }
-function odpoved_(key, rev, data) {
+// 22: rychlý mobil (Luboš 25. 11.: na stavbě se při slabém signálu zasekával). Každé uložení si zapíše, které záznamy změnilo (zm:číslo verze),
+// telefon pak stahuje jen změněné záznamy místo celých dat (1 MB) a po svém zápisu dostane jen krátké potvrzení.
+const ZM_KEYS = {tasks: 'id', hmg: 'hid', hmgGroups: 'obj', diary: 'id', log: 'id', zavady: 'id', dokumenty: 'id', rozpocty: 'id', rozpKat: 'id', faktury: 'id'};
+const ZM_MOBIL_BEZ = ['hmg', 'hmgGroups', 'rozpocty', 'rozpKat', 'faktury'];
+const ZM_DRZET = 80;
+function zmeny_(stare, data, nove) {
+  const zm = {};
+  Object.keys(ZM_KEYS).forEach(function (c) {
+    if (!Array.isArray(data[c]) || !data[c].length) return;
+    const k = ZM_KEYS[c], pred = new Map(), ids = [];
+    ((stare || {})[c] || []).forEach(function (r) { pred.set(String(r[k]), r); });
+    const po = new Map(); (nove[c] || []).forEach(function (r) { po.set(String(r[k]), r); });
+    data[c].forEach(function (r) { const id = String(r[k]), o = pred.get(id), n = po.get(id); if (n && (!o || (n._ts || 0) !== (o._ts || 0))) ids.push(id); });
+    if (ids.length) zm[c] = ids;
+  });
+  if (data.project && JSON.stringify((stare || {}).project || null) !== JSON.stringify(nove.project || null)) zm.p = 1;
+  if (data.hmgInfo && JSON.stringify((stare || {}).hmgInfo || null) !== JSON.stringify(nove.hmgInfo || null)) zm.i = 1;
+  return zm;
+}
+function zmZapis_(p, r, zm) {
+  let s = JSON.stringify(zm);
+  if (s.length > 1500) s = 'X';   // úložiště vlastností skriptu je malé (500 kB) – velké změny se označí X a telefon si stáhne celá data
+  try { p.setProperty('zm:' + r, s); p.deleteProperty('zm:' + (r - ZM_DRZET)); } catch (x) {}
+}
+// data pro telefon: bez rozpočtu, faktur a harmonogramu; ze zápisů jen to, co telefon potřebuje (úkoly z porad)
+function mobilDiary_(d) { return (d || []).filter(function (e) { return e && e.kind === 'porada'; }).map(function (e) { return {id: e.id, kind: e.kind, added: e.added || {}, _ts: e._ts || 0}; }); }
+function mobilData_(cur) {
+  const o = {};
+  Object.keys(cur || {}).forEach(function (k) { if (ZM_MOBIL_BEZ.indexOf(k) < 0) o[k] = cur[k]; });
+  o.diary = mobilDiary_(o.diary);
+  o.mobil = 1;
+  return o;
+}
+function mobilRozdil_(p, cur, od, r) {
+  if (!(od > 0) || od >= r || r - od > ZM_DRZET) return null;
+  const ids = {}; let proj = false, info = false;
+  for (let v = od + 1; v <= r; v++) {
+    const s = p.getProperty('zm:' + v);
+    if (!s || s === 'X') return null;
+    let zm; try { zm = JSON.parse(s); } catch (x) { return null; }
+    Object.keys(zm).forEach(function (c) { if (c === 'p') proj = true; else if (c === 'i') info = true; else { ids[c] = ids[c] || {}; zm[c].forEach(function (id) { ids[c][id] = 1; }); } });
+  }
+  const zmena = {};
+  Object.keys(ids).forEach(function (c) {
+    if (ZM_MOBIL_BEZ.indexOf(c) >= 0) return;
+    const k = ZM_KEYS[c];
+    let a = (cur[c] || []).filter(function (x) { return x && ids[c][String(x[k])]; });
+    if (c === 'diary') a = mobilDiary_(a);
+    if (a.length) zmena[c] = a;
+  });
+  const o = {rev: r, rozdil: zmena, tomb: cur.tomb || {}};
+  if (proj) o.project = cur.project || {};
+  if (info) o.hmgInfo = cur.hmgInfo || {};
+  return o;
+}
+function odpoved_(key, rev, data, opt) {
+  opt = opt || {};
   const ro = !!key && key !== HESLO && key === PropertiesService.getScriptProperties().getProperty('cteni');
   if (key !== HESLO && !ro) return json_({error: 'heslo'});
   if (ro && data) return json_({error: 'Jen prohlížení: změny se neukládají.'});
@@ -6288,8 +6344,12 @@ function odpoved_(key, rev, data) {
   try {
     const p = PropertiesService.getScriptProperties();
     let cur = nacti_(p), r = Number(p.getProperty('rev') || 0);
-    if (data) { cur = mergeData(cur || {}, data); r++; uloz_(p, cur); p.setProperty('rev', String(r)); }
+    const r0 = r;
+    if (data) { const pred = cur || {}; cur = mergeData(pred, data); r++; uloz_(p, cur); p.setProperty('rev', String(r)); zmZapis_(p, r, zmeny_(pred, data, cur)); }
     if (!data && rev === r) return json_({rev: r, same: true});
+    // 22: telefon po svém zápisu nepotřebuje zpátky celá data – jen číslo verze (data si doplní sám)
+    if (data && opt.malo) return json_({ok: true, rev: r, prev: r0});
+    if (opt.mobil) { const d = !data && mobilRozdil_(p, cur || {}, rev, r); return json_(d || {rev: r, data: mobilData_(cur || {})}); }
     return json_({rev: r, data: cur || {}});
   } finally { lock.releaseLock(); }
 }
