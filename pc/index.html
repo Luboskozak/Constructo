@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-bBA5P6YWPguH9PRbutozvSgVUQQGFEZjMuaaviHg2HA='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-8UqWEb0aQ0Ny/D5VQ52dqKJ6WLkMiTiCRr5v68ZWK4E='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -1408,7 +1408,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.07';
+  const APP_VERSION = '5.08';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2877,7 +2877,7 @@ body.dfull-on{overflow:hidden}
   function hClampKids(h) { let n = 0; hKids(h).forEach(k => { const s0 = k.start, e0 = k.end;
       if (k.start < h.start) k.start = h.start; if (k.end > h.end) k.end = h.end; if (k.start > k.end) k.start = k.end;
       if (k.start !== s0 || k.end !== e0) n++; n += hClampKids(k); }); return n; }
-  // 5.06 (Luboš 25. 11.): podčinnost se zakládá ve STEJNÉM okně jako činnost (okno úkolu), jen prázdném; v HMG se pak ukáže ve stromu pod nadřazenou
+  // 5.06 (Luboš 25. 11.): související činnost se zakládá ve STEJNÉM okně jako činnost (okno úkolu), jen prázdném; v HMG se pak ukáže ve stromu pod nadřazenou
   function hKidNew(parent) {
     if (RO()) { toast('Jen prohlížení – harmonogram nejde měnit.'); return; }
     if (!parent) return;
@@ -2885,7 +2885,7 @@ body.dfull-on{overflow:hidden}
     if (S.closeEditor && S.editing !== undefined && $('#d-form')) S.closeEditor();
     openEditor(null, {title: '', owner: '', obj, start: parent.start, end: parent.end, done: 0, status: 'todo', hmg: [], note: /^Dvůr/.test(parent.obj) ? parent.obj : ''}, parent.hid);
   }
-  function hKidOpen(k) { // klik na podčinnost = totéž okno jako u činnosti
+  function hKidOpen(k) { // klik na související činnost = totéž okno jako u činnosti
     const ls = linkedTasks(k);
     if (ls.length) { openEditor(ls[0].id); return; }
     const obj = /^(Dvůr|Před)/.test(k.obj) ? '' : k.obj.length <= 4 && !k.obj.includes(',') ? k.obj.split('').join(', ') : k.obj;
@@ -2902,27 +2902,27 @@ body.dfull-on{overflow:hidden}
     });
     const q = $('#hpk-q'); if (q) { q.focus(); q.oninput = () => { const v = foldName(q.value); document.querySelectorAll('.hpk-r').forEach(r => { r.style.display = !v || r.dataset.q.includes(v) ? '' : 'none'; }); }; }
   }
-  // související činnost pod činnost = existující činnost se stane její podčinností (termín musí být v bloku)
+  // související činnost pod činnost = existující činnost se stane její souvisejících činností (termín musí být v bloku)
   function hLinkKids(parent) {
     if (RO() || !parent) return;
     const anc = new Set(); for (let x = parent; x; x = D.hmg.find(y => y.hid === x.par)) { if (anc.has(x.hid)) break; anc.add(x.hid); }
     const zakazane = new Set([...anc, ...hDesc(parent).map(h => h.hid)]);
     const cands = D.hmg.filter(h => !zakazane.has(h.hid) && h.par !== parent.hid).sort((a, b) => a.start.localeCompare(b.start) || a.hid - b.hid);
-    hPick(`Související činnost pod „${parent.name}“`, `Vybrané činnosti se v Harmonogramu zařadí pod <b>${esc(parent.hid + ' · ' + parent.name)}</b> jako podčinnosti. Termín musí být v bloku ${fmtDY(parent.start)} – ${fmtDY(parent.end)}.`, cands, hs => {
+    hPick(`Související činnost pod „${parent.name}“`, `Vybrané činnosti se v Harmonogramu zařadí pod <b>${esc(parent.hid + ' · ' + parent.name)}</b> jako související činnosti. Termín musí být v bloku ${fmtDY(parent.start)} – ${fmtDY(parent.end)}.`, cands, hs => {
       const ok = hs.filter(h => h.start >= parent.start && h.end <= parent.end), ne = hs.filter(h => !ok.includes(h));
       if (!ok.length) { toast(`Žádná z vybraných činností nemá termín v bloku ${fmtDY(parent.start)} – ${fmtDY(parent.end)}.`); return 'keep'; }
       ok.forEach(h => { h.par = parent.hid; h.obj = h.obj || parent.obj; }); S.hmgKidsOpen.add(parent.hid); commit();
       toast(`Připojeno ${ok.length} ${ok.length === 1 ? 'činnost' : ok.length < 5 ? 'činnosti' : 'činností'}${ne.length ? ` · ${ne.length} mimo termín bloku nepřipojeno (${ne.map(h => h.hid).join(', ')})` : ''}`);
     });
   }
-  // 5.07 (Luboš 25. 11.): klik na skupinu otevře okno pro správu – činnosti ve skupině, Přidat podčinnost, Přidat související činnost, Upravit skupinu
+  // 5.07 (Luboš 25. 11.): klik na skupinu otevře okno pro správu – činnosti ve skupině, Přidat související činnost, Přidat související činnost, Upravit skupinu
   function hGrpOkno(g, sub) {
     const h0 = g.hs[0]; if (!h0) return;
     const skup = skupOf(h0), pod = sub ? podOf(h0) : '';
     const fs = [...new Set(g.hs.map(firmaOf).filter(Boolean))];
     const body = `<p class="hcap" style="margin:0 0 10px">${sub ? `Podskupina ve skupině <b>${esc(skup)}</b>` : 'Skupina činností'} · ${fmtDY(g.agg.start)} – ${fmtDY(g.agg.end)} · hotovo ${g.agg.act} %${fs.length ? ' · ' + esc(fs.join(', ')) : ''}</p>
-      <ul class="ekl gkl">${g.hs.map(h => `<li><a href="#" data-gh="${h.hid}"><b class="num">${h.hid}</b> ${esc(h.name)}</a><span class="hcap">${esc(h.obj)} · ${fmtD(h.start)} – ${fmtD(h.end)} ${esc(h.end.slice(2, 4))} · ${esc(firmaOf(h) || h.owner || '—')} · ${actualOf(h).v} %${hKids(h).length ? ` · ${hKids(h).length} podčinn.` : ''}</span></li>`).join('')}</ul>
-      ${RO() ? '' : `<div class="gacts"><span class="lbl">Přidat</span><button type="button" class="btn primary" id="g-kid">+ Podčinnost</button><button type="button" class="btn" id="g-rel">+ Související činnost</button><button type="button" class="btn" id="g-ed">✎ Upravit ${sub ? 'podskupinu' : 'skupinu'} (název, firma, patro)</button></div>`}`;
+      <ul class="ekl gkl">${g.hs.map(h => `<li><a href="#" data-gh="${h.hid}"><b class="num">${h.hid}</b> ${esc(h.name)}</a><span class="hcap">${esc(h.obj)} · ${fmtD(h.start)} – ${fmtD(h.end)} ${esc(h.end.slice(2, 4))} · ${esc(firmaOf(h) || h.owner || '—')} · ${actualOf(h).v} %${hKids(h).length ? ` · ${hKids(h).length} souv. činn.` : ''}</span></li>`).join('')}</ul>
+      ${RO() ? '' : `<div class="gacts"><span class="lbl">Přidat</span><button type="button" class="btn primary" id="g-kid">+ Související činnost</button><button type="button" class="btn" id="g-ed">✎ Upravit ${sub ? 'podskupinu' : 'skupinu'} (název, firma, patro)</button></div>`}`;
     confirmModal(`${sub ? 'Podskupina' : 'Skupina'} ${g.label.charAt(0).toUpperCase() + g.label.slice(1)}`, body, null, null);
     const zavri = () => { const c = $('#m-cancel'); c && c.click(); };
     document.querySelectorAll('.gkl [data-gh]').forEach(a => a.onclick = e => { e.preventDefault(); const h = D.hmg.find(x => x.hid === Number(a.dataset.gh)); zavri(); if (h) hKidOpen(h); });
@@ -3271,7 +3271,7 @@ body.dfull-on{overflow:hidden}
         const xs = X(h.start), xe = X(addD(h.end, 1)), dur = dayDiff(h.start, addD(h.end, 1)), xa = X(addD(h.start, Math.round(dur * a.v / 100)));
         html += `<button type="button" class="hrow${dp ? ' kid' : ''}" data-h="${h.hid}"${dp ? ` data-kid="1" style="--dp:${dp}"` : ''} aria-expanded="${open}">
           <span class="hid">${S.hmgSel ? `<span class="hck${S.hmgSel.has(h.hid) ? ' on' : ''}" aria-hidden="true">${S.hmgSel.has(h.hid) ? '✓' : ''}</span>` : h.hid}</span>
-          <span class="hname">${kids.length ? `<b class="kcar" data-kt="${h.hid}" title="${kOpen ? 'Sbalit' : 'Rozbalit'} podčinnosti">${kOpen ? '▾' : '▸'}</b>` : dp ? '<b class="kcar e">·</b>' : ''}${S.hmgBy !== 'obj' && !dp ? `<i class="hob" style="background:${objCol(h.obj)}" title="Objekt ${esc(h.obj)}">${esc(objShort(h.obj))}</i>` : ''}${esc(h.name)}${ptSuf(h) ? `<span class="hpt">${esc(ptSuf(h))}</span>` : ''}${ls.length ? `<span class="lk">${ls.length} úk.</span>` : ''}${RO() || S.hmgSel ? '' : `<span class="hplus" data-kadd="${h.hid}" role="button" title="Přidat podčinnost pod „${esc(h.name)}“">+</span>`}<small>${kids.length ? `<span class="kcnt">${kids.length} ${kids.length === 1 ? 'podčinnost' : kids.length < 5 ? 'podčinnosti' : 'podčinností'}</span> · ` : ''}${firmaOf(h) ? `<b class="hfm">${esc(firmaOf(h))}</b> · ` : ''}${esc(h.owner || '—')}${(() => { const u = [...new Set(ls.flatMap(t => taskPeople(t)))].filter(x => x !== 'Bez přiřazení'); return u.length && u.join(' / ') !== (h.owner || '') ? ` · úkol: ${esc(u.join(' / '))}` : ''; })()}</small></span>
+          <span class="hname">${kids.length ? `<b class="kcar" data-kt="${h.hid}" title="${kOpen ? 'Sbalit' : 'Rozbalit'} související činnosti">${kOpen ? '▾' : '▸'}</b>` : dp ? '<b class="kcar e">·</b>' : ''}${S.hmgBy !== 'obj' && !dp ? `<i class="hob" style="background:${objCol(h.obj)}" title="Objekt ${esc(h.obj)}">${esc(objShort(h.obj))}</i>` : ''}${esc(h.name)}${ptSuf(h) ? `<span class="hpt">${esc(ptSuf(h))}</span>` : ''}${ls.length ? `<span class="lk">${ls.length} úk.</span>` : ''}${RO() || S.hmgSel ? '' : `<span class="hplus" data-kadd="${h.hid}" role="button" title="Přidat související činnost pod „${esc(h.name)}“">+</span>`}<small>${kids.length ? `<span class="kcnt">${kids.length} ${kids.length === 1 ? 'související činnost' : kids.length < 5 ? 'související činnosti' : 'souvisejících činností'}</span> · ` : ''}${firmaOf(h) ? `<b class="hfm">${esc(firmaOf(h))}</b> · ` : ''}${esc(h.owner || '—')}${(() => { const u = [...new Set(ls.flatMap(t => taskPeople(t)))].filter(x => x !== 'Bez přiřazení'); return u.length && u.join(' / ') !== (h.owner || '') ? ` · úkol: ${esc(u.join(' / '))}` : ''; })()}</small></span>
           <span class="hdt mono" style="font-size:12px">${fmtD(h.start)} – ${fmtD(h.end)} ${h.end.slice(2,4)}</span>
           <span class="htl" title="Termín ${fmtD(h.start)} – ${fmtD(h.end)}">${grid}<i class="pl${cls === 'bad' ? ' late' : ''}" style="left:${xs}%;width:${Math.max(.6, xe - xs)}%"></i><i class="ac" style="--oc:${objCol(h.obj)};left:${xs}%;width:${Math.max(0, xa - xs)}%"></i>${tdx}</span>
           <span class="hn hplan">${p} %</span>
@@ -3283,7 +3283,7 @@ body.dfull-on{overflow:hidden}
             <span class="hsk">Skupina <b>${esc(skupOf(h))}${podOf(h) ? ' › ' + esc(podOf(h)) : ''}</b> · firma provádějící <b>${esc(firmaOf(h) || 'nezadána')}</b>${h.firma ? '' : firmaOf(h) ? ' (z propojených úkolů)' : ''} · patro <b>${esc(patroTxt(h) || 'celý objekt')}</b>${RO() ? '' : ` <button type="button" class="btn" data-hsk="${h.hid}">Skupina, firma, patro…</button>`}</span>
             <span class="hcap">V HMG k ${hd}: hotovo ${h.pct} % · plán k dnešku ${p} % · ${a.src === 'úkoly' ? `skutečnost z ${a.n} propojených úkolů ${a.v} %` : 'zatím bez úkolu, počítá se se stavem z HMG'}</span>
             ${ls.length ? `<ul>${ls.map(t => `<li><span class="pill s-${eff(t)}">${STATUS[eff(t)]}</span> <a href="#" data-t="${esc(t.id)}">${esc(t.title)}</a> · ${esc(ownerTxt(t))} · <a href="#" class="num qpct" data-t="${esc(t.id)}" title="Klikněte a upravte procenta">${Number(t.done)||0} %</a> · ${fmtD(t.start)} – ${fmtD(t.end)}</li>`).join('')}</ul>` : ''}
-            ${S.hmgEdit === h.hid ? hmgForm(h, false) : `<div style="display:flex;gap:8px;flex-wrap:wrap">${RO() ? '' : `<button type="button" class="btn" data-kadd="${h.hid}">+ Podčinnost</button>`}<button type="button" class="btn" data-mk="${h.hid}">+ Úkol z této činnosti</button><button type="button" class="btn" data-he="${h.hid}">Upravit činnost HMG</button></div>`}
+            ${S.hmgEdit === h.hid ? hmgForm(h, false) : `<div style="display:flex;gap:8px;flex-wrap:wrap">${RO() ? '' : `<button type="button" class="btn" data-kadd="${h.hid}">+ Související činnost</button>`}<button type="button" class="btn" data-mk="${h.hid}">+ Úkol z této činnosti</button><button type="button" class="btn" data-he="${h.hid}">Upravit činnost HMG</button></div>`}
           </div>`;
         }
         if (kids.length && kOpen) kids.forEach(k => hRow(k, dp + 1));
@@ -3644,11 +3644,11 @@ body.dfull-on{overflow:hidden}
     const ov = $('#overlay');
     ov.innerHTML = `<div class="scrim" id="scrim"></div>
     <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title">
-      <div class="d-head"><h3 id="d-title">${S.editPar || S.editGrp ? 'Nová podčinnost' : t ? 'Úkol' : hmgMine.length ? 'Činnost' : 'Úkol do harmonogramu'}</h3>${t && isSimple(t) ? `<span class="hcap" style="margin-right:auto;margin-left:10px">zadáno ${fmtDY(t.start)}${t.createdBy ? ' · ' + esc(t.createdBy) : ''}</span>` : ''}<button class="btn zavrit" type="button" id="d-close" aria-label="Zavřít">✕ Zavřít</button></div>
+      <div class="d-head"><h3 id="d-title">${S.editPar || S.editGrp ? 'Nová související činnost' : t ? 'Úkol' : hmgMine.length ? 'Činnost' : 'Úkol do harmonogramu'}</h3>${t && isSimple(t) ? `<span class="hcap" style="margin-right:auto;margin-left:10px">zadáno ${fmtDY(t.start)}${t.createdBy ? ' · ' + esc(t.createdBy) : ''}</span>` : ''}<button class="btn zavrit" type="button" id="d-close" aria-label="Zavřít">✕ Zavřít</button></div>
       <form class="d-body" id="d-form" autocomplete="off">
         ${S.editGrp ? `<div class="epar"><span>Nová činnost ve skupině</span> <b>${esc(S.editGrp.label)}</b><span class="hcap">v Harmonogramu se ukáže v této skupině</span></div>` : ''}
-        ${parBlk ? `<div class="epar"><span>Podčinnost pod</span> <b>${esc(parBlk.hid + ' · ' + parBlk.name)}</b><span class="hcap">termín musí být v bloku ${fmtDY(parBlk.start)} – ${fmtDY(parBlk.end)}</span></div>` : ''}
-        <div class="fld"><label for="e-title">${S.editPar || S.editGrp ? 'Podčinnost' : 'Činnost'}</label><textarea id="e-title" required rows="${String(d.title || '').length > 60 || /\n/.test(d.title || '') ? 3 : 1}" style="min-height:0" placeholder="např. Zednické práce – 3. NP">${esc(d.title)}</textarea></div>
+        ${parBlk ? `<div class="epar"><span>Související činnost pod</span> <b>${esc(parBlk.hid + ' · ' + parBlk.name)}</b><span class="hcap">termín musí být v bloku ${fmtDY(parBlk.start)} – ${fmtDY(parBlk.end)}</span></div>` : ''}
+        <div class="fld"><label for="e-title">${S.editPar || S.editGrp ? 'Související činnost' : 'Činnost'}</label><textarea id="e-title" required rows="${String(d.title || '').length > 60 || /\n/.test(d.title || '') ? 3 : 1}" style="min-height:0" placeholder="např. Zednické práce – 3. NP">${esc(d.title)}</textarea></div>
         <div class="two">
           <div class="fld"><label for="e-owner">Odpovídá</label><input id="e-owner" list="owners-dl" value="${esc(d.owner)}" placeholder="Jméno"><datalist id="owners-dl">${own.map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>
           <div class="fld"><label for="e-sup">Dodavatel</label><select id="e-sup">${(() => { const cur = String(d.supplier || '').trim(), names = [...new Map(firmyList().map(f => String(f.firma || '').trim()).filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs')); if (cur && !names.some(n => foldName(n) === foldName(cur))) names.unshift(cur); return `<option value="">— vyberte firmu —</option>` + names.map(n => `<option value="${esc(n)}"${cur && foldName(n) === foldName(cur) ? ' selected' : ''}>${esc(n)}</option>`).join(''); })()}</select></div>
@@ -3657,7 +3657,7 @@ body.dfull-on{overflow:hidden}
           <div class="chips" id="e-team-chips"></div>
           <div style="display:flex;gap:6px"><input id="e-team-in" list="owners-dl" placeholder="Přidat osobu" style="flex:1"><button type="button" class="btn" id="e-team-add" style="padding:5px 12px">Přidat</button></div>
           <span class="rng-hint">Osobu vyměníte přepsáním pole Odpovídá. Další osoby uvidí úkol také u sebe. Nového člověka napište celým jménem – přidá se do Lidí a propíše se všude.</span></div>
-        <div class="fld"><span class="lbl" style="font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Objekt</span>
+        <div class="fld" style="display:none"><span class="lbl" style="font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Objekt</span>
           <div class="objchk" id="e-objs"><label class="all"><input type="checkbox" id="e-obj-all"> Všechny</label>${'ABCDEFG'.split('').map(L => `<label><input type="checkbox" data-ol="${L}" ${objLetters(d.obj).includes(L) ? 'checked' : ''}> ${L}</label>`).join('')}</div>
           <input id="e-obj-x" value="${esc(objOthers(d.obj).join(', '))}" placeholder="Jiné místo, např. Dvory (nepovinné)"></div>
         <div class="two">
@@ -3671,22 +3671,22 @@ body.dfull-on{overflow:hidden}
         </div>
         ${t && isUkol(t) && eff(t) !== 'done' && !RO() ? `<div class="fld"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="e-miss" style="padding:5px 10px;font-size:12.5px">Důvod nesplnění…</button>${t.missed ? `<span class="rng-hint">${esc(t.missed)}</span>` : ''}</div></div>` : ''}
         <div class="fld"><span class="rng-hint" id="e-stav">Stav se určí sám: 0 % = nezahájeno, víc = probíhá, 100 % = hotovo. Po termínu se ukáže „Ve skluzu“.</span></div>
-        ${hmgMine.length && !RO() ? `<div class="fld ekids"><span class="lbl">Podčinnosti</span>
-          ${kidsMine.length ? `<ul class="ekl">${kidsMine.map(k => `<li><a href="#" data-ek="${k.hid}"><b class="num">${k.hid}</b> ${esc(k.name)}</a><span class="hcap">${fmtD(k.start)} – ${fmtD(k.end)} ${esc(k.end.slice(2, 4))} · ${esc(firmaOf(k) || k.owner || '—')} · ${actualOf(k).v} %</span></li>`).join('')}</ul>` : '<span class="rng-hint">Zatím žádné. Podčinnost se v Harmonogramu ukáže pod touto činností se šipkou ▸.</span>'}
-          ${hmgMine.map(h => `<div class="gacts"><span class="lbl">Přidat${hmgMine.length > 1 ? ` pod ${h.hid}` : ''}</span><button type="button" class="btn primary" data-ekadd="${h.hid}">+ Podčinnost</button><button type="button" class="btn" data-ekrel="${h.hid}">+ Související činnost</button></div>`).join('')}</div>` : ''}
+        ${hmgMine.length && !RO() ? `<div class="fld ekids"><span class="lbl">Související činnosti</span>
+          ${kidsMine.length ? `<ul class="ekl">${kidsMine.map(k => `<li><a href="#" data-ek="${k.hid}"><b class="num">${k.hid}</b> ${esc(k.name)}</a><span class="hcap">${fmtD(k.start)} – ${fmtD(k.end)} ${esc(k.end.slice(2, 4))} · ${esc(firmaOf(k) || k.owner || '—')} · ${actualOf(k).v} %</span></li>`).join('')}</ul>` : '<span class="rng-hint">Zatím žádné. Související činnost se v Harmonogramu ukáže pod touto činností se šipkou ▸.</span>'}
+          ${hmgMine.map(h => `<div class="gacts"><span class="lbl">Přidat${hmgMine.length > 1 ? ` pod ${esc(h.name)}` : ''}</span><button type="button" class="btn primary" data-ekadd="${h.hid}">+ Související činnost</button></div>`).join('')}</div>` : ''}
         <div class="fld esub" style="display:none"><span class="lbl">Dílčí úkoly</span>
           <div id="e-subs"></div>
           <button type="button" class="btn esub-add" id="e-sub-add">+ Přiřadit dílčí úkol</button></div>
-        <div class="fld"><label for="e-hmg">Činnost v HMG</label>
+        <div class="fld" style="display:none"><label for="e-hmg">Činnost v HMG</label>
           <div class="chips" id="e-hmg-chips"></div>
           <select id="e-hmg"><option value="">+ přiřadit činnost z HMG…</option>${hmgOptions()}</select>
           <span class="rng-hint">Propojení ukáže v pohledu Harmonogram, jak úkol plní hlavní harmonogram.</span>
           <button type="button" class="btn" id="e-hmg-dates" style="display:none;align-self:flex-start;padding:5px 10px;font-size:12.5px">Převzít termín z HMG</button></div>
         <div class="fld" style="display:none"><label for="e-note">Poznámka k úkolu</label><textarea id="e-note" placeholder="Trvalá poznámka, např. čeká se na materiál">${esc(d.note)}</textarea></div>
-        <div class="fld"><label for="e-cm">Komentář k této aktualizaci</label><input id="e-cm" placeholder="Co se od minula udělalo (uloží se do historie)"></div>
-        ${t ? `<div class="hist"><h4>Historie postupu</h4><ol id="hist"></ol></div>` : ''}
+        <div class="fld" style="display:none"><label for="e-cm">Komentář k této aktualizaci</label><input id="e-cm" placeholder="Co se od minula udělalo (uloží se do historie)"></div>
+        ${t ? `<div class="hist" style="display:none"><h4>Historie postupu</h4><ol id="hist"></ol></div>` : ''}
       </form>
-      <div class="d-foot">${t ? '<button class="btn danger" type="button" id="d-del">Smazat</button>' : ''}<span class="sp"></span><button class="btn" type="button" id="d-cancel">Zrušit</button><button class="btn primary" type="submit" form="d-form" id="d-save">${t ? 'Uložit' : S.editPar || S.editGrp ? 'Přidat podčinnost' : hmgMine.length ? 'Uložit' : 'Přidat úkol'}</button></div>
+      <div class="d-foot">${t ? '<button class="btn danger" type="button" id="d-del">Smazat</button>' : ''}<span class="sp"></span><button class="btn" type="button" id="d-cancel">Zrušit</button><button class="btn primary" type="submit" form="d-form" id="d-save">${t ? 'Uložit' : S.editPar || S.editGrp ? 'Přidat související činnost' : hmgMine.length ? 'Uložit' : 'Přidat úkol'}</button></div>
     </aside>`;
     ov.hidden = false;
     const close = () => { ov.hidden = true; ov.innerHTML = ''; S.editing = null; S.editPar = null; S.editGrp = null; document.removeEventListener('keydown', onKey); flushRender(); };
@@ -3941,7 +3941,7 @@ body.dfull-on{overflow:hidden}
     }
     if (data.start && data.end && data.end < data.start) { toast('Dokončení je dřív než zahájení.'); $('#e-end').focus(); return; }
     const par = S.editPar || (t ? hParOf(data.hmg).map(h => D.hmg.find(y => y.hid === h.par)).find(Boolean) : null);
-    if (par && (!data.start || !data.end || data.start < par.start || data.end > par.end)) { toast(`Termín podčinnosti musí být v bloku ${fmtDY(par.start)} – ${fmtDY(par.end)}.`); $('#e-start').focus(); return; }
+    if (par && (!data.start || !data.end || data.start < par.start || data.end > par.end)) { toast(`Termín související činnosti musí být v bloku ${fmtDY(par.start)} – ${fmtDY(par.end)}.`); $('#e-start').focus(); return; }
     const grp = S.editGrp, isKid = !!S.editPar || !!grp, parHid = S.editPar && S.editPar.hid;
     if (isKid) data.hmg = [];
     let comment = $('#e-cm').value.trim();
@@ -3959,16 +3959,16 @@ body.dfull-on{overflow:hidden}
     if (t) { id = t.id; if (t.done !== done || t.status !== status || comment) D.log.push({id: uid(), taskId: id, at: now, by: me(), done, status, comment, title: data.title}); Object.assign(t, data); }
     else { id = uid(); D.tasks.push({id, ...data, createdAt: now}); D.log.push({id: uid(), taskId: id, at: now, by: me(), done, status, comment, title: data.title});
       // nový hlavní úkol bez vybrané činnosti HMG se rovnou založí i v harmonogramu
-      if (!data.hmg.length) { newHid = Math.max(0, ...D.hmg.map(h => h.hid)) + 1; hmgFromTask(D.tasks.find(x => x.id === id), newHid, now, isKid ? 'Zapsáno jako podčinnost' : 'Zapsáno do harmonogramu');
+      if (!data.hmg.length) { newHid = Math.max(0, ...D.hmg.map(h => h.hid)) + 1; hmgFromTask(D.tasks.find(x => x.id === id), newHid, now, isKid ? 'Zapsáno jako související činnost' : 'Zapsáno do harmonogramu');
         if (isKid) { const nh = D.hmg.find(h => h.hid === newHid), pp = D.hmg.find(h => h.hid === parHid);
           if (nh && pp) { Object.assign(nh, {par: pp.hid, obj: pp.obj, objOrder: pp.objOrder}); if (data.supplier) nh.firma = data.supplier; S.hmgKidsOpen.add(pp.hid); }
           if (nh && grp) { nh.skup = grp.skup; if (grp.pod) nh.pod = grp.pod; if (data.supplier) nh.firma = data.supplier; } } } }
-    // podčinnost a její úkol jsou jedno: název, termín, firma a osoba se propíší do řádku HMG
+    // související činnost a její úkol jsou jedno: název, termín, firma a osoba se propíší do řádku HMG
     let kidSynced = false;
     if (t) hParOf(data.hmg).filter(h => h.par).forEach(h => { Object.assign(h, {name: data.title, start: data.start || h.start, end: data.end || h.end, owner: ownerTxt(t)}); if (data.supplier) h.firma = data.supplier; hClampKids(h); kidSynced = true; });
     S.closeEditor();
     if (!t && !isKid) { if (S.view !== 'list') { S.view = 'list'; store.set('hyb-view', 'list'); } S.ukSrc = 'all'; store.set('hyb-uksrc', 'all'); if (S.fstat || S.q || (S.obj && !objHit(data.obj, S.obj)) || (S.owner && !hasPerson({owner: data.owner, team: data.team}, S.owner))) { S.fstat = ''; S.q = ''; S.obj = ''; S.owner = ''; $('#q').value = ''; } }
-    commit(); toast(t ? 'Uloženo' : isKid ? `Podčinnost přidána (činnost ${newHid}) – v Harmonogramu je ${grp ? 've skupině ' + grp.label : 'pod nadřazenou'}` : newHid ? `Úkol přidán i do harmonogramu (činnost ${newHid})` : 'Úkol přidán');
+    commit(); toast(t ? 'Uloženo' : isKid ? `Související činnost přidána (činnost ${newHid}) – v Harmonogramu je ${grp ? 've skupině ' + grp.label : 'pod nadřazenou'}` : newHid ? `Úkol přidán i do harmonogramu (činnost ${newHid})` : 'Úkol přidán');
     if (t && !kidSynced && (was.start !== (t.start || '') || was.end !== (t.end || ''))) askHmgDates(t);
     if (!t && !isKid) setTimeout(() => { const r = document.querySelector(`.trow[data-id="${id}"]`); if (r) { r.scrollIntoView({block: 'center', behavior: 'smooth'}); r.classList.add('flash'); setTimeout(() => r.classList.remove('flash'), 2500); } }, 50);
   }
