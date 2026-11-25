@@ -33,25 +33,67 @@ const CXQ = (() => {
     finally { clearTimeout(tm); }
     try { return JSON.parse(txt); } catch (e) { throw new Error('Google místo dat vrátil stránku. Skript musí být nasazený s přístupem „Kdokoli“.'); }
   }
+  // 1.43 (rychlost na stavbě): uložená data se drží i v paměti – dřív se každých 30 s četla a znovu zapisovala celá (1 MB) a telefon se zadrhával
+  let MEM = null;   // {rev, data, at}
+  async function cache() {
+    const r = await kvGet('datarev').catch(() => undefined);
+    if (MEM && r !== undefined && r === MEM.rev) return MEM;
+    const c = await kvGet('data').catch(() => null);
+    MEM = c && c.data ? c : null;
+    if (MEM && r === undefined) await kvSet('datarev', MEM.rev).catch(() => {});
+    return MEM;
+  }
+  async function ulozCache(c) { MEM = c; await kvSet('data', c); await kvSet('datarev', c.rev).catch(() => {}); }
+  // změněné záznamy ze serveru (nebo z vlastního zápisu) se vloží do uložených dat – novější vyhrává, smazané (tomb) zmizí
+  const KLIC = {tasks: 'id', hmg: 'hid', hmgGroups: 'obj', diary: 'id', log: 'id', zavady: 'id', dokumenty: 'id', rozpocty: 'id', rozpKat: 'id', faktury: 'id'};
+  function vlozZmeny(base, z, tomb, server) {
+    const out = Object.assign({}, base || {});
+    Object.keys(KLIC).forEach(c => {
+      if (!Array.isArray(z[c]) || !z[c].length) return;
+      const k = KLIC[c], m = new Map((out[c] || []).map(r => [String(r[k]), r]));
+      z[c].forEach(r => { const id = String(r[k]), o = m.get(id); if (server || !o || (r._ts || 0) >= (o._ts || 0)) m.set(id, r); });
+      out[c] = Array.from(m.values());
+    });
+    if (tomb) {
+      const t = Object.assign({}, out.tomb || {});
+      Object.keys(tomb).forEach(c => { t[c] = Object.assign({}, t[c] || {}, tomb[c]); });
+      out.tomb = t;
+      Object.keys(t).forEach(c => { if (Array.isArray(out[c]) && KLIC[c]) { const k = KLIC[c]; out[c] = out[c].filter(r => !(t[c][String(r[k])] >= (r._ts || 0))); } });
+    }
+    return out;
+  }
   async function get(conn) {
-    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 30000);
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);
     let txt;
+    const c0 = await cache(), rev0 = c0 && c0.data && Number(c0.rev) > 0 ? Number(c0.rev) : -1;
     try {
-      // 1.21: známé číslo verze → když se nic nezměnilo, Google vrátí jen {same: true} (pár bajtů místo celých dat; rychlé i při slabém signálu)
-      const c0 = await kvGet('data').catch(() => null), rev0 = c0 && c0.data && Number(c0.rev) > 0 ? Number(c0.rev) : -1;
-      const r = await fetch(conn.url + (conn.url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(conn.key) + '&rev=' + rev0 + '&t=' + Date.now(), {redirect: 'follow', signal: ctl.signal});
+      // 1.21: známé číslo verze → když se nic nezměnilo, Google vrátí jen {same: true}
+      // 1.43: mobil=1 → při změně jen změněné záznamy (rozdil), ne celá data; celá data bez rozpočtu, faktur a harmonogramu
+      const r = await fetch(conn.url + (conn.url.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(conn.key) + '&rev=' + rev0 + '&mobil=1&t=' + Date.now(), {redirect: 'follow', signal: ctl.signal});
       txt = await r.text();
     } catch (e) { throw new Error('OFFLINE'); }
     finally { clearTimeout(tm); }
     let res; try { res = JSON.parse(txt); } catch (e) { throw new Error('Google místo dat vrátil stránku. Skript musí být nasazený s přístupem „Kdokoli“.'); }
     if (res.error) throw new Error(res.error === 'heslo' ? 'Kód připojení nesedí se skriptem na Googlu.' : String(res.error));
-    if (res.same) { const c = await kvGet('data').catch(() => null); if (c && c.data) { c.at = Date.now(); await kvSet('data', c); return {rev: res.rev, data: c.data, same: true}; } }
-    if (res.data) await kvSet('data', {rev: res.rev, data: res.data, at: Date.now()});
+    if (res.same && c0 && c0.data) { c0.at = Date.now(); return {rev: res.rev, data: c0.data, same: true}; }
+    if (res.rozdil && c0 && c0.data) {
+      const d = vlozZmeny(c0.data, res.rozdil, res.tomb, true);
+      if (res.project) d.project = res.project;
+      if (res.hmgInfo) d.hmgInfo = res.hmgInfo;
+      await ulozCache({rev: res.rev, data: d, at: Date.now()});
+      return {rev: res.rev, data: d};
+    }
+    if (res.data) await ulozCache({rev: res.rev, data: res.data, at: Date.now()});
     return res;
   }
   const errTxt = e => e === 'heslo' ? 'Kód připojení nesedí se skriptem na Googlu.' : String(e);
   // data jiné stavby než Hybernské jdou přes CXStavby (pc/stavby.js – jen ve stránce; service worker je nechá stránce)
   const SX = () => (typeof self !== 'undefined' && self.CXStavby) || null;
+  // změna udělaná v telefonu (např. Splněno) se uloží hned, číslo verze zůstane (změna odejde frontou)
+  async function mistne(sid, data) {
+    if (!sid || sid === HYB) { const c = await cache(); return ulozCache({rev: c ? c.rev : 0, data, at: Date.now()}); }
+    return kvSet(dk(sid), {rev: '', data, at: Date.now()});
+  }
   async function getS(conn, sid) {
     if (!sid || sid === HYB) return get(conn);
     const X = SX(); if (!X) throw new Error('STRANKA');
@@ -66,9 +108,20 @@ const CXQ = (() => {
   }
   async function postS(conn, sid, data) {
     if (!sid || sid === HYB) {
-      const r = await post(conn, {key: conn.key, rev: 0, data});
+      // 1.43: malo → Google vrátí jen potvrzení (ne celá data); změna se vloží do uložených dat přímo v telefonu
+      const r = await post(conn, {key: conn.key, rev: 0, data, malo: 1, mobil: 1});
       if (r.error) throw new Error(errTxt(r.error));
-      if (r.data) await kvSet('data', {rev: r.rev, data: r.data, at: Date.now()});
+      if (r.data) await ulozCache({rev: r.rev, data: r.data, at: Date.now()});
+      else {
+        const c = await cache();
+        if (c && c.data) {
+          const d = vlozZmeny(c.data, data, data.tomb, false);
+          if (data.project && ((data.project._ts || 0) >= ((d.project || {})._ts || 0))) d.project = data.project;
+          // číslo verze se posune jen když mezi tím nikdo jiný nic nezměnil – jinak si telefon chybějící změny stáhne při dalším načtení
+          await ulozCache({rev: Number(r.prev) === Number(c.rev) ? r.rev : c.rev, data: d, at: Date.now()});
+          r.data = d;
+        }
+      }
       return r;
     }
     const X = SX(); if (!X) throw new Error('STRANKA');
@@ -145,7 +198,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       const em = n => String((lide[n] || {}).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '';
       const komu = (it.to || []).filter(n => em(n)), missing = (it.to || []).filter(n => !em(n));
       if (!it.form.pdfFile) {
-        const r = await post(conn, {key: conn.key, akce: 'foto', name: it.form.cislo + '.pdf', mime: 'application/pdf', den: it.day || it.at.slice(0, 10), data: it.form.pdf});
+        const r = await post(conn, {key: conn.key, akce: 'foto', name: it.form.cislo + '.pdf', mime: 'application/pdf', den: it.day || it.at.slice(0, 10), data: it.form.pdf}, 180000);
         if (r && r.id) { it.form.pdfFile = {id: r.id, url: r.url}; await put(it); }
       }
       const pdf = it.form.pdfFile || null;
@@ -154,14 +207,14 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
       const obr = {logo: it.form.logo}; (it.form.fotky || []).forEach((b, i) => { if (b) obr['f' + i] = b; });
       const adr = [...new Set([...komu.map(em), em(it.by)].filter(Boolean))];   // mobil 1.42: kopie vždy i autorovi (Luboš 23. 11.)
       const r = await post(conn, {key: conn.key, akce: 'zavada', cid: 'zpr-' + it.cid, komu: adr.join(','), predmet: it.form.predmet, html: it.form.html, text: it.text || '',
-        pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'});
+        pdf: it.form.pdf, pdfJmeno: it.form.cislo + '.pdf', obr, od: 'Constructo'}, 180000);
       const ok = !!(r && (r.ok || r.opakovane));
       return {at: new Date().toISOString(), sent: ok ? komu.length : 0, poslano: ok ? komu : [], missing, error: ok ? '' : String((r && r.error) || 'neznámá chyba'), pdf};
     }
     const text = (it.text || '').trim() || 'Foto ze stavby';
     let pdf = null;
     try {
-      const r = await post(conn, {key: conn.key, akce: 'zapis_pdf', jmeno: `Zprava-${it.day || it.at.slice(0, 10)}-${String(it.by || '').replace(/\s+/g, '-')}-${it.cid}.pdf`, html: zpravaHtml(it, stavba, true)});
+      const r = await post(conn, {key: conn.key, akce: 'zapis_pdf', jmeno: `Zprava-${it.day || it.at.slice(0, 10)}-${String(it.by || '').replace(/\s+/g, '-')}-${it.cid}.pdf`, html: zpravaHtml(it, stavba, true)}, 180000);
       if (r && r.id) pdf = {id: r.id, url: r.url};
     } catch (e) { if (e.message === 'OFFLINE') throw e; }
     const predmet = 'Constructo · ' + stavba + ' – ' + (it.info ? 'Na vědomí od ' : 'Nový úkol od ') + (it.by || 'kolegy') + ': ' + text.split('\n')[0].slice(0, 70);
@@ -194,7 +247,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
           const rec = it.rec;
           for (const f of it.files || []) {
             if (f.done) continue;
-            const r = await post(conn, {key: conn.key, akce: 'foto', name: f.name, mime: f.mime, den: it.day || it.at.slice(0, 10), data: f.b64});
+            const r = await post(conn, {key: conn.key, akce: 'foto', name: f.name, mime: f.mime, den: it.day || it.at.slice(0, 10), data: f.b64}, 180000);
             if (r.error) throw new Error(errTxt(r.error));
             if (!r.id) throw new Error('Skript na Googlu je potřeba aktualizovat.');
             const x = {id: r.id, url: r.url, thumb: f.k === 'pdf' ? '' : r.thumb || ''};
@@ -233,7 +286,7 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
         for (let i = 0; i < (it.photos || []).length; i++) {
           if (it.att[i]) continue;
           const name = it.cid + '-' + (i + 1) + '.jpg';
-          const r = await post(conn, {key: conn.key, akce: 'foto', name, mime: 'image/jpeg', den: it.day || it.at.slice(0, 10), data: it.photos[i].b64});
+          const r = await post(conn, {key: conn.key, akce: 'foto', name, mime: 'image/jpeg', den: it.day || it.at.slice(0, 10), data: it.photos[i].b64}, 180000);
           if (r.error) throw new Error(errTxt(r.error));
           if (!r.id) throw new Error('Skript na Googlu je potřeba aktualizovat, aby uměl ukládat fotky (v programu na počítači: Data → Automatická synchronizace → Aktualizovat skript).');
           it.att[i] = {id: r.id, url: r.url, thumb: r.thumb, name};
@@ -265,6 +318,6 @@ ${pdf ? '' : `<tr><td style="padding:12px 30px 26px;${F}"><a href="${e(o.web)}" 
     }
     return {sent};
   }
-  return {kvGet, kvSet, all, put, del, get, post, process, build, getS, postS, dk, HYB, sidOf, stavba: sid => { CUR = sid || HYB; }};
+  return {kvGet, kvSet, all, put, del, get, post, process, build, getS, postS, mistne, cache, dk, HYB, sidOf, stavba: sid => { CUR = sid || HYB; }};
 })();
 if (typeof self !== 'undefined') self.CXQ = CXQ;
