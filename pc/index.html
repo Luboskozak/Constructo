@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-fzZNCzQqiKhFQd46aeIt8yZsMfLnEcURolSROxzbpQc=' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-qCFAMdKigx/mE+LA2eLxDCy6FuvsiFnLkdTNCgwSW5Y='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -318,6 +318,87 @@ img{max-width:100%}
 .shist{list-style:none;padding:0!important;margin:4px 0 0!important;font-size:13px;display:flex;flex-direction:column;gap:4px}
 .hconv{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);background:var(--warn-soft);color:var(--warn);font-size:13px}
 .hconv .btn{padding:4px 10px;font-size:12.5px}
+/* 5.04: Harmonogram – seskupení, skupiny a podskupiny, firma provádějící, Gantt pro investora */
+.hfil{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);font-size:13px}
+.hfil .hfl{font:500 11px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.hfil label{display:inline-flex;gap:6px;align-items:center;color:var(--muted)}.hfil select{padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+.hfil .seg button{padding:6px 11px}.hfil .btn{padding:6px 12px}
+body.ro #h-sel{display:none!important}
+.hrow.hsum{background:var(--soft);font-weight:600}.hrow.hsum:hover{background:color-mix(in srgb,var(--accent) 9%,var(--soft))}
+.hrow.hsum.l1{background:color-mix(in srgb,var(--soft) 45%,transparent);padding-left:26px}
+.hrow.hsum.l1 .hname{font-weight:600;font-size:13.5px}
+.hrow.hsum .hname small{font-weight:400}
+.hrow.hsum .osw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.hcar{font-size:12px;color:var(--muted)}
+.htl .pl.gs{top:6px;bottom:6px;background:color-mix(in srgb,var(--ink) 16%,transparent)}.htl .ac.gs{top:6px;bottom:6px}
+.hsk-ed{border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 6px;margin-left:4px;border-radius:6px}.hsk-ed:hover{background:var(--panel);color:var(--ink)}
+.hob{display:inline-block;min-width:18px;padding:1px 5px;margin-right:7px;border-radius:5px;color:#fff;font:700 10px/1.5 var(--f-mono);font-style:normal;text-align:center;vertical-align:1px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.hpt{display:inline-block;font:500 10.5px var(--f-mono);padding:1px 6px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-left:6px;vertical-align:1px}
+.hfm{font-weight:600;color:var(--ink)}
+.btn.ig-open{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}.btn.ig-open::before{content:'▤';margin-right:7px}
+.hsk{font-size:13px;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}.hsk .btn{margin-left:6px}
+.hck{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:2px solid var(--line);border-radius:5px;font-size:13px;font-weight:700;color:#fff;background:var(--panel)}.hck.on{background:var(--accent);border-color:var(--accent)}
+.hselbar{position:sticky;bottom:0;z-index:3;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 14px;border-top:2px solid var(--accent);background:var(--panel);box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+.skd{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:center}.skd label{font-weight:600;font-size:13px}
+.skd input,.skd select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+@media (max-width:860px){.hrow.hsum.l1{padding-left:14px}.skd{grid-template-columns:1fr}}
+/* Gantt pro investora: vždy světlý „papír“, aby vypadal stejně na projektoru, v tisku i v PDF */
+body.ig-on{overflow:hidden}
+#ig{position:fixed;inset:0;z-index:40;background:#e9ecef;overflow:auto;color:#1f2a36;font-family:var(--f-body,inherit)}
+.ig-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 16px;background:#16191c;color:#fff;font-size:13px}
+.ig-bar b{font-size:15px;margin-right:6px}.ig-bar label{display:inline-flex;gap:6px;align-items:center}
+.ig-bar input[type=date]{padding:5px 6px;border-radius:7px;border:1px solid #444;background:#24292d;color:#fff;font:inherit;color-scheme:dark}
+.ig-bar .seg{background:#24292d;border-color:#444}.ig-bar .seg button{color:#ddd;padding:6px 11px}.ig-bar .seg button[aria-pressed="true"]{background:#F4D23C;color:#16191c}
+.ig-bar .btn{padding:7px 13px;min-height:0;font-size:13px;background:#2a2f34;color:#fff;border:1px solid #4a5157}.ig-bar .btn:hover{background:#353b41}.ig-bar .btn.igp{background:#fff;color:#16191c;border-color:#fff;font-weight:700}.ig-bar .btn::before{content:none!important}.ig-bar .btn.zavrit{min-height:0;font-size:14px;padding:7px 16px}
+.ig-paper{max-width:1500px;margin:18px auto 40px;background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.12);padding:26px 28px 20px}
+.ig-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;border-bottom:3px solid #1f2a36;padding-bottom:14px}
+.ig-co{font:600 11px var(--f-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:#6b7785}
+.ig-head h1{margin:4px 0 2px;font-size:32px;line-height:1.1;letter-spacing:-.01em}
+.ig-sub{font-size:15px;color:#3b4652}
+.ig-kpi{display:flex;gap:10px}.ig-kpi span{display:flex;flex-direction:column;align-items:center;min-width:96px;padding:8px 12px;background:#f3f5f7;border-radius:8px;font-size:11px;color:#6b7785}.ig-kpi b{font-size:20px;color:#1f2a36}
+.ig-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin:12px 0 10px;font-size:12px;color:#5b6672}
+.ig-leg span{display:inline-flex;align-items:center;gap:6px}.ig-leg i{display:inline-block;width:16px;height:9px;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-leg i.ig-lp{background:#dfe4ea}.ig-leg i.ig-lt{width:2px;height:13px;background:#d0312d}
+.ig-tab{border:1px solid #d9dee4;border-radius:6px;overflow:hidden}
+.ig-r{display:grid;grid-template-columns:minmax(220px,2.1fr) minmax(120px,1.1fr) 116px minmax(320px,5fr) 58px;gap:0 10px;align-items:center;padding:0 12px;min-height:30px;border-top:1px solid #e7eaee}
+.ig-r>span{min-width:0}.ig-h>span{color:#fff}
+.ig-h{background:#1f2a36;color:#fff;font:600 11px var(--f-mono,monospace);letter-spacing:.04em;text-transform:uppercase;min-height:44px;border-top:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-g{cursor:pointer;background:#e8ecf1;font-weight:700;min-height:36px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.ig-g:hover{background:#dde3ea}
+.ig-g.l1{background:#f5f7f9;font-weight:600;min-height:32px}.ig-g.l1 .ig-n{padding-left:16px}
+.ig-a.l1 .ig-n{padding-left:16px}.ig-a.l2 .ig-n{padding-left:34px}
+.ig-n{display:flex;align-items:center;gap:7px;font-size:13.5px;line-height:1.25;padding:5px 0}
+.ig-n small{display:block;font-weight:400;font-size:11px;color:#6b7785}.ig-n em{font-style:normal;font-size:11px;color:#6b7785;white-space:nowrap}
+.ig-car{width:12px;font-size:12px;color:#5b6672;flex:none}
+.ig-sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-ob{flex:none;font:700 10px/1.6 var(--f-mono,monospace);font-style:normal;color:#fff;padding:0 5px;border-radius:4px;min-width:18px;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-fm{font-size:12.5px;color:#3b4652;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-dt{font:500 11.5px var(--f-mono,monospace);color:#5b6672;white-space:nowrap}
+.ig-p{font:700 12.5px var(--f-mono,monospace);text-align:right}
+.ig-tl{position:relative;align-self:stretch;min-height:30px}
+.ig-sc{min-height:44px}.ig-m{position:absolute;top:6px;padding-left:5px;border-left:1px solid #5b6b7d;font-size:11.5px;white-space:nowrap;overflow:hidden}
+.ig-w{position:absolute;bottom:5px;padding-left:3px;font-size:9.5px;font-weight:500;color:#aeb8c3;white-space:nowrap}
+.ig-gm{position:absolute;top:0;bottom:-1px;width:1px;background:#c9d1db}.ig-gw{position:absolute;top:0;bottom:-1px;width:1px;background:#eef1f4}
+.ig-td{position:absolute;top:0;bottom:-1px;width:2px;background:#d0312d;z-index:2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-b,.ig-f{position:absolute;top:50%;height:12px;margin-top:-6px;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ig-b.a{background:color-mix(in srgb,var(--c) 26%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,#fff)}.ig-f.a{background:var(--c)}
+.ig-b.g{height:10px;margin-top:-5px;background:#aab4bf;border-radius:2px}.ig-f.g{height:10px;margin-top:-5px;background:#1f2a36;border-radius:2px}
+.ig-b.s{height:8px;margin-top:-4px;background:#c9d1da;border-radius:2px}.ig-f.s{height:8px;margin-top:-4px;background:#5b6b7d;border-radius:2px}
+.ig-b.cl{border-top-left-radius:0;border-bottom-left-radius:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px);mask-image:linear-gradient(90deg,transparent,#000 14px)}
+.ig-b.cr{border-top-right-radius:0;border-bottom-right-radius:0;-webkit-mask-image:linear-gradient(270deg,transparent,#000 14px);mask-image:linear-gradient(270deg,transparent,#000 14px)}
+.ig-b.cl.cr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.ig-empty{padding:30px;text-align:center;color:#6b7785}
+.ig-foot{margin-top:10px;font-size:11px;color:#6b7785}
+@media (max-width:900px){.ig-w{display:none}.ig-r{grid-template-columns:minmax(150px,1.6fr) 0 0 minmax(200px,3fr) 44px;gap:0 6px}.ig-fm,.ig-dt{visibility:hidden}.ig-paper{padding:16px 12px;margin:10px}}
+@page ig{size:A4 landscape;margin:8mm}
+@media print{
+  body.ig-on>*:not(#ig){display:none!important}
+  body.ig-on{overflow:visible;background:#fff}
+  #ig{position:static;inset:auto;overflow:visible;background:#fff;page:ig}
+  .ig-paper{box-shadow:none;margin:0;padding:0;max-width:none;border-radius:0}
+  .ig-r{grid-template-columns:minmax(180px,2.1fr) minmax(100px,1.1fr) 104px minmax(260px,5fr) 46px;min-height:24px}
+  .ig-n{font-size:11px;padding:3px 0}.ig-fm{font-size:10.5px}.ig-head h1{font-size:24px}
+  .ig-r,.ig-g{break-inside:avoid}
+}
 .hsimple{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);font-size:13px}
 #v-list .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--accent);color:#fff;font-size:11px;line-height:18px;text-align:center}
 .qp{max-height:calc(100vh - 24px);overflow:auto}.qsec{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:8px}.qsec .qk{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.qrow{display:flex;gap:6px}.qrow input{flex:1;min-width:0;border:1px solid var(--line);border-radius:var(--r);padding:5px 8px;background:var(--bg);color:inherit}.qrow .btn{padding:4px 10px;font-size:12.5px}.qp .objchk label{padding:3px 8px;font-size:12px}
@@ -1306,7 +1387,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.02';
+  const APP_VERSION = '5.04';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1493,6 +1574,9 @@ body.dfull-on{overflow:hidden}
   // 4.24: jedna záložka Úkoly, nahoře přepínač Úkoly z porady / Všechny úkoly
   // 4.42: Úkoly vždy začínají na Všech úkolech (vidět totéž co v Harmonogramu); „Úkoly z porady“ je jen zúžení výběru
   S.ukSrc = 'all';
+  // 5.04: Harmonogram – seskupení (objekty / činnosti / patra), filtr patra a činnosti, řazení, sbalené skupiny, výběr ke sloučení
+  S.hmgBy = ['obj', 'skup', 'patro'].includes(store.get('hyb-hmgby')) ? store.get('hyb-hmgby') : 'obj'; S.hmgPatro = ''; S.hmgSkup = '';
+  S.hmgSort = ['hmg', 'start', 'name'].includes(store.get('hyb-hmgsort')) ? store.get('hyb-hmgsort') : 'hmg'; S.hmgFold = new Set(); S.hmgSel = null;
   S.gZoom = store.get('hyb-gzoom') === 'week' ? 'week' : 'all';
   const me = () => $('#me').value.trim();
   $('#me').value = store.get('hyb-me');
@@ -2710,6 +2794,265 @@ body.dfull-on{overflow:hidden}
       while (iso(m) < hi) { const s = iso(m); t.push([x(s), i % step === 0 ? `${MNS[m.getMonth()]}${r === 'all' && (m.getMonth() === 0 || i === 0) ? ' ' + String(m.getFullYear()).slice(2) : ''}` : '', true]); m.setMonth(m.getMonth() + 1, 1); i++; } }
     return t;
   }
+  /* ---------- 5.04: Harmonogram – seskupení podle objektů / činností (skupiny a podskupiny) / pater, firma provádějící, Gantt pro investora ----------
+     Každá činnost HMG může mít: skup (skupina, např. Dveře), pod (podskupina, např. repase), firma (firma provádějící z Firem), patro (např. 3.–6. NP).
+     Když nejsou vyplněné, navrhnou se automaticky z názvu činnosti (Dveře REPASE → Dveře › repase) a firma z dodavatele propojených úkolů.
+     Pole jsou přímo v řádku HMG, takže se synchronizují jako všechno ostatní a propíšou se všem. */
+  const SKUP_AUTO = [
+    ['Dveře', /dveř/i], ['Okna a výkladce', /okn[ao]|výklad/i], ['Fasáda a lešení', /fasád|lešení/i], ['TZB', /^tzb|otopn|čerpadl/i],
+    ['Elektro', /elektro|eslab|esil/i], ['Výtahy', /výtah|šachta/i], ['Podlahy', /podlah|lino\b|pvc|parket|epoxid|potěr/i], ['Omítky a štuky', /omít|štuk|stěrk/i],
+    ['SDK konstrukce', /\bsdk\b|sádrokarton/i], ['Malby', /malb|malov|nátěr/i], ['Obklady a dlažby', /obklad|dlažb|obrub|mozaik|keramik/i],
+    ['Zámečnické konstrukce', /zámečn|zábradl|mříž/i], ['Truhlářské konstrukce', /truhlář/i], ['Interiér a regály', /interiér|regál/i],
+    ['Střechy a izolace', /střech|izolac|zastřeš|světlík/i], ['Úklid', /úklid/i], ['Zednické a betonové práce', /zednick|beton|záklop|zásyp|žb\b|opěrn/i],
+    ['Dvory a sadové úpravy', /sadov|vodní prvek|kašn|dvůr|dvor/i], ['Předání stavby', /předán|dokumentace skutečn|likvidace zař|vad a nedodělk/i]];
+  const skupAuto = h => { if (/^Před/.test(h.obj || '')) return 'Předání stavby'; const n = String(h.name || ''), w = n.split(/[\s,–-]+/)[0]; const m = SKUP_AUTO.find(([, re]) => re.test(w)) || SKUP_AUTO.find(([, re]) => re.test(n)); return m ? m[0] : 'Ostatní'; };   // nejdřív podle prvního slova (Úklid, malby, dveře → Úklid)
+  const skupOf = h => String(h.skup || '').trim() || skupAuto(h);
+  const podAuto = h => {
+    if (String(h.skup || '').trim()) return '';
+    const n = String(h.name || '').trim(), m = n.match(/^(\S+)\s+(.+)$/); if (!m) return '';
+    const g = skupAuto(h), re = (SKUP_AUTO.find(x => x[0] === g) || [])[1];
+    if (!re || !re.test(m[1]) || /,$/.test(m[1]) || /^[,(]/.test(m[2])) return '';
+    const r = m[2].replace(/^[–-]\s*/, '').trim();
+    return r === r.toUpperCase() && /[A-ZÁ-Ž]/.test(r) ? r.toLowerCase() : r;
+  };
+  let _podN = null, _podK = null;
+  const podCnt = p => { const k = D.hmg.length + ':' + D.hmg.reduce((a, h) => a + String(h.name || '').length + (h.skup ? 1 : 0), 0);
+    if (_podK !== k || !_podN) { _podK = k; _podN = {}; D.hmg.forEach(h => { const x = podAuto(h); if (x) { const q = skupAuto(h) + '›' + foldName(x); _podN[q] = (_podN[q] || 0) + 1; } }); }
+    return _podN[p] || 0; };
+  // podskupina navržená z názvu (Dveře NOVÉ → nové) se použije, jen když se stejná opakuje aspoň u 2 činností (jinak by vznikaly skupinky po jedné)
+  const podOf = h => { if (String(h.skup || '').trim() || String(h.pod || '').trim()) return String(h.pod || '').trim(); const x = podAuto(h); return x && podCnt(skupAuto(h) + '›' + foldName(x)) >= 2 ? x : ''; };
+  const firmaOf = h => { const f = String(h.firma || '').trim(); if (f) return f; return [...new Set(linkedTasks(h).map(t => String(t.supplier || '').trim()).filter(Boolean))].join(', '); };
+  const PATRA = ['2. PP', '1. PP', '1. NP', '2. NP', '3. NP', '4. NP', '5. NP', '6. NP', '7. NP', 'Podkroví', 'Střecha'];
+  const patroAuto = h => { const m = String(h.name || '').match(/(\d)\.\s*(?:(?:[–-]|a|až)\s*(\d)\.\s*)?(NP|PP)\b/i); if (!m) return ''; const a = m[1], b = m[2], k = m[3].toUpperCase(); return b ? `${Math.min(a, b)}.–${Math.max(a, b)}. ${k}` : `${a}. ${k}`; };
+  const patroTxt = h => String(h.patro || '').trim() || patroAuto(h);
+  // seznam pater, kterých se činnost týká (pro filtr): „3.–6. NP“ → 3. NP … 6. NP; „1. PP, 1. NP“ → oba
+  const patraOf = h => { const t = patroTxt(h); if (!t) return [];
+    const out = []; t.split(/[,;]+/).forEach(p => { p = p.trim(); const r = p.match(/(\d)\.\s*(?:[–-]|až)\s*(\d)\.\s*(NP|PP)/i);
+      if (r) { const k = r[3].toUpperCase(); for (let i = Math.min(r[1], r[2]); i <= Math.max(r[1], r[2]); i++) out.push(`${i}. ${k}`); }
+      else { const s = p.match(/(\d)\.\s*(NP|PP)/i); out.push(s ? `${s[1]}. ${s[2].toUpperCase()}` : p); } });
+    return [...new Set(out)]; };
+  const patroRank = p => { const i = PATRA.indexOf(p); if (i >= 0) return i; const m = String(p).match(/(\d)/); return m ? (/PP/i.test(p) ? 2 - m[1] : 1 + Number(m[1])) : 98; };
+  const hmgPatraVse = () => [...new Set(D.hmg.flatMap(patraOf))].sort((a, b) => patroRank(a) - patroRank(b));
+  const hmgSkupVse = () => [...new Set(D.hmg.map(skupOf))].sort((a, b) => a.localeCompare(b, 'cs'));
+  const firmyJmena = () => [...new Map(firmyList().map(f => String(f.firma || '').trim()).filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
+  // souhrn skupiny: od nejdřívějšího zahájení do nejpozdějšího dokončení, hotovo a plán vážené délkou činností
+  function hAgg(hs) {
+    let s = '9999', e = '0000', w = 0, act = 0, pl = 0;
+    hs.forEach(h => { if (h.start < s) s = h.start; if (h.end > e) e = h.end; const d = Math.max(1, dayDiff(h.start, addD(h.end, 1))); w += d; act += actualOf(h).v * d; pl += planPct(h) * d; });
+    return {start: s, end: e, act: w ? Math.round(act / w) : 0, plan: w ? Math.round(pl / w) : 0};
+  }
+  const hSortFn = () => S.hmgSort === 'start' ? (a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end) || a.hid - b.hid
+    : S.hmgSort === 'name' ? (a, b) => String(a.name).localeCompare(String(b.name), 'cs') || objOrderOf(a.obj) - objOrderOf(b.obj) || a.hid - b.hid
+    : (a, b) => objOrderOf(a.obj) - objOrderOf(b.obj) || a.hid - b.hid;
+  // skupiny pro zvolené seskupení: [{key, label, hs, subs:[{key,label,hs}] | null, sw:[barvy]}]
+  function hmgGroupsOf(rows, by) {
+    const srt = hSortFn(), byStart = (a, b) => (a.agg.start).localeCompare(b.agg.start) || a.label.localeCompare(b.label, 'cs');
+    const mk = (key, label, hs) => ({key, label, hs: hs.slice().sort(srt), agg: hAgg(hs), sw: [...new Set(hs.map(h => objCol(h.obj)))]});
+    if (by === 'skup') {
+      const m = {}; rows.forEach(h => (m[skupOf(h)] ||= []).push(h));
+      return Object.keys(m).map(k => { const g = mk('s:' + k, k, m[k]), sm = {}; m[k].forEach(h => (sm[podOf(h)] ||= []).push(h));
+        const ks = Object.keys(sm); g.subs = ks.length > 1 || ks[0] ? ks.map(p => Object.assign(mk('s:' + k + '›' + p, p || 'ostatní ' + k.toLowerCase(), sm[p]), {flat: !p})).sort((a, b) => (!a.hs.some(h => podOf(h))) - (!b.hs.some(h => podOf(h))) || byStart(a, b)) : null;
+        return g; }).sort(byStart);
+    }
+    if (by === 'patro') {
+      const m = {}; rows.forEach(h => (m[patroTxt(h) || ''] ||= []).push(h));
+      return Object.keys(m).map(k => mk('p:' + k, k || 'Celý objekt / patro neurčeno', m[k])).sort((a, b) => (a.key === 'p:') - (b.key === 'p:') || patroRank(patraOf(a.hs[0])[0]) - patroRank(patraOf(b.hs[0])[0]) || a.label.localeCompare(b.label, 'cs'));
+    }
+    const m = {}; rows.forEach(h => (m[sectKey(h.obj)] ||= []).push(h));
+    return Object.keys(m).sort((a, b) => sectOrder(a) - sectOrder(b)).map(o => { const g = mk('o:' + o, (o === 'A' ? 'Objekt ' : SECT.includes(o) ? 'Objekty ' : objSections(o).length && !objOthers(o).length ? 'Objekt ' : '') + o, m[o]); g.info = sectInfo(o); return g; });
+  }
+  const objShort = o => { const s = String(o || '').trim(); if (/^[A-G](\s*,?\s*[A-G])*$/i.test(s)) { const l = [...new Set(s.toUpperCase().match(/[A-G]/g))]; return l.length === 7 ? 'A–G' : l.join(l.length > 3 ? '' : ','); }
+    return /^Před/i.test(s) ? 'předání' : /^celkov/i.test(s) ? 'celkově' : s.length > 12 ? s.slice(0, 11) + '…' : s; };
+  const dtK = a => { const f = x => { const d = pd(x); return `${d.getDate()}.${d.getMonth() + 1}.${String(d.getFullYear()).slice(2)}`; }; return `${f(a.start)}–${f(a.end)}`; };
+  const ptSuf = h => patroTxt(h) && S.hmgBy !== 'patro' && !/\b(NP|PP)\b/.test(h.name) ? patroTxt(h) : '';
+
+  /* okno „Skupina, firma, patro“ – pro jednu činnost, výběr více činností (sloučení) nebo celou skupinu / podskupinu */
+  function hmgSkupDialog(ids, title) {
+    if (RO()) { toast('Jen prohlížení – skupiny nejde měnit.'); return; }
+    const hs = ids.map(id => D.hmg.find(h => h.hid === id)).filter(Boolean); if (!hs.length) return;
+    const same = f => { const v = [...new Set(hs.map(f))]; return v.length === 1 ? v[0] : null; };
+    const sk = same(skupOf), pd0 = same(podOf), fi = same(h => String(h.firma || '').trim()), pa = same(h => String(h.patro || '').trim());
+    const names = firmyJmena(); if (fi && !names.some(n => foldName(n) === foldName(fi))) names.unshift(fi);
+    const opts = () => `${fi === null ? '<option value="\u0000" selected>různé – ponechat</option>' : ''}<option value="">— bez firmy (podle úkolů) —</option>` + names.map(n => `<option value="${esc(n)}"${fi && foldName(n) === foldName(fi) ? ' selected' : ''}>${esc(n)}</option>`).join('');
+    const podyVse = [...new Set(D.hmg.map(podOf).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'cs'));
+    const body = `<p class="hcap" style="margin:0 0 10px">${hs.length === 1 ? `Činnost <b>${hs[0].hid} · ${esc(hs[0].name)}</b> (${esc(hs[0].obj)})` : `${hs.length} činností: ${esc(hs.slice(0, 6).map(h => h.name + ' (' + h.obj + ')').join(', '))}${hs.length > 6 ? ' …' : ''}`}</p>
+      <div class="skd">
+        <label for="sk-skup">Skupina</label><input id="sk-skup" list="sk-skupl" value="${esc(sk ?? '')}" placeholder="${sk === null ? 'různé – ponechat' : 'např. Dveře'}"><datalist id="sk-skupl">${hmgSkupVse().map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+        <label for="sk-pod">Podskupina</label><input id="sk-pod" list="sk-podl" value="${esc(pd0 ?? '')}" placeholder="${pd0 === null ? 'různé – ponechat' : 'např. repase, ocelové, masivní, repliky'}"><datalist id="sk-podl">${podyVse.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+        <label for="sk-firma">Firma provádějící</label><span style="display:flex;gap:6px"><select id="sk-firma" style="flex:1;min-width:0">${opts()}</select><button type="button" class="btn" id="sk-nova" style="white-space:nowrap">+ Nová firma</button></span>
+        <label for="sk-patro">Patro</label><input id="sk-patro" list="sk-patral" value="${esc(pa ?? '')}" placeholder="${pa === null ? 'různé – ponechat' : patroAuto(hs[0]) ? 'podle názvu: ' + patroAuto(hs[0]) : 'např. 1. NP nebo 3.–6. NP (prázdné = celý objekt)'}"><datalist id="sk-patral">${PATRA.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+      </div>
+      <p class="hcap" style="margin:10px 0 0">Firma se ukáže v Harmonogramu i v Ganttu pro investora a propíše se jako dodavatel do propojených úkolů, které ho ještě nemají. Prázdná skupina = navrhne se sama podle názvu činnosti.</p>`;
+    confirmModal(title || (hs.length > 1 ? 'Sloučit do skupiny' : 'Skupina, firma, patro'), body, 'Uložit', () => {
+      const vSk = $('#sk-skup').value.trim(), vPod = $('#sk-pod').value.trim(), vFi = $('#sk-firma').value, vPa = $('#sk-patro').value.trim();
+      let nT = 0;
+      hs.forEach(h => {
+        // po uložení se skupina i podskupina zapíšou natvrdo (prázdné pole = návrh podle názvu), aby se při změně jednoho nerozpadlo druhé
+        const nSk = vSk || (sk !== null ? '' : skupOf(h)), nPod = vPod || (pd0 !== null ? '' : podOf(h));
+        h.skup = nSk || skupAuto(h); if (nPod) h.pod = nPod; else delete h.pod;
+        if (vFi !== '\u0000') { if (vFi) h.firma = vFi; else delete h.firma; }
+        if (vPa || pa !== null) { if (vPa) h.patro = vPa; else delete h.patro; }
+        if (h.firma) linkedTasks(h).forEach(t => { if (!String(t.supplier || '').trim()) { t.supplier = h.firma; nT++; } });
+      });
+      if (S.hmgSel) S.hmgSel = null;
+      commit(); toast(`Uloženo u ${hs.length} ${hs.length === 1 ? 'činnosti' : 'činností'}${nT ? ` · dodavatel doplněn do ${nT} úkolů` : ''}`);
+    });
+    const nb = $('#sk-nova');
+    if (nb) nb.onclick = () => {
+      CXFirmy.okna({data: () => ({firmy: firmyList(), prijemci: prijemciList()}), toast, ares: aresNajdi, aresHledej: aresHledejSkript,
+        uloz: (k, x, ed) => { D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x); persist(); markDirty(); },
+        poNove: id => setTimeout(() => { const f = firmyList().find(y => y.id === id), sel = $('#sk-firma'); if (!f || !sel) return;
+          if (!names.some(n => foldName(n) === foldName(f.firma))) names.push(f.firma);
+          sel.innerHTML = opts(); sel.value = f.firma; }, 0)}).upravFirmu(null);
+    };
+  }
+
+  /* ---------- Gantt pro investora: čistý pohled do konce roku, tisk a PDF ---------- */
+  const IG = {from: null, to: null, hideDone: false, owners: false, fold: new Set()};
+  function igRows() {
+    const from = IG.from, to = IG.to;
+    return D.hmg.filter(h => h.start && h.end && h.start <= to && h.end >= from)
+      .filter(h => !(IG.hideDone && actualOf(h).v >= 100))
+      .filter(h => !S.obj || objMatch(h, S.obj))
+      .filter(h => !S.hmgPatro || patraOf(h).includes(S.hmgPatro))
+      .filter(h => !S.hmgSkup || skupOf(h) === S.hmgSkup);
+  }
+  function igTicks(from, to) {
+    const span = dayDiff(from, addD(to, 1)), x = s => dayDiff(from, s) / span * 100, months = [], weeks = [];
+    for (let d = pd(from); iso(d) <= to; d.setMonth(d.getMonth() + 1, 1)) { const s = iso(d) < from ? from : iso(d); const n = new Date(d.getFullYear(), d.getMonth() + 1, 1); const e = iso(n) > addD(to, 1) ? addD(to, 1) : iso(n); months.push({x: x(s), w: x(e) - x(s), t: MNL[d.getMonth()].charAt(0).toUpperCase() + MNL[d.getMonth()].slice(1) + ' ' + d.getFullYear(), ts: MNS[d.getMonth()]}); }
+    if (span <= 190) for (let s = mondayOf(from) < from ? addD(mondayOf(from), 7) : from; s <= to; s = addD(s, 7)) weeks.push({x: x(s), t: `${pd(s).getDate()}. ${pd(s).getMonth() + 1}.`});
+    return {span, x, months, weeks};
+  }
+  function igLabel() { const a = pd(IG.from), b = pd(IG.to); return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() ? `${MNL[a.getMonth()]} ${a.getFullYear()}` : `${MNL[a.getMonth()]}${a.getFullYear() !== b.getFullYear() ? ' ' + a.getFullYear() : ''} – ${MNL[b.getMonth()]} ${b.getFullYear()}`; }
+  function igFiltr() { return [S.obj ? (SECT.includes(S.obj) ? 'objekty ' : '') + S.obj : '', S.hmgPatro ? 'patro ' + S.hmgPatro : '', S.hmgSkup ? S.hmgSkup : ''].filter(Boolean).join(' · '); }
+  function hmgInvestor() {
+    if (!IG.from) { IG.from = today.slice(0, 8) + '01'; IG.to = today.slice(0, 4) + '-12-31'; if (IG.to <= IG.from) IG.to = addD(IG.from, 60); }
+    let ov = $('#ig'); if (!ov) { ov = document.createElement('div'); ov.id = 'ig'; document.body.appendChild(ov); }
+    document.body.classList.add('ig-on');
+    const P = D.project || {}, rows = igRows(), T = igTicks(IG.from, IG.to), X = s => Math.max(0, Math.min(100, T.x(s)));
+    const groups = hmgGroupsOf(rows, S.hmgBy || 'skup');
+    const grid = T.months.map(m => `<i class="ig-gm" style="left:${m.x}%"></i>`).join('') + T.weeks.map(w => `<i class="ig-gw" style="left:${w.x}%"></i>`).join('');
+    const tdOn = today >= IG.from && today <= IG.to, td = tdOn ? `<i class="ig-td" style="left:${(dayDiff(IG.from, today) + .5) / T.span * 100}%"></i>` : '';
+    const bar = (a, cls, col) => {
+      const xs = X(a.start), xe = X(addD(a.end, 1)), dur = Math.max(1, dayDiff(a.start, addD(a.end, 1))), xa = X(addD(a.start, Math.round(dur * a.act / 100)));
+      return `<i class="ig-b ${cls}${a.start < IG.from ? ' cl' : ''}${a.end > IG.to ? ' cr' : ''}" style="--c:${col};left:${xs}%;width:${Math.max(.5, xe - xs)}%"></i>${a.act > 0 && xa > xs ? `<i class="ig-f ${cls}" style="--c:${col};left:${xs}%;width:${xa - xs}%"></i>` : ''}`;
+    };
+    const firmy = hs => [...new Set(hs.map(firmaOf).filter(Boolean).flatMap(f => f.split(/,\s*/)))];
+    const row = (h, lvl) => { const a = {start: h.start, end: h.end, act: actualOf(h).v}, f = firmaOf(h);
+      return `<div class="ig-r ig-a l${lvl}"><span class="ig-n"><i class="ig-ob" style="background:${objCol(h.obj)}">${esc(objShort(h.obj))}</i><span>${esc(h.name)}${ptSuf(h) ? ` <em>${esc(ptSuf(h))}</em>` : ''}${IG.owners && h.owner ? `<small>${esc(h.owner)}</small>` : ''}</span></span><span class="ig-fm">${esc(f || '—')}</span><span class="ig-dt">${dtK(h)}</span><span class="ig-tl">${grid}${bar(a, 'a', objCol(h.obj))}${td}</span><span class="ig-p">${a.act} %</span></div>`; };
+    const head = (g, lvl) => { const fold = IG.fold.has(g.key), fs = firmy(g.hs);
+      return `<div class="ig-r ig-g l${lvl}${fold ? ' fold' : ''}" data-ik="${esc(g.key)}" role="button" tabindex="0" aria-expanded="${!fold}"><span class="ig-n"><b class="ig-car">${fold ? '▸' : '▾'}</b>${lvl === 0 && S.hmgBy === 'obj' ? g.sw.map(c => `<i class="ig-sw" style="background:${c}"></i>`).join('') : ''}<span>${esc(lvl ? g.label.charAt(0).toUpperCase() + g.label.slice(1) : g.label)}<small>${g.hs.length} ${g.hs.length === 1 ? 'činnost' : g.hs.length < 5 ? 'činnosti' : 'činností'}</small></span></span><span class="ig-fm">${esc(fs.length > 2 ? fs.length + ' firmy' : fs.join(', ') || '—')}</span><span class="ig-dt">${dtK(g.agg)}</span><span class="ig-tl">${grid}${bar(g.agg, lvl ? 's' : 'g', lvl ? '#5b6b7d' : '#1f2a36')}${td}</span><span class="ig-p">${g.agg.act} %</span></div>`; };
+    let body = '';
+    groups.forEach(g => { body += head(g, 0); if (IG.fold.has(g.key)) return;
+      if (g.subs) g.subs.forEach(s => { if (s.flat) { s.hs.forEach(h => body += row(h, 1)); return; } body += head(s, 1); if (!IG.fold.has(s.key)) s.hs.forEach(h => body += row(h, 2)); });
+      else g.hs.forEach(h => body += row(h, 1)); });
+    const objsIn = [...new Map(rows.map(h => [objCol(h.obj), sectKey(h.obj)])).entries()];
+    const sum = hAgg(rows.length ? rows : [{start: IG.from, end: IG.to, pct: 0, hid: 0, obj: ''}]);
+    ov.innerHTML = `<div class="ig-bar no-print">
+        <b>Gantt pro investora</b>
+        <span class="seg" role="tablist" aria-label="Seskupit">${[['skup', 'Činnosti'], ['obj', 'Objekty'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-igb="${k}" aria-pressed="${(S.hmgBy || 'skup') === k}">${l}</button>`).join('')}</span>
+        <label>Od <input type="date" id="ig-from" value="${IG.from}"></label><label>Do <input type="date" id="ig-to" value="${IG.to}"></label>
+        <label><input type="checkbox" id="ig-hd" ${IG.hideDone ? 'checked' : ''}> Skrýt hotové</label>
+        <label><input type="checkbox" id="ig-ow" ${IG.owners ? 'checked' : ''}> Odpovědné osoby</label>
+        <button type="button" class="btn" id="ig-fold">${IG.fold.size ? 'Rozbalit vše' : 'Sbalit vše'}</button>
+        <span style="flex:1"></span>
+        <button type="button" class="btn" id="ig-print">Tisk</button><button type="button" class="btn igp" id="ig-pdf">Stáhnout PDF</button><button type="button" class="btn zavrit" id="ig-x">Zavřít</button>
+      </div>
+      <div class="ig-paper">
+        <div class="ig-head"><div><div class="ig-co">${esc(P.company || '')}</div><h1>${esc(P.name || 'Stavba')}</h1><div class="ig-sub">Harmonogram prací · <b>${esc(igLabel())}</b>${igFiltr() ? ' · ' + esc(igFiltr()) : ''}</div></div>
+          <div class="ig-kpi"><span><b>${sum.act} %</b>hotovo</span><span><b>${rows.length}</b>${rows.length === 1 ? 'činnost' : rows.length < 5 ? 'činnosti' : 'činností'}</span><span><b>${fmtDY(today)}</b>stav ke dni</span></div></div>
+        <div class="ig-leg">${objsIn.map(([c, k]) => `<span><i style="background:${c}"></i>${esc(/^[A-G]+$/.test(k) ? (k.length > 1 ? 'objekty ' : 'objekt ') + k : k)}</span>`).join('')}<span><i class="ig-lp"></i>plánovaný termín</span><span><i style="background:#1f2a36"></i>hotovo (plná část pruhu)</span>${tdOn ? '<span><i class="ig-lt"></i>dnes</span>' : ''}</div>
+        <div class="ig-tab">
+          <div class="ig-r ig-h"><span class="ig-n">Činnost</span><span class="ig-fm">Firma provádějící</span><span class="ig-dt">Termín</span><span class="ig-tl ig-sc">${T.months.map(m => `<span class="ig-m" style="left:${m.x}%;width:${m.w}%">${esc(m.w > 9 ? m.t : m.ts)}</span>`).join('')}${T.weeks.map(w => `<span class="ig-w" style="left:${w.x}%">${esc(w.t)}</span>`).join('')}</span><span class="ig-p">Hotovo</span></div>
+          ${body || '<div class="ig-empty">V tomto období (podle filtru) nemá žádná činnost termín.</div>'}
+        </div>
+        <div class="ig-foot">Pruh = termín činnosti podle hlavního harmonogramu, plná část = hotovo. Skupiny ukazují souhrn svých činností (hotovo vážené délkou). Pruh, který se na kraji vytrácí, pokračuje mimo zobrazené období.</div>
+      </div>`;
+    const close = () => { document.body.classList.remove('ig-on'); ov.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape' && !$('#overlay:not([hidden])')) close(); };
+    document.removeEventListener('keydown', IG.key || (() => {})); IG.key = onKey; document.addEventListener('keydown', onKey);
+    $('#ig-x').onclick = close;
+    $('#ig-print').onclick = () => window.print();
+    $('#ig-pdf').onclick = async () => { const b = $('#ig-pdf'); b.disabled = true; b.textContent = 'Připravuji PDF…';
+      try { const r = await igPdf(groups, rows); download(r.name, r.blob, 'application/pdf'); } catch (e) { toast('PDF se nepodařilo vytvořit: ' + (e && e.message || e)); }
+      b.disabled = false; b.textContent = 'Stáhnout PDF'; };
+    ov.querySelectorAll('[data-igb]').forEach(b => b.onclick = () => { S.hmgBy = b.dataset.igb; store.set('hyb-hmgby', S.hmgBy); IG.fold.clear(); hmgInvestor(); });
+    $('#ig-from').onchange = e => { if (e.target.value) { IG.from = e.target.value; if (IG.to < IG.from) IG.to = addD(IG.from, 30); hmgInvestor(); } };
+    $('#ig-to').onchange = e => { if (e.target.value && e.target.value >= IG.from) { IG.to = e.target.value; hmgInvestor(); } };
+    $('#ig-hd').onchange = e => { IG.hideDone = e.target.checked; hmgInvestor(); };
+    $('#ig-ow').onchange = e => { IG.owners = e.target.checked; hmgInvestor(); };
+    $('#ig-fold').onclick = () => { if (IG.fold.size) IG.fold.clear(); else groups.forEach(g => IG.fold.add(g.key)); hmgInvestor(); };
+    ov.querySelectorAll('[data-ik]').forEach(el => { const t = () => { const k = el.dataset.ik; IG.fold.has(k) ? IG.fold.delete(k) : IG.fold.add(k); hmgInvestor(); };
+      el.onclick = t; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } }; });
+  }
+  async function igPdf(groups, rows) {
+    const P = D.project || {}, T = igTicks(IG.from, IG.to);
+    const doc = new PdfDoc(842, 595), R = doc.F.R, B = doc.F.B, M = 24, W = 842 - 2 * M, BOTTOM = 595 - M - 14;
+    const INK = '#1f2a36', GREY = '#6b7785', LINE = '#d9dee4', SOFT = '#f3f5f7', RED = '#d0312d';
+    const cN = 212, cF = 116, cD = 70, cP = 38, TX = M + cN + cF + cD, TW = W - cN - cF - cD - cP;
+    const mix = (c, k) => { const n = parseInt(c.slice(1), 16), f = v => Math.round(v + (255 - v) * k).toString(16).padStart(2, '0'); return '#' + f(n >> 16) + f(n >> 8 & 255) + f(n & 255); };
+    const X = s => TX + Math.max(0, Math.min(1, T.x(s) / 100)) * TW;
+    let y;
+    const top = first => {
+      doc.page(); y = M;
+      if (first) {
+        doc.text(M, y + 8, String(P.company || '').toUpperCase(), {size: 7.5, color: GREY});
+        doc.text(M, y + 30, P.name || 'Stavba', {bold: true, size: 20, color: INK});
+        doc.text(M, y + 46, fitText(`Harmonogram prací · ${igLabel()}${igFiltr() ? ' · ' + igFiltr() : ''}`, R, 10.5, W - 260), {size: 10.5, color: INK});
+        const s = hAgg(rows.length ? rows : [{start: IG.from, end: IG.to}]);
+        [[s.act + ' %', 'hotovo'], [String(rows.length), 'činností'], [fmtDY(today), 'stav ke dni']].forEach(([a, b], i) => { const x = M + W - (2 - i) * 86 - 86; doc.rect(x, y + 6, 80, 38, SOFT); doc.text(x + 40, y + 25, a, {bold: true, size: 12, color: INK, align: 'center'}); doc.text(x + 40, y + 37, b, {size: 7, color: GREY, align: 'center'}); });
+        y += 66;
+        let lx = M; [...new Map(rows.map(h => [objCol(h.obj), sectKey(h.obj)])).entries()].forEach(([c, k]) => { doc.rect(lx, y - 6, 10, 7, c); const t = /^[A-G]+$/.test(k) ? (k.length > 1 ? 'objekty ' : 'objekt ') + k : k; doc.text(lx + 13, y, t, {size: 7.5, color: GREY}); lx += 18 + tw(t, R, 7.5) + 8; });
+        doc.rect(lx, y - 6, 16, 7, '#dfe4ea'); doc.text(lx + 19, y, 'plánovaný termín', {size: 7.5, color: GREY}); lx += 19 + tw('plánovaný termín', R, 7.5) + 10;
+        doc.rect(lx, y - 6, 16, 7, INK); doc.text(lx + 19, y, 'hotovo', {size: 7.5, color: GREY}); lx += 19 + tw('hotovo', R, 7.5) + 10;
+        if (today >= IG.from && today <= IG.to) { doc.rect(lx + 6, y - 8, 1.5, 10, RED); doc.text(lx + 12, y, 'dnes', {size: 7.5, color: GREY}); }
+        y += 10;
+      }
+      doc.rect(M, y, W, 26, INK);
+      doc.text(M + 6, y + 16, 'Činnost', {bold: true, size: 8, color: '#ffffff'}); doc.text(M + cN + 4, y + 16, 'Firma provádějící', {bold: true, size: 8, color: '#ffffff'}); doc.text(M + cN + cF + 4, y + 16, 'Termín', {bold: true, size: 8, color: '#ffffff'}); doc.text(M + W - 4, y + 16, 'Hotovo', {bold: true, size: 8, color: '#ffffff', align: 'right'});
+      T.months.forEach(m => { const x = TX + m.x / 100 * TW, w = m.w / 100 * TW; doc.line(x, y, x, y + 26, '#5b6b7d'); doc.text(x + 3, y + 10, fitText(w > 60 ? m.t : m.ts, B, 7.5, w - 5), {bold: true, size: 7.5, color: '#ffffff'}); });
+      T.weeks.forEach(wk => { const x = TX + wk.x / 100 * TW; doc.text(x + 2, y + 22, wk.t.replace(/\s/g, ''), {size: 5.8, color: '#c9d1db'}); });
+      y += 26;
+    };
+    const tdX = today >= IG.from && today <= IG.to ? TX + (dayDiff(IG.from, today) + .5) / T.span * TW : null;
+    const drawRow = (o) => {
+      const h = o.h;
+      if (y + h > BOTTOM) top(false);
+      if (o.bg) doc.rect(M, y, W, h, o.bg);
+      T.months.forEach(m => { const x = TX + m.x / 100 * TW; doc.line(x, y, x, y + h, '#c9d1db', .4); });
+      T.weeks.forEach(wk => { const x = TX + wk.x / 100 * TW; doc.line(x, y, x, y + h, '#eceff3', .3); });
+      const tx = M + 4 + o.ind;
+      if (o.ob) { const ow = Math.max(12, tw(o.ob, B, 5.8) + 4); doc.rect(tx, y + h / 2 - 4.5, ow, 9, o.col); doc.text(tx + ow / 2, y + h / 2 + 2, o.ob, {bold: true, size: 5.8, color: '#ffffff', align: 'center'}); o.ind += ow + 4; }
+      doc.text(M + 4 + o.ind, y + h / 2 + 3, fitText(o.name, o.bold ? B : R, o.fs, cN - 8 - o.ind), {bold: o.bold, size: o.fs, color: INK});
+      doc.text(M + cN + 4, y + h / 2 + 3, fitText(o.firma, R, 7, cF - 8), {size: 7, color: o.firma === '—' ? GREY : INK});
+      doc.text(M + cN + cF + 3, y + h / 2 + 3, fitText(o.dt, R, 6.3, cD - 4), {size: 6.3, color: GREY});
+      doc.text(M + W - 4, y + h / 2 + 3, o.act + ' %', {bold: o.bold, size: 7.5, color: INK, align: 'right'});
+      const a = o.a, xs = X(a.start), xe = X(addD(a.end, 1)), dur = Math.max(1, dayDiff(a.start, addD(a.end, 1))), xa = X(addD(a.start, Math.round(dur * a.act / 100)));
+      const bh = o.bh, by = y + (h - bh) / 2;
+      doc.rect(xs, by, Math.max(1.5, xe - xs), bh, o.light); if (xa > xs) doc.rect(xs, by, xa - xs, bh, o.col);
+      if (tdX) doc.rect(tdX - .6, y, 1.2, h, RED);
+      doc.line(M, y + h, M + W, y + h, LINE, .4);
+      y += h;
+    };
+    const firmy = hs => { const f = [...new Set(hs.map(firmaOf).filter(Boolean).flatMap(x => x.split(/,\s*/)))]; return f.length > 2 ? f.length + ' firmy' : f.join(', ') || '—'; };
+    const dt = dtK;
+    const act = h => ({h: 15, ind: 10, ob: objShort(h.obj), col: objCol(h.obj), light: mix(objCol(h.obj), .72), name: h.name + (ptSuf(h) ? ' · ' + ptSuf(h) : ''), firma: firmaOf(h) || '—', dt: dt(h), act: actualOf(h).v, a: {start: h.start, end: h.end, act: actualOf(h).v}, fs: 7.3, bh: 7});
+    top(true);
+    if (!rows.length) { doc.text(M + W / 2, y + 20, 'V tomto období (podle filtru) nemá žádná činnost termín.', {size: 9, color: GREY, align: 'center'}); }
+    groups.forEach(g => {
+      const lab = g.label;
+      drawRow({h: 18, ind: 0, bg: '#e8ecf1', col: INK, light: '#aab4bf', name: lab, firma: firmy(g.hs), dt: dt(g.agg), act: g.agg.act, a: g.agg, fs: 8.5, bold: true, bh: 6});
+      if (IG.fold.has(g.key)) return;
+      if (g.subs) g.subs.forEach(s => { if (s.flat) { s.hs.forEach(h => drawRow(act(h))); return; }
+        drawRow({h: 15, ind: 6, bg: SOFT, col: '#5b6b7d', light: '#c3ccd6', name: s.label.charAt(0).toUpperCase() + s.label.slice(1), firma: firmy(s.hs), dt: dt(s.agg), act: s.agg.act, a: s.agg, fs: 7.8, bold: true, bh: 5});
+        if (!IG.fold.has(s.key)) s.hs.forEach(h => { const o = act(h); o.ind = 16; drawRow(o); }); });
+      else g.hs.forEach(h => drawRow(act(h)));
+    });
+    const foot = `${P.name || 'Stavba'} – harmonogram prací ${igLabel()} · stav ke dni ${fmtDY(today)}`;
+    doc.pages.forEach((pg, i) => { doc.cur = pg; doc.text(M, 595 - 12, fitText(foot, R, 7, W - 80), {size: 7, color: GREY}); doc.text(M + W, 595 - 12, `Strana ${i + 1} z ${doc.pages.length}`, {size: 7, color: GREY, align: 'right'}); });
+    return {blob: await doc.bytes(`Harmonogram ${igLabel()}`), name: `Harmonogram_${IG.from}_${IG.to}${S.obj ? '_' + S.obj : ''}.pdf`};
+  }
+
   function renderHmg() {
     const v = $('#view');
     if (!D.hmg.length) { v.innerHTML = `<div class="hmg"><div class="empty"><strong>Harmonogram zatím není nahraný.</strong>Načtěte ho v nabídce Data → Načíst nový HMG.</div></div>`; return; }
@@ -2719,8 +3062,10 @@ body.dfull-on{overflow:hidden}
       if (S.hmgHideDone && done) return false;
       if (S.hmgRange !== 'all' && !((h.start < hi && h.end >= lo) || (current && h.end < lo && !done))) return false;
       if (S.owner && !(h.owner || '').split(/\s*\/\s*/).map(canonOwner).includes(S.owner) && !linkedTasks(h).some(t => hasPerson(t, S.owner))) return false;
-      if (S.q && !hledej(S.q, h.name, h.owner, h.obj, 'objekt ' + h.obj, String(h.hid), linkedTasks(h).map(hlUkolTxt))) return false;
+      if (S.q && !hledej(S.q, h.name, h.owner, h.obj, 'objekt ' + h.obj, String(h.hid), skupOf(h), podOf(h), firmaOf(h), patroTxt(h), linkedTasks(h).map(hlUkolTxt))) return false;
       if (S.obj && !objMatch(h, S.obj)) return false;
+      if (S.hmgPatro && !patraOf(h).includes(S.hmgPatro)) return false;
+      if (S.hmgSkup && skupOf(h) !== S.hmgSkup) return false;
       if (!hstatOk(h)) return false;
       return true;
     });
@@ -2738,20 +3083,25 @@ body.dfull-on{overflow:hidden}
       <div class="hnav"><div class="seg no-print" role="tablist" aria-label="Období">${HRANGES.map(([k, l]) => `<button type="button" role="tab" data-hr="${k}" aria-pressed="${S.hmgRange === k}">${l}</button>`).join('')}</div>
         ${S.hmgRange === 'all' ? '' : `<span class="no-print" style="display:inline-flex;gap:6px"><button class="btn" type="button" id="hr-prev" aria-label="Předchozí">←</button><button class="btn" type="button" id="hr-today">Dnes</button><button class="btn" type="button" id="hr-next" aria-label="Další">→</button></span>`}
         <b class="hper">${esc((l => l.charAt(0).toUpperCase() + l.slice(1))(hmgLabel(lo, hi)))}</b></div>
+      <div class="hfil no-print"><span class="hfl">Seskupit</span><span class="seg" role="tablist" aria-label="Seskupit">${[['obj', 'Objekty'], ['skup', 'Činnosti'], ['patro', 'Patra']].map(([k, l]) => `<button type="button" data-hby="${k}" aria-pressed="${S.hmgBy === k}">${l}</button>`).join('')}</span>
+        <label>Patro <select id="hf-patro"><option value="">všechna</option>${hmgPatraVse().map(x => `<option${S.hmgPatro === x ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
+        <label>Činnost <select id="hf-skup"><option value="">všechny</option>${hmgSkupVse().map(x => `<option${S.hmgSkup === x ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
+        <label>Řadit <select id="hf-sort">${[['hmg', 'jako v HMG'], ['start', 'podle zahájení'], ['name', 'podle názvu']].map(([k, l]) => `<option value="${k}"${S.hmgSort === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+        ${S.hmgPatro || S.hmgSkup ? '<button type="button" class="linkish" id="hf-clr">zrušit filtr</button>' : ''}
+        <span style="flex:1"></span>
+        <button type="button" class="btn ro-hide" id="h-sel" aria-pressed="${!!S.hmgSel}">${S.hmgSel ? 'Ukončit slučování' : 'Sloučit do skupiny…'}</button>
+        <button type="button" class="btn ig-open" id="h-inv">Gantt pro investora</button></div>
       <div class="hrow head"><span>ID</span><span>Činnost</span><span class="hdt">Termín</span><span class="hscale">${ticks.map(t => t[1] ? `<span style="left:${t[0]}%">${esc(t[1])}</span>` : '').join('')}</span><span class="hplan" style="text-align:right">Plán dnes</span><span style="text-align:right">Hotovo</span><span style="text-align:right">Odchylka</span></div>`;
     if (S.hmgEdit === 'new') html += hmgForm({hid: Math.max(0, ...D.hmg.map(h => h.hid)) + 1, name:'', obj: S.obj && hmgObjs().find(o => objMatch({obj:o}, S.obj)) || hmgObjs()[0] || '', owner: S.owner || '', start: today, end: today, pct: 0}, true);
     if (!rows.length) html += `<div class="empty">V tomto období (podle filtru) nemá žádná činnost HMG termín. Zkuste delší období nebo šipky.</div>`;
-    const by = {}; rows.forEach(h => (by[sectKey(h.obj)] ||= []).push(h));
-    Object.keys(by).sort((a,b) => sectOrder(a) - sectOrder(b)).forEach(o => {
-      const hs = by[o], g = sectInfo(o);
-      html += `<div class="hgrp">${[...new Set(hs.map(h => objCol(h.obj)))].map(c => `<i class="osw" style="background:${c}"></i>`).join('')}${o === 'A' ? 'Objekt ' : SECT.includes(o) ? 'Objekty ' : objSections(o).length && !objOthers(o).length ? 'Objekt ' : ''}${esc(o)}<span>${hs.length} činností${g ? ` · celkem ${fmtD(g.start)} ${g.start.slice(2,4)} – ${fmtD(g.end)} ${g.end.slice(2,4)} · ${g.pct} % v HMG` : ''}</span></div>`;
-      hs.sort((a,b) => objOrderOf(a.obj) - objOrderOf(b.obj) || a.hid - b.hid).forEach(h => {
+    // 5.04: skupiny podle zvoleného seskupení; záhlaví skupiny má souhrnný pruh (od prvního zahájení do posledního dokončení, hotovo vážené délkou)
+    const hRow = h => {
         const p = planPct(h), a = actualOf(h), dv = a.v - p, ls = linkedTasks(h), open = S.hmgOpen.has(h.hid);
         const cls = dv <= -10 ? 'bad' : dv < 0 ? 'mid' : 'ok';
         const xs = X(h.start), xe = X(addD(h.end, 1)), dur = dayDiff(h.start, addD(h.end, 1)), xa = X(addD(h.start, Math.round(dur * a.v / 100)));
         html += `<button type="button" class="hrow" data-h="${h.hid}" aria-expanded="${open}">
-          <span class="hid">${h.hid}</span>
-          <span class="hname">${esc(h.name)}${ls.length ? `<span class="lk">${ls.length} úk.</span>` : ''}<small>${esc(h.owner || '—')}${(() => { const u = [...new Set(ls.flatMap(t => taskPeople(t)))].filter(x => x !== 'Bez přiřazení'); return u.length && u.join(' / ') !== (h.owner || '') ? ` · úkol: ${esc(u.join(' / '))}` : ''; })()}</small></span>
+          <span class="hid">${S.hmgSel ? `<span class="hck${S.hmgSel.has(h.hid) ? ' on' : ''}" aria-hidden="true">${S.hmgSel.has(h.hid) ? '✓' : ''}</span>` : h.hid}</span>
+          <span class="hname">${S.hmgBy !== 'obj' ? `<i class="hob" style="background:${objCol(h.obj)}" title="Objekt ${esc(h.obj)}">${esc(objShort(h.obj))}</i>` : ''}${esc(h.name)}${ptSuf(h) ? `<span class="hpt">${esc(ptSuf(h))}</span>` : ''}${ls.length ? `<span class="lk">${ls.length} úk.</span>` : ''}<small>${firmaOf(h) ? `<b class="hfm">${esc(firmaOf(h))}</b> · ` : ''}${esc(h.owner || '—')}${(() => { const u = [...new Set(ls.flatMap(t => taskPeople(t)))].filter(x => x !== 'Bez přiřazení'); return u.length && u.join(' / ') !== (h.owner || '') ? ` · úkol: ${esc(u.join(' / '))}` : ''; })()}</small></span>
           <span class="hdt mono" style="font-size:12px">${fmtD(h.start)} – ${fmtD(h.end)} ${h.end.slice(2,4)}</span>
           <span class="htl" title="Termín ${fmtD(h.start)} – ${fmtD(h.end)}">${grid}<i class="pl${cls === 'bad' ? ' late' : ''}" style="left:${xs}%;width:${Math.max(.6, xe - xs)}%"></i><i class="ac" style="--oc:${objCol(h.obj)};left:${xs}%;width:${Math.max(0, xa - xs)}%"></i>${tdx}</span>
           <span class="hn hplan">${p} %</span>
@@ -2760,13 +3110,35 @@ body.dfull-on{overflow:hidden}
         </button>`;
         if (open) {
           html += `<div class="hexp">
+            <span class="hsk">Skupina <b>${esc(skupOf(h))}${podOf(h) ? ' › ' + esc(podOf(h)) : ''}</b> · firma provádějící <b>${esc(firmaOf(h) || 'nezadána')}</b>${h.firma ? '' : firmaOf(h) ? ' (z propojených úkolů)' : ''} · patro <b>${esc(patroTxt(h) || 'celý objekt')}</b>${RO() ? '' : ` <button type="button" class="btn" data-hsk="${h.hid}">Skupina, firma, patro…</button>`}</span>
             <span class="hcap">V HMG k ${hd}: hotovo ${h.pct} % · plán k dnešku ${p} % · ${a.src === 'úkoly' ? `skutečnost z ${a.n} propojených úkolů ${a.v} %` : 'zatím bez úkolu, počítá se se stavem z HMG'}</span>
             ${ls.length ? `<ul>${ls.map(t => `<li><span class="pill s-${eff(t)}">${STATUS[eff(t)]}</span> <a href="#" data-t="${esc(t.id)}">${esc(t.title)}</a> · ${esc(ownerTxt(t))} · <a href="#" class="num qpct" data-t="${esc(t.id)}" title="Klikněte a upravte procenta">${Number(t.done)||0} %</a> · ${fmtD(t.start)} – ${fmtD(t.end)}</li>`).join('')}</ul>` : ''}
             ${S.hmgEdit === h.hid ? hmgForm(h, false) : `<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" data-mk="${h.hid}">+ Úkol z této činnosti</button><button type="button" class="btn" data-he="${h.hid}">Upravit činnost HMG</button></div>`}
           </div>`;
         }
-      });
+    };
+    const sumHead = (g, lvl) => {
+      const a = g.agg, fold = S.hmgFold.has(g.key), xs = X(a.start), xe = X(addD(a.end, 1)), dur = Math.max(1, dayDiff(a.start, addD(a.end, 1))), xa = X(addD(a.start, Math.round(dur * a.act / 100)));
+      const dv = a.act - a.plan, cls = dv <= -10 ? 'bad' : dv < 0 ? 'mid' : 'ok', fs = [...new Set(g.hs.map(firmaOf).filter(Boolean).flatMap(f => f.split(/,\s*/)))];
+      const allSel = S.hmgSel && g.hs.every(h => S.hmgSel.has(h.hid));
+      const meta = lvl === 0 && S.hmgBy === 'obj' && g.info ? ` · celkem ${fmtD(g.info.start)} ${g.info.start.slice(2,4)} – ${fmtD(g.info.end)} ${g.info.end.slice(2,4)} · ${g.info.pct} % v HMG` : '';
+      return `<div class="hrow hsum l${lvl}${fold ? ' fold' : ''}" data-gk="${esc(g.key)}" role="button" tabindex="0" aria-expanded="${!fold}" title="${S.hmgSel ? 'Vybrat celou skupinu' : fold ? 'Rozbalit' : 'Sbalit'}">
+        <span class="hid">${S.hmgSel ? `<span class="hck${allSel ? ' on' : ''}" aria-hidden="true">${allSel ? '✓' : ''}</span>` : `<b class="hcar">${fold ? '▸' : '▾'}</b>`}</span>
+        <span class="hname">${lvl === 0 ? g.sw.map(c => `<i class="osw" style="background:${c}"></i>`).join('') : ''}${esc(lvl ? g.label.charAt(0).toUpperCase() + g.label.slice(1) : g.label)}${S.hmgBy === 'skup' && !RO() && !S.hmgSel ? `<button type="button" class="hsk-ed" data-gsk="${esc(g.key)}" title="Přejmenovat, nastavit firmu pro celou ${lvl ? 'podskupinu' : 'skupinu'}">✎</button>` : ''}<small>${g.hs.length} ${g.hs.length === 1 ? 'činnost' : g.hs.length < 5 ? 'činnosti' : 'činností'}${fs.length ? ' · ' + esc(fs.length > 3 ? fs.slice(0, 3).join(', ') + ' a další' : fs.join(', ')) : ''}${meta}</small></span>
+        <span class="hdt mono" style="font-size:12px">${fmtD(a.start)}${a.start.slice(0, 4) !== a.end.slice(0, 4) ? ' ' + a.start.slice(2, 4) : ''} – ${fmtD(a.end)} ${a.end.slice(2,4)}</span>
+        <span class="htl">${grid}<i class="pl gs${cls === 'bad' ? ' late' : ''}" style="left:${xs}%;width:${Math.max(.6, xe - xs)}%"></i><i class="ac gs" style="--oc:${lvl ? '#5b6b7d' : 'var(--ink)'};left:${xs}%;width:${Math.max(0, xa - xs)}%"></i>${tdx}</span>
+        <span class="hn hplan">${a.plan} %</span><span class="hn">${a.act} %</span><span class="dev ${cls}">${dv > 0 ? '+' : ''}${dv} %</span>
+      </div>`;
+    };
+    const HG = hmgGroupsOf(rows, S.hmgBy), gmap = {};
+    HG.forEach(g => { gmap[g.key] = g; (g.subs || []).forEach(x => { gmap[x.key] = x; }); });
+    HG.forEach(g => {
+      html += sumHead(g, 0);
+      if (S.hmgFold.has(g.key)) return;
+      if (g.subs) g.subs.forEach(x => { if (x.flat) { x.hs.forEach(hRow); return; } html += sumHead(x, 1); if (!S.hmgFold.has(x.key)) x.hs.forEach(hRow); });
+      else g.hs.forEach(hRow);
     });
+    if (S.hmgSel) html += `<div class="hselbar"><b>Vybráno ${S.hmgSel.size} ${S.hmgSel.size === 1 ? 'činnost' : S.hmgSel.size > 1 && S.hmgSel.size < 5 ? 'činnosti' : 'činností'}</b><span class="hcap">Klikněte na činnosti (nebo na celou skupinu), které patří k sobě – třeba všechny dveře.</span><span style="flex:1"></span><button type="button" class="btn primary" id="hs-go"${S.hmgSel.size ? '' : ' disabled'}>Sloučit do skupiny…</button><button type="button" class="btn" id="hs-x">Zrušit</button></div>`;
     const unl = TR().filter(t => !fromMeeting(t) && !(t.hmg || []).length);
     if (unl.length) html += `<div class="hconv no-print"><span><b>${unl.length} ${unl.length === 1 ? 'úkol není' : unl.length < 5 ? 'úkoly nejsou' : 'úkolů není'} v harmonogramu.</b> Převedou se jako nové činnosti HMG a dál se budou sledovat v procentech.</span><button type="button" class="btn" id="h-conv">Převést do harmonogramu…</button></div>`;
     const so = UKOLY().filter(t => eff(t) !== 'done' && (!S.owner || hasPerson(t, S.owner)));
@@ -2776,12 +3148,28 @@ body.dfull-on{overflow:hidden}
     $('#h-simple').onclick = () => { S.view = 'list'; store.set('hyb-view', 'list'); S.ukSrc = 'all'; store.set('hyb-uksrc', 'all'); render(); };
     if ($('#h-behind')) $('#h-behind').onclick = () => { S.hstat = S.hstat === 'b10' ? '' : 'b10'; render(); };
     $('#h-all').onchange = e => { S.hmgHideDone = e.target.checked; renderHmg(); };
+    v.querySelectorAll('[data-hby]').forEach(b => b.onclick = () => { S.hmgBy = b.dataset.hby; store.set('hyb-hmgby', S.hmgBy); S.hmgFold.clear(); renderHmg(); });
+    $('#hf-patro').onchange = e => { S.hmgPatro = e.target.value; renderHmg(); };
+    $('#hf-skup').onchange = e => { S.hmgSkup = e.target.value; renderHmg(); };
+    $('#hf-sort').onchange = e => { S.hmgSort = e.target.value; store.set('hyb-hmgsort', S.hmgSort); renderHmg(); };
+    if ($('#hf-clr')) $('#hf-clr').onclick = () => { S.hmgPatro = S.hmgSkup = ''; renderHmg(); };
+    $('#h-inv').onclick = () => hmgInvestor();
+    $('#h-sel').onclick = () => { if (S.hmgSel) S.hmgSel = null; else { S.hmgSel = new Set(); if (S.hmgBy === 'obj') { S.hmgBy = 'skup'; store.set('hyb-hmgby', 'skup'); } toast('Klikněte na činnosti, které chcete sloučit do jedné skupiny.'); } renderHmg(); };
+    if ($('#hs-x')) { $('#hs-x').onclick = () => { S.hmgSel = null; renderHmg(); }; $('#hs-go').onclick = () => hmgSkupDialog([...S.hmgSel], 'Sloučit do skupiny'); }
+    v.querySelectorAll('.hsum[data-gk]').forEach(el => { const go = e => { if (e.target.closest('[data-gsk]')) return; const g = gmap[el.dataset.gk]; if (!g) return;
+        if (S.hmgSel) { const all = g.hs.every(h => S.hmgSel.has(h.hid)); g.hs.forEach(h => all ? S.hmgSel.delete(h.hid) : S.hmgSel.add(h.hid)); }
+        else S.hmgFold.has(g.key) ? S.hmgFold.delete(g.key) : S.hmgFold.add(g.key);
+        renderHmg(); };
+      el.onclick = go; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(e); } }; });
+    v.querySelectorAll('[data-gsk]').forEach(b => b.onclick = e => { e.stopPropagation(); const g = gmap[b.dataset.gsk]; if (g) hmgSkupDialog(g.hs.map(h => h.hid), b.closest('.l1') ? 'Upravit podskupinu' : 'Upravit skupinu'); });
+    v.querySelectorAll('[data-hsk]').forEach(b => b.onclick = () => hmgSkupDialog([Number(b.dataset.hsk)]));
     v.querySelectorAll('[data-hr]').forEach(b => b.onclick = () => { S.hmgRange = b.dataset.hr; S.hmgFrom = null; store.set('hyb-hmgrange', S.hmgRange); renderHmg(); });
     if ($('#hr-prev')) { $('#hr-prev').onclick = () => hmgShift(-1); $('#hr-next').onclick = () => hmgShift(1); $('#hr-today').onclick = () => { S.hmgFrom = null; renderHmg(); }; }
     $('#h-new').onclick = () => { S.hmgEdit = 'new'; renderHmg(); $('#hf-name') && $('#hf-name').focus(); };
     const hmgQuick = (id, cell) => { const h = D.hmg.find(x => x.hid === id), ls = linkedTasks(h);
       if (ls.length === 1) quickDone(ls[0].id, cell); else if (!ls.length) quickHmg(h, cell); };
     v.querySelectorAll('.hrow[data-h]').forEach(b => b.onclick = e => { const id = Number(b.dataset.h);
+      if (S.hmgSel) { S.hmgSel.has(id) ? S.hmgSel.delete(id) : S.hmgSel.add(id); renderHmg(); return; }
       const cell = e.target.closest('.hact');
       if (cell) { hmgQuick(id, cell); return; }
       const opening = !S.hmgOpen.has(id);
@@ -2801,6 +3189,11 @@ body.dfull-on{overflow:hidden}
       hf.onsubmit = e => {
         e.preventDefault();
         const x = {hid: Number($('#hf-hid').value), name: $('#hf-name').value.trim(), obj: $('#hf-obj').value.trim(), owner: $('#hf-owner').value.trim(), start: $('#hf-start').value, end: $('#hf-end').value, pct: Math.max(0, Math.min(100, Number($('#hf-pct').value) || 0))};
+        // 5.04: skupina, podskupina, firma provádějící, patro (prázdné = navrhne se podle názvu / úkolů)
+        { const sk = $('#hf-skup').value.trim(), po = $('#hf-pod').value.trim(), fi = $('#hf-firma').value.trim(), pa = $('#hf-patro').value.trim();
+          x.skup = sk && sk !== skupAuto(x) ? sk : sk && po ? sk : ''; x.pod = x.skup ? po : (po && po !== podAuto(x) ? po : ''); if (!x.skup && x.pod) x.skup = skupAuto(x);
+          x.firma = fi; x.patro = pa;
+          ['skup', 'pod', 'firma', 'patro'].forEach(k => { if (!x[k]) x[k] = undefined; }); }
         if (!x.hid || !x.name || !x.start || !x.end) { toast('Vyplňte ID, název a termíny.'); return; }
         if (x.end < x.start) { toast('Dokončení je dřív než zahájení.'); return; }
         const orig = isNew ? null : D.hmg.find(h => h.hid === Number(hf.dataset.hid));
@@ -2831,6 +3224,10 @@ body.dfull-on{overflow:hidden}
       <div class="fld"><label for="hf-owner">Odpovídá</label><input id="hf-owner" value="${esc(h.owner)}"></div>
       <div class="fld"><label for="hf-hid">ID v HMG</label><input id="hf-hid" type="number" min="1" value="${h.hid}"></div>
       <div class="fld"><label for="hf-pct">Hotovo %</label><input id="hf-pct" type="number" min="0" max="100" value="${Number(h.pct)||0}"></div>
+      <div class="fld"><label for="hf-skup">Skupina</label><input id="hf-skup" list="hf-skupl" value="${esc(isNew ? '' : skupOf(h))}" placeholder="např. Dveře"><datalist id="hf-skupl">${hmgSkupVse().map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
+      <div class="fld"><label for="hf-pod">Podskupina</label><input id="hf-pod" list="hf-podl" value="${esc(isNew ? '' : podOf(h))}" placeholder="např. repase"><datalist id="hf-podl">${[...new Set(D.hmg.map(podOf).filter(Boolean))].map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
+      <div class="fld"><label for="hf-firma">Firma provádějící</label><select id="hf-firma"><option value="">— podle úkolů —</option>${(() => { const c = String(h.firma || '').trim(), n = firmyJmena(); if (c && !n.some(x => foldName(x) === foldName(c))) n.unshift(c); return n.map(x => `<option value="${esc(x)}"${c && foldName(x) === foldName(c) ? ' selected' : ''}>${esc(x)}</option>`).join(''); })()}</select></div>
+      <div class="fld"><label for="hf-patro">Patro</label><input id="hf-patro" list="sk-patral2" value="${esc(h.patro || '')}" placeholder="${esc(patroAuto(h) || 'celý objekt')}"><datalist id="sk-patral2">${PATRA.map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
       <div class="fld"><label for="hf-start">Zahájení</label><input id="hf-start" type="date" value="${esc(h.start)}"></div>
       <div class="fld"><label for="hf-end">Dokončení</label><input id="hf-end" type="date" value="${esc(h.end)}"></div>
       <div class="acts"><button class="btn primary" type="submit">${isNew ? 'Přidat do HMG' : 'Uložit'}</button><button class="btn" type="button" id="hf-cancel">Zrušit</button>${isNew ? '' : '<span style="flex:1"></span><button class="btn danger" type="button" id="hf-del">Smazat z HMG</button>'}</div>
