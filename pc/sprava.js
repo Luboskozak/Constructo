@@ -97,10 +97,12 @@ const CXSprava = (() => {
     };
     const adm = ADMINS(P), zh = P.company || '';
     tym(P).forEach(n => { const p = osoba(P, n), c = najdi('k:' + n, n, p.company || zh); out.push({skup: 'kolegove', zdroj: 'k:' + n, jmeno: n, firma: p.company || zh, email: emaily(p).map(x => x.a)[0] || '', tel: p.phone || '', pozice: p.role || '', role: (c && c.role) || (adm.includes(n) ? 'spravce' : 'vedeni')}); });
+    const kolF = new Set(tym(P).map(fold));
     (Array.isArray(P.firmy) ? P.firmy : []).filter(f => f && f.id).sort((a, b) => String(a.firma).localeCompare(String(b.firma), 'cs')).forEach(f => {
       const ks = window.CXFirmy ? CXFirmy.kontakty(f) : (f.kontakty || []);
       if (!ks.length) { const c = najdi('f:' + f.id, '', f.firma); out.push({skup: 'dod', zdroj: 'f:' + f.id, jmeno: '', firma: f.firma, email: f.email || '', tel: f.tel || '', pozice: 'firma', role: (c && c.role) || 'subdodavatel'}); return; }
-      ks.forEach(k => { const z = 'f:' + f.id + ':' + k.id, c = najdi(z, k.jmeno, f.firma); out.push({skup: 'dod', zdroj: z, jmeno: k.jmeno || '', firma: f.firma, email: k.email || '', tel: k.tel || '', pozice: k.funkce || '', role: (c && c.role) || 'subdodavatel'}); });
+      ks.forEach(k => { if (k.jmeno && kolF.has(fold(k.jmeno))) return; // kolega z týmu už je nahoře v Kolegové – nezdvojovat
+        const z = 'f:' + f.id + ':' + k.id, c = najdi(z, k.jmeno, f.firma); out.push({skup: 'dod', zdroj: z, jmeno: k.jmeno || '', firma: f.firma, email: k.email || '', tel: k.tel || '', pozice: k.funkce || '', role: (c && c.role) || 'subdodavatel'}); });
     });
     (Array.isArray(P.prijemci) ? P.prijemci : []).filter(x => x && x.id).forEach(x => { const c = najdi('p:' + x.id, x.jmeno, x.firma); out.push({skup: 'obj', zdroj: 'p:' + x.id, jmeno: x.jmeno || '', firma: x.firma || '', email: x.email || '', tel: x.tel || '', pozice: x.kdo || '', role: (c && c.role) || 'dozor'}); });
     cl.filter(c => !vzaty.has(c) && (c.zdroj === 'ruc' || !c.zdroj) && (c.jmeno || c.firma)).forEach(c => out.push({skup: 'ruc', zdroj: 'ruc', id: c.id, jmeno: c.jmeno || '', firma: c.firma || '', email: c.email || '', tel: c.tel || '', pozice: c.pozice || '', role: c.role || 'subdodavatel'}));
@@ -357,7 +359,7 @@ const CXSprava = (() => {
             <td>${A && !ROLE_DEF.some(d => d.id === r.id) ? `<button type="button" class="cxs-b del" data-rdel="${i}">Odebrat</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>
           ${A ? '<div class="cxs-foot"><span class="hint">Management = smí do počítačové aplikace vedení. Deník – svůj = deník vlastní firmy, Deník – ostatních = deníky ostatních firem (Nahlíží = čte, Zapisuje = píše). Po uložení dostanou kolegové s danou rolí tato oprávnění (u jednotlivce je jde změnit v Upravit).</span><button type="button" class="cxs-b pri" id="cxs-rsave">Uložit role</button></div>' : ''}</section>
         <div id="cxs-kol"></div>
-        <section class="cxs-card"><div class="cxs-h"><b>Lidé z firem a objednatele</b><span>pracovníci firem, Investor, TDS, BOZP, Architekt… – u každého vyberte roli</span><span class="sp"></span>${A && window.CXDochazka && CXDochazka.pozvatDoStavby ? '<button type="button" class="cxs-b" id="cxs-poz">Pozvat do stavby</button>' : ''}${A ? '<button type="button" class="cxs-b add" id="cxs-ladd">+ Přidat osobu</button>' : ''}</div>
+        <section class="cxs-card"><div class="cxs-h"><b>Osoby firmy na projektu</b><span>pracovníci firem, Investor, TDS, BOZP, Architekt… – u každého vyberte roli</span><span class="sp"></span>${A && window.CXDochazka && CXDochazka.pozvatDoStavby ? '<button type="button" class="cxs-b" id="cxs-poz">Pozvat do stavby</button>' : ''}${A ? '<button type="button" class="cxs-b add" id="cxs-ladd">+ Přidat osobu</button>' : ''}</div>
           ${SK.map(([k, nm]) => { const xs = L.map((x, i) => [x, i]).filter(([x]) => x.skup === k); return xs.length || k !== 'ruc' ? `<div class="cxs-sub">${nm} <span class="hint" style="display:inline;font-weight:400">(${xs.length})</span></div>${xs.length ? xs.map(([x, i]) => radek(x, i)).join('') : '<div class="cxs-empty">Nikdo.</div>'}` : ''; }).join('')}
         </section>
         <p class="hint">Kontakty pracovníků firem a objednatele se upravují ve Firmy / osoby na projektu – sem se propíšou samy.</p>`;
