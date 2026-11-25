@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-JFBUNVzOKnZs4IzEsocZg7S1/rjINUh0KoMp0ctVzQM='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-Zo+55fNt3EUSMB++tvlLi3wVIqXKOBseRGc/9zadD/A='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -974,6 +974,10 @@ a.btn{text-decoration:none;color:var(--ink);display:inline-flex;align-items:cent
 /* 4.26 dílčí úkoly v okně Úkol */
 .esub .lbl{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 #e-subs{display:flex;flex-direction:column;gap:8px}
+.ppk{position:relative}.ppk-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:6px;text-align:left;padding:8px 10px;border:1px solid var(--line,#ccc);border-radius:8px;background:var(--card,#fff);font:inherit;cursor:pointer;min-height:38px}.ppk-v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ppk-v i{font-style:normal;color:var(--muted)}
+.ppk-pan{position:absolute;z-index:60;top:calc(100% + 4px);left:0;min-width:250px;background:var(--card,#fff);border:1px solid var(--line,#ccc);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:10px;display:flex;flex-direction:column;gap:8px}.ppk-pan[hidden]{display:none}
+.ppk-top,.ppk-add,.ppk-foot{display:flex;gap:6px;align-items:center}.ppk-top .btn,.ppk-add .btn,.ppk-foot .btn{padding:4px 10px;font-size:12.5px}.ppk-add input{flex:1;min-width:0;padding:5px 8px}.ppk-foot{justify-content:space-between}
+.ppk-list{max-height:240px;overflow:auto;display:flex;flex-direction:column}.ppk-r{display:flex;align-items:center;justify-content:space-between;padding:2px 4px;border-radius:6px}.ppk-r:hover{background:var(--soft,#f1efe9)}.ppk .ppk-r label{flex:1;display:flex!important;flex-direction:row!important;gap:8px;align-items:center;cursor:pointer;padding:3px 0;margin:0;font:14px var(--f-sans,inherit)!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink,#111)!important;white-space:nowrap}.ppk .ppk-r input[type=checkbox]{width:auto!important;min-height:0;margin:0;flex:none}.ppk .ppk-add input{width:auto}.ppk-del{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 6px}.ppk-del:hover{color:var(--bad,#c33)}
 .emini{border:1px solid var(--line,#ddd);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--card,#fff)}
 .emh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.emh span{font:500 10.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex-basis:100%}.emh b{font-size:18px}.emh em{font-style:normal;color:var(--muted);font-size:13px}
 .emg{display:flex;flex-direction:column;gap:3px;font-size:12px}.emg-sc,.emg-t{position:relative;height:16px}.emg-sc{margin-left:118px;margin-right:134px;height:14px}.emg-sc i,.emg-t i{position:absolute;top:0;bottom:0;width:1px;background:var(--soft,#eee)}.emg-sc span{position:absolute;z-index:1;background:var(--card,#fff);padding-right:3px;left:3px;top:0;font:500 9.5px var(--f-mono);color:var(--muted);white-space:nowrap}
@@ -1416,7 +1420,7 @@ body.dfull-on{overflow:hidden}
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.09';
+  const APP_VERSION = '5.10';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -2857,6 +2861,37 @@ body.dfull-on{overflow:hidden}
   const podOf = h => { if (String(h.skup || '').trim() || String(h.pod || '').trim()) return String(h.pod || '').trim(); const x = podAuto(h); return x && podCnt(skupAuto(h) + '›' + foldName(x)) >= 2 ? x : ''; };
   const firmaOf = h => { const f = String(h.firma || '').trim(); if (f) return f; return [...new Set(linkedTasks(h).map(t => String(t.supplier || '').trim()).filter(Boolean))].join(', '); };
   const PATRA = ['2. PP', '1. PP', '1. NP', '2. NP', '3. NP', '4. NP', '5. NP', '6. NP', '7. NP', 'Podkroví', 'Střecha'];
+  // 5.10 (Luboš 25. 11.): společný seznam podlaží stavby – jde přidávat a odebírat, výběr víc pater najednou + Vybrat vše
+  const patraSeznam = () => { const P = D.project || {}; return Array.isArray(P.patra) && P.patra.length ? P.patra.slice() : PATRA.slice(); };
+  function patroPicker(id, val, ph) {
+    return `<div class="ppk" data-ppk="${id}"><input type="hidden" id="${id}" value="${esc(val || '')}"><button type="button" class="ppk-btn" aria-haspopup="true"><span class="ppk-v"></span><b>▾</b></button><div class="ppk-pan" hidden data-ph="${esc(ph || 'celý objekt')}"></div></div>`;
+  }
+  function patroPickerBind(root) {
+    (root || document).querySelectorAll('.ppk').forEach(w => {
+      const inp = w.querySelector('input[type=hidden]'), btn = w.querySelector('.ppk-btn'), pan = w.querySelector('.ppk-pan'), ph = pan.dataset.ph;
+      const vyb = () => String(inp.value || '').split(/\s*[,;]\s*/).filter(Boolean);
+      const show = () => { const v = vyb(); w.querySelector('.ppk-v').innerHTML = v.length ? esc(v.join(', ')) : `<i>${esc(ph)}</i>`; };
+      const draw = () => {
+        const v = vyb(), list = patraSeznam(), extra = v.filter(x => !list.includes(x)), all = [...list, ...extra];
+        pan.innerHTML = `<div class="ppk-top"><button type="button" class="btn" data-pa="all">Vybrat vše</button><button type="button" class="btn" data-pa="none">Zrušit výběr</button></div>
+          <div class="ppk-list">${all.map(x => `<div class="ppk-r"><label><input type="checkbox" value="${esc(x)}"${v.includes(x) ? ' checked' : ''}> ${esc(x)}</label>${list.includes(x) && !RO() ? `<button type="button" class="ppk-del" data-pdel="${esc(x)}" title="Odebrat podlaží ze seznamu stavby">×</button>` : ''}</div>`).join('')}</div>
+          ${RO() ? '' : `<div class="ppk-add"><input placeholder="Nové podlaží, např. 8. NP" aria-label="Nové podlaží"><button type="button" class="btn" data-pa="add">+ Přidat</button></div>`}
+          <div class="ppk-foot"><span class="hcap">Nic nezaškrtnuto = ${esc(ph)}</span><button type="button" class="btn primary" data-pa="ok">Hotovo</button></div>`;
+        const put = () => { inp.value = all.filter(x => pan.querySelector(`input[type=checkbox][value="${CSS.escape(x)}"]`)?.checked).join(', '); show(); };
+        pan.querySelectorAll('input[type=checkbox]').forEach(c => c.onchange = put);
+        pan.querySelectorAll('[data-pa]').forEach(b => b.onclick = e => { e.preventDefault(); const a = b.dataset.pa;
+          if (a === 'all' || a === 'none') { pan.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = a === 'all'); put(); }
+          else if (a === 'ok') { pan.hidden = true; }
+          else if (a === 'add') { const ni = pan.querySelector('.ppk-add input'), n = ni.value.trim().replace(/^(\d)\s*\.?\s*(np|pp)$/i, (m, d, k) => `${d}. ${k.toUpperCase()}`); if (!n) { ni.focus(); return; }
+            const l = patraSeznam(); if (!l.some(x => foldName(x) === foldName(n))) { l.push(n); l.sort((a, b) => patroRank(a) - patroRank(b)); D.project.patra = l; persist(); markDirty(); toast(`Podlaží ${n} přidáno do seznamu stavby`); }
+            inp.value = [...vyb(), n].filter((x, i, a) => a.indexOf(x) === i).join(', '); show(); draw(); } });
+        pan.querySelectorAll('[data-pdel]').forEach(b => b.onclick = e => { e.preventDefault(); const n = b.dataset.pdel; D.project.patra = patraSeznam().filter(x => x !== n); persist(); markDirty(); toast(`Podlaží ${n} odebráno ze seznamu (u činností zůstává)`); draw(); });
+        const ni = pan.querySelector('.ppk-add input'); if (ni) ni.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); pan.querySelector('[data-pa=add]').click(); } };
+      };
+      show();
+      btn.onclick = e => { e.preventDefault(); if (pan.hidden) { draw(); pan.hidden = false; } else pan.hidden = true; };
+    });
+  }
   const patroAuto = h => { const m = String(h.name || '').match(/(\d)\.\s*(?:(?:[–-]|a|až)\s*(\d)\.\s*)?(NP|PP)\b/i); if (!m) return ''; const a = m[1], b = m[2], k = m[3].toUpperCase(); return b ? `${Math.min(a, b)}.–${Math.max(a, b)}. ${k}` : `${a}. ${k}`; };
   const patroTxt = h => String(h.patro || '').trim() || patroAuto(h);
   // seznam pater, kterých se činnost týká (pro filtr): „3.–6. NP“ → 3. NP … 6. NP; „1. PP, 1. NP“ → oba
@@ -2865,7 +2900,7 @@ body.dfull-on{overflow:hidden}
       if (r) { const k = r[3].toUpperCase(); for (let i = Math.min(r[1], r[2]); i <= Math.max(r[1], r[2]); i++) out.push(`${i}. ${k}`); }
       else { const s = p.match(/(\d)\.\s*(NP|PP)/i); out.push(s ? `${s[1]}. ${s[2].toUpperCase()}` : p); } });
     return [...new Set(out)]; };
-  const patroRank = p => { const i = PATRA.indexOf(p); if (i >= 0) return i; const m = String(p).match(/(\d)/); return m ? (/PP/i.test(p) ? 2 - m[1] : 1 + Number(m[1])) : 98; };
+  const patroRank = p => { const i = PATRA.indexOf(p) >= 0 ? PATRA.indexOf(p) : -1; if (i >= 0) return i; const m = String(p).match(/(\d)/); return m ? (/PP/i.test(p) ? 1.5 - m[1] : .5 + Number(m[1])) : 98; };
   const hmgPatraVse = () => [...new Set(D.hmg.flatMap(patraOf))].sort((a, b) => patroRank(a) - patroRank(b));
   const hmgSkupVse = () => [...new Set(D.hmg.filter(h => !h.par).map(skupOf))].sort((a, b) => a.localeCompare(b, 'cs'));
   const firmyJmena = () => [...new Map(firmyList().map(f => String(f.firma || '').trim()).filter(Boolean).map(n => [foldName(n), n])).values()].sort((a, b) => a.localeCompare(b, 'cs'));
@@ -3056,7 +3091,7 @@ body.dfull-on{overflow:hidden}
         <label for="sk-skup">Skupina</label><input id="sk-skup" list="sk-skupl" value="${esc(sk ?? '')}" placeholder="${sk === null ? 'různé – ponechat' : 'např. Dveře'}"><datalist id="sk-skupl">${hmgSkupVse().map(s => `<option value="${esc(s)}">`).join('')}</datalist>
         <label for="sk-pod">Podskupina</label><input id="sk-pod" list="sk-podl" value="${esc(pd0 ?? '')}" placeholder="${pd0 === null ? 'různé – ponechat' : 'např. repase, ocelové, masivní, repliky'}"><datalist id="sk-podl">${podyVse.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
         <label for="sk-firma">Firma provádějící</label><span style="display:flex;gap:6px"><select id="sk-firma" style="flex:1;min-width:0">${opts()}</select><button type="button" class="btn" id="sk-nova" style="white-space:nowrap">+ Nová firma</button></span>
-        <label for="sk-patro">Patro</label><input id="sk-patro" list="sk-patral" value="${esc(pa ?? '')}" placeholder="${pa === null ? 'různé – ponechat' : patroAuto(hs[0]) ? 'podle názvu: ' + patroAuto(hs[0]) : 'např. 1. NP nebo 3.–6. NP (prázdné = celý objekt)'}"><datalist id="sk-patral">${PATRA.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+        <label for="sk-patro">Patro</label>${patroPicker('sk-patro', pa ?? '', pa === null ? 'různé – ponechat' : patroAuto(hs[0]) ? 'podle názvu: ' + patroAuto(hs[0]) : 'celý objekt')}
       </div>
       <p class="hcap" style="margin:10px 0 0">Firma se ukáže v Harmonogramu i v Podrobném harmonogramu a propíše se jako dodavatel do propojených úkolů, které ho ještě nemají. Prázdná skupina = navrhne se sama podle názvu činnosti.</p>`;
     confirmModal(title || (hs.length > 1 ? 'Sloučit do skupiny' : 'Skupina, firma, patro'), body, 'Uložit', () => {
@@ -3073,6 +3108,7 @@ body.dfull-on{overflow:hidden}
       if (S.hmgSel) S.hmgSel = null;
       commit(); toast(`Uloženo u ${hs.length} ${hs.length === 1 ? 'činnosti' : 'činností'}${nT ? ` · dodavatel doplněn do ${nT} úkolů` : ''}`);
     });
+    patroPickerBind($('#overlay'));
     const nb = $('#sk-nova');
     if (nb) nb.onclick = () => {
       CXFirmy.okna({data: () => ({firmy: firmyList(), prijemci: prijemciList()}), toast, ares: aresNajdi, aresHledej: aresHledejSkript,
@@ -3367,6 +3403,7 @@ body.dfull-on{overflow:hidden}
       openEditor(null, {title: h.name, owner: (h.owner || '').split(/\s*\/\s*/)[0] || '', obj, start: h.start, end: h.end, done: actualOf(h).v, status: actualOf(h).v > 0 ? 'doing' : 'todo', hmg: [String(h.hid)], note: /^Dvůr/.test(h.obj) ? h.obj : ''});
     });
     const hf = $('#hf');
+    if (hf) patroPickerBind(hf);
     if (hf) {
       const isNew = hf.dataset.new === '1';
       $('#hf-cancel').onclick = () => { S.hmgEdit = null; S.hmgNewPreset = null; S.pendingRender ? flushRender() : renderHmg(); };
@@ -3413,7 +3450,7 @@ body.dfull-on{overflow:hidden}
       <div class="fld"><label for="hf-skup">Skupina</label><input id="hf-skup" list="hf-skupl" value="${esc(isNew ? h.skup || '' : skupOf(h))}" placeholder="např. Dveře"><datalist id="hf-skupl">${hmgSkupVse().map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
       <div class="fld"><label for="hf-pod">Podskupina</label><input id="hf-pod" list="hf-podl" value="${esc(isNew ? h.pod || '' : podOf(h))}" placeholder="např. repase"><datalist id="hf-podl">${[...new Set(D.hmg.map(podOf).filter(Boolean))].map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
       <div class="fld"><label for="hf-firma">Firma provádějící</label><select id="hf-firma"><option value="">— podle úkolů —</option>${(() => { const c = String(h.firma || '').trim(), n = firmyJmena(); if (c && !n.some(x => foldName(x) === foldName(c))) n.unshift(c); return n.map(x => `<option value="${esc(x)}"${c && foldName(x) === foldName(c) ? ' selected' : ''}>${esc(x)}</option>`).join(''); })()}</select></div>
-      <div class="fld"><label for="hf-patro">Patro</label><input id="hf-patro" list="sk-patral2" value="${esc(h.patro || '')}" placeholder="${esc(patroAuto(h) || 'celý objekt')}"><datalist id="sk-patral2">${PATRA.map(o => `<option value="${esc(o)}">`).join('')}</datalist></div>
+      <div class="fld"><label for="hf-patro">Patro</label>${patroPicker('hf-patro', h.patro || '', patroAuto(h) ? 'podle názvu: ' + patroAuto(h) : 'celý objekt')}</div>
       <div class="fld"><label for="hf-start">Zahájení</label><input id="hf-start" type="date" value="${esc(h.start)}"></div>
       <div class="fld"><label for="hf-end">Dokončení</label><input id="hf-end" type="date" value="${esc(h.end)}"></div>
       <div class="acts"><button class="btn primary" type="submit">${isNew ? 'Přidat do HMG' : 'Uložit'}</button><button class="btn" type="button" id="hf-cancel">Zrušit</button>${isNew ? '' : '<span style="flex:1"></span><button class="btn danger" type="button" id="hf-del">Smazat z HMG</button>'}</div>
