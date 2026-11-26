@@ -1241,6 +1241,8 @@
     },
     vykresli(el) { EL = el; vykresli(); },
     nahraj(soubory) { return prijmi(soubory || []); },   // [{file, cesta: ['Složka', 'Podsložka']}] do právě otevřené složky
+    // 5.13: nahrání do pevné složky od kořene (Předání díla → ČSN), nezávisle na tom, co je v Dokumentaci otevřené
+    nahrajDo(koren, soubory) { const s0 = S.slozka; S.slozka = ''; try { return prijmi((soubory || []).map(x => ({file: x.file, cesta: [...(koren || []), ...(x.cesta || [])]}))); } finally { S.slozka = s0; } },
     obnov() { if (EL && EL.isConnected && !document.querySelector('.dkv-out')) { const q = EL.querySelector('.dk-q'), f = q && document.activeElement === q; if (!f) vykresli(); } prekresliFrontu(); },
     otevri(id) { const r = najdi(id); if (r) otevri(r); },
     zavri,
