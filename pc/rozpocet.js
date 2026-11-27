@@ -174,6 +174,9 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .pp-fa{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}.pp-fl{max-height:300px;overflow:auto;border:1px solid var(--line,#ddd);border-radius:10px;padding:4px;background:#fff}.pp-fr{display:flex;gap:8px;align-items:center;padding:5px 6px;border-bottom:1px solid #f0f0f0}.pp-fr label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer;min-width:0}.pp-fr label input{width:18px;height:18px;flex:none}.pp-fr label small{display:block;color:var(--muted);font-size:12px}.pp-fr input[type=email]{width:240px;font-size:13.5px}
 .pp-vyh{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:14px;margin-bottom:12px}.pp-win{background:#1f8a4c;color:#fff;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:3px}.pp-win b{font-size:22px}.pp-win span{font-size:20px;font-weight:700}.pp-win em{font-style:normal;font-size:13px;opacity:.9}
 .pp-por{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:4px;font-size:14px}.pp-por>div{display:grid;grid-template-columns:24px 1fr auto;gap:6px;align-items:baseline}.pp-por>div small{grid-column:2/-1}.pp-km{border-top:1px solid #eee;padding-top:5px;margin-top:3px}.pp-min{background:#dff3e6;font-weight:700;color:#14623a}.pp-vt tfoot td{border-top:2px solid #222;background:#fafafa}
+.pp-vf{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:14px;margin-bottom:8px}.pp-vf label{display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;border:1px solid #ddd;border-radius:8px;padding:5px 10px}.pp-vf input{width:18px;height:18px}.pp-vf small{color:var(--muted)}
+.pp-srov{display:block;background:#fff7e0;border:1px solid #f0d58a;border-radius:10px;padding:9px 12px;font-size:14px;margin-bottom:10px}.pp-gr{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:#fff}.pp-graf{width:100%;height:auto;display:block}.pp-leg{display:flex;gap:18px;font-size:12.5px;color:var(--muted);padding:2px 4px}.pp-leg i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.pp-por2{margin-bottom:12px;padding:0;overflow:auto}.pp-por2 table{width:100%}.pp-1 td{background:#dff3e6}.pp-nesr td{background:#f1f1ee;color:#8a8a85}.pp-nesr td .pp-min,.pp-nesr .pp-min{background:#f1f1ee;color:#8a8a85;font-weight:400}
 @media (max-width:900px){.pp,.pp-2,.pp-vyh{grid-template-columns:1fr}}
 .fk2-vel{font-size:16px!important;padding:10px 20px!important;font-weight:800}
 .fk2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
@@ -2457,7 +2460,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       <div class="pp-info"><span><b>${nf0.format(rad.length)}</b> položek</span><span>vytvořil(a) ${esc(P.kdo || '')} ${esc(new Date(P.kdy).toLocaleDateString('cs-CZ'))}</span>${P.termin ? `<span>nabídky do <b>${esc(datCz(P.termin))}</b></span>` : ''}${P.pozn ? `<span>${esc(P.pozn)}</span>` : ''}</div>
       <div class="pp-akce"><button type="button" class="rz-btn" data-tisk>🖨 Tisk</button><button type="button" class="rz-btn" data-xls>⬇ Uložit Excel</button><button type="button" class="rz-btn zl fk2-big" data-posl>📨 Odeslat firmám…</button><button type="button" class="rz-btn fk2-big" data-nab>⬆ Nahrát naceněnou nabídku…</button>${nab.length ? `<button type="button" class="rz-btn ze fk2-big" data-vyh>📊 Vyhodnotit nabídky (${nab.length})</button>` : ''}</div>
       <div class="pp-2"><section><h4>Odesláno firmám</h4>${ods.length ? `<table class="pp-t"><tbody>${ods.map(o => `<tr><td><b>${esc(o.firma)}</b><br><small>${esc(o.email)}</small></td><td>${esc(new Date(o.kdy).toLocaleString('cs-CZ'))}<br><small>${esc(o.kdo || '')}</small></td><td>${nab.some(n => n.firma === o.firma) ? '<b style="color:#1f8a4c">✓ nabídka přišla</b>' : '<span style="color:var(--muted)">čeká na nabídku</span>'}</td></tr>`).join('')}</tbody></table>` : '<p class="hint">Zatím neodesláno.</p>'}</section>
-      <section><h4>Naceněné nabídky</h4>${nab.length ? `<table class="pp-t"><tbody>${nab.map(n => { const s = souhrnNab(P, n); return `<tr><td><b>${esc(n.firma)}</b><br><small>${esc(n.soubor || '')}</small></td><td class="n"><b>${kc0(s.celkem)}</b><br><small>${s.chybi ? `<span style="color:var(--bad)">chybí ceny u ${s.chybi} pol.</span>` : 'všechny položky naceněné'}</small></td><td><button type="button" class="rz-btn mini del" data-nsm="${esc(n.id)}">✕</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="hint">Až firma pošle naceněný Excel, nahrajte ho tlačítkem ⬆ Nahrát naceněnou nabídku. Constructo ho samo přiřadí k položkám.</p>'}</section></div>
+      <section><h4>Naceněné nabídky</h4>${nab.length ? `<table class="pp-t"><tbody>${nab.map(n => { const s = souhrnNab(P, n); return `<tr><td><b>${esc(n.firma)}</b><br><small>${esc(n.soubor || '')}</small></td><td class="n"><b>${kc0(s.celkem)}</b><br><small>${s.chybi ? `<span style="color:var(--bad)">nenacenil ${s.chybi} z ${rad.length} pol. – srovnám jen srovnatelné</span>` : 'všechny položky naceněné'}</small></td><td><button type="button" class="rz-btn mini del" data-nsm="${esc(n.id)}">✕</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="hint">Až firma pošle naceněný Excel, nahrajte ho tlačítkem ⬆ Nahrát naceněnou nabídku. Constructo ho samo přiřadí k položkám.</p>'}</section></div>
       <h4 style="margin:14px 0 6px">Slepý rozpočet</h4><div class="pp-nah">${nahledPopHtml(rad, 200)}</div></div>`,
       `<button type="button" class="rz-btn del" data-smaz>Smazat poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-x2>Zavřít</button>`, 'siroky');
     ov.querySelector('[data-x2]').onclick = () => ov.zavri();
@@ -2580,34 +2583,90 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     return {c, n};
   }
   function souhrnNab(P, nb) { let celkem = 0, chybi = 0; (P.pol || []).forEach(([rid, mn]) => { const jc = nb.ceny && nb.ceny[rid]; if (jc == null) { chybi++; return; } celkem += (Number(mn) || 0) * jc; }); return {celkem: Math.round(celkem * 100) / 100, chybi}; }
+  // 5.20: srovnávat srovnatelné – firmy nenacení vše; porovnání jen na položkách, které nacenily všechny vybrané firmy
+  function porovnani(P, vyb) {
+    const rad = polPop(P), ids = rad.map(x => x.r.id);
+    const spol = rad.filter(x => vyb.every(n => n.ceny && n.ceny[x.r.id] != null));
+    const spolS = new Set(spol.map(x => x.r.id));
+    let rozpSpol = 0; spol.forEach(x => { rozpSpol += (x.r.jc || 0) * (x.mn || 0); });
+    const sm = vyb.map(n => {
+      let srov = 0, celkem = 0, nac = 0, odhad = 0;
+      rad.forEach(x => {
+        const jc = n.ceny && n.ceny[x.r.id], mn = x.mn || 0;
+        if (jc != null) { nac++; celkem += jc * mn; odhad += jc * mn; if (spolS.has(x.r.id)) srov += jc * mn; return; }
+        // chybějící cenu odhadnout: medián ostatních firem, jinak cena z rozpočtu
+        const ost = vyb.map(m => m.ceny && m.ceny[x.r.id]).filter(v => v != null).sort((a, b) => a - b);
+        const med = ost.length ? (ost.length % 2 ? ost[(ost.length - 1) / 2] : (ost[ost.length / 2 - 1] + ost[ost.length / 2]) / 2) : (x.r.jc || 0);
+        odhad += med * mn;
+      });
+      const r = v => Math.round(v * 100) / 100;
+      return {n, srov: r(srov), celkem: r(celkem), odhad: r(odhad), nac, chybi: ids.length - nac, pok: ids.length ? nac / ids.length : 0};
+    });
+    const podle = spol.length ? 'srov' : 'odhad';
+    sm.sort((a, b) => a[podle] - b[podle]);
+    return {rad, spol, spolS, rozpSpol: Math.round(rozpSpol), sm, podle};
+  }
+  function grafNabidek(V) {
+    const k = V.podle, max = Math.max(1, ...V.sm.map(x => x[k]), k === 'srov' ? V.rozpSpol : 0), W = 860, rh = 46, top = 8;
+    const rows = V.sm.map((x, i) => ({t: x.n.firma, v: x[k], pok: x.pok, nej: i === 0})).concat(k === 'srov' && V.rozpSpol ? [{t: 'Ceny z rozpočtu', v: V.rozpSpol, rozp: true}] : []);
+    const H = top + rows.length * rh + 4, L = 200, BW = W - L - 150;
+    return `<svg class="pp-graf" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf porovnání nabídek">${rows.map((r, i) => { const y = top + i * rh, w = Math.max(2, r.v / max * BW); return `
+      <text x="${L - 10}" y="${y + 17}" text-anchor="end" font-size="14" font-weight="${r.nej ? 700 : 400}" fill="${r.rozp ? '#777' : '#16191c'}">${esc(r.t.length > 26 ? r.t.slice(0, 25) + '…' : r.t)}</text>
+      ${r.rozp ? '' : `<text x="${L - 10}" y="${y + 33}" text-anchor="end" font-size="11.5" fill="${r.pok < 1 ? '#c0392b' : '#777'}">nacenil ${Math.round(r.pok * 100)} % položek</text>`}
+      <rect x="${L}" y="${y + 4}" width="${w}" height="24" rx="5" fill="${r.rozp ? '#d4d4cf' : r.nej ? '#1f8a4c' : '#7a9bb8'}"/>
+      ${r.rozp ? '' : `<rect x="${L}" y="${y + 32}" width="${BW}" height="5" rx="2.5" fill="#eee"/><rect x="${L}" y="${y + 32}" width="${Math.max(1, r.pok * BW)}" height="5" rx="2.5" fill="${r.pok < 1 ? '#e08a00' : '#1f8a4c'}"/>`}
+      <text x="${L + w + 8}" y="${y + 21}" font-size="14" font-weight="700" fill="#16191c">${kc0(Math.round(r.v))}</text>`; }).join('')}</svg>`;
+  }
   // 5) vyhodnocení: porovnání firem po položkách, nejlevnější zeleně, pořadí nabídek, nejvýhodnější kombinace
   function vyhodnoceni(pid) {
     const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
     const nab = P.nabidky || []; if (!nab.length) return toast('Zatím není nahraná žádná nabídka.');
-    const rad = polPop(P), sm = nab.map(n => Object.assign({n}, souhrnNab(P, n))).sort((a, b) => (a.chybi - b.chybi) || (a.celkem - b.celkem));
-    const uplne = sm.filter(x => !x.chybi), nej = uplne[0] || sm[0], druha = (uplne.length ? uplne : sm)[1];
-    let komb = 0, kombF = new Map(), rozp = 0;
-    const radky = rad.map(x => { const ce = nab.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null), mi = pl.length ? Math.min(...pl) : null; if (mi != null) { komb += mi * (x.mn || 0); const i = ce.indexOf(mi); kombF.set(nab[i].firma, (kombF.get(nab[i].firma) || 0) + 1); } rozp += (x.r.jc || 0) * (x.mn || 0); return {x, ce, mi}; });
-    const rozdil = druha ? druha.celkem - nej.celkem : 0;
-    const ov = okno('Vyhodnocení nabídek – ' + P.nazev, `<div class="pp-vy">
-      <div class="pp-vyh"><div class="pp-win"><small>Nejvýhodnější úplná nabídka</small><b>${esc(nej.n.firma)}</b><span>${kc0(nej.celkem)} bez DPH</span>${druha ? `<em>o ${kc0(rozdil)} (${Math.round(rozdil / druha.celkem * 1000) / 10} %) levnější než ${esc(druha.n.firma)}</em>` : ''}${nej.chybi ? `<em style="color:var(--bad)">pozor: chybí ceny u ${nej.chybi} položek</em>` : ''}</div>
-        <div class="pp-por"><small>Pořadí nabídek</small>${sm.map((x, i) => `<div><span>${i + 1}.</span><b>${esc(x.n.firma)}</b><span class="n">${kc0(x.celkem)}</span>${x.chybi ? `<small style="color:var(--bad)">chybí ${x.chybi} pol.</small>` : ''}</div>`).join('')}
-          <div class="pp-km"><span></span><b>Kdyby se každá položka zadala nejlevnější firmě</b><span class="n">${kc0(Math.round(komb))}</span><small>${[...kombF.entries()].map(([f, k]) => esc(f) + ' ' + k + '×').join(', ')}</small></div>
-          ${rozp ? `<div class="pp-km"><span></span><b>Pro srovnání: ceny z rozpočtu</b><span class="n">${kc0(Math.round(rozp))}</span></div>` : ''}</div></div>
-      <div class="pp-nah"><table class="pp-t pp-vt"><thead><tr><th>Kód</th><th>Položka</th><th>MJ</th><th class="n">Množství</th><th class="n">Rozpočet / MJ</th>${nab.map(n => `<th class="n">${esc(n.firma)}<br><small>cena / MJ</small></th>`).join('')}</tr></thead><tbody>
-        ${radky.slice(0, 1500).map(({x, ce, mi}) => `<tr><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n" style="color:var(--muted)">${x.r.jc == null ? '' : kc(x.r.jc)}</td>${ce.map(v => `<td class="n${v != null && v === mi && ce.filter(z => z != null).length > 1 ? ' pp-min' : ''}">${v == null ? '<span style="color:var(--bad)">—</span>' : kc(v)}</td>`).join('')}</tr>`).join('')}
-        </tbody><tfoot><tr><td colspan="5"><b>Celkem bez DPH</b></td>${nab.map(n => `<td class="n"><b>${kc(souhrnNab(P, n).celkem)}</b></td>`).join('')}</tr></tfoot></table></div></div>`,
+    let vybId = new Set(nab.map(n => n.id));
+    const ov = okno('Vyhodnocení nabídek – ' + P.nazev, `<div class="pp-vy"></div>`,
       `<button type="button" class="rz-btn" data-zp>← Zpět na poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-xls>⬇ Vyhodnocení do Excelu</button>`, 'siroky');
     celaObrazovka(ov, 'rz-fakCela');
+    const box = ov.querySelector('.pp-vy');
+    let V, vyb;
+    const kresli = () => {
+      vyb = nab.filter(n => vybId.has(n.id)); if (!vyb.length) { vyb = nab.slice(); vybId = new Set(nab.map(n => n.id)); }
+      V = porovnani(P, vyb);
+      const nej = V.sm[0], druha = V.sm[1], k = V.podle, rozdil = druha ? druha[k] - nej[k] : 0, N = V.rad.length;
+      let komb = 0; const kombF = new Map();
+      V.rad.forEach(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null); if (!pl.length) return; const mi = Math.min(...pl); komb += mi * (x.mn || 0); const f = vyb[ce.indexOf(mi)].firma; kombF.set(f, (kombF.get(f) || 0) + 1); });
+      const nikdo = V.rad.filter(x => vyb.every(n => !n.ceny || n.ceny[x.r.id] == null)).length;
+      box.innerHTML = `
+      <div class="pp-vf"><b>Porovnávat firmy:</b>${nab.map(n => { const s = souhrnNab(P, n); return `<label><input type="checkbox" data-vf="${esc(n.id)}"${vybId.has(n.id) ? ' checked' : ''}> ${esc(n.firma)} <small>(${N - s.chybi} z ${N})</small></label>`; }).join('')}</div>
+      <div class="pp-srov"><span>${k === 'srov'
+        ? `Firmy nenacenily všechny položky. Porovnávám proto jen <b>${nf0.format(V.spol.length)} z ${nf0.format(N)} položek</b>, které nacenily všechny vybrané firmy${V.spol.length < N ? ' (ostatní jsou v tabulce šedě)' : ''}.`
+        : `Vybrané firmy nemají žádnou společně naceněnou položku. Porovnávám proto <b>odhad celé zakázky</b>: chybějící ceny doplním mediánem ostatních firem, jinak cenou z rozpočtu.`}</span></div>
+      <div class="pp-vyh"><div class="pp-win"><small>${k === 'srov' ? 'Nejvýhodnější na srovnatelných položkách' : 'Nejvýhodnější podle odhadu'}</small><b>${esc(nej.n.firma)}</b><span>${kc0(nej[k])} bez DPH</span>${druha ? `<em>o ${kc0(rozdil)} (${(Math.round(rozdil / druha[k] * 1000) / 10).toLocaleString('cs-CZ')} %) levnější než ${esc(druha.n.firma)}</em>` : ''}${nej.chybi ? `<em>nenacenil ${nej.chybi} z ${N} položek – odhad celé zakázky ${kc0(nej.odhad)}</em>` : '<em>nacenil všechny položky</em>'}</div>
+        <div class="pp-gr">${grafNabidek(V)}<div class="pp-leg"><span><i style="background:#1f8a4c"></i>${k === 'srov' ? 'cena za srovnatelné položky' : 'odhad celé zakázky'}</span><span><i style="background:#e08a00;height:5px"></i>kolik položek firma nacenila</span></div></div></div>
+      <div class="pp-por pp-por2"><table class="pp-t"><thead><tr><th>Pořadí</th><th>Firma</th><th class="n">Srovnatelné položky</th><th class="n">Nacenil</th><th class="n">Celkem, co nacenil</th><th class="n">Odhad celé zakázky</th></tr></thead><tbody>
+        ${V.sm.map((x, i) => `<tr${i === 0 ? ' class="pp-1"' : ''}><td>${i + 1}.</td><td><b>${esc(x.n.firma)}</b></td><td class="n">${k === 'srov' ? kc0(x.srov) : '—'}</td><td class="n"${x.chybi ? ' style="color:var(--bad)"' : ''}>${x.nac} z ${N}</td><td class="n">${kc0(x.celkem)}</td><td class="n">${kc0(x.odhad)}</td></tr>`).join('')}
+        <tr class="pp-km"><td></td><td><b>Každá položka nejlevnější firmě</b><br><small>${[...kombF.entries()].map(([f, c]) => esc(f) + ' ' + c + '×').join(', ')}${nikdo ? ` · ${nikdo} položek nenacenil nikdo` : ''}</small></td><td></td><td></td><td class="n">${kc0(Math.round(komb))}</td><td></td></tr>
+        ${k === 'srov' && V.rozpSpol ? `<tr class="pp-km"><td></td><td>Pro srovnání: ceny z rozpočtu (srovnatelné položky)</td><td class="n">${kc0(V.rozpSpol)}</td><td></td><td></td><td></td></tr>` : ''}
+      </tbody></table></div>
+      <div class="pp-nah"><table class="pp-t pp-vt"><thead><tr><th>Kód</th><th>Položka</th><th>MJ</th><th class="n">Množství</th><th class="n">Rozpočet / MJ</th>${vyb.map(n => `<th class="n">${esc(n.firma)}<br><small>cena / MJ</small></th>`).join('')}</tr></thead><tbody>
+        ${V.rad.slice(0, 1500).map(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null), mi = pl.length ? Math.min(...pl) : null; return `<tr${V.spolS.has(x.r.id) ? '' : ' class="pp-nesr" title="Nenacenily všechny firmy – nesrovnává se"'}><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n" style="color:var(--muted)">${x.r.jc == null ? '' : kc(x.r.jc)}</td>${ce.map(v => `<td class="n${v != null && v === mi && pl.length > 1 ? ' pp-min' : ''}">${v == null ? '<span style="color:var(--bad)">nenaceněno</span>' : kc(v)}</td>`).join('')}</tr>`; }).join('')}
+        </tbody><tfoot><tr><td colspan="5"><b>Srovnatelné položky celkem</b></td>${vyb.map(n => `<td class="n"><b>${k === 'srov' ? kc(V.sm.find(s => s.n === n).srov) : '—'}</b></td>`).join('')}</tr>
+        <tr><td colspan="5">Celkem, co firma nacenila</td>${vyb.map(n => `<td class="n">${kc(V.sm.find(s => s.n === n).celkem)}</td>`).join('')}</tr></tfoot></table></div>`;
+      box.querySelectorAll('[data-vf]').forEach(c => c.onchange = () => { if (c.checked) vybId.add(c.dataset.vf); else if (vybId.size > 1) vybId.delete(c.dataset.vf); else { c.checked = true; return toast('Aspoň jedna firma musí zůstat vybraná.'); } kresli(); });
+    };
+    kresli();
     ov.querySelector('[data-zp]').onclick = () => { ov.zavri(); detailPoptavky(P.id); };
-    ov.querySelector('[data-xls]').onclick = () => ulozExcel('Vyhodnocení nabídek – ' + P.nazev.replace(/^Poptávka – /, ''), [{n: 'Vyhodnocení', rows: [['Vyhodnocení nabídek – ' + P.nazev], ['Nejvýhodnější: ' + nej.n.firma + ' – ' + kc0(nej.celkem)], [], ['Kód', 'Položka', 'MJ', 'Množství', 'Rozpočet / MJ'].concat(nab.map(n => n.firma + ' – cena/MJ'), ['Nejnižší cena/MJ'])].concat(radky.map(({x, ce, mi}) => [x.r.k || '', x.r.d || '', x.r.mj || '', x.mn, x.r.jc == null ? null : x.r.jc].concat(ce.map(v => v == null ? null : v), [mi]))).concat([[], ['', 'Celkem bez DPH', '', '', ''].concat(nab.map(n => souhrnNab(P, n).celkem))]), sirky: [14, 60, 7, 12, 14].concat(nab.map(() => 18), [16])}]);
+    ov.querySelector('[data-xls]').onclick = () => {
+      const k = V.podle;
+      ulozExcel('Vyhodnocení nabídek – ' + P.nazev.replace(/^Poptávka – /, ''), [
+        {n: 'Pořadí', rows: [['Vyhodnocení nabídek – ' + P.nazev], [k === 'srov' ? 'Porovnání na ' + V.spol.length + ' z ' + V.rad.length + ' položek, které nacenily všechny firmy' : 'Porovnání podle odhadu celé zakázky'], [], ['Pořadí', 'Firma', 'Srovnatelné položky', 'Naceněno položek', 'Celkem, co nacenil', 'Odhad celé zakázky']].concat(V.sm.map((x, i) => [i + 1, x.n.firma, k === 'srov' ? x.srov : null, x.nac + ' z ' + V.rad.length, x.celkem, x.odhad])), sirky: [8, 40, 20, 16, 20, 20]},
+        {n: 'Položky', rows: [['Kód', 'Položka', 'MJ', 'Množství', 'Rozpočet / MJ', 'Srovnatelná'].concat(vyb.map(n => n.firma + ' – cena/MJ'), ['Nejnižší cena/MJ'])].concat(V.rad.map(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null); return [x.r.k || '', x.r.d || '', x.r.mj || '', x.mn, x.r.jc == null ? null : x.r.jc, V.spolS.has(x.r.id) ? 'ano' : 'ne'].concat(ce.map(v => v == null ? null : v), [pl.length ? Math.min(...pl) : null]); })), sirky: [14, 60, 7, 12, 14, 11].concat(vyb.map(() => 18), [16])}]);
+    };
   }
   function panelPoptavky() {
     const ps = poptavky(R.rec.id);
     return `<div class="rz-top"><span style="font-size:14px">Slepý rozpočet = rozpočet bez cen pro firmy. Pošlete ho firmám, nahrajte naceněné nabídky a Constructo vybere nejvýhodnější.</span><span class="sp"></span>
         <button type="button" class="rz-btn ze fk2-vel" data-a="pp-nova"${ro() ? ' disabled' : ''}>📄 Vytvořit slepý rozpočet</button></div>
       ${ps.length ? `<div class="rz-list"><table><thead><tr><th>Číslo</th><th>Poptávka</th><th>Vytvořeno</th><th class="n">Položek</th><th>Odesláno</th><th>Nabídky</th><th>Nejvýhodnější</th></tr></thead><tbody>
-        ${ps.map(p => { const nb = (p.nabidky || []).map(n => Object.assign({n}, souhrnNab(p, n))).sort((a, b) => (a.chybi - b.chybi) || (a.celkem - b.celkem)); return `<tr class="kl" data-pp="${esc(p.id)}"><td><b>${esc(p.cislo || '')}</b></td><td>${esc(p.nazev)}</td><td>${esc(new Date(p.kdy).toLocaleDateString('cs-CZ'))}<div style="font-size:12px;color:var(--muted)">${esc(p.kdo || '')}</div></td><td class="n">${nf0.format((p.pol || []).length)}</td><td>${(p.odeslano || []).length ? esc([...new Set(p.odeslano.map(o => o.firma))].join(', ')) : '<span style="color:var(--muted)">neodesláno</span>'}</td><td>${nb.length ? nb.length + '×' : '<span style="color:var(--muted)">—</span>'}</td><td>${nb.length ? `<b style="color:#1f8a4c">${esc(nb[0].n.firma)}</b> · ${kc0(nb[0].celkem)}` : ''}</td></tr>`; }).join('')}
+        ${ps.map(p => { const V = (p.nabidky || []).length ? porovnani(p, p.nabidky) : null, nb = V ? V.sm.map(x => Object.assign({}, x, {celkem: x[V.podle]})) : []; return `<tr class="kl" data-pp="${esc(p.id)}"><td><b>${esc(p.cislo || '')}</b></td><td>${esc(p.nazev)}</td><td>${esc(new Date(p.kdy).toLocaleDateString('cs-CZ'))}<div style="font-size:12px;color:var(--muted)">${esc(p.kdo || '')}</div></td><td class="n">${nf0.format((p.pol || []).length)}</td><td>${(p.odeslano || []).length ? esc([...new Set(p.odeslano.map(o => o.firma))].join(', ')) : '<span style="color:var(--muted)">neodesláno</span>'}</td><td>${nb.length ? nb.length + '×' : '<span style="color:var(--muted)">—</span>'}</td><td>${nb.length ? `<b style="color:#1f8a4c">${esc(nb[0].n.firma)}</b> · ${kc0(nb[0].celkem)}${nb.some(x => x.chybi) ? `<div style="font-size:12px;color:var(--muted)">${V.podle === 'srov' ? 'na ' + V.spol.length + ' srovnatelných položkách' : 'odhad celé zakázky'}</div>` : ''}` : ''}</td></tr>`; }).join('')}
       </tbody></table></div>` : `<div class="rz-empty"><b>Zatím žádná poptávka</b><ol><li>Klikněte <b>📄 Vytvořit slepý rozpočet</b>.</li><li>Zaškrtejte filtry (druh prací, objekt, podlaží…) nebo hledejte slovo – vpravo hned vidíte náhled.</li><li>Potvrďte, pak vytiskněte, uložte nebo odešlete firmám.</li><li>Naceněné nabídky nahrajte zpět – Constructo je porovná a ukáže nejvýhodnější.</li></ol></div>`}`;
   }
 
