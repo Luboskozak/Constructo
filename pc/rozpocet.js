@@ -2621,16 +2621,21 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       const cil = [...vybr.entries()].map(([fid, email]) => ({fid, email, f: (H.firmy() || []).find(x => x.id === fid)})).filter(x => x.f);
       if (!cil.length) return toast('Zaškrtněte aspoň jednu firmu.');
       const bez = cil.find(x => !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(x.email)); if (bez) return toast('Doplňte správný e-mail u firmy ' + bez.f.firma + '.');
-      if (!H.pripojeno() || !H.posliMail) return toast('Odesílat jde jen s připojením ke Googlu.');
+      if (!H.pripojeno() || !H.posliMail) return toast('Tento prohlížeč není připojený ke Googlu, proto e-mail odeslat nejde. Připojte ho v nabídce Data → Automatická synchronizace (kód stavby), nebo odešlete poptávku z počítače, kde Constructo připojené je.');
       const w = cekej('Odesílám poptávku…');
       try {
-        if (H.verzeSkriptu && (await H.verzeSkriptu()) < 23) { if (H.aktualizujSkript) await H.aktualizujSkript().catch(() => null); if ((await H.verzeSkriptu(true)) < 23) throw new Error('skript Constructa na Googlu se ještě neaktualizoval (příloha by se neposlala). Zkuste to za hodinu znovu.'); }
+        // 5.24: starší skript Google neumí přílohu → Excel se uloží na Disk a do e-mailu jde odkaz ke stažení (poptávka odejde vždy)
+        let staryS = false;
+        if (H.verzeSkriptu && (await H.verzeSkriptu()) < 23) { if (H.aktualizujSkript) await H.aktualizujSkript().catch(() => null); staryS = (await H.verzeSkriptu(true)) < 23; }
+        const jmenoX = nazevPop(P).replace(/\s+/g, '_') + '.xlsx', mimeX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         const xb = await window.CXZprava.b64(await excelPopBlob(P)), tx = ov.querySelector('[data-tx]').value, pr = ov.querySelector('[data-pr]').value.trim() || 'Poptávka';
-        const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">${esc(tx).replace(/\n/g, '<br>')}</div>`;
+        let odkaz = null;
+        if (staryS) { odkaz = H.ulozSoubor ? await H.ulozSoubor(jmenoX, mimeX, xb).catch(() => null) : null; if (!odkaz || !odkaz.url) throw new Error('Excel se nepodařilo uložit na Disk Google. Zkuste to prosím znovu.'); }
+        const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">${esc(tx).replace(/\n/g, '<br>')}${odkaz ? `<p style="margin:18px 0"><a href="${esc(odkaz.url)}" style="background:#F4D23C;color:#16191c;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:bold">⬇ Stáhnout slepý rozpočet (Excel)</a></p>` : ''}</div>`;
         const ok = [], chyby = [];
         for (const x of cil) {
-          const r = await H.posliMail({komu: x.email, predmet: pr, html, text: tx, odpovedet: (H.mujEmail && H.mujEmail()) || dod.email || '', priloha: {data: xb, mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', jmeno: nazevPop(P).replace(/\s+/g, '_') + '.xlsx'}, cid: 'pp-' + P.id + '-' + x.fid + '-' + Date.now().toString(36)});
-          if (r && r.ok) ok.push({firma: x.f.firma, fid: x.fid, email: x.email, kdy: new Date().toISOString(), kdo: kdo()}); else chyby.push(x.f.firma);
+          const r = await H.posliMail({komu: x.email, predmet: pr, html, text: tx, odpovedet: (H.mujEmail && H.mujEmail()) || dod.email || '', priloha: staryS ? undefined : {data: xb, mime: mimeX, jmeno: jmenoX}, cid: 'pp-' + P.id + '-' + x.fid + '-' + Date.now().toString(36)});
+          if (r && r.ok) ok.push({firma: x.f.firma, fid: x.fid, email: x.email, kdy: new Date().toISOString(), kdo: kdo(), odkaz: odkaz ? odkaz.url : undefined}); else { chyby.push(x.f.firma + (r && r.error ? ' (' + r.error + ')' : '')); console.warn('Poptávka – e-mail neodešel', x.email, r); }
           if (!emailF(x.f) && H.ulozEmailFirmy) H.ulozEmailFirmy(x.fid, x.email);
         }
         const akt = sez('poptavky').find(y => y.id === P.id) || P;
