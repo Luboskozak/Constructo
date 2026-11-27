@@ -79,7 +79,7 @@
 .rz-vyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#FFF4BF;border:1px solid #f0d36a;border-radius:10px;padding:7px 12px;font-size:14px;color:#16191c}
 .rz-tab{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto;position:relative;height:calc(100vh - 150px);min-height:320px}
 .rz-bok{font-size:18px;padding:5px 11px;line-height:1}
-body:not(.rz-full) .rz-bok{display:none}
+body:not(.rz-full) .rz-bok{display:none}body.rz-full:not(.side-skryt) .rz-bok{display:none}
 body.rz-full .rz{gap:6px}
 body.rz-full .rz-top h2{font-size:17px}
 body.rz-full .rz-btn{padding:6px 11px;font-size:13.5px}
@@ -1162,7 +1162,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   ];
   const skupinaCin = nazev => { const n = bezDia(String(nazev)).toLowerCase(); const g = SKUPINY.find(([, rx]) => rx.test(n)); return g ? g[0] : 'Ostatní'; };
   function akceDruhu(k, virt) {
-    return `<span class="rz-dr-a"><button type="button" class="rz-btn mini" data-ukaz-kat="${esc(k.id)}" title="Zobrazit položky v rozpočtu">Položky</button><button type="button" class="rz-btn mini" data-fak-kat="${esc(k.id)}"${nefak() ? ' disabled' : ''} title="Nová fakturace z této činnosti">Fakturovat</button>${virt ? `<button type="button" class="rz-btn mini" data-cin-ulozit="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Vytvoří z této činnosti vlastní druh prací, který můžete upravovat">+ Druh</button>` : `<button type="button" class="rz-btn mini" data-navrh="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Najít další položky">Najít…</button><button type="button" class="rz-btn mini" data-upr-kat="${esc(k.id)}"${ro() ? ' disabled' : ''}>Upravit</button>`}</span>`;
+    return `<span class="rz-dr-a"><button type="button" class="rz-btn mini" data-ukaz-kat="${esc(k.id)}" title="Zobrazit položky v rozpočtu">Položky</button><button type="button" class="rz-btn mini" data-fak-kat="${esc(k.id)}"${nefak() ? ' disabled' : ''} title="Nová fakturace z této činnosti">Fakturovat</button>${virt ? '' : `<button type="button" class="rz-btn mini" data-navrh="${esc(k.id)}"${ro() ? ' disabled' : ''} title="Najít další položky">Najít…</button><button type="button" class="rz-btn mini" data-upr-kat="${esc(k.id)}"${ro() ? ' disabled' : ''}>Upravit</button>`}</span>`;
   }
   const cerpTd = s => `<div class="rz-dr-bar" title="čerpáno ${pct(s.cer, s.roz)} %"><i class="${s.cer > s.roz + 1 ? 'nad' : ''}" style="width:${Math.min(100, pct(s.cer, s.roz))}%"></i></div><span class="rz-dr-p">${pct(s.cer, s.roz)} %</span>`;
   function radkyDruhu(list, C, virt, celkem) {
@@ -1191,11 +1191,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const prep = `<span class="rz-seg" role="group" aria-label="Zobrazení">${DRUHY_V.map(([k, n]) => `<button type="button" data-dv="${k}" aria-pressed="${druhyV() === k}">${n}</button>`).join('')}</span>`;
     const cin = `<div class="rz-top" style="margin-top:6px"><h3 style="margin:0;font-size:17px">Činnosti (řemesla) – roztříděno automaticky</h3><span style="font-size:13px;color:var(--muted)">${nf0.format(R.polozky.length)} položek v ${cs.length} činnostech, seřazeno podle objemu</span><span class="sp"></span>${prep}</div>
       ${zobrazDruhy(cs, C, true)}`;
-    return `${cin}<h3 style="margin:14px 0 0;font-size:17px">Moje druhy prací</h3><div class="rz-top"><span style="font-size:14px">Druh prací = skupina položek z celého rozpočtu (např. Střecha: krokve, bednění, izolace, krytina, okna). Z druhu prací se pak dělá fakturace.</span><span class="sp"></span>
-        ${ks.length ? '' : `<button type="button" class="rz-btn" data-a="druhy-vychozi"${ro() ? ' disabled' : ''}>Vytvořit běžné druhy prací</button>`}
-        <button type="button" class="rz-btn zl" data-a="druh-novy"${ro() ? ' disabled' : ''}>+ Nový druh prací</button></div>
-      ${ks.length ? zobrazDruhy(ks, C, false)
-      : `<div class="rz-empty"><b>Zatím žádné druhy prací</b>Klikněte <b>Vytvořit běžné druhy prací</b> (Střecha, Okna a dveře, Fasáda, Bourání …) – Constructo je rovnou naplní položkami. Nebo <b>+ Nový druh prací</b> se svými slovy (např. Střecha: krokve, bednění, krytina, oplechování, střešní okna).</div>`}`;
+    // 5.22: sekce „Moje druhy prací“ odstraněna (Luboš) – zůstávají jen činnosti roztříděné automaticky
+    return cin;
   }
 
   /* ----- 4.75: Vystavené faktury – archiv uzavřených faktur, třídění podle období, odběratele, druhu prací ----- */
