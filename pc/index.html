@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-4CCwMA4z5/MORfNZ1FByMSkMADIUxoOBiY0AyY39JJY='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-lmsZ1xKvWyiEKOxIeACapSzzvIMFZX0pErB4aq6cgpY='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -456,9 +456,15 @@ a.qpct{font-weight:600}
 }
 body{padding:0 0 48px 236px;font-size:14.5px}
 /* 4.59: Rozpočet přes celou obrazovku – boční panel se vysouvá tlačítkem ☰, hlavička stránky se schová */
-body.rz-full{padding:0}
-body.rz-full .side{transform:translateX(-100%);transition:transform .2s ease;box-shadow:none}
-body.rz-full.side-open .side{transform:none;box-shadow:8px 0 30px rgba(0,0,0,.35)}
+body.rz-full{padding:0 0 0 236px}
+/* 5.22: boční panel je vždy rozbalený, jde jen schovat (« Schovat) a znovu ukázat (☰) */
+.side{transition:transform .2s ease}
+body.side-skryt{padding-left:0}
+body.side-skryt .side{transform:translateX(-100%)}
+.side .brand{position:relative}.side-hide{margin-left:auto;border:1px solid #3a3f45;background:transparent;color:#c9ced3;font:700 15px var(--f-body);cursor:pointer;padding:4px 6px;border-radius:7px}.side-hide:hover{background:var(--k3);color:#fff}
+#side-show{position:fixed;left:10px;top:10px;z-index:15;display:none;border:0;border-radius:10px;background:var(--k);color:#fff;font:700 15px var(--f-body);padding:8px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+body.side-skryt #side-show{display:block}body.side-skryt.rz-full #side-show{display:none}
+@media print{#side-show{display:none!important}}
 body.rz-full .wrap{max-width:none;padding:8px 12px 0;gap:6px}
 body.rz-full header.top,body.rz-full #banners,body.rz-full #view-title,body.rz-full .section-h,body.rz-full .foot{display:none}
 body.rz-full .wrap>section{gap:0!important}
@@ -1190,8 +1196,9 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><mask id="cx-cut" maskUnits="userSpaceOnUse" x="190" y="130" width="516" height="310"><rect x="190" y="130" width="516" height="310" fill="#fff"/><circle cx="348" cy="285" r="87" fill="#000"/><circle cx="548" cy="285" r="87" fill="#000"/><rect x="420" y="232" width="62" height="106" fill="#000"/></mask><symbol id="cx-mark" viewBox="190 130 516 310"><path d="M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z"/></symbol></defs></svg>
+<button type="button" id="side-show" class="no-print" title="Ukázat boční panel">☰ Nabídka</button>
 <aside class="side no-print">
-  <div class="brand"><svg class="cx" viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span class="wm">Constructo</span></div>
+  <div class="brand"><svg class="cx" viewBox="0 0 516 310" aria-hidden="true"><use href="#cx-mark"/></svg><span class="wm">Constructo</span><button type="button" class="side-hide" id="side-hide" title="Schovat boční panel">«</button></div>
   <div class="claim">management staveb</div>
   <button type="button" class="stavba" id="side-stavba" aria-haspopup="true" aria-expanded="false" title="Vybrat stavbu nebo založit novou"><small>Projekt</small><b id="side-proj">Hybernská 1000/8</b><em id="side-co"></em><span class="chev">Vybrat stavbu / nová ▾</span></button>
   <div class="appsw" id="appsw" role="group" aria-label="Aplikace"><button type="button" data-rz="mgmt" class="on">Management</button><button type="button" data-rz="denik">Deník</button></div>
@@ -1209,11 +1216,11 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       <button type="button" id="v-firmy" aria-pressed="false">Firmy / osoby na projektu</button>
       <button type="button" id="v-kal" aria-pressed="false">Kalendář</button>
       <button type="button" id="v-dok" aria-pressed="false">Dokumentace</button>
-      <button type="button" id="v-rozp" aria-pressed="false">Rozpočet</button>
+      <button type="button" id="v-rozp" aria-pressed="false">Rozpočet / Fakturace</button>
       <button type="button" id="v-doch" aria-pressed="false" hidden>Docházka</button>
     </div>
   </nav>
-  <a class="side-stary" id="side-stary" href="/denik/" hidden title="Původní Stavební deník – běží, dokud se jeho data nepřestěhují">Otevřít původní Deník</a>
+  <a class="side-stary" id="side-stary" href="/denik/" hidden title="Původní Stavební deník – záloha, záznamy z něj už jsou tady">Otevřít původní Deník (záloha)</a>
   <div class="grow"></div>
   <button type="button" class="side-mob" id="side-mob">Pozvat do Constructa</button>
   <button type="button" class="side-inst" id="side-inst" hidden>⬇ Ikona na plochu</button>
@@ -1437,7 +1444,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
 <script>
 (() => {
   const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-  const APP_VERSION = '5.14';
+  const APP_VERSION = '5.25';
   const WEB_SCRIPT = "https://script.google.com/macros/s/AKfycbwJCT7cNtZyKrk21RItnIu4qu2SsSPhNyYdsbIJ5d8Q91esVBEVe82724ufLctboJb4/exec";  // adresa skriptu Google, vyplní se jen ve webové verzi (Netlify /pc)
   const WEB_HOME = 'https://lovely-gumption-be0f29.netlify.app';
   const KEY_BASE = 'hybernska-rizeni-data-v1';
@@ -1497,7 +1504,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       x.project.people = {}; x.project.clenove.forEach(c => { if (c.jmeno && c.email) x.project.people[c.jmeno] = {email: c.email, emails: [{a: c.email, rep: true}], company: c.firma}; });
       x.project.peopleV2 = true;
     }
-    ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady', 'dokumenty', 'rozpocty', 'rozpKat', 'faktury', 'predani'].forEach(k => { x[k] = []; }); x.tomb = {};
+    ['hmg', 'hmgGroups', 'tasks', 'diary', 'log', 'zavady', 'dokumenty', 'rozpocty', 'rozpKat', 'faktury', 'predani', 'poptavky'].forEach(k => { x[k] = []; }); x.tomb = {};
     x.hmgInfo = {source: '', date: today};
     return x;
   }
@@ -1505,7 +1512,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
   try { localStorage.setItem('hyb-test', '1'); localStorage.removeItem('hyb-test'); } catch(e) { storageOk = false; }
   // 4.58: rozpočty, druhy prací a fakturace se posílají i uvnitř kolekce dokumenty (záznamy „rz~…“),
   // takže se propíšou mezi počítači i se starším skriptem Google, který kolekce rozpocty/rozpKat/faktury nezná a zahodil by je.
-  const RZK = ['rozpocty', 'rozpKat', 'faktury', 'predani'];   // 5.13: + předání díla
+  const RZK = ['rozpocty', 'rozpKat', 'faktury', 'predani', 'poptavky'];   // 5.19: + poptávky   // 5.13: + předání díla
   function rzRozbal(d) {
     if (!d || !Array.isArray(d.dokumenty)) return d;
     const tb = (d.tomb && d.tomb.dokumenty) || {};
@@ -1514,13 +1521,13 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     RZK.forEach(c => { x[c] = Array.isArray(d[c]) ? d[c].slice() : []; tomb[c] = Object.assign({}, (d.tomb || {})[c] || {}); });
     x.dokumenty = [];
     d.dokumenty.forEach(r => {
-      const m = r && /^rz~(rozpocty|rozpKat|faktury|predani)~/.exec(String(r.id));
+      const m = r && /^rz~(rozpocty|rozpKat|faktury|predani|poptavky)~/.exec(String(r.id));
       if (!m) { x.dokumenty.push(r); return; }
       const z = Object.assign({}, r); z.id = r._rzid; delete z._rzid; delete z._rzk;
       const i = x[m[1]].findIndex(o => o.id === z.id);
       if (i < 0) x[m[1]].push(z); else if ((z._ts || 0) > (x[m[1]][i]._ts || 0)) x[m[1]][i] = z;
     });
-    Object.keys(tb).forEach(k => { const m = /^rz~(rozpocty|rozpKat|faktury|predani)~(.*)$/.exec(k); if (!m) { tdk[k] = tb[k]; return; } if (!(tomb[m[1]][m[2]] >= tb[k])) tomb[m[1]][m[2]] = tb[k]; });
+    Object.keys(tb).forEach(k => { const m = /^rz~(rozpocty|rozpKat|faktury|predani|poptavky)~(.*)$/.exec(k); if (!m) { tdk[k] = tb[k]; return; } if (!(tomb[m[1]][m[2]] >= tb[k])) tomb[m[1]][m[2]] = tb[k]; });
     return x;
   }
   function rzZabal(d) {
@@ -1539,7 +1546,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     const x = Object.assign({version:1, project:clone(SEED.project), hmgInfo:clone(SEED.hmgInfo), hmg:[], hmgGroups:[], tasks:[], diary:[], log:[], zavady:[], tomb:{}}, d || {});
     if (!x.tomb || typeof x.tomb !== 'object') x.tomb = {};
     if (!x.project) x.project = clone(SEED.project); if (!x.hmgInfo) x.hmgInfo = clone(SEED.hmgInfo);
-    ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty','rozpocty','rozpKat','faktury','predani'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
+    ['hmg','hmgGroups','tasks','diary','log','zavady','dokumenty','rozpocty','rozpKat','faktury','predani','poptavky'].forEach(k => { if (!Array.isArray(x[k])) x[k] = []; });
     x.tasks.forEach(t => { t.id ||= uid(); t.hmg = (t.hmg || []).map(String); if (!t.supplier) { const f = supZText(t.title); if (f) t.supplier = f; } });   // 4.64: úkol ze zprávy firmě má firmu jako Dodavatele (i starší úkoly)
     // stejný úkol z porady může přijít dvakrát (zabudovaná data + sdílení) – nechat novější
     const bySrc = new Map();
@@ -1551,9 +1558,9 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     return x;
   };
   /* ---------- slučování dat (stejný kód běží i na serveru Google) ---------- */
-  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id};
+  const COLLS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id, poptavky: r => r.id};
   function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id, poptavky: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {
@@ -3683,7 +3690,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     { const dk = $('#v-dok'), f = $('#v-firmy'); if (DN && dk.nextElementSibling !== f) f.before(dk); else if (!DN && dk.previousElementSibling !== $('#v-kal')) $('#v-kal').after(dk); }   // pořadí v Deníku: … Zprávy, Dokumentace, Firmy
     $('#side-stary').hidden = !DN; $('.side .claim').textContent = DN ? 'stavební deník' : 'management staveb';
     if (smi('doch')) dochPripoj();   // tlačítko „Docházka“ u pracovníků ve Firmy / osoby na projektu
-    document.body.classList.toggle('rz-full', S.view === 'rozp'); document.body.classList.remove('side-open');
+    document.body.classList.toggle('rz-full', S.view === 'rozp');
     renderHeader(); renderBanners(); renderSummary(); renderPeople(); renderObjFilter();
     ['list','diary','hmg','zavady','odeslane','pred','firmy','kal','dok','rozp','doch','detail','lide'].forEach(k => $('#v-' + k).setAttribute('aria-pressed', S.view === k));
     { const o = ['detail', 'lide'].includes(S.view) || store.get('hyb-nav-sprava') === '1'; $('#nav-sprava').setAttribute('aria-expanded', o); $('#v-detail').hidden = $('#v-lide').hidden = !o; }
@@ -4571,7 +4578,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
   let rozpHost = null;
   function rozpPripoj() {
     if (rozpHost || !window.CXRozp || !dokHost && (dokPripoj(), !dokHost)) return;
-    const KOL = ['rozpocty', 'rozpKat', 'faktury'];
+    const KOL = ['rozpocty', 'rozpKat', 'faktury', 'poptavky'];
     rozpHost = {
       seznam: k => KOL.includes(k) ? D[k] || [] : [],
       upsert: (k, recs) => { if (!KOL.includes(k)) return; const m = new Map((D[k] || []).map(r => [r.id, r])); recs.forEach(r => m.set(r.id, r)); D[k] = [...m.values()]; commit(); },
@@ -4580,7 +4587,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       aktualizujSkript: dokHost.aktualizujSkript, volej: dokHost.volej,
       firmy: () => firmyList(), objBarva: o => objCol(o),
       smazano: (k, id) => !!(D.tomb && D.tomb[k] && D.tomb[k][id]),
-      bok: () => document.body.classList.toggle('side-open'),
+      bok: () => document.body.classList.toggle('side-skryt'),
       domu: () => setView('list'),
       smi: k => smi(k),
       schvalovatele: () => owners().filter(n => n !== me() && smi('fakU', n)).map(n => ({n, email: String(personOf(n).email || '').split(/[,;\s]+/).filter(Boolean)[0] || ''})),
@@ -4589,8 +4596,17 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       ulozUdajeFaktury: o => { D.project.fakturace = o; commit(); },
       ares: ico => aresNajdi(ico), aresHledej: t => aresHledejSkript(t),
       mujEmail: () => String(personOf(me()).email || '').split(/[,;\s]+/).filter(Boolean)[0] || '',
+      podpis: n => personOf(n || me()).podpis || '',
+      // 5.19: poptávky – firmy z jiných staveb, e-mail firmy, verze skriptu (příloha Excel od verze 23)
+      verzeSkriptu: znovu => CXS.verzeSkriptu ? CXS.verzeSkriptu(znovu) : Promise.resolve(0),
+      stavby: () => CXS.seznam().map(x => ({id: x.sid, nazev: x.name, aktivni: x.sid === STAVBA})),
+      firmyStavby: async sid => { const r = sid === CXS.HYB ? await CXS.getMain(0) : await CXS.stahni(sid); const d = (r && r.data) || {}; return Array.isArray(d.project && d.project.firmy) ? d.project.firmy : []; },
+      pridejFirmy: list => { if (RO()) return; const ma = firmyList(), ids = new Set(ma.map(f => f.id)); D.project.firmy = ma.concat(list.map(f => Object.assign({}, f, {id: ids.has(f.id) ? 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) : f.id, _ts: Date.now()}))); commit(); },
+      ulozEmailFirmy: (fid, email) => { if (RO()) return; D.project.firmy = firmyList().map(f => f.id !== fid ? f : Object.assign({}, f, {kontakty: (Array.isArray(f.kontakty) ? f.kontakty : []).concat([{id: 'k' + Date.now().toString(36), jmeno: '', funkce: '', email, tel: '', posilat: true}]), _ts: Date.now()})); commit(); },
+      novaFirma: hotovo => { if (RO()) { toast('Jen prohlížení – firmu nejde přidat.'); return; } CXFirmy.okna({data: () => ({firmy: firmyList(), prijemci: prijemciList()}), toast, ares: aresNajdi, aresHledej: aresHledejSkript, uloz: (k, x, ed) => { D.project.firmy = ed ? firmyList().map(y => y.id === ed.id ? x : y) : firmyList().concat(x); commit(); }, poNove: id => { if (hotovo) setTimeout(() => hotovo(id), 0); }}).upravFirmu(null); },
       posliMail: o => SY ? call('POST', Object.assign({key: SY.key, akce: 'zavada', cid: 'fak-' + Date.now().toString(36), od: 'Constructo'}, o)) : Promise.resolve({error: 'Bez připojení ke Googlu.'}),
       ulozPdf: async (name, b64, den) => { if (!SY) return null; const r = await call('POST', {key: SY.key, akce: 'foto', name, mime: 'application/pdf', den: den || new Date().toISOString().slice(0, 10), data: b64}); return r && r.id ? {id: r.id, url: r.url} : null; },
+      ulozSoubor: async (name, mime, b64) => { if (!SY) return null; const r = await call('POST', {key: SY.key, akce: 'foto', name, mime, den: new Date().toISOString().slice(0, 10), data: b64}); return r && r.id ? {id: r.id, url: r.url} : null; },
     };
     CXRozp.pripoj(rozpHost);
   }
@@ -5672,6 +5688,8 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     } catch (e) { return true; }
   }
   const rezim = () => !mgmtSmi() || store.get('cx-rezim') === 'denik' ? 'denik' : 'mgmt';
+  // 5.14: kdo otevře starou adresu Deníku (/denik/, ikona, záložka), dostane nový Deník tady
+  if (location.hash === '#rezim-denik') { store.set('cx-rezim', 'denik'); history.replaceState(null, '', location.pathname + location.search); setTimeout(() => setView('diary'), 0); }
   $('#appsw').addEventListener('click', e => {
     const b = e.target.closest('[data-rz]'); if (!b) return; const z = b.dataset.rz; if (z === rezim()) return;
     if (z === 'denik') { if (!DEN_V.includes(S.view)) store.set('cx-mgmt-view', S.view); store.set('cx-rezim', 'denik'); setView(DEN_V.includes(S.view) ? S.view : 'diary'); }
@@ -6084,7 +6102,9 @@ thead{display:table-header-group}tr{break-inside:avoid}
   });
   // 4.58: jednou poslat rozpočty, které tento počítač má (dřív je starší skript Google zahodil a ostatní počítače je neviděly)
   setTimeout(() => { try { if (SY && STAVBA === DEF_STAVBA && ['rozpocty', 'rozpKat', 'faktury'].some(k => (D[k] || []).length) && store.get('cx-rz-push') !== '1') { store.set('cx-rz-push', '1'); sync.dirty = true; store.set(DIRTY_KEY, '1'); syncNow(); } } catch (e) {} }, 6000);
-  document.addEventListener('click', e => { if (document.body.classList.contains('side-open') && !e.target.closest('.side') && !e.target.closest('[data-a="bok"]')) document.body.classList.remove('side-open'); });
+  // 5.22: boční panel – primárně rozbalený, « schová, ☰ ukáže
+  document.getElementById('side-hide').addEventListener('click', () => document.body.classList.add('side-skryt'));
+  document.getElementById('side-show').addEventListener('click', () => document.body.classList.remove('side-skryt'));
   setInterval(() => { if (SY && document.visibilityState === 'visible') syncNow(); }, 5000);  // 4.34: kontrola změn kolegů každých 5 s (Luboš 15. 11.)
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow(); });
   window.addEventListener('online', () => syncNow());
@@ -6095,7 +6115,7 @@ thead{display:table-header-group}tr{break-inside:avoid}
     return `// Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 19
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '${key}';
-const SKRIPT_VERZE = 22;
+const SKRIPT_VERZE = 23;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null, {mobil: e.parameter.mobil === '1'}); }
 function doPost(e) {
@@ -6770,7 +6790,7 @@ function zavada_(b) {
   const obr = {};
   Object.keys(b.obr || {}).slice(0, 10).forEach(function (k) { if (/^\\w+$/.test(k) && b.obr[k]) obr[k] = blob_(b.obr[k], k === 'logo' ? 'image/png' : 'image/jpeg', k + (k === 'logo' ? '.png' : '.jpg')); });
   const o = {to: komu, subject: String(b.predmet || 'Hlášení závady').slice(0, 200), body: String(b.text || ''), htmlBody: String(b.html || ''), inlineImages: obr,
-    attachments: b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\\w.-]/g, '_'))] : [],
+    attachments: (b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\\w.-]/g, '_'))] : []).concat(b.priloha && b.priloha.data ? [blob_(b.priloha.data, String(b.priloha.mime || 'application/octet-stream'), String(b.priloha.jmeno || 'priloha').replace(/[^\\w.-]/g, '_'))] : []),
     name: (String(b.od || '').slice(0, 60) || 'Constructo') + ' (Constructo)'};
   const zpet = String(b.odpovedet || '').trim();
   if (adr.test(zpet)) { o.replyTo = zpet; o.cc = zpet; }

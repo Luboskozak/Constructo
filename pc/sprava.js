@@ -172,6 +172,7 @@ const CXSprava = (() => {
 .cxs-mb{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
 .cxs-mf{display:flex;gap:8px;justify-content:flex-end;padding:14px 18px;border-top:1px solid #dcdcd5}
 .cxs-x{border:0;background:none;font-size:22px;line-height:1;padding:4px 8px;cursor:pointer}
+.cxs-podr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.cxs-podn{min-width:220px;min-height:70px;flex:1 1 220px;border:1px dashed #c9c9c9;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px;background:#fff}.cxs-podn img{max-height:90px;max-width:100%}
 .cxs-opt{display:flex;flex-direction:column;gap:6px}
 .cxs-opt label{display:flex;gap:9px;align-items:flex-start;font-weight:600;font-size:14px}
 .cxs-opt label span{display:block;font-weight:400;font-size:12px;color:#5f676d}
@@ -182,6 +183,42 @@ const CXSprava = (() => {
     document.head.appendChild(s);
   }
 
+  // 5.16: podpis z obrázku nebo PDF → oříznutý průhledný PNG (tmavé tahy zůstanou, bílé pozadí zmizí)
+  async function podpisZeSouboru(f) {
+    if (f.size > 25e6) throw new Error('soubor je příliš velký (víc než 25 MB)');
+    let c;
+    if (/pdf$/i.test(f.type) || /\.pdf$/i.test(f.name)) {
+      const m = await import('/dokumentace/pdfjs/pdf.min.mjs'); m.GlobalWorkerOptions.workerSrc = '/dokumentace/pdfjs/pdf.worker.min.mjs';
+      const doc = await m.getDocument({data: new Uint8Array(await f.arrayBuffer())}).promise, pg = await doc.getPage(1);
+      const vp0 = pg.getViewport({scale: 1}), vp = pg.getViewport({scale: Math.min(4, 2400 / Math.max(vp0.width, vp0.height))});
+      c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      await pg.render({canvasContext: g, viewport: vp}).promise;
+    } else {
+      const url = URL.createObjectURL(f);
+      try {
+        const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('obrázek nejde otevřít (zkuste JPG nebo PNG)')); i.src = url; });
+        const k = Math.min(1, 2400 / Math.max(im.naturalWidth, im.naturalHeight));
+        c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+      } finally { URL.revokeObjectURL(url); }
+    }
+    const W = c.width, H = c.height, d = c.getContext('2d').getImageData(0, 0, W, H).data;
+    // práh podle jasu papíru (fotka bývá šedivá): tahy = výrazně tmavší než pozadí
+    let sum = 0, cnt = 0; for (let i = 0; i < d.length; i += 4 * 37) { sum += d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; cnt++; }
+    const bg = Math.max(120, sum / cnt), prah = bg - 45;
+    let x0 = W, y0 = H, x1 = -1, y1 = -1;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; if (d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11 < prah) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
+    if (x1 < 0) throw new Error('na obrázku jsem nenašel podpis – nahrajte tmavý podpis na světlém papíře');
+    const m = Math.round(Math.max(x1 - x0, y1 - y0) * .03) + 2; x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m); x1 = Math.min(W - 1, x1 + m); y1 = Math.min(H - 1, y1 + m);
+    const w = x1 - x0 + 1, h = y1 - y0 + 1, k = Math.min(1, 700 / w, 260 / h);
+    const o = document.createElement('canvas'); o.width = Math.max(1, Math.round(w * k)); o.height = Math.max(1, Math.round(h * k));
+    const og = o.getContext('2d'); og.imageSmoothingQuality = 'high'; og.drawImage(c, x0, y0, w, h, 0, 0, o.width, o.height);
+    const id = og.getImageData(0, 0, o.width, o.height), p = id.data;
+    for (let i = 0; i < p.length; i += 4) { const l = p[i] * .3 + p[i + 1] * .59 + p[i + 2] * .11, a = Math.max(0, Math.min(1, (bg - 12 - l) / (bg - 12 - prah + 40))); p[i + 3] = Math.round(a * 255); }
+    og.putImageData(id, 0, 0);
+    return o.toDataURL('image/png');
+  }
   function okno(titul, telo, ok, onOk, toast) {
     const ov = document.createElement('div'); ov.className = 'cxs-ov cxs';
     ov.style.maxWidth = 'none';
@@ -299,6 +336,7 @@ const CXSprava = (() => {
       const em = emaily(o), hl = (em.find(x => x.rep) || em[0] || {}).a || '', dal = em.filter(x => x.a !== hl).map(x => x.a).join(', ');
       const firmy = [...new Set([p.company, o.company, ...(Array.isArray(p.firmy) ? p.firmy.map(f => f.firma) : [])].filter(Boolean))];
       const acc = o.access === 'nahlizi' ? 'nahlizi' : 'zapisuje', lzePrejm = !n || !!host.prejmenuj;
+      let podpis;   // 5.16: undefined = beze změny, '' = odebrat, data-URL = nový podpis
       const ov = okno(n ? 'Upravit kolegu' : 'Přidat kolegu', `
         <div><label class="l" for="cxs-kn">Jméno a příjmení</label><input id="cxs-kn" value="${esc(n || '')}" placeholder="např. Jan Novák"${lzePrejm ? '' : ' disabled'}>${lzePrejm ? '' : '<p class="hint">Jméno se mění v Managementu (promítne se do všech úkolů).</p>'}</div>
         <div class="cxs-grid" style="grid-template-columns:1fr 1fr">
@@ -308,6 +346,11 @@ const CXSprava = (() => {
           <div><label class="l" for="cxs-ke">E-mail (chodí na něj reporty)</label><input id="cxs-ke" type="email" value="${esc(hl)}" placeholder="jmeno@firma.cz"></div>
         </div>
         <div><label class="l" for="cxs-ke2">Další e-maily bez reportů <span class="hint" style="display:inline;font-weight:400">(nepovinné, oddělte čárkou)</span></label><input id="cxs-ke2" value="${esc(dal)}"></div>
+        <div class="cxs-pod"><label class="l">Podpis <span class="hint" style="display:inline;font-weight:400">(vloží se do faktury, kterou kolega potvrdí kódem)</span></label>
+          <div class="cxs-podr"><div class="cxs-podn" id="cxs-podn">${o.podpis ? `<img src="${esc(o.podpis)}" alt="Podpis">` : '<span class="hint">Podpis zatím není nahraný.</span>'}</div>
+          <label class="cxs-b" style="cursor:pointer">⬆ Nahrát podpis (JPG, PNG, PDF)<input type="file" id="cxs-podf" accept="image/*,.pdf,application/pdf" hidden></label>
+          <button type="button" class="cxs-b del" id="cxs-podx"${o.podpis ? '' : ' hidden'}>Odebrat podpis</button></div>
+          <p class="hint">Stačí fotka nebo sken podpisu na bílém papíře. Constructo ho samo ořízne a odstraní bílé pozadí.</p></div>
         <div><label class="l">Přístup do aplikace</label><div class="cxs-opt">${Object.entries(ACCESS).map(([k, [l, d]]) => `<label><input type="radio" name="cxs-acc" value="${k}"${acc === k ? ' checked' : ''}${adm && k === 'nahlizi' ? ' disabled' : ''}><div>${l}<span>${d}</span></div></label>`).join('')}</div></div>
         <div><label class="l">Oprávnění</label>${adm ? '<p class="hint">Správce stavby smí všechno.</p>' : `<div class="cxs-opt" id="cxs-pr">${PRAVA.map(([k, l, d]) => `<label><input type="checkbox" data-pr="${k}"${pr[k] ? ' checked' : ''}><div>${l}<span>${d}</span></div></label>`).join('')}</div>`}</div>`, n ? 'Uložit' : 'Přidat kolegu', async ov => {
         const g = id => ov.querySelector('#' + id).value.trim();
@@ -323,6 +366,7 @@ const CXSprava = (() => {
         await uloz(p0 => {
           const pp = Object.assign({}, p0.people || {});
           if (n && n !== jm) { delete pp[n]; smazano(p0, 'people', n); smazano(p0, 'team', n); }
+          if (podpis !== undefined) { if (podpis) pp[jm] = Object.assign({}, pp[jm] || (n ? o : {}), {podpis}); else if (pp[jm]) { pp[jm] = Object.assign({}, pp[jm]); delete pp[jm].podpis; } }
           pp[jm] = Object.assign({}, pp[jm] || (n ? o : {}), {emails, email: emails.filter(x => x.rep).map(x => x.a).join(','), role: g('cxs-kp'), phone: g('cxs-kt'), access, company: g('cxs-kf')}, prava ? {prava} : {}, {_ts: Date.now()});
           p0.people = pp;
           const t = tym(p0).filter(x => x !== n); if (!t.includes(jm)) t.push(jm); p0.team = t;
@@ -330,6 +374,14 @@ const CXSprava = (() => {
         });
         toast(n ? 'Uloženo' : 'Kolega přidán: ' + jm); render();
       }, toast);
+      const podF = ov.querySelector('#cxs-podf'), podN = ov.querySelector('#cxs-podn'), podX = ov.querySelector('#cxs-podx');
+      podF.onchange = async () => {
+        const f = podF.files[0]; podF.value = ''; if (!f) return;
+        podN.innerHTML = '<span class="hint">Zpracovávám podpis…</span>';
+        try { podpis = await podpisZeSouboru(f); podN.innerHTML = `<img src="${podpis}" alt="Podpis">`; podX.hidden = false; toast('Podpis načten – uloží se tlačítkem ' + (n ? 'Uložit' : 'Přidat kolegu') + '.'); }
+        catch (e) { podN.innerHTML = o.podpis && podpis !== '' ? `<img src="${esc(o.podpis)}" alt="Podpis">` : '<span class="hint">Podpis zatím není nahraný.</span>'; toast('Podpis se nepodařilo načíst: ' + (e.message || e)); }
+      };
+      podX.onclick = () => { podpis = ''; podN.innerHTML = '<span class="hint">Podpis bude odebrán po uložení.</span>'; podX.hidden = true; };
       const ps = ov.querySelector('#cxs-kp');
       if (ps && !adm) ps.onchange = () => { const x = PRAVA_POZICE[ps.value]; if (x) PRAVA.forEach(([k]) => { const c = ov.querySelector(`[data-pr="${k}"]`); if (c) c.checked = !!x[k]; }); };
       const prBox = ov.querySelector('#cxs-pr');

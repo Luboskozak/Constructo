@@ -32,6 +32,13 @@
     return;
   }
 
+  /* ---------- 5.14: starý Deník (/denik/) otevřený napřímo → nový Deník v Constructu ----------
+     Záloha: /denik/?stary=1 (pak platí do zavření okna). Uvnitř Managementu („Otevřít původní Deník“) se nepřesměrovává. */
+  if (!vRamci && /^\/denik(\/|$)/.test(location.pathname)) {
+    var stary = /[?&]stary=1/.test(location.search);
+    try { if (stary) sessionStorage.setItem('cx-stary', '1'); else stary = sessionStorage.getItem('cx-stary') === '1'; } catch (e) {}
+    if (!stary) { location.replace('/pc/#rezim-denik'); return; }
+  }
   if (!jePc || vRamci) return;
 
   /* ---------- Management (hlavní okno) ---------- */
@@ -101,12 +108,9 @@
     ukazManagement(e.data.hash || '');
   });
 
-  function predem() { vytvor(); }
   function start() {
     if (location.hash === '#denik') { ukazDenik(); return; }
-    // Deník se načte na pozadí, až Management doběhne – první přepnutí je pak okamžité
-    var spust = function () { setTimeout(function () { (w.requestIdleCallback || function (f) { setTimeout(f, 1); })(predem, {timeout: 4000}); }, 1500); };
-    if (d.readyState === 'complete') spust(); else w.addEventListener('load', spust);
+    // 5.14: nový Deník je přímo v Constructu – starý se už předem nenačítá (jen po kliknutí na „Otevřít původní Deník“)
   }
   if (d.body) start(); else d.addEventListener('DOMContentLoaded', start);
 })();

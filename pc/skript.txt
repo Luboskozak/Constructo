@@ -1,7 +1,7 @@
 // Constructo (Řízení prací Hybernská) – sdílené úložiště dat a fotek z mobilu (Google Apps Script), verze skriptu 19
 // Data se ukládají do souboru rizeni-praci-hybernska-data.json na Disku Google; každý den se uloží i záložní kopie.
 const HESLO = '@@HESLO@@';
-const SKRIPT_VERZE = 22;
+const SKRIPT_VERZE = 23;
 
 function doGet(e) { return odpoved_(e.parameter.key, Number(e.parameter.rev), null, {mobil: e.parameter.mobil === '1'}); }
 function doPost(e) {
@@ -604,7 +604,7 @@ function uloz_(p, d) {
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 function mergeData(a, b) {
-    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id};
+    const KEYS = {tasks: r => r.id, hmg: r => String(r.hid), hmgGroups: r => r.obj, diary: r => r.id, log: r => r.id, zavady: r => r.id, dokumenty: r => r.id, rozpocty: r => r.id, rozpKat: r => r.id, faktury: r => r.id, predani: r => r.id, poptavky: r => r.id};
     a = a || {}; b = b || {};
     const out = Object.assign({}, a); out.tomb = {};
     Object.keys(KEYS).forEach(c => {
@@ -708,7 +708,7 @@ function zavada_(b) {
   const obr = {};
   Object.keys(b.obr || {}).slice(0, 10).forEach(function (k) { if (/^\w+$/.test(k) && b.obr[k]) obr[k] = blob_(b.obr[k], k === 'logo' ? 'image/png' : 'image/jpeg', k + (k === 'logo' ? '.png' : '.jpg')); });
   const o = {to: komu, subject: String(b.predmet || 'Hlášení závady').slice(0, 200), body: String(b.text || ''), htmlBody: String(b.html || ''), inlineImages: obr,
-    attachments: b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\w.-]/g, '_'))] : [],
+    attachments: (b.pdf ? [blob_(b.pdf, 'application/pdf', String(b.pdfJmeno || 'zavada.pdf').replace(/[^\w.-]/g, '_'))] : []).concat(b.priloha && b.priloha.data ? [blob_(b.priloha.data, String(b.priloha.mime || 'application/octet-stream'), String(b.priloha.jmeno || 'priloha').replace(/[^\w.-]/g, '_'))] : []),
     name: (String(b.od || '').slice(0, 60) || 'Constructo') + ' (Constructo)'};
   const zpet = String(b.odpovedet || '').trim();
   if (adr.test(zpet)) { o.replyTo = zpet; o.cc = zpet; }
