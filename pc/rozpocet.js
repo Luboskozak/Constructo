@@ -182,6 +182,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .pp-krok{background:#eef6ff;border:1px solid #c6dcf3;border-radius:9px;padding:7px 10px;font-size:13px;color:#1d4f7f}.pp-ck{width:34px;text-align:center}.pp-ck input{width:18px;height:18px;cursor:pointer}.pp-off td{color:#aaa;text-decoration:line-through;background:#f6f6f3}.pp-off td.pp-ck{text-decoration:none}.pp-pr td{background:#fffbe6}.pp-prz{background:#f6d35b;color:#5a4500;border-radius:5px;padding:0 5px;font-size:11px}.pp-rh{align-items:center;gap:10px}.pp-rh>span{flex:1}
 .pp-vl{background:#fff;border-radius:8px;padding:8px;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.1)}.pp-vl[hidden]{display:none}.pp-vl input{width:100%;box-sizing:border-box;font:inherit;font-size:14.5px;padding:7px 9px;border:1px solid #c9c9c9;border-radius:8px}.pp-vlr{max-height:300px;overflow:auto;margin-top:6px}
 .pp-pdt{cursor:pointer}.pp-pdt:hover{color:#1d4f7f;text-decoration:underline}.pp-sip{display:inline-block;color:#1d4f7f;transition:transform .15s}.pp-pdt.ot .pp-sip{transform:rotate(90deg)}.pp-dn{color:#1d4f7f;font-size:11px;background:#eef6ff;border-radius:5px;padding:0 5px}.pp-det td{background:#f7f9fc;color:#4a5560;font-size:12.5px;border-bottom:1px dashed #e3e7ec}.pp-det[hidden]{display:none}.pp-dk{color:#8a96a3;font-size:11px}
+.pp-vlz{background:#d9ecff;color:#1d4f7f}.pp-vf2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;min-width:min(760px,90vw)}.pp-w2{grid-column:span 2}.pp-w3{grid-column:1/-1}.pp-hpop{font-size:11.5px;color:#1d4f7f;background:#eef6ff;border-radius:5px;padding:1px 6px;margin-top:2px;display:inline-block}
 @media (max-width:900px){.pp,.pp-2,.pp-vyh{grid-template-columns:1fr}}
 .fk2-vel{font-size:16px!important;padding:10px 20px!important;font-weight:800}
 .fk2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
@@ -575,7 +576,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 
   /* ---------- host (Management) ---------- */
   let H = null, EL = null;
-  const S = {panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, druhyV: '', skOtv: new Set(), fak: null, vf: {obd: '', odb: '', kat: '', q: '', sk: 'mes'}, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
+  const S = {popVse: pam('rz-popisky') === '1', panel: pam('rz-panel') || 'rozpocet', rp: pam('rz-rp') || '', q: '', obj: '', kat: '', pod: '', dil: '', cast: '', obor: '', uroven: 0, jenUpoz: false, druhyV: '', skOtv: new Set(), fak: null, vf: {obd: '', odb: '', kat: '', q: '', sk: 'mes'}, otev: new Set(), zav: new Set(), vyb: new Set(), nacitam: '', chyba: '', verze: 0, verzeT: 0, aktT: 0};
   const toast = m => H && H.toast ? H.toast(m) : alert(m);
   const ro = () => !!(H && H.ro && H.ro());
   const smi = k => !H || !H.smi || !!H.smi(k);   // 4.61: oprávnění osoby (rozp / fakt / fakU)
@@ -946,6 +947,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const r = R.rows[i];
     if (S.zav.has(r.id)) return true;
     if (S.otev.has(r.id)) return false;
+    // 5.23: popisky pod položkou (PP/VV) jsou primárně schované; hromadně Rozbalit / Zabalit popisky
+    if (r.t === 'P') return !S.popVse;
     if (filtrAktivni()) return true;
     if (S.uroven) { const j = i + 1; return j < R.rows.length && R.lv[j] >= S.uroven; }
     return !!R.skr0[i];
@@ -997,7 +1000,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
       if (ok[i]) { if (r.t !== 'L' || R.vicListu) out.push(i); continue; }
-      if (r.t === 'D' && ok[r.p] === 1 && S.otev.has(rows[r.p].id)) out.push(i);
+      if (r.t === 'D' && ok[r.p] === 1 && !zavreno(r.p)) out.push(i);
     }
     return out;
   }
@@ -1050,6 +1053,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
         ${R ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Rozpočet bez cen pro firmy: vyberete položky, uvidíte náhled, pak tisk, Excel nebo odeslání firmám">📄 Vytvořit slepý rozpočet</button>${S.fak ? '' : filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini" data-a="fak-filtr"${nefak() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vyfiltrované…</button>` : ''}` : ''}
         <span class="sp" style="flex:1"></span>
+        <button type="button" class="rz-btn mini" data-a="pop-vse" title="Popisky a výpočty výměr pod položkami – jednotlivě je rozbalíte tlačítkem + u položky">${S.popVse ? '▾ Zabalit popisky' : '▸ Rozbalit popisky'}</button>
         <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
         <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
       </div>
@@ -1257,6 +1261,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     on('[data-a="rozpr"]', 'click', () => { if (S.fak) { toast('Faktura je rozpracovaná dole v liště – vyberte položky a klikněte Pokračovat do faktury.'); return; } const rf = faktury(R.rec.id).filter(f => !f.uzavreno); if (rf.length === 1) editorFaktury(rf[0].id); else { S.panel = 'fakturace'; pamSet('rz-panel', 'fakturace'); prekresli(); } });
     on('[data-a="menu-rp"]', 'click', e => menuRozpoctu(e.currentTarget));
     on('[data-a="xls-roz"]', 'click', () => excelRozpocet());
+    on('[data-a="pop-vse"]', 'click', () => { S.popVse = !S.popVse; pamSet('rz-popisky', S.popVse ? '1' : ''); R.polozky.forEach(r => { S.otev.delete(r.id); S.zav.delete(r.id); }); prekresli(); });
     on('[data-ur]', 'click', e => { S.uroven = +e.currentTarget.dataset.ur || 0; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
     const q = EL.querySelector('[data-a="q"]');
     if (q) { let t = 0; q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { S.q = q.value; SCROLL = 0; const pos = q.selectionStart; prekresli(); const n = EL.querySelector('[data-a="q"]'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 250); }); }
@@ -2365,12 +2370,15 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     try { const v = spocitejViditelne(spocti(R)); return {ids: v._ids || [], kc: v._kc || 0, popis: popisFiltru()}; }
     finally { Object.assign(S, bak); }
   }
-  const polPop = P => (P.pol || []).map(([rid, mn]) => { const r = R.byId.get(rid); return r ? {r, mn, dil: R.dil[r.i] || ''} : null; }).filter(Boolean);
+  // 5.23: vlastní položky poptávky (P.vlastni) – stejná struktura jako rozpočet: kód, popis, MJ, množství, objekt, podlaží, díl, popisky
+  const vlRad = (v, n) => ({id: v.id, k: v.k || '', d: v.d || '', mj: v.mj || '', jc: null, i: 1e9 + n, vl: v});
+  const polPop = P => { const vm = new Map((P.vlastni || []).map((v, n) => [v.id, vlRad(v, n)])); return (P.pol || []).map(([rid, mn]) => { const r = R.byId.get(rid) || vm.get(rid); return r ? {r, mn, dil: r.vl ? (r.vl.dil || 'Vlastní položky') : R.dil[r.i] || ''} : null; }).filter(Boolean); };
   const mnPop = (r, sh) => r.mn == null ? null : Math.round(r.mn * (sh == null ? 1 : sh) * 1000) / 1000;
   // 5.22: popisky pod položkou (řádky PP/VV/PSC z rozpočtu) – klik na popis je ukáže / schová
-  const detiPol = r => (R.deti[r.i] || []).map(c => R.rows[c]).filter(d => d && d.t === 'D' && (d.d || d.mn != null));
+  const detiPol = r => r.vl ? (r.vl.popisky || []).filter(Boolean).map(d => ({t: 'D', d})) : (R.deti[r.i] || []).map(c => R.rows[c]).filter(d => d && d.t === 'D' && (d.d || d.mn != null));
   const popisTd = (x, extra) => { const dn = detiPol(x.r).length; return `<td${dn ? ` class="pp-pdt" data-pdt="${esc(x.r.id)}" title="Kliknutím ukážete popisky pod položkou"` : ''}>${dn ? '<span class="pp-sip">▸</span> ' : ''}${esc(x.r.d || '')}${extra || ''}${dn ? ` <small class="pp-dn">${dn} ${dn === 1 ? 'popisek' : dn < 5 ? 'popisky' : 'popisků'}</small>` : ''}</td>`; };
   const detiTr = (x, pred, za) => detiPol(x.r).map(d => `<tr class="pp-det" data-pd="${esc(x.r.id)}" hidden>${pred}<td class="pp-dk">${esc(d.k || '')}</td><td colspan="${za}">${esc(d.d || '')}${d.mn != null && !String(d.d || '').includes(String(d.mn)) ? ` <b>= ${esc(mnT(d.mn))}</b>` : ''}</td></tr>`).join('');
+  const detiVse = (el, btn) => { if (!el || !btn) return; btn.onclick = () => { const ot = btn.dataset.ot !== '1'; btn.dataset.ot = ot ? '1' : ''; btn.textContent = ot ? '▾ Zabalit popisky' : '▸ Rozbalit popisky'; el.querySelectorAll('tr[data-pd]').forEach(x => { x.hidden = !ot; }); el.querySelectorAll('[data-pdt]').forEach(x => x.classList.toggle('ot', ot)); }; };
   const detiKlik = el => el.addEventListener('click', e => { const t = e.target.closest('[data-pdt]'); if (!t) return; const id = t.dataset.pdt, tr = [...el.querySelectorAll('tr[data-pd]')].filter(x => x.dataset.pd === id), ot = tr.length && tr[0].hidden; tr.forEach(x => { x.hidden = !ot; }); t.classList.toggle('ot', ot); });
   function nahledPopHtml(radky, max) {
     let dil = null, n = 0; const out = [];
@@ -2381,6 +2389,29 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     }
     return `<table class="pp-t"><thead><tr><th>Kód</th><th>Popis položky</th><th>MJ</th><th class="n">Množství</th><th class="n">Cena za MJ</th><th class="n">Celkem</th></tr></thead><tbody>${out.join('')}</tbody></table>${radky.length > max ? `<p class="pp-dal">… a dalších ${nf0.format(radky.length - max)} položek (v Excelu a tisku budou všechny)</p>` : ''}`;
   }
+  // 5.23: chytré hledání položek – bez diakritiky, kořeny slov, příbuzná slova, hledá i v popiscích pod položkou
+  const SYN = [['bour', 'rozebr', 'demont', 'vybour', 'odstran', 'likvid', 'rozbour'], ['chodn', 'komunikac', 'pesi', 'chodnik'], ['dlazb', 'dlazd'], ['okn', 'oken', 'okenn'], ['dver', 'dvir'], ['zed', 'zdi', 'zdiv', 'zden'], ['vykop', 'hloub', 'vykopav'], ['omit', 'stuk'], ['malb', 'malir', 'nater'], ['strech', 'krov', 'krytin'], ['izol', 'hydroizol'], ['podlah', 'podlaz'], ['obklad', 'obklad'], ['zabradl', 'madl'], ['sut', 'odpad'], ['lesen'], ['beton', 'zelezobet']];
+  const kmen = w => w.length > 5 ? w.slice(0, Math.max(4, w.length - 2)) : w;
+  function hledejChytre(q) {
+    const STOP = new Set(['a', 'v', 've', 'na', 'z', 'ze', 'do', 'pro', 's', 'se', 'k', 'u', 'o', 'i', 'tl', 'mm', 'od']);
+    const sl = norm(q).toLowerCase().split(' ').filter(w => w && !STOP.has(w));
+    if (!sl.length) return [];
+    const var_ = sl.map(w => { const k = kmen(w), g = SYN.find(gr => gr.some(x => k.startsWith(x) || x.startsWith(k))); return [k].concat(g || []); });
+    const out = [];
+    R.polozky.forEach(r => {
+      const h = r._hz || (r._hz = norm(r.k + ' ' + r.d + ' ' + r.mj + ' ' + (R.dil[r.i] || '')).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+      const ma = (sl, v) => v.some(x => sl.some(w => w.startsWith(x)));
+      let pops = null, skore = 0, nal = 0, pop = '';
+      var_.forEach(v => {
+        if (ma(h, v)) { skore += 2; nal++; return; }
+        if (!pops) pops = (R.deti[r.i] || []).map(c => R.rows[c]).filter(d => d && d.t === 'D' && d.d).map(d => [norm(d.d).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean), d.d]);
+        const p = pops.find(([t]) => ma(t, v)); if (p) { skore += 1; nal++; if (!pop) pop = p[1]; }
+      });
+      if (!nal || nal < Math.ceil(var_.length / 2)) return;
+      out.push({r, cel: nal === var_.length, skore, pop});
+    });
+    return out.sort((a, b) => (b.cel - a.cel) || (b.skore - a.skore) || (a.r.i - b.r.i));
+  }
   // 1) okno: filtry (zaškrtávání + hledání), náhled slepého rozpočtu, potvrdit
   function novaPoptavka(fl0, Pe) {
     if (!R) return toast('Nejdřív nahrajte rozpočet.');
@@ -2388,7 +2419,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const fl = {}; FKL.forEach(k => { fl[k] = ((Pe ? Pe.filtr : fl0) || S)[k] || ''; });
     // 5.21: ruční úpravy výběru – odebrané (odškrtnuté) a ručně vložené položky
     const vyp = new Set(), prid = new Map();
-    if (Pe) { const f = new Set(vyberPodle(fl).ids.map(x => x[0])), v = new Set((Pe.pol || []).map(x => x[0])); f.forEach(id => { if (!v.has(id)) vyp.add(id); }); (Pe.pol || []).forEach(([id, mn]) => { if (!f.has(id)) prid.set(id, mn); }); }
+    if (Pe) { const f = new Set(vyberPodle(fl).ids.map(x => x[0])), v = new Set((Pe.pol || []).map(x => x[0])); f.forEach(id => { if (!v.has(id)) vyp.add(id); }); (Pe.pol || []).forEach(([id, mn]) => { if (!f.has(id) && R.byId.has(id)) prid.set(id, mn); }); }
+    const vlast = Pe ? (Pe.vlastni || []).map(v => Object.assign({}, v, {mn: ((Pe.pol || []).find(x => x[0] === v.id) || [])[1]})) : [];
     const C = spocti(R), sz = R.seznamy || {cast: [], dil: [], obor: []}, ks = kategorie(R.rec.id), cs = R.cinnosti || [];
     const objs = OBJEKTY.concat(Object.keys(C.objSum).filter(o => o && !OBJEKTY.includes(o)));
     const podl = [...new Set(Object.keys(C.mat).map(k => k.split('|')[0]))].filter(p => p !== '–').sort((x, y) => RADA_PODL(x) - RADA_PODL(y) || x.localeCompare(y));
@@ -2409,7 +2441,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <label class="pp-f">Termín pro nabídky (nepovinné)<input type="date" data-pt value="${esc(Pe && Pe.termin || '')}"></label>
         <label class="pp-f">Poznámka pro firmy (nepovinné)<textarea data-pz rows="2" placeholder="např. Ceny včetně dopravy a lešení.">${esc(Pe && Pe.pozn || '')}</textarea></label>
       </div>
-      <div class="pp-r"><div class="pp-rh"><b>Náhled slepého rozpočtu</b><span data-ps></span><button type="button" class="rz-btn zl" data-pvl>➕ Vložit položky</button></div>
+      <div class="pp-r"><div class="pp-rh"><b>Náhled slepého rozpočtu</b><span data-ps></span><button type="button" class="rz-btn" data-pdall>▸ Rozbalit popisky</button><button type="button" class="rz-btn" data-pvn>✚ Vlastní položka</button><button type="button" class="rz-btn zl" data-pvl>➕ Vložit z rozpočtu</button></div>
         <div class="pp-vl" data-pvlb hidden><input type="search" data-pvq placeholder="🔍 hledat v celém rozpočtu – kód nebo slovo" autocomplete="off"><div data-pvr class="pp-vlr"><p class="hint">Napište aspoň 2 znaky.</p></div></div>
         <div class="pp-nah" data-pnah></div></div></div>`,
       `<span class="sp"></span><button type="button" class="rz-btn" data-x2>Zrušit</button><button type="button" class="rz-btn ze fk2-big" data-ok>${Pe ? '✓ Uložit změny' : '✓ Potvrdit slepý rozpočet →'}</button>`, 'siroky');
@@ -2422,19 +2454,21 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       const fs = new Set(vyb.ids.map(x => x[0]));
       const rad = vyb.ids.map(([id, sh]) => { const r = R.byId.get(id); return {r, mn: mnPop(r, sh), dil: R.dil[r.i] || '', off: vyp.has(id)}; });
       prid.forEach((mn, id) => { if (fs.has(id)) return; const r = R.byId.get(id); if (r) rad.push({r, mn, dil: R.dil[r.i] || '', pr: true}); });
+      vlast.forEach((v, n) => rad.push({r: vlRad(v, n), mn: v.mn, dil: v.dil || 'Vlastní položky', pr: true, vl: true}));
       rad.sort((a, b) => a.r.i - b.r.i);
       fin = rad.filter(x => !x.off);
-      const nOff = rad.filter(x => x.off).length, nPr = rad.filter(x => x.pr).length;
-      ov.querySelector('[data-ps]').innerHTML = `<b>${nf0.format(fin.length)}</b> položek v poptávce` + (nOff ? ` · odebráno ${nOff}` : '') + (nPr ? ` · vloženo ${nPr}` : '') + (FKL.some(k => fl[k]) || nPr ? '' : ' – celý rozpočet, zužte ho filtry vlevo');
+      const nOff = rad.filter(x => x.off).length, nPr = rad.filter(x => x.pr && !x.vl).length, nVl = vlast.length;
+      ov.querySelector('[data-ps]').innerHTML = `<b>${nf0.format(fin.length)}</b> položek v poptávce` + (nOff ? ` · odebráno ${nOff}` : '') + (nPr ? ` · vloženo ${nPr}` : '') + (nVl ? ` · vlastní ${nVl}` : '') + (FKL.some(k => fl[k]) || nPr ? '' : ' – celý rozpočet, zužte ho filtry vlevo');
       if (!rad.length) { ov.querySelector('[data-pnah]').innerHTML = '<p class="fk2-pr">Filtru neodpovídá žádná položka. Zkuste jiný filtr nebo ➕ Vložit položky.</p>'; }
       else {
         let dil = null; const out = [];
         rad.slice(0, MAXN).forEach(x => {
           if (x.dil !== dil) { dil = x.dil; out.push(`<tr class="pp-d"><td></td><td colspan="6">${esc(dil || 'Bez dílu')}</td></tr>`); }
-          out.push(`<tr class="${x.off ? 'pp-off' : ''}${x.pr ? ' pp-pr' : ''}"><td class="pp-ck">${x.pr ? `<button type="button" class="rz-btn mini del" data-prx="${esc(x.r.id)}" title="Odebrat ručně vloženou položku">✕</button>` : `<input type="checkbox" data-pp1="${esc(x.r.id)}"${x.off ? '' : ' checked'}>`}</td><td>${esc(x.r.k || '')}</td>${popisTd(x, x.pr ? ' <small class="pp-prz">vloženo</small>' : '')}<td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n pp-c"></td><td class="n pp-c"></td></tr>` + detiTr(x, '<td></td>', 4));
+          out.push(`<tr class="${x.off ? 'pp-off' : ''}${x.pr ? ' pp-pr' : ''}"><td class="pp-ck">${x.pr ? `<button type="button" class="rz-btn mini del" data-prx="${esc(x.r.id)}" title="Odebrat ${x.vl ? 'vlastní' : 'ručně vloženou'} položku">✕</button>` : `<input type="checkbox" data-pp1="${esc(x.r.id)}"${x.off ? '' : ' checked'}>`}</td><td>${esc(x.r.k || '')}</td>${popisTd(x, x.vl ? ` <small class="pp-prz pp-vlz">vlastní${[x.r.vl.obj ? 'objekt ' + x.r.vl.obj : '', x.r.vl.pod || ''].filter(Boolean).map(t => ' · ' + esc(t)).join('')}</small> <button type="button" class="rz-btn mini" data-vlu="${esc(x.r.id)}">✏</button>` : x.pr ? ' <small class="pp-prz">vloženo</small>' : '')}<td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n pp-c"></td><td class="n pp-c"></td></tr>` + detiTr(x, '<td></td>', 4));
         });
         ov.querySelector('[data-pnah]').innerHTML = `<table class="pp-t"><thead><tr><th class="pp-ck"><input type="checkbox" data-ppall title="Zaškrtnout / odškrtnout vše"${nOff ? '' : ' checked'}></th><th>Kód</th><th>Popis položky</th><th>MJ</th><th class="n">Množství</th><th class="n">Cena za MJ</th><th class="n">Celkem</th></tr></thead><tbody>${out.join('')}</tbody></table>${rad.length > MAXN ? `<p class="pp-dal">… a dalších ${nf0.format(rad.length - MAXN)} položek – zužte výběr filtry, ať je můžete projít jednotlivě</p>` : ''}`;
       }
+      { const pa = ov.querySelector('[data-pdall]'); if (pa && pa.dataset.ot === '1') { ov.querySelectorAll('[data-pnah] tr[data-pd]').forEach(x => { x.hidden = false; }); ov.querySelectorAll('[data-pnah] [data-pdt]').forEach(x => x.classList.add('ot')); } }
       skup.forEach(([k]) => { const n = fl[k] ? fl[k].split(SEP).length : 0, e = ov.querySelector(`[data-pc="${k}"]`); if (e) e.textContent = n ? ' · vybráno ' + n : ''; });
       const pn = ov.querySelector('[data-pn]'); if (!pn.dataset.ruc) pn.value = vyb.popis ? 'Poptávka – ' + vyb.popis : 'Poptávka – ' + R.rec.nazev;
     };
@@ -2446,15 +2480,45 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       else if (t.hasAttribute('data-ppall')) { ov.querySelectorAll('[data-pp1]').forEach(c => { c.checked = t.checked; if (t.checked) vyp.delete(c.dataset.pp1); else vyp.add(c.dataset.pp1); c.closest('tr').classList.toggle('pp-off', !t.checked); }); kresliPocet(); }
     });
     detiKlik(ov.querySelector('[data-pnah]'));
-    ov.querySelector('[data-pnah]').addEventListener('click', e => { const b = e.target.closest('[data-prx]'); if (b) { prid.delete(b.dataset.prx); kresli(); } });
+    ov.querySelector('[data-pnah]').addEventListener('click', e => {
+      const b = e.target.closest('[data-prx]'); if (b) { const id = b.dataset.prx; prid.delete(id); const j = vlast.findIndex(v => v.id === id); if (j >= 0) vlast.splice(j, 1); kresli(); return; }
+      const u = e.target.closest('[data-vlu]'); if (u) { e.stopPropagation(); const v = vlast.find(x => x.id === u.dataset.vlu); if (v) vlastniPolozka(v, nv => { Object.assign(v, nv); kresli(); }); }
+    });
+    // vlastní položka – stejná struktura jako rozpočet
+    const dily = [...new Set(R.polozky.map(r => R.dil[r.i]).filter(Boolean))];
+    const vlastniPolozka = (v0, hotovo) => {
+      const v = v0 || {}, MJ = ['m', 'm2', 'm3', 'kus', 'ks', 'kpl', 'kg', 't', 'hod', 'soubor', 'bm'];
+      const o2 = okno(v0 ? 'Upravit vlastní položku' : 'Přidat vlastní položku', `<div class="pp-vf2">
+        <label class="pp-f">Kód (nepovinné)<input data-v="k" value="${esc(v.k || '')}" placeholder="např. V01"></label>
+        <label class="pp-f pp-w2">Popis položky *<input data-v="d" value="${esc(v.d || '')}" placeholder="např. Bourání chodníku z betonové dlažby tl. 60 mm"></label>
+        <label class="pp-f">Měrná jednotka *<input data-v="mj" list="pp-mjl" value="${esc(v.mj || '')}" placeholder="m2"><datalist id="pp-mjl">${MJ.map(m => `<option value="${m}">`).join('')}</datalist></label>
+        <label class="pp-f">Množství *<input data-v="mn" inputmode="decimal" value="${v.mn == null ? '' : esc(String(v.mn).replace('.', ','))}" placeholder="např. 125,5"></label>
+        <label class="pp-f">Objekt<select data-v="obj"><option value="">—</option>${objs.map(o => `<option value="${esc(o)}"${v.obj === o ? ' selected' : ''}>Objekt ${esc(o)}</option>`).join('')}</select></label>
+        <label class="pp-f">Podlaží<select data-v="pod"><option value="">—</option>${podl.map(o => `<option${v.pod === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label>
+        <label class="pp-f pp-w2">Díl (oddíl rozpočtu)<input data-v="dil" list="pp-dill" value="${esc(v.dil || '')}" placeholder="např. 9 Ostatní konstrukce a práce, bourání"><datalist id="pp-dill">${dily.map(d => `<option value="${esc(d)}">`).join('')}</datalist></label>
+        <label class="pp-f pp-w3">Popisky pod položkou (nepovinné – každý řádek jeden popisek, např. výpočet výměry)<textarea data-v="popisky" rows="4" placeholder="1.NP: 12,5*4,2 = 52,5&#10;2.NP: 10*7,3 = 73">${esc((v.popisky || []).join('\n'))}</textarea></label></div>`,
+        `<span class="sp"></span><button type="button" class="rz-btn" data-x2>Zrušit</button><button type="button" class="rz-btn ze fk2-big" data-ok>✓ ${v0 ? 'Uložit' : 'Přidat do poptávky'}</button>`);
+      o2.querySelector('[data-x2]').onclick = () => o2.zavri();
+      o2.querySelector('[data-ok]').onclick = () => {
+        const g = k => o2.querySelector(`[data-v="${k}"]`).value.trim();
+        const mn = parseFloat(g('mn').replace(/\s/g, '').replace(',', '.'));
+        if (!g('d')) return toast('Vyplňte popis položky.'); if (!g('mj')) return toast('Vyplňte měrnou jednotku.'); if (!(mn > 0)) return toast('Vyplňte množství.');
+        o2.zavri(); hotovo({k: g('k'), d: g('d'), mj: g('mj'), mn: Math.round(mn * 1000) / 1000, obj: g('obj'), pod: g('pod'), dil: g('dil'), popisky: g('popisky').split('\n').map(x => x.trim()).filter(Boolean)});
+      };
+      setTimeout(() => o2.querySelector('[data-v="d"]').focus(), 50);
+    };
     // vložit další položky – hledání v celém rozpočtu
     const vlB = ov.querySelector('[data-pvlb]'), vlQ = ov.querySelector('[data-pvq]'), vlR = ov.querySelector('[data-pvr]');
     ov.querySelector('[data-pvl]').onclick = () => { vlB.hidden = !vlB.hidden; if (!vlB.hidden) vlQ.focus(); };
+    ov.querySelector('[data-pvn]').onclick = () => vlastniPolozka(null, v => { vlast.push(Object.assign({id: 'vl' + uid()}, v)); kresli(); });
+    detiVse(ov.querySelector('[data-pnah]'), ov.querySelector('[data-pdall]'));
     let tq = 0;
     const hledej = () => {
       const q = vlQ.value.trim(); if (q.length < 2) { vlR.innerHTML = '<p class="hint">Napište aspoň 2 znaky.</p>'; return; }
-      const fs = new Set(fin.map(x => x.r.id)), ids = vyberPodle({q}).ids;
-      vlR.innerHTML = ids.length ? `<table class="pp-t"><tbody>${ids.slice(0, 150).map(([id, sh]) => { const r = R.byId.get(id), uz = fs.has(id); return `<tr><td class="pp-ck">${uz ? '<span title="Už je v poptávce">✓</span>' : `<button type="button" class="rz-btn mini ze" data-pv="${esc(id)}" data-sh="${sh == null ? '' : sh}">+ Vložit</button>`}</td><td>${esc(r.k || '')}</td><td>${esc(r.d || '')}<div style="font-size:11.5px;color:var(--muted)">${esc(R.dil[r.i] || '')}</div></td><td>${esc(r.mj || '')}</td><td class="n">${r.mn == null ? '' : mnT(mnPop(r, sh))}</td></tr>`; }).join('')}</tbody></table>${ids.length > 150 ? `<p class="pp-dal">Nalezeno ${nf0.format(ids.length)}, ukazuji prvních 150 – upřesněte hledání.</p>` : ''}` : '<p class="hint">Nic nenalezeno.</p>';
+      const fs = new Set(fin.map(x => x.r.id)), nal = hledejChytre(q);
+      const tr = ({r, sh, cel, pop}) => { const uz = fs.has(r.id); return `<tr><td class="pp-ck">${uz ? '<span title="Už je v poptávce">✓</span>' : `<button type="button" class="rz-btn mini ze" data-pv="${esc(r.id)}" data-sh="">+ Vložit</button>`}</td><td>${esc(r.k || '')}</td><td>${esc(r.d || '')}<div style="font-size:11.5px;color:var(--muted)">${esc(R.dil[r.i] || '')}</div>${pop ? `<div class="pp-hpop">popisek: ${esc(pop.slice(0, 140))}</div>` : ''}</td><td>${esc(r.mj || '')}</td><td class="n">${r.mn == null ? '' : mnT(r.mn)}</td></tr>`; };
+      const pr = nal.filter(x => x.cel), po = nal.filter(x => !x.cel);
+      vlR.innerHTML = nal.length ? `<table class="pp-t"><tbody>${pr.length ? '' : `<tr class="pp-d"><td colspan="5">Nic přesného – podobné položky:</td></tr>`}${pr.slice(0, 120).map(tr).join('')}${pr.length && po.length ? `<tr class="pp-d"><td colspan="5">Podobné položky</td></tr>` : ''}${po.slice(0, pr.length ? 40 : 120).map(tr).join('')}</tbody></table>${nal.length > 160 ? `<p class="pp-dal">Nalezeno ${nf0.format(nal.length)} – upřesněte hledání.</p>` : ''}` : '<p class="hint">Nic nenalezeno ani v popiscích. Zkuste jiné slovo, nebo přidejte ✚ Vlastní položku.</p>';
     };
     vlQ.addEventListener('input', () => { clearTimeout(tq); tq = setTimeout(hledej, 250); });
     vlR.addEventListener('click', e => { const b = e.target.closest('[data-pv]'); if (!b) return; const id = b.dataset.pv, sh = b.dataset.sh === '' ? null : +b.dataset.sh; vyp.delete(id); if (!vyb.ids.some(x => x[0] === id)) prid.set(id, mnPop(R.byId.get(id), sh)); b.outerHTML = '<span title="Vloženo">✓</span>'; kresli(); });
@@ -2466,16 +2530,16 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     kresli();
     ov.querySelector('[data-ok]').onclick = () => {
       if (!fin.length) return toast('V poptávce nejsou žádné položky.');
-      const pol = fin.map(x => [x.r.id, x.mn]);
+      const pol = fin.map(x => [x.r.id, x.mn]), vlastni = vlast.map(v => ({id: v.id, k: v.k, d: v.d, mj: v.mj, obj: v.obj, pod: v.pod, dil: v.dil, popisky: v.popisky || []}));
       if (Pe) {
         const akt = sez('poptavky').find(y => y.id === Pe.id) || Pe;
         if ((akt.odeslano || []).length && !confirm('Poptávka už byla odeslána firmám. Po změně položek ji pošlete znovu, ať firmy nacení aktuální seznam. Uložit změny?')) return;
-        const P = Object.assign({}, akt, {nazev: ov.querySelector('[data-pn]').value.trim() || akt.nazev, filtr: Object.assign({}, fl), pol, termin: ov.querySelector('[data-pt]').value, pozn: ov.querySelector('[data-pz]').value.trim(), upraveno: new Date().toISOString()});
+        const P = Object.assign({}, akt, {nazev: ov.querySelector('[data-pn]').value.trim() || akt.nazev, filtr: Object.assign({}, fl), pol, vlastni, termin: ov.querySelector('[data-pt]').value, pozn: ov.querySelector('[data-pz]').value.trim(), upraveno: new Date().toISOString()});
         H.upsert('poptavky', [P]); ov.zavri(); prekresli(); detailPoptavky(P.id); return;
       }
       const n = poptavky(R.rec.id).length + 1;
       const P = {id: 'pp' + uid(), rp: R.rec.id, cislo: 'P' + new Date().getFullYear() + '-' + String(n).padStart(3, '0'), nazev: ov.querySelector('[data-pn]').value.trim() || 'Poptávka', kdy: new Date().toISOString(), kdo: kdo(),
-        filtr: Object.assign({}, fl), pol, termin: ov.querySelector('[data-pt]').value, pozn: ov.querySelector('[data-pz]').value.trim(), odeslano: [], nabidky: []};
+        filtr: Object.assign({}, fl), pol, vlastni, termin: ov.querySelector('[data-pt]').value, pozn: ov.querySelector('[data-pz]').value.trim(), odeslano: [], nabidky: []};
       H.upsert('poptavky', [P]); ov.zavri(); S.panel = 'poptavky'; pamSet('rz-panel', 'poptavky'); prekresli();
       detailPoptavky(P.id);
     };
@@ -2516,12 +2580,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       <div class="pp-akce"><button type="button" class="rz-btn" data-pupr${ro() ? ' disabled' : ''}>✏ Upravit položky</button><button type="button" class="rz-btn" data-tisk>🖨 Tisk</button><button type="button" class="rz-btn" data-xls>⬇ Uložit Excel</button><button type="button" class="rz-btn zl fk2-big" data-posl>📨 Odeslat firmám…</button><button type="button" class="rz-btn fk2-big" data-nab>⬆ Nahrát naceněnou nabídku…</button>${nab.length ? `<button type="button" class="rz-btn ze fk2-big" data-vyh>📊 Vyhodnotit nabídky (${nab.length})</button>` : ''}</div>
       <div class="pp-2"><section><h4>Odesláno firmám</h4>${ods.length ? `<table class="pp-t"><tbody>${ods.map(o => `<tr><td><b>${esc(o.firma)}</b><br><small>${esc(o.email)}</small></td><td>${esc(new Date(o.kdy).toLocaleString('cs-CZ'))}<br><small>${esc(o.kdo || '')}</small></td><td>${nab.some(n => n.firma === o.firma) ? '<b style="color:#1f8a4c">✓ nabídka přišla</b>' : '<span style="color:var(--muted)">čeká na nabídku</span>'}</td></tr>`).join('')}</tbody></table>` : '<p class="hint">Zatím neodesláno.</p>'}</section>
       <section><h4>Naceněné nabídky</h4>${nab.length ? `<table class="pp-t"><tbody>${nab.map(n => { const s = souhrnNab(P, n); return `<tr><td><b>${esc(n.firma)}</b><br><small>${esc(n.soubor || '')}</small></td><td class="n"><b>${kc0(s.celkem)}</b><br><small>${s.chybi ? `<span style="color:var(--bad)">nenacenil ${s.chybi} z ${rad.length} pol. – srovnám jen srovnatelné</span>` : 'všechny položky naceněné'}</small></td><td><button type="button" class="rz-btn mini del" data-nsm="${esc(n.id)}">✕</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="hint">Až firma pošle naceněný Excel, nahrajte ho tlačítkem ⬆ Nahrát naceněnou nabídku. Constructo ho samo přiřadí k položkám.</p>'}</section></div>
-      <h4 style="margin:14px 0 6px">Slepý rozpočet</h4><div class="pp-nah">${nahledPopHtml(rad, 200)}</div></div>`,
+      <h4 style="margin:14px 0 6px;display:flex;align-items:center;gap:10px">Slepý rozpočet <button type="button" class="rz-btn mini" data-pdall>▸ Rozbalit popisky</button></h4><div class="pp-nah">${nahledPopHtml(rad, 200)}</div></div>`,
       `<button type="button" class="rz-btn del" data-smaz>Smazat poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-x2>Zavřít</button>`, 'siroky');
     ov.querySelector('[data-x2]').onclick = () => ov.zavri();
     ov.querySelector('[data-tisk]').onclick = () => tiskPoptavky(P);
     ov.querySelector('[data-pupr]').onclick = () => { ov.zavri(); novaPoptavka(null, P); };
     ov.querySelectorAll('.pp-nah').forEach(detiKlik);
+    detiVse(ov.querySelector('.pp-nah'), ov.querySelector('[data-pdall]'));
     ov.querySelector('[data-xls]').onclick = async () => { const w = cekej('Připravuji Excel…'); try { stahni(await excelPopBlob(P), nazevPop(P) + '.xlsx'); } catch (e) { toast('Excel se nepodařilo vytvořit: ' + e.message); } finally { w.konec(); } };
     ov.querySelector('[data-posl]').onclick = () => { ov.zavri(); odeslatPoptavku(P.id); };
     ov.querySelector('[data-nab]').onclick = () => { ov.zavri(); nahratNabidku(P.id); };
