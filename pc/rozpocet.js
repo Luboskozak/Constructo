@@ -177,6 +177,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .pp-vf{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:14px;margin-bottom:8px}.pp-vf label{display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;border:1px solid #ddd;border-radius:8px;padding:5px 10px}.pp-vf input{width:18px;height:18px}.pp-vf small{color:var(--muted)}
 .pp-srov{display:block;background:#fff7e0;border:1px solid #f0d58a;border-radius:10px;padding:9px 12px;font-size:14px;margin-bottom:10px}.pp-gr{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:#fff}.pp-graf{width:100%;height:auto;display:block}.pp-leg{display:flex;gap:18px;font-size:12.5px;color:var(--muted);padding:2px 4px}.pp-leg i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
 .pp-por2{margin-bottom:12px;padding:0;overflow:auto}.pp-por2 table{width:100%}.pp-1 td{background:#dff3e6}.pp-nesr td{background:#f1f1ee;color:#8a8a85}.pp-nesr td .pp-min,.pp-nesr .pp-min{background:#f1f1ee;color:#8a8a85;font-weight:400}
+.pp-hod{border:1px solid var(--line,#ddd);border-radius:12px;background:#fff;padding:10px 14px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}.pp-hod h4{margin:0;font-size:15px}.pp-hb{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45}.pp-hb>i{flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:13px;color:#fff;background:#7a9bb8}.pp-h-ok>i{background:#1f8a4c}.pp-h-pozor>i{background:#d97a00}.pp-h-tip>i{background:#fff4c2}.pp-hb ul{margin:4px 0 0;padding-left:18px;font-size:13px;color:#444}.pp-pod{outline:2px solid #e08a00;outline-offset:-2px;background:#fff4e0}
 @media (max-width:900px){.pp,.pp-2,.pp-vyh{grid-template-columns:1fr}}
 .fk2-vel{font-size:16px!important;padding:10px 20px!important;font-weight:800}
 .fk2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
@@ -2617,6 +2618,50 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       ${r.rozp ? '' : `<rect x="${L}" y="${y + 32}" width="${BW}" height="5" rx="2.5" fill="#eee"/><rect x="${L}" y="${y + 32}" width="${Math.max(1, r.pok * BW)}" height="5" rx="2.5" fill="${r.pok < 1 ? '#e08a00' : '#1f8a4c'}"/>`}
       <text x="${L + w + 8}" y="${y + 21}" font-size="14" font-weight="700" fill="#16191c">${kc0(Math.round(r.v))}</text>`; }).join('')}</svg>`;
   }
+  // 5.20: slovní (logické) hodnocení nabídek – úplnost, podezřelé ceny, doporučení
+  function podezreleCeny(V, vyb) {
+    const out = [];
+    V.rad.forEach(x => {
+      const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]);
+      ce.forEach((v, i) => {
+        if (v == null) return;
+        const ost = ce.filter((z, j) => j !== i && z != null).sort((a, b) => a - b); if (!ost.length) return;
+        const med = ost.length % 2 ? ost[(ost.length - 1) / 2] : (ost[ost.length / 2 - 1] + ost[ost.length / 2]) / 2; if (!(med > 0)) return;
+        const pom = v / med; if (pom >= 0.5 && pom <= 2) return;
+        // jen dvě ceny: odlehlá je ta, která je dál od rozpočtu; bez ceny v rozpočtu jen ta nižší
+        if (ost.length === 1) { const jc = x.r.jc; if (jc > 0 ? Math.abs(Math.log(v / jc)) <= Math.abs(Math.log(med / jc)) : v > med) return; }
+        out.push({x, i, firma: vyb[i].firma, v, med, pom, nizka: pom < 0.5, dopad: Math.abs(v - med) * (x.mn || 0)});
+      });
+    });
+    return out.sort((a, b) => b.dopad - a.dopad);
+  }
+  function hodnoceniNabidek(V, vyb, komb) {
+    const B = [], N = V.rad.length, pr = v => (Math.round(v * 1000) / 10).toLocaleString('cs-CZ') + ' %';
+    const uplne = V.sm.filter(x => x.pok >= 0.95).sort((a, b) => a.odhad - b.odhad), nej = V.sm[0];
+    // 1) doporučení
+    if (uplne.length) {
+      const u = uplne[0];
+      B.push({t: 'ok', h: `<b>Na celou zakázku doporučuji ${esc(u.n.firma)}</b> – ${u.chybi ? `nacenil ${u.nac} z ${N} položek` : 'nacenil všechny položky'}, celkem ${kc0(u.celkem)} bez DPH${u.chybi ? ` (po doplnění asi ${kc0(u.odhad)})` : ''}.${uplne[1] ? ` Druhá úplná nabídka (${esc(uplne[1].n.firma)}) je dražší o ${kc0(uplne[1].odhad - u.odhad)} (${pr((uplne[1].odhad - u.odhad) / uplne[1].odhad)}).` : ''}`});
+      if (nej !== u && nej.pok < 0.95 && nej.odhad < u.odhad) B.push({t: 'tip', h: `<b>${esc(nej.n.firma)}</b> je na srovnatelných položkách levnější o ${pr((V.sm.find(s => s === u).srov - nej.srov) / V.sm.find(s => s === u).srov)}, ale nacenil jen ${nej.nac} z ${N} položek. Kdyby zbytek nacenil v obvyklých cenách, vyšla by celá zakázka asi na ${kc0(nej.odhad)}. <b>Vyplatí se ho požádat o dopočet chybějících ${nej.chybi} položek.</b>`});
+      else if (nej !== u && nej.pok < 0.95) B.push({t: 'info', h: `${esc(nej.n.firma)} je levnější jen na položkách, které nacenil (${nej.nac} z ${N}). Po doplnění chybějících položek by celek vyšel asi na ${kc0(nej.odhad)}, tedy dráž než ${esc(u.n.firma)}.`});
+    } else {
+      B.push({t: 'pozor', h: `<b>Žádná firma nenacenila celý rozpočet.</b> Nejlépe podle odhadu celé zakázky vychází ${esc([...V.sm].sort((a, b) => a.odhad - b.odhad)[0].n.firma)}. Před zadáním si nechte chybějící položky docenit.`});
+    }
+    // 2) neúplné nabídky
+    V.sm.filter(x => x.pok < 0.95).forEach(x => B.push({t: x.pok < 0.5 ? 'pozor' : 'info', h: `${esc(x.n.firma)} nacenil jen ${x.nac} z ${N} položek (${pr(x.pok)})${x.pok < 0.5 ? ' – jako jediný dodavatel se nehodí, jde spíš o nabídku na část prací' : ''}.`}));
+    // 3) podezřelé ceny
+    const pod = podezreleCeny(V, vyb);
+    if (pod.length) {
+      const poF = new Map(); pod.forEach(p => { const o = poF.get(p.firma) || {n: 0, v: 0}; o[p.nizka ? 'n' : 'v']++; poF.set(p.firma, o); });
+      B.push({t: 'pozor', h: `<b>Ceny k prověření (${pod.length}):</b> ${[...poF.entries()].map(([f, o]) => esc(f) + ': ' + [o.n ? o.n + '× podezřele nízká' : '', o.v ? o.v + '× výrazně vyšší' : ''].filter(Boolean).join(', ')).join('; ')}. Velmi nízká cena bývá chyba, jiná měrná jednotka nebo chybějící materiál – před zadáním si ji nechte potvrdit.`,
+        sub: pod.slice(0, 5).map(p => `${esc(p.firma)} · ${esc((p.x.r.k ? p.x.r.k + ' ' : '') + (p.x.r.d || '')).slice(0, 90)}: ${kc(p.v)} / ${esc(p.x.r.mj || 'MJ')} (ostatní ${kc(p.med)}, ${p.nizka ? 'jen ' + Math.round(p.pom * 100) + ' %' : (Math.round(p.pom * 10) / 10).toLocaleString('cs-CZ') + '×'})`)});
+    } else if (vyb.length > 1) B.push({t: 'ok', h: 'Ceny firem jsou u stejných položek v rozumném rozpětí – žádná výrazně podezřelá cena.'});
+    // 4) srovnání s rozpočtem
+    if (V.podle === 'srov' && V.rozpSpol > 0) { const d = (nej.srov - V.rozpSpol) / V.rozpSpol; B.push({t: 'info', h: `Proti cenám v rozpočtu je nejlepší nabídka na srovnatelných položkách ${d < 0 ? 'levnější' : 'dražší'} o ${pr(Math.abs(d))}${Math.abs(d) > 0.4 ? ' – velký rozdíl, ověřte, že firmy počítaly se stejným rozsahem' : ''}.`}); }
+    // 5) rozdělení více firmám
+    if (uplne.length && vyb.length > 1) { const u = uplne[0], us = u.odhad - komb; if (us > 0 && !V.rad.some(x => vyb.every(n => !n.ceny || n.ceny[x.r.id] == null))) B.push({t: 'info', h: `Kdyby se každá položka zadala nejlevnější firmě, ušetří se ${kc0(Math.round(us))} (${pr(us / u.odhad)}). ${us / u.odhad < 0.05 ? 'Úspora je malá – víc firem znamená víc koordinace a rozhraní, vyplatí se spíš jeden dodavatel.' : 'Úspora je znatelná – zvažte rozdělení po celých řemeslech, ne po jednotlivých položkách.'}`}); }
+    return {B, pod};
+  }
   // 5) vyhodnocení: porovnání firem po položkách, nejlevnější zeleně, pořadí nabídek, nejvýhodnější kombinace
   function vyhodnoceni(pid) {
     const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
@@ -2626,7 +2671,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       `<button type="button" class="rz-btn" data-zp>← Zpět na poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-xls>⬇ Vyhodnocení do Excelu</button>`, 'siroky');
     celaObrazovka(ov, 'rz-fakCela');
     const box = ov.querySelector('.pp-vy');
-    let V, vyb;
+    let V, vyb, HDx;
+    const txt = h => { const d = document.createElement('div'); d.innerHTML = h; return d.textContent; };
     const kresli = () => {
       vyb = nab.filter(n => vybId.has(n.id)); if (!vyb.length) { vyb = nab.slice(); vybId = new Set(nab.map(n => n.id)); }
       V = porovnani(P, vyb);
@@ -2634,11 +2680,13 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       let komb = 0; const kombF = new Map();
       V.rad.forEach(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null); if (!pl.length) return; const mi = Math.min(...pl); komb += mi * (x.mn || 0); const f = vyb[ce.indexOf(mi)].firma; kombF.set(f, (kombF.get(f) || 0) + 1); });
       const nikdo = V.rad.filter(x => vyb.every(n => !n.ceny || n.ceny[x.r.id] == null)).length;
+      const HD = HDx = hodnoceniNabidek(V, vyb, komb), podM = new Map(HD.pod.map(p => [p.x.r.id + '|' + p.i, p]));
       box.innerHTML = `
       <div class="pp-vf"><b>Porovnávat firmy:</b>${nab.map(n => { const s = souhrnNab(P, n); return `<label><input type="checkbox" data-vf="${esc(n.id)}"${vybId.has(n.id) ? ' checked' : ''}> ${esc(n.firma)} <small>(${N - s.chybi} z ${N})</small></label>`; }).join('')}</div>
       <div class="pp-srov"><span>${k === 'srov'
         ? `Firmy nenacenily všechny položky. Porovnávám proto jen <b>${nf0.format(V.spol.length)} z ${nf0.format(N)} položek</b>, které nacenily všechny vybrané firmy${V.spol.length < N ? ' (ostatní jsou v tabulce šedě)' : ''}.`
         : `Vybrané firmy nemají žádnou společně naceněnou položku. Porovnávám proto <b>odhad celé zakázky</b>: chybějící ceny doplním mediánem ostatních firem, jinak cenou z rozpočtu.`}</span></div>
+      <div class="pp-hod"><h4>Hodnocení nabídek</h4>${HD.B.map(b => `<div class="pp-hb pp-h-${b.t}"><i>${{ok: '✓', tip: '💡', pozor: '!', info: 'i'}[b.t]}</i><div>${b.h}${b.sub ? `<ul>${b.sub.map(z => `<li>${z}</li>`).join('')}</ul>` : ''}</div></div>`).join('')}</div>
       <div class="pp-vyh"><div class="pp-win"><small>${k === 'srov' ? 'Nejvýhodnější na srovnatelných položkách' : 'Nejvýhodnější podle odhadu'}</small><b>${esc(nej.n.firma)}</b><span>${kc0(nej[k])} bez DPH</span>${druha ? `<em>o ${kc0(rozdil)} (${(Math.round(rozdil / druha[k] * 1000) / 10).toLocaleString('cs-CZ')} %) levnější než ${esc(druha.n.firma)}</em>` : ''}${nej.chybi ? `<em>nenacenil ${nej.chybi} z ${N} položek – odhad celé zakázky ${kc0(nej.odhad)}</em>` : '<em>nacenil všechny položky</em>'}</div>
         <div class="pp-gr">${grafNabidek(V)}<div class="pp-leg"><span><i style="background:#1f8a4c"></i>${k === 'srov' ? 'cena za srovnatelné položky' : 'odhad celé zakázky'}</span><span><i style="background:#e08a00;height:5px"></i>kolik položek firma nacenila</span></div></div></div>
       <div class="pp-por pp-por2"><table class="pp-t"><thead><tr><th>Pořadí</th><th>Firma</th><th class="n">Srovnatelné položky</th><th class="n">Nacenil</th><th class="n">Celkem, co nacenil</th><th class="n">Odhad celé zakázky</th></tr></thead><tbody>
@@ -2647,7 +2695,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${k === 'srov' && V.rozpSpol ? `<tr class="pp-km"><td></td><td>Pro srovnání: ceny z rozpočtu (srovnatelné položky)</td><td class="n">${kc0(V.rozpSpol)}</td><td></td><td></td><td></td></tr>` : ''}
       </tbody></table></div>
       <div class="pp-nah"><table class="pp-t pp-vt"><thead><tr><th>Kód</th><th>Položka</th><th>MJ</th><th class="n">Množství</th><th class="n">Rozpočet / MJ</th>${vyb.map(n => `<th class="n">${esc(n.firma)}<br><small>cena / MJ</small></th>`).join('')}</tr></thead><tbody>
-        ${V.rad.slice(0, 1500).map(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null), mi = pl.length ? Math.min(...pl) : null; return `<tr${V.spolS.has(x.r.id) ? '' : ' class="pp-nesr" title="Nenacenily všechny firmy – nesrovnává se"'}><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n" style="color:var(--muted)">${x.r.jc == null ? '' : kc(x.r.jc)}</td>${ce.map(v => `<td class="n${v != null && v === mi && pl.length > 1 ? ' pp-min' : ''}">${v == null ? '<span style="color:var(--bad)">nenaceněno</span>' : kc(v)}</td>`).join('')}</tr>`; }).join('')}
+        ${V.rad.slice(0, 1500).map(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null), mi = pl.length ? Math.min(...pl) : null; return `<tr${V.spolS.has(x.r.id) ? '' : ' class="pp-nesr" title="Nenacenily všechny firmy – nesrovnává se"'}><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n" style="color:var(--muted)">${x.r.jc == null ? '' : kc(x.r.jc)}</td>${ce.map((v, i) => { const pz = podM.get(x.r.id + '|' + i); return `<td class="n${v != null && v === mi && pl.length > 1 ? ' pp-min' : ''}${pz ? ' pp-pod' : ''}"${pz ? ` title="${pz.nizka ? 'Podezřele nízká cena' : 'Výrazně vyšší cena'} – ostatní ${esc(kc(pz.med))}"` : ''}>${v == null ? '<span style="color:var(--bad)">nenaceněno</span>' : (pz ? (pz.nizka ? '▼ ' : '▲ ') : '') + kc(v)}</td>`; }).join('')}</tr>`; }).join('')}
         </tbody><tfoot><tr><td colspan="5"><b>Srovnatelné položky celkem</b></td>${vyb.map(n => `<td class="n"><b>${k === 'srov' ? kc(V.sm.find(s => s.n === n).srov) : '—'}</b></td>`).join('')}</tr>
         <tr><td colspan="5">Celkem, co firma nacenila</td>${vyb.map(n => `<td class="n">${kc(V.sm.find(s => s.n === n).celkem)}</td>`).join('')}</tr></tfoot></table></div>`;
       box.querySelectorAll('[data-vf]').forEach(c => c.onchange = () => { if (c.checked) vybId.add(c.dataset.vf); else if (vybId.size > 1) vybId.delete(c.dataset.vf); else { c.checked = true; return toast('Aspoň jedna firma musí zůstat vybraná.'); } kresli(); });
@@ -2657,6 +2705,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     ov.querySelector('[data-xls]').onclick = () => {
       const k = V.podle;
       ulozExcel('Vyhodnocení nabídek – ' + P.nazev.replace(/^Poptávka – /, ''), [
+        {n: 'Hodnocení', rows: [['Hodnocení nabídek – ' + P.nazev], []].concat(...HDx.B.map(b => [[txt(b.h)]].concat((b.sub || []).map(z => ['   • ' + txt(z)])))), sirky: [160]},
         {n: 'Pořadí', rows: [['Vyhodnocení nabídek – ' + P.nazev], [k === 'srov' ? 'Porovnání na ' + V.spol.length + ' z ' + V.rad.length + ' položek, které nacenily všechny firmy' : 'Porovnání podle odhadu celé zakázky'], [], ['Pořadí', 'Firma', 'Srovnatelné položky', 'Naceněno položek', 'Celkem, co nacenil', 'Odhad celé zakázky']].concat(V.sm.map((x, i) => [i + 1, x.n.firma, k === 'srov' ? x.srov : null, x.nac + ' z ' + V.rad.length, x.celkem, x.odhad])), sirky: [8, 40, 20, 16, 20, 20]},
         {n: 'Položky', rows: [['Kód', 'Položka', 'MJ', 'Množství', 'Rozpočet / MJ', 'Srovnatelná'].concat(vyb.map(n => n.firma + ' – cena/MJ'), ['Nejnižší cena/MJ'])].concat(V.rad.map(x => { const ce = vyb.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null); return [x.r.k || '', x.r.d || '', x.r.mj || '', x.mn, x.r.jc == null ? null : x.r.jc, V.spolS.has(x.r.id) ? 'ano' : 'ne'].concat(ce.map(v => v == null ? null : v), [pl.length ? Math.min(...pl) : null]); })), sirky: [14, 60, 7, 12, 14, 11].concat(vyb.map(() => 18), [16])}]);
     };
