@@ -162,6 +162,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .fk2-odb{display:flex;gap:6px}.fk2-odb select{flex:1;min-width:0}.fk2-odb .rz-btn{white-space:nowrap}
 .fk2-g label [data-cisl]{width:100%;font-size:12.5px!important;padding:4px 6px!important;margin-top:4px;color:var(--muted)!important}
 .rz-rozpr{display:block;margin:2px 0 3px;border:1px solid #f0b400;background:#FFF4BF;color:#6b4500;border-radius:8px;padding:4px 9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;animation:rzpul 1.6s ease-in-out infinite}.rz-rozpr:hover{background:#F4D23C}@keyframes rzpul{50%{box-shadow:0 0 0 4px rgba(244,210,60,.35)}}
+.rz-nes{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line,#ccc);border-radius:12px;padding:5px 12px 5px 8px;background:var(--panel,#fff);font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:left;color:var(--ink)}.rz-nes>span:last-child{white-space:nowrap}.rz-nes small{display:block;font-weight:400;font-size:11px;color:var(--muted)}.rz-nes.on{border-color:#d33;background:#fff0f0}
+.rz-sem{width:14px;height:36px;background:#222;border-radius:7px;display:flex;flex-direction:column;justify-content:space-around;align-items:center;flex:none}.rz-sem i{width:9px;height:9px;border-radius:50%;background:#555}.rz-nes:not(.je) .rz-sem i.g{background:#2ec45c;box-shadow:0 0 5px #2ec45c}.rz-nes.je .rz-sem i.r{background:#ff2a2a;animation:rzsem 1s steps(2,start) infinite}@keyframes rzsem{50%{background:#5a1a1a;box-shadow:none}0%,100%{box-shadow:0 0 7px 2px rgba(255,40,40,.85)}}
 .fk2-vel{font-size:16px!important;padding:10px 20px!important;font-weight:800}
 .fk2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
 .fk2-l{min-width:0;display:flex;flex-direction:column;gap:12px}.fk2-k{border:1px solid var(--line,#e2e2e2);border-radius:12px;padding:12px 14px;background:#fff}.fk2-k h4{margin:0 0 10px;font-size:16px}
@@ -1021,7 +1023,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${ms('kat', 'Druh prací / řemeslo', 'Všechna řemesla', katPol)}
         ${ms('obj', 'Objekt', 'Všechny objekty', objPol)}
         ${ms('pod', 'Podlaží', 'Všechna podlaží', podPol)}
-        <label class="rz-chk rz-fl-ch" title="Ukáže jen položky, kde je vyfakturováno víc, než je v rozpočtu, nebo je ve faktuře jiná cena než v rozpočtu."><input type="checkbox" data-a="upoz"${S.jenUpoz ? ' checked' : ''}><span style="display:flex;flex-direction:column;white-space:nowrap;line-height:1.2">Jen problémové položky<small style="font-size:11px;color:var(--muted)">přes rozpočet nebo jiná cena</small></span></label></div>
+        <button type="button" class="rz-nes${S.jenUpoz ? ' on' : ''}${C.upoz ? ' je' : ''}" data-a="upoz" aria-pressed="${S.jenUpoz}" title="Kontrola: ukáže jen položky, kde je vyfakturováno víc, než je v rozpočtu, nebo je ve faktuře jiná cena než v rozpočtu."><span class="rz-sem"><i class="r"></i><i class="o"></i><i class="g"></i></span><span>Nesoulad s rozpočtem${C.upoz ? ' (' + C.upoz + ')' : ''}<small>${S.jenUpoz ? 'ukazuji jen problémy' : C.upoz ? 'klikněte a uvidíte je' : 'kontrola – vše sedí'}</small></span></button></div>
         <div class="rz-brk"></div>
         ${filtrAktivni() ? `<span class="rz-souhrn">Vyfiltrováno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : '<span class="rz-souhrn" style="color:var(--muted)">Celý rozpočet – zužte ho filtry nahoře</span>'}
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
@@ -1253,7 +1255,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     { const l = EL.querySelector('.rz-msl'); if (l) { if (S.msQ) { const q = bezDia(S.msQ.toLowerCase().trim()); l.querySelectorAll('label').forEach(x => { x.hidden = q && !x.dataset.n.includes(q); }); } l.scrollTop = S.msSc || 0; const qi = EL.querySelector('.rz-msq'); if (qi && S.msQ) { qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); } } }
     if (!MS_DOC) { MS_DOC = true; document.addEventListener('mousedown', e => { if (S.msOt && EL && EL.isConnected && !e.target.closest('.rz-ms')) { S.msOt = ''; prekresli(); } }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.msOt) { S.msOt = ''; prekresli(); } }); }
     on('[data-a="f-zrus"]', 'click', () => { Object.assign(S, {cast: '', dil: '', obor: '', kat: '', obj: '', pod: '', msOt: ''}); S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
-    on('[data-a="upoz"]', 'change', e => { S.jenUpoz = e.target.checked; SCROLL = 0; prekresli(); });
+    on('[data-a="upoz"]', 'click', () => { S.jenUpoz = !S.jenUpoz; SCROLL = 0; prekresli(); });
     on('[data-a="v-zrus"]', 'click', () => { S.vyb.clear(); prekresli(); });
     on('[data-a="v-kat"]', 'click', () => zaraditDoDruhu([...S.vyb]));
     on('[data-a="v-kat-pryc"]', 'click', () => { const k = kategorie(R.rec.id).find(z => z.id === jeden('kat')); if (!k) return; const x = new Set(S.vyb); H.upsert('rozpKat', [Object.assign({}, k, {pol: (k.pol || []).filter(id => !x.has(id))})]); toast('Odebráno z druhu ' + k.nazev + '.'); S.vyb.clear(); });
