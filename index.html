@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-zcrJqZSh8g3GBkbV+QEGlpHz665aeBrrbqnIwKLiHnI='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-jPB6MntPugf9RRRYyB8wf99TX6vXjt8g/RDjTHjFj6Q='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -1302,7 +1302,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
     return [`Předmět: ${zPredmet()}`, '', 'Dobrý den,', '',
       uvod, '', ...(m || Z.crop ? [`Místo: ${m || 'viz výřez půdorysu'}`] : []), `Popis: ${cistit(Z.text) || 'viz přiložená fotodokumentace.'}`, '',
       `${t.p} nejpozději do ${fmtDY(Z.end)}. Prosíme o potvrzení přijetí a po odstranění o zaslání fotografie.${zaver ? ' ' + zaver : ''}`, '',
-      `V příloze posíláme fotodokumentaci${Z.crop ? ' a výřez půdorysu s vyznačeným místem' : ''}.`, '',
+      ...((F.photos || []).length || Z.crop ? [`V příloze posíláme ${(F.photos || []).length ? 'fotodokumentaci' + (Z.crop ? ' a výřez půdorysu s vyznačeným místem' : '') : 'výřez půdorysu s vyznačeným místem'}.`, ''] : []),
       'S pozdravem', '', podpis()].join('\n').trim();
   }
   const MOBIL = /iphone|ipad|ipod|android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /macintosh/i.test(navigator.userAgent));
