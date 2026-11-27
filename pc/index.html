@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-lmsZ1xKvWyiEKOxIeACapSzzvIMFZX0pErB4aq6cgpY='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-9f8ZK5epjuMsYtXFjPqrgJI0L4QOAUYmJdHtT+RSH/c=' 'sha256-JJLKsMgBwKOK0NkeL2peZrQtNkc3RrsNxQJvZ9lDIew=' 'sha256-MguIPR6qNR8D3B+eAlK+bIRTZe8t3wkOY4B/56Me9FU=' 'sha256-MwGYjWzacjktbHnMlk4U1Qs778Ic+k42mJ73AoEZTx4=' 'sha256-rL0wmTiVOalf80jjHKJRkCqodIQ+tJkD/9DCrHxb5Ak=' 'sha256-RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=' 'sha256-yNz6wjsWn9w8ZacIAfIZQb1y4lH6CgXBR4r3CX3Hd1Y=' 'sha256-Jw5QU60J4WaHTVQJfCsFpSKDKI9T8enyNCwSeAdCDis=' 'sha256-l0NjNHRDdMgsglADSCDolgIUiDlKl5CseavP7FiDMOg='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constructo · Hybernská</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http%3A//www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%23131518%22/%3E%3Csvg x=%226%22 y=%2214%22 width=%2252%22 height=%2236%22 viewBox=%22190 130 516 310%22%3E%3Cpath fill=%22%23FAD805%22 d=%22M498.35 265.33A154.8 154.8 0 1 0 498.35 304.67L430.02 304.67A87.46 87.46 0 1 1 430.02 265.33ZM445.2 172.19A151.02 151.02 0 0 1 484.72 228.17A87.46 87.46 0 1 1 484.72 341.83A151.02 151.02 0 0 1 445.2 397.81A154.8 154.8 0 1 0 445.2 172.19Z%22/%3E%3C/svg%3E%3C/svg%3E">
@@ -121,7 +121,7 @@ h2{font:700 16px/1.2 var(--f-display);font-stretch:90%;margin:0;text-transform:u
 .s-late{background:var(--bad-soft);color:var(--bad)}
 .s-hold{background:var(--hold-soft);color:var(--hold)}
 .s-done{background:var(--good-soft);color:var(--good)}
-.t-upd{font-size:12px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-upd{font-size:12px;color:var(--muted);min-width:0;overflow-wrap:anywhere;line-height:1.35}
 .t-upd.stale{color:var(--warn)}
 .empty{padding:36px 18px;text-align:center;color:var(--muted)}
 .empty strong{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
@@ -246,7 +246,7 @@ h2{font:700 16px/1.2 var(--f-display);font-stretch:90%;margin:0;text-transform:u
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips .ch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 4px 3px 10px;font-size:12.5px;background:var(--bg)}
 .chips .ch button{border:0;background:var(--soft);border-radius:50%;width:20px;height:20px;line-height:1;padding:0}
-.tags{font:500 10.5px var(--f-mono);color:var(--muted);margin-left:6px}
+.tags{font:500 10.5px var(--f-mono);color:var(--muted);margin-left:6px;white-space:nowrap;display:inline-block}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--r);z-index:3600;font-weight:500;max-width:calc(100% - 32px);text-align:center}
 @media (prefers-reduced-motion:no-preference){.drawer{animation:slide .18s ease-out}@keyframes slide{from{transform:translateX(24px);opacity:.6}}}
 
@@ -433,7 +433,7 @@ a.qpct{font-weight:600}
 .banner.warn{color:var(--warn);background:var(--warn-soft)}
 .banner.info{color:var(--info);background:var(--info-soft)}
 .banner .btn{padding:4px 10px;font-size:12px}
-.hform{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;gap:8px;align-items:end}
+.hform{display:grid;grid-template-columns:2fr repeat(4,minmax(120px,1fr));gap:8px;align-items:end}
 .hform .fld input{background:var(--panel)}
 .hform .acts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
 @media (max-width:860px){.hform{grid-template-columns:1fr 1fr}}
@@ -585,7 +585,7 @@ h1 span{font-weight:300;color:#8b9198;letter-spacing:-.02em}
 /* nadpisy sekcí a lidé */
 h2{font:800 22px/1.2 var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:-.02em}
 .card h3{font:800 17px var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:-.01em}
-.people{grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
+.people{grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
 .person{border-radius:18px;padding:16px;gap:10px}
 .person:hover{border-color:#b9bdb8}
 .person.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
@@ -712,7 +712,7 @@ h2{font:800 22px/1.2 var(--f-display);font-stretch:normal;text-transform:none;le
 .zp-t .hcap{margin-top:3px}
 .zp-okt{color:#2f7d4f;font-weight:600}
 body.noadmin #btn-person,body.noadmin #p-edit,body.noadmin #p-del,body.noadmin [data-act="rename"],body.noadmin [data-act="lidezaloha"]{display:none!important}
-.person .pcard{display:inline-block;margin-top:3px;font-size:12px;font-weight:500;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 8px;cursor:pointer;background:var(--bg)}.person .pcard:hover{border-color:var(--ink)}.person .nm small.role+.pcard{margin-top:4px}.person .nm .pcard{display:table}
+.person .pcard{display:inline-block;white-space:nowrap;margin-top:3px;font-size:12px;font-weight:500;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 8px;cursor:pointer;background:var(--bg)}.person .pcard:hover{border-color:var(--ink)}.person .nm small.role+.pcard{margin-top:4px}.person .nm .pcard{display:table}
 .trow .tchk{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border:2px solid var(--line);border-radius:5px;margin-right:9px;vertical-align:-4px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;background:var(--panel);flex:none}.trow .tchk:hover{border-color:var(--good)}.trow .tchk.on{background:var(--good);border-color:var(--good)}body.ro .trow .tchk{pointer-events:none}
 .hide-done{display:flex;align-items:center;gap:7px;font-size:13.5px;white-space:nowrap;cursor:pointer;padding:0 6px}.hide-done[hidden]{display:none}.hide-done input{width:17px;height:17px;margin:0}.tags.zt{background:var(--info-soft);color:var(--info);padding:1px 6px;border-radius:4px}
 .pd-mails{display:flex;flex-direction:column;gap:6px}.pd-mail{display:flex;gap:8px;align-items:center}.pd-mail input[type=email]{flex:1;min-width:0}.fld .pd-mail label.pd-rep{display:flex;gap:6px;align-items:center;white-space:nowrap;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}.fld .pd-mail label.pd-rep input{width:auto;min-height:0;margin:0}.pd-mail .pd-x{border:1px solid var(--line);background:none;border-radius:8px;width:32px;height:32px;cursor:pointer;color:var(--muted);flex:none}.pd-addm{align-self:flex-start;border:0;background:none;color:var(--accent);cursor:pointer;padding:4px 0;font:inherit;font-size:13px}.pd-ro{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}.pd-ro dt{color:var(--muted)}.pd-ro dd{margin:0}
@@ -3520,7 +3520,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
         <button type="button" class="btn ro-hide" id="h-sel" aria-pressed="${!!S.hmgSel}">${S.hmgSel ? 'Ukončit slučování' : 'Sloučit do skupiny…'}</button>
         <button type="button" class="btn ig-open" id="h-inv">Podrobný harmonogram</button></div>
       <div class="hrow head"><span>ID</span><span>Činnost</span><span class="hdt">Termín</span><span class="hscale">${ticks.map((t, i) => { if (!t[1]) return ''; const nx = ticks.slice(i + 1).find(u => u[1]); return `<span style="left:${t[0]}%;width:${((nx ? nx[0] : 100) - t[0]).toFixed(3)}%"${t[3] ? ` data-kr="${esc(t[3])}"` : ''}>${esc(t[1])}</span>`; }).join('')}</span><span class="hplan" style="text-align:right">Plán dnes</span><span style="text-align:right">Hotovo</span><span style="text-align:right">Odchylka</span></div>`;
-    if (S.hmgEdit === 'new') html += hmgForm(Object.assign({hid: Math.max(0, ...D.hmg.map(h => h.hid)) + 1, name:'', obj: S.obj && hmgObjs().find(o => objMatch({obj:o}, S.obj)) || hmgObjs()[0] || '', owner: S.owner || '', start: today, end: today, pct: 0}, S.hmgNewPreset || {}), true);
+    if (S.hmgEdit === 'new') html += hmgForm(Object.assign({hid: Math.max(0, ...D.hmg.map(h => h.hid)) + 1, name:'', obj: 'Celkově', owner: S.owner || '', start: today, end: today, pct: 0}, S.hmgNewPreset || {}), true);
     if (!rows.length) html += `<div class="empty">V tomto období (podle filtru) nemá žádná činnost HMG termín. Zkuste delší období nebo šipky.</div>`;
     // 5.04: skupiny podle zvoleného seskupení; záhlaví skupiny má souhrnný pruh (od prvního zahájení do posledního dokončení, hotovo vážené délkou)
     const hRow = (h, dp = 0) => {
@@ -3930,7 +3930,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
         <div class="fld"><label for="e-done">Hotovo</label>
           <div class="rng"><input id="e-done" type="range" min="0" max="100" step="5" value="${Number(d.done)||0}"><label class="pin"><input id="e-done-n" type="number" min="0" max="100" step="1" inputmode="numeric" value="${Number(d.done)||0}" aria-label="Hotovo v procentech"> %</label></div>
           <span class="rng-hint" id="e-rem">zbývá ${100-(Number(d.done)||0)} %</span>
-          <div class="quick">${[5,15,30,50,75,100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}<label class="qx">přesně <input id="e-done-x" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="např. 42" aria-label="Přesné procento"> %</label></div>
+          <div class="quick">${[5,15,30,50,75,100].map(n => `<button type="button" data-q="${n}">${n} %</button>`).join('')}<label class="qx">přesně <input id="e-done-x" type="number" min="0" max="100" step="1" inputmode="numeric" aria-label="Přesné procento"> %</label></div>
         </div>
         ${t && isUkol(t) && eff(t) !== 'done' && !RO() ? `<div class="fld"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="e-miss" style="padding:5px 10px;font-size:12.5px">Důvod nesplnění…</button>${t.missed ? `<span class="rng-hint">${esc(t.missed)}</span>` : ''}</div></div>` : ''}
         <div class="fld"><span class="rng-hint" id="e-stav">Stav se určí sám: 0 % = nezahájeno, víc = probíhá, 100 % = hotovo. Po termínu se ukáže „Ve skluzu“.</span></div>
@@ -9070,6 +9070,7 @@ ${[cxVystup, cxSekce, ranniData, ranniTelo, ranniPdfHtml, ranniMail].map(f => f.
   function ppMail(rec0) {
     if (RO()) { toast('Jen prohlížení: e-maily posílat nejde.'); return; }
     if (!SY) { toast('E-mail jde poslat jen s připojením ke Googlu (Data → Automatická synchronizace).'); return; }
+    if (!rec0 && !PP) { toast('Nejdřív vyberte, co má plán obsahovat.'); return; }
     const vse = ppAdresati(), byK = new Map(vse.map(x => [x.k, x])), stavba = (D.project || {}).name || 'Stavba';
     const titul = rec0 ? rec0.text : ppTitle(PP.o), pocet = rec0 ? rec0.rows.length : ppSel().length;
     if (!pocet) { toast('Nejdřív zaškrtněte položky, které mají být v plánu.'); return; }

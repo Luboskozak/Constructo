@@ -9,6 +9,8 @@
    D.rozpocty (seznam rozpočtů + přiřazení objektů), D.rozpKat (druhy prací + vybrané položky), D.faktury (fakturace). */
 (() => {
   'use strict';
+  // 5.25: odkaz PDF v řádku faktury neotevře zároveň detail řádku (dřív inline onclick, který blokovala CSP)
+  document.addEventListener('click', e => { if (e.target && e.target.closest && e.target.closest('a[data-stop]')) e.stopPropagation(); }, true);
   const SKRIPT_MIN = 14;                      // skript Google od verze 14 zná kolekce rozpocty / rozpKat / faktury
   const KUS = 5 * 1024 * 1024;
   const ROWH = 30;
@@ -891,7 +893,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <div><div class="k">Rozpočet celkem</div><div class="v">${kc0(C.roz)}</div><div class="m" style="font-size:12px;color:var(--muted)">${nf0.format(R.polozky.length)} položek · ${nf0.format(R.rows.length)} řádků</div></div>
         <div><div class="k">Vyfakturováno</div><div class="v">${kc0(C.celkem)}<small>${pct(C.celkem, C.roz)} %</small></div><div class="rz-bar"><i class="${C.celkem > C.roz + 1 ? 'nad' : ''}" style="width:${Math.min(100, pct(C.celkem, C.roz))}%"></i></div></div>
         <div><div class="k">Zbývá</div><div class="v">${kc0(C.roz - C.celkem)}</div></div>
-        <div class="rz-upz"><div class="k">Upozornění</div>${(() => { const rf = faktury(rec.id).filter(f => !f.uzavreno), n = rf.length + (S.fak && !rf.some(f => f.id === S.fak.F.id) ? 1 : 0); return n ? `<button type="button" class="rz-rozpr" data-a="rozpr" title="Faktura je rozpracovaná – ještě není uzavřená ani odeslaná. Klikněte a pokračujte.">📝 ${n === 1 ? 'Rozpracovaná faktura' : n + (n < 5 ? ' rozpracované faktury' : ' rozpracovaných faktur')}${n === 1 && rf[0] ? ' ' + esc(rf[0].cislo || '') : ''} – dokončit</button>` : ''; })()}<div class="v" style="color:${C.upoz || C.mimo ? 'var(--bad)' : '#2f7d4f'}">${C.upoz ? C.upoz + ' položek přes rozpočet' : 'v rozpočtu žádné'}</div>${C.mimo ? `<div style="font-size:12px;color:var(--bad)">mimo rozpočet ${kc0(C.mimo)}</div>` : ''}</div>
+        <div class="rz-upz"><div class="k">Upozornění</div>${(() => { const rf = faktury(rec.id).filter(f => !f.uzavreno), n = rf.length + (S.fak && !faktury(rec.id).some(f => f.id === S.fak.F.id) ? 1 : 0); return n ? `<button type="button" class="rz-rozpr" data-a="rozpr" title="Faktura je rozpracovaná – ještě není uzavřená ani odeslaná. Klikněte a pokračujte.">📝 ${n === 1 ? 'Rozpracovaná faktura' : n + (n < 5 ? ' rozpracované faktury' : ' rozpracovaných faktur')}${n === 1 && rf[0] ? ' ' + esc(rf[0].cislo || '') : ''} – dokončit</button>` : ''; })()}<div class="v" style="color:${C.upoz || C.mimo ? 'var(--bad)' : '#2f7d4f'}">${C.upoz ? C.upoz + ' položek přes rozpočet' : 'v rozpočtu žádné'}</div>${C.mimo ? `<div style="font-size:12px;color:var(--bad)">mimo rozpočet ${kc0(C.mimo)}</div>` : ''}</div>
       </div>` : '';
     return `<div class="rz-top"><button type="button" class="rz-btn rz-bok" data-a="bok" title="Ukázat nebo schovat boční nabídku (Harmonogram, Úkoly…)" aria-label="Nabídka">☰</button>${sel}<span class="rz-inf" style="font-size:12.5px;color:var(--muted)">${esc(rec.soubor || '')}${rec.kdo ? ' · nahrál(a) ' + esc(rec.kdo) : ''}${rec.kdy ? ' ' + new Date(rec.kdy).toLocaleDateString('cs-CZ') : ''}${rec.gid ? '' : H.pripojeno() ? ' · <b style="color:#a96a00">ukládá se na Disk Google…</b>' : ''}</span><span class="sp"></span>
       <button type="button" class="rz-btn" data-a="xls-roz" title="Stáhnout rozpočet s čerpáním do Excelu (jen to, co je právě vyfiltrované)">⬇ Excel</button>
@@ -933,6 +935,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         // krátké texty (číslo položky, P.č.) se také nesmí useknout – sloupec se rozšíří, nejvýš na 170 px
         if (!(li.map && li.map.popis === c)) { let ml = 0; for (let i = 0; i < rows.length && i < 6000; i++) { const v = rows[i].c && rows[i].c[c]; if (typeof v === 'string' && v.length <= 22 && v.length > ml && rows[i].t === 'P') ml = v.length; } if (ml) w = Math.max(w, Math.min(170, ml * 7.4 + 14)); }
         if (li.map && li.map.popis === c) w = Math.max(w, 280);
+        { const hn = String((li.nazvy || [])[c] || ''); if (hn && !(li.map && li.map.popis === c)) w = Math.max(w, Math.min(150, hn.length * 7.4 + 16)); }   // 5.25: nadpis sloupce se nesmí useknout („Množ…“, „Jedn.…“)
         cols.push({popis: !!(li.map && li.map.popis === c), c, w: Math.max(26, Math.min(700, w)), n: (li.nazvy || [])[c] || sloupec(c + (li.odSl || 0)), dec: (li.dec || [])[c], fill: (li.colFill || [])[c] || ''});
       }
     } else {
@@ -1225,7 +1228,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <span style="font-size:12.5px;color:var(--muted)">Třídit:</span><span class="rz-seg">${[['mes', 'Období'], ['odb', 'Odběratel'], ['kat', 'Druh prací']].map(([k, t]) => `<button type="button" data-vfs="${k}" aria-pressed="${V.sk === k}">${t}</button>`).join('')}</span>
         <button type="button" class="rz-btn mini" data-a="vf-xls"${sez.length ? '' : ' disabled'}>⬇ Excel přehled</button></div>
       ${sez.length ? `<div class="rz-list fk-vf"><table><thead><tr><th>Číslo</th><th>Vystaveno</th><th>Splatnost</th><th>Odběratel</th><th>Druh prací</th><th class="n">Základ</th><th class="n">DPH</th><th class="n">Celkem</th><th>Uzavřel(a)</th><th>PDF</th></tr></thead><tbody>
-        ${[...skup.entries()].map(([k, a]) => { const t = sum(a); return `<tr class="sk"><td colspan="5"><b>${esc(V.sk === 'mes' ? mesTxt(k) : k)}</b> <span>${a.length} ${a.length === 1 ? 'faktura' : a.length < 5 ? 'faktury' : 'faktur'}</span></td><td class="n">${kc(t.z)}</td><td class="n">${kc(t.d)}</td><td class="n"><b>${kc(t.c)}</b></td><td colspan="2"></td></tr>` + a.map(x => `<tr class="kl" data-fak="${esc(x.f.id)}"><td><b>${esc(x.f.cislo || '')}</b></td><td>${esc(datCz(x.f.datum))}</td><td>${esc(datCz(x.f.splatnost))}</td><td>${esc(x.odb)}</td><td>${esc(x.kat)}</td><td class="n">${kc(x.s.zakl)}</td><td class="n">${kc(x.s.dan || 0)}</td><td class="n"><b>${kc(x.s.celkem)}</b></td><td>${esc(x.f.uzavreno.kdo || '')}</td><td>${x.f.uzavreno.pdf ? `<a href="${esc(x.f.uzavreno.pdf.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">PDF</a>` : `<button type="button" class="rz-btn mini" data-vfpdf="${esc(x.f.id)}">PDF</button>`}</td></tr>`).join(''); }).join('')}
+        ${[...skup.entries()].map(([k, a]) => { const t = sum(a); return `<tr class="sk"><td colspan="5"><b>${esc(V.sk === 'mes' ? mesTxt(k) : k)}</b> <span>${a.length} ${a.length === 1 ? 'faktura' : a.length < 5 ? 'faktury' : 'faktur'}</span></td><td class="n">${kc(t.z)}</td><td class="n">${kc(t.d)}</td><td class="n"><b>${kc(t.c)}</b></td><td colspan="2"></td></tr>` + a.map(x => `<tr class="kl" data-fak="${esc(x.f.id)}"><td><b>${esc(x.f.cislo || '')}</b></td><td>${esc(datCz(x.f.datum))}</td><td>${esc(datCz(x.f.splatnost))}</td><td>${esc(x.odb)}</td><td>${esc(x.kat)}</td><td class="n">${kc(x.s.zakl)}</td><td class="n">${kc(x.s.dan || 0)}</td><td class="n"><b>${kc(x.s.celkem)}</b></td><td>${esc(x.f.uzavreno.kdo || '')}</td><td>${x.f.uzavreno.pdf ? `<a href="${esc(x.f.uzavreno.pdf.url)}" target="_blank" rel="noopener" data-stop>PDF</a>` : `<button type="button" class="rz-btn mini" data-vfpdf="${esc(x.f.id)}">PDF</button>`}</td></tr>`).join(''); }).join('')}
         <tr class="sum"><td colspan="5"><b>Celkem ${sez.length} ${sez.length === 1 ? 'faktura' : sez.length < 5 ? 'faktury' : 'faktur'}</b></td><td class="n"><b>${kc(T.z)}</b></td><td class="n"><b>${kc(T.d)}</b></td><td class="n"><b>${kc(T.c)}</b></td><td colspan="2"></td></tr></tbody></table></div>`
       : `<div class="rz-empty"><b>${vse.length ? 'Filtru neodpovídá žádná faktura' : 'Zatím žádná vystavená faktura'}</b>${vse.length ? '' : 'Faktura se sem uloží sama, jakmile ji uzavřete kódem z e-mailu (Vytvořit fakturu → Uzavřít a uložit).'}</div>`}`;
   }
@@ -1241,8 +1244,8 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <button type="button" class="rz-btn" data-a="fak-firma"${nefak() ? ' disabled' : ''} title="Obvyklý odběratel faktur (investor). Kdo fakturuje se nastavuje v Údajích o stavbě.">Komu fakturovat…</button>
         <button type="button" class="rz-btn ze fk2-vel" data-a="fak-vytvor"${nefak() ? ' disabled' : ''}>🧾 Vytvořit fakturu</button></div>
       ${fs.length ? `<div class="rz-list"><table><thead><tr><th>Číslo</th><th>Firma</th><th>Druh prací</th><th>Období</th><th class="n">Položek</th><th class="n">Částka Kč</th><th>Kontrola</th><th>Stav</th></tr></thead><tbody>
-        ${fs.map(f => { const s = stavFaktury(f, C), k = ks.find(z => z.id === f.kat); const fi = (H.firmy() || []).find(z => z.id === f.firma); return `<tr class="kl" data-fak="${esc(f.id)}"><td><b>${esc(f.cislo || '(bez čísla)')}</b></td><td>${esc(fi ? fi.firma : f.firmaN || '')}</td><td>${esc(k ? k.nazev : '')}</td><td>${esc([f.od, f.do].filter(Boolean).map(d => new Date(d).toLocaleDateString('cs-CZ')).join(' – '))}</td><td class="n">${(f.pol || []).length}</td><td class="n"><b>${kc(s.kc)}</b></td>
-          <td>${s.nad || s.cena || s.mimo ? `<span class="rz-war">⚠</span> ${[s.nad ? s.nad + '× nad rozpočet' : '', s.cena ? s.cena + '× jiná cena' : '', s.mimo ? s.mimo + '× mimo rozpočet' : ''].filter(Boolean).join(', ')}` : '<span class="rz-ok">✓ v pořádku</span>'}</td><td>${f.uzavreno ? '<b style="color:#2f7d4f">🔒 uzavřeno</b>' + (f.uzavreno.pdf ? ` · <a href="${esc(f.uzavreno.pdf.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">PDF</a>` : '') : f.keSchvaleni ? `<b style="color:#b26a00">⏳ čeká na schválení</b><div style="font-size:12px;color:var(--muted)">poslal(a) ${esc(f.keSchvaleni.kdo || '')}</div>` : f.stav === 'schvaleno' ? '<b style="color:#2f7d4f">schváleno</b>' : 'rozpracováno'}</td></tr>`; }).join('')}
+        ${fs.map(f => { const s = stavFaktury(f, C), k = ks.find(z => z.id === f.kat); const fi = (H.firmy() || []).find(z => z.id === f.firma); return `<tr class="kl" data-fak="${esc(f.id)}"><td><b>${esc(f.cislo || '(bez čísla)')}</b></td><td>${esc(fi ? fi.firma : f.firmaN || odbFaktury(f).firma || '')}</td><td>${esc(k ? k.nazev : '')}</td><td>${esc([f.od, f.do].filter(Boolean).map(d => new Date(d).toLocaleDateString('cs-CZ')).join(' – '))}</td><td class="n">${(f.pol || []).length}</td><td class="n"><b>${kc(s.kc)}</b></td>
+          <td>${s.nad || s.cena || s.mimo ? `<span class="rz-war">⚠</span> ${[s.nad ? s.nad + '× nad rozpočet' : '', s.cena ? s.cena + '× jiná cena' : '', s.mimo ? s.mimo + '× mimo rozpočet' : ''].filter(Boolean).join(', ')}` : '<span class="rz-ok">✓ v pořádku</span>'}</td><td>${f.uzavreno ? '<b style="color:#2f7d4f">🔒 uzavřeno</b>' + (f.uzavreno.pdf ? ` · <a href="${esc(f.uzavreno.pdf.url)}" target="_blank" rel="noopener" data-stop>PDF</a>` : '') : f.keSchvaleni ? `<b style="color:#b26a00">⏳ čeká na schválení</b><div style="font-size:12px;color:var(--muted)">poslal(a) ${esc(f.keSchvaleni.kdo || '')}</div>` : f.stav === 'schvaleno' ? '<b style="color:#2f7d4f">schváleno</b>' : 'rozpracováno'}</td></tr>`; }).join('')}
         <tr><td colspan="5"><b>Celkem</b></td><td class="n"><b>${kc(fs.reduce((a, f) => a + stavFaktury(f, C).kc, 0))}</b></td><td colspan="2"></td></tr></tbody></table></div>`
       : `<div class="rz-empty"><b>Zatím žádná fakturace</b><ol><li>Klikněte <b>🧾 Vytvořit fakturu</b> – otevře se předvyplněná faktura (poprvé vyplňte, kdo fakturuje).</li><li>Nahoře upravte, co potřebujete (odběratel, splatnost, účet, text).</li><li>Klikněte <b>+ Vložit položky z rozpočtu</b> nebo <b>+ Vlastní položka</b> – vpravo hned vidíte fakturu.</li><li><b>✓ Zkontrolovat a odeslat</b> – finální kontrola, potvrdit a odeslat.</li></ol></div>`}`;
   }
@@ -1662,7 +1665,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       </div></section>
       <section class="fk2-k"><h4>2. Položky faktury</h4>
         ${zam ? '' : `<div class="fk2-tl"><button type="button" class="rz-btn zl fk2-big" data-pridat title="Otevře rozpočet – položky zaškrtnete (s filtry) a vrátíte se sem">+ Vložit položky z rozpočtu</button><button type="button" class="rz-btn fk2-big" data-mimo>+ Vlastní položka</button>
-          <span class="fk2-hr"><b>Hromadně:</b><input id="rz-pct" inputmode="decimal" placeholder="např. 20"> %<button type="button" class="rz-btn cr" data-pct="tato" title="Vepíše procento z rozpočtu do všech položek">Vepsat všem</button></span></div>`}
+          <span class="fk2-hr"><b>Hromadně:</b><input id="rz-pct" inputmode="decimal" placeholder="20"> %<button type="button" class="rz-btn cr" data-pct="tato" title="Vepíše procento z rozpočtu do všech položek">Vepsat všem</button></span></div>`}
         <div id="rz-fw"></div>
         <div class="rz-list rz-fl fk-tab fk2-tab"><table><thead><tr><th>Položka</th><th>MJ</th><th class="n">Zbývá</th><th class="n tf">Množství</th><th class="n tf">%</th><th class="n kc">Cena / MJ</th><th class="n kc">Celkem Kč</th><th></th></tr></thead><tbody id="rz-fb"></tbody></table></div>
       </section></div>
@@ -1803,7 +1806,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${rad(/\S+@\S+\.\S+/.test(F.odbEmail || ''), 'E-mail odběratele', F.odbEmail ? esc(F.odbEmail) : 'není vyplněný – faktura se jen uloží, neodešle')}
         ${rad(!!F.splatnost, 'Splatnost', esc(datCz(F.splatnost)))}
         ${rad(!!ibanCz(ucet), 'Bankovní účet', esc(ucet || 'chybí') + (ibanCz(ucet) ? ' · QR platba ✓' : ''))}
-        ${rad(!nad, 'Položky', nf0.format((F.pol || []).length) + ' položek' + (nad ? ` · <b>${nad} přes rozpočet</b>` : ' · vše v rozpočtu'))}
+        ${rad(!nad, 'Položky', (n => nf0.format(n) + (n === 1 ? ' položka' : n >= 2 && n <= 4 ? ' položky' : ' položek'))((F.pol || []).length) + (nad ? ` · <b>${nad} přes rozpočet</b>` : ' · nic nepřesahuje rozpočet'))}
         ${rad(!!textFaktury(F) || !!F.pozn, 'Text na faktuře', esc(textFaktury(F) || F.pozn || 'bez textu'))}
         ${smiU ? rad(!!(H.podpis && H.podpis()), 'Váš podpis', H.podpis && H.podpis() ? `<img src="${esc(H.podpis())}" alt="Podpis" style="max-height:44px;max-width:200px;display:block;margin-top:3px">vloží se do faktury po potvrzení kódem` : 'nemáte nahraný podpis – faktura bude bez podpisu. Nahrajete ho v Správa stavby → Role a lidé → Upravit.') : ''}
         <label class="rz-chk fk2-ch"${/\S+@\S+\.\S+/.test(F.odbEmail || '') ? '' : ' hidden'}><input type="checkbox" data-posli checked><span>Po uzavření poslat fakturu odběrateli e-mailem na <b>${esc(F.odbEmail || '')}</b></span></label>
@@ -1880,7 +1883,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   const nazevPdf = F => { const o = (F.odb && F.odb.firma) || (udaje().odb || {}).firma || ''; return ('Faktura ' + (F.cislo || '') + (o ? ' - ' + o : '') + (F.datum ? ' - ' + String(F.datum).slice(0, 7) : '')).replace(/[\\/:*?"<>|]/g, ' ') + '.pdf'; };
   function stahni(blob, jm) { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = jm.replace(/[\\/:*?"<>|]/g, ' '); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }
   // 5.18: číslování faktur – rok+měsíc+pořadí v měsíci (20260502 = 2. faktura v květnu 2026), nebo rok + číselná řada (2026001)
-  const CISL = [['mesic', 'Rok, měsíc a pořadí v měsíci (např. 20260502)'], ['rok', 'Rok a číselná řada (např. 2026001)']];
+  const CISL = [['mesic', 'Řada: rok + měsíc (20260502)'], ['rok', 'Řada: rok (2026001)']];
   function dalsiCislo(datum, vyjma) {
     const typ = udaje().cislovani === 'rok' ? 'rok' : 'mesic', d = String(datum || new Date().toISOString().slice(0, 10));
     const pre = typ === 'rok' ? d.slice(0, 4) : d.slice(0, 4) + d.slice(5, 7), del = typ === 'rok' ? 3 : 2;
@@ -2353,6 +2356,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
       let posl = null;
       if (akt.posli && akt.odbEmail) { try { if (await posliOdberateli(akt, pdfB)) { posl = akt.odbEmail; zm.odeslano = {kdy: new Date().toISOString(), komu: posl, kdo: kdo()}; } } catch (e) {} }
       H.upsert('faktury', [Object.assign({}, akt, zm)]);
+      if (S.fak && S.fak.F && S.fak.F.id === F.id) { S.fak = null; S.vyb.clear(); }   // 5.25: po uzavření už nehlásí „Rozpracovaná faktura – dokončit“
       w2.konec(); ov.zavri(); S.panel = 'fakturace'; pamSet('rz-panel', 'fakturace'); prekresli();
       toast('Faktura ' + (F.cislo || '') + ' je uzavřená' + (posl ? ' a odeslaná na ' + posl : akt.posli ? ', ale e-mail odběrateli se NEPODAŘILO odeslat – pošlete PDF ručně' : '') + (pdf ? '. PDF je uložené na Disku Google.' : '.'));
     };
@@ -2367,7 +2371,11 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
   // výpočet výběru pro okno poptávky – stejné filtry jako tabulka rozpočtu, jen s vlastním nastavením
   function vyberPodle(fl) {
     const bak = {}; FKL.concat(['jenUpoz']).forEach(k => { bak[k] = S[k]; S[k] = k === 'jenUpoz' ? false : (fl[k] || ''); });
-    try { const v = spocitejViditelne(spocti(R)); return {ids: v._ids || [], kc: v._kc || 0, popis: popisFiltru()}; }
+    try {
+      // 5.25: bez filtru = celý rozpočet (dřív se vrátilo 0 položek a slepý rozpočet z celého rozpočtu nešel vytvořit)
+      if (!filtrAktivni()) { const ids = R.polozky.map(r => [r.id, 1]); return {ids, kc: R.polozky.reduce((a, r) => a + (r.cc || 0), 0), popis: popisFiltru()}; }
+      const v = spocitejViditelne(spocti(R)); return {ids: v._ids || [], kc: v._kc || 0, popis: popisFiltru()};
+    }
     finally { Object.assign(S, bak); }
   }
   // 5.23: vlastní položky poptávky (P.vlastni) – stejná struktura jako rozpočet: kód, popis, MJ, množství, objekt, podlaží, díl, popisky

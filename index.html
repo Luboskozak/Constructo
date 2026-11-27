@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-DbGH5vDHfDrzRwQKVGU+9M7VKYJznq6P71d1FPTlYwk='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-YM/hJoURxpohQFP4I3M81Hbn540ajMzfhGiPL20Cyk8='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -1338,7 +1338,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       : !jeHyb() ? `<input id="z-misto" class="date" placeholder="Místo (např. 2. NP, byt 5, fasáda)" value="${esc(Z.room)}" autocomplete="off">`
       : `<button type="button" class="big pri zpin" data-act="plan">📍 Označit místo na půdorysu</button>`}
       <p class="lbl">5 · Komu <em>(firma, TDS, investor…)</em></p>
-      ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— bez firmy (jen další příjemci) —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
+      ${fs.length ? `<select class="fsel" id="z-firma" aria-label="Firma"><option value="">— bez firmy —</option>${fs.map(x => `<option value="${esc(x.id)}"${x.id === Z.firma ? ' selected' : ''}>${esc(x.firma)}</option>`).join('')}</select>` : ''}
       <div class="chips"><button type="button" class="chip all" data-act="firmy">${fs.length ? 'Upravit firmy' : '+ Přidat firmu'}</button></div>
       ${f && !f.jenPrijemci ? (f.kontakty.length ? `<p class="hint" style="margin:6px 0 2px">Komu z firmy zprávu poslat:</p><div class="zks">${f.kontakty.map(k => `<button type="button" class="zk" data-zk="${esc(k.id)}" aria-pressed="${Z.komu.includes(k.id)}"><i>${Z.komu.includes(k.id) ? '✓' : ''}</i><span><b>${esc(k.jmeno || k.email || k.tel)}</b>${k.funkce ? ' · ' + esc(k.funkce) : ''}<small>${esc([k.email, k.tel].filter(Boolean).join(' · ') || 'bez e-mailu a telefonu')}</small></span></button>`).join('')}</div>`
         : `<p class="hint">Firma nemá e-mail ani telefon. Doplňte je ve Firmy / osoby na projektu.</p>`) : ''}
