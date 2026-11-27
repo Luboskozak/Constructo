@@ -1733,6 +1733,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         ${rad(!!ibanCz(ucet), 'Bankovní účet', esc(ucet || 'chybí') + (ibanCz(ucet) ? ' · QR platba ✓' : ''))}
         ${rad(!nad, 'Položky', nf0.format((F.pol || []).length) + ' položek' + (nad ? ` · <b>${nad} přes rozpočet</b>` : ' · vše v rozpočtu'))}
         ${rad(!!textFaktury(F) || !!F.pozn, 'Text na faktuře', esc(textFaktury(F) || F.pozn || 'bez textu'))}
+        ${smiU ? rad(!!(H.podpis && H.podpis()), 'Váš podpis', H.podpis && H.podpis() ? `<img src="${esc(H.podpis())}" alt="Podpis" style="max-height:44px;max-width:200px;display:block;margin-top:3px">vloží se do faktury po potvrzení kódem` : 'nemáte nahraný podpis – faktura bude bez podpisu. Nahrajete ho v Správa stavby → Role a lidé → Upravit.') : ''}
         <label class="rz-chk fk2-ch"${/\S+@\S+\.\S+/.test(F.odbEmail || '') ? '' : ' hidden'}><input type="checkbox" data-posli checked><span>Po uzavření poslat fakturu odběrateli e-mailem na <b>${esc(F.odbEmail || '')}</b></span></label>
         <label class="rz-chk fk2-ch fk2-pot"><input type="checkbox" data-pot><span>Fakturu jsem zkontroloval(a), údaje jsou správně.</span></label>
         <p style="font-size:13px;color:var(--muted);margin:6px 0 0">${smiU ? 'Po potvrzení přijde na váš e-mail šestimístný kód. Po jeho zadání se faktura uzavře, uloží do Vystavených faktur a odešle.' : 'Uzavírat faktury smí jen ten, komu to správce povolil. Faktura půjde ke schválení e-mailem.'}</p></div></div>`,
@@ -2082,7 +2083,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const U = udaje(), dod = Object.assign({}, U.dod || {}, F.ucet ? {ucet: F.ucet} : {}), odb = F.odb && F.odb.firma ? F.odb : odbFaktury(F), P = (H.projekt && H.projekt()) || {};
     const W = 1190, Hh = 1684, ML = 114, MR = 113, XR = W - MR, FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif', INK = '#222', SED = '#8a8a8a', SED2 = '#6e6e6e', LINKA = '#e2e2e2', PAS = '#f3f3f3';
     const obr = src => new Promise(res => { if (!src) return res(null); const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
-    const logoImg = await obr(dod.logo);
+    const logoImg = await obr(dod.logo), podpisImg = await obr(F.uzavreno && F.uzavreno.podpis);
     const AK = (dod.barva && /^#[0-9a-f]{6}$/i.test(dod.barva) ? dod.barva : '') || barvaZLoga(logoImg) || '#16191c';
     const mer = document.createElement('canvas').getContext('2d');
     const zalom = (t, font, maxW, maxL) => { mer.font = font; const out = []; let line = ''; String(t || '').replace(/\s+/g, ' ').trim().split(' ').forEach(w => { const x = line ? line + ' ' + w : w; if (line && mer.measureText(x).width > maxW) { out.push(line); line = w; } else line = x; }); if (line) out.push(line); if (maxL && out.length > maxL) { out.length = maxL; out[maxL - 1] = out[maxL - 1].replace(/\s*\S*$/, '') + '…'; } return out; };
@@ -2092,10 +2093,12 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const S_ = soucty(F), kat = F.kat && najdiKat(R.rec.id, F.kat), qrText = spayd(F, S_, dod), vs = String(F.cislo || '').replace(/\D/g, '');
     const typDokl = F.dph === '0' ? 'FAKTURA · INVOICE' : 'DAŇOVÝ DOKLAD · TAX INVOICE';
     // vodoznak: značka loga, vybledlá, přesahuje pravý okraj
+    // 5.16: ostrá faktura – stránka se kreslí ve vyšším rozlišení (PDF/tisk 2× ≈ 290 dpi, náhled 1,5×)
+    const SC = jen ? 1.5 : 2;
     let vodo = null;
     if (logoImg) {
       const z = znackaLoga(logoImg), vh = 460, vw = z.w / logoImg.naturalHeight * vh;
-      const c = document.createElement('canvas'); c.width = Math.ceil(vw); c.height = vh; const g = c.getContext('2d');
+      const c = document.createElement('canvas'); c.width = Math.ceil(vw * SC); c.height = Math.ceil(vh * SC); const g = c.getContext('2d'); g.scale(SC, SC);
       g.drawImage(logoImg, z.x, 0, z.w, logoImg.naturalHeight, 0, 0, vw, vh);
       g.globalCompositeOperation = 'source-atop'; g.fillStyle = 'rgba(255,255,255,.83)'; g.fillRect(0, 0, vw, vh);
       vodo = c;
@@ -2112,9 +2115,9 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     if (y + SOUCTY > KONEC + 120) stranky.push([]);
     const pages = []; let prenos = 0;
     for (let pi = 0; pi < stranky.length; pi++) {
-      const c = document.createElement('canvas'); c.width = W; c.height = Hh; const g = c.getContext('2d');
+      const c = document.createElement('canvas'); c.width = Math.round(W * SC); c.height = Math.round(Hh * SC); const g = c.getContext('2d'); g.scale(SC, SC); g.imageSmoothingQuality = 'high';
       g.fillStyle = '#fff'; g.fillRect(0, 0, W, Hh); g.textBaseline = 'alphabetic';
-      if (vodo) g.drawImage(vodo, 838, 196);
+      if (vodo) g.drawImage(vodo, 838, 196, vodo.width / SC, vodo.height / SC);
       const txt = (t, x, yy, font, col, al, ls) => { g.font = font; g.fillStyle = col || INK; g.textAlign = al || 'left'; if ('letterSpacing' in g) g.letterSpacing = ls || '0px'; g.fillText(String(t == null ? '' : t), x, yy); g.textAlign = 'left'; if ('letterSpacing' in g) g.letterSpacing = '0px'; };
       const stitek = (t, x, yy, al) => txt(String(t).toUpperCase(), x, yy, 'bold 13px ' + FONT, SED, al, '2.6px');
       const cara = (x, yy, w, col, h) => { g.fillStyle = col || LINKA; g.fillRect(x, yy, w, h || 1); };
@@ -2181,7 +2184,10 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         if (F.dph === 'pdp') { zalom('Daň odvede zákazník – přenesená daňová povinnost podle § 92e zákona č. 235/2004 Sb., o dani z přidané hodnoty.', '16px ' + FONT, XR - ML, 2).forEach(l => { txt(l, ML, yy, '16px ' + FONT, '#555'); yy += 22; }); yy += 10; }
         if (F.dph === '0') { txt('Dodavatel není plátcem DPH.', ML, yy, '16px ' + FONT, '#555'); yy += 32; }
         cara(737, yy, XR - 737);
+        // 5.16: podpis toho, kdo fakturu potvrdil kódem
+        if (podpisImg) { const k = Math.min(300 / podpisImg.naturalWidth, 96 / podpisImg.naturalHeight), w = podpisImg.naturalWidth * k, h = podpisImg.naturalHeight * k; g.drawImage(podpisImg, XR - w, yy - 6 - h, w, h); }
         txt('Vystavil: ' + (dod.vystavil || (F.uzavreno ? F.uzavreno.kdo : kdo())), XR, yy + 24, '16px ' + FONT, SED, 'right');
+        if (F.uzavreno) txt('Schválil(a) ' + (F.uzavreno.kdo || '') + ' kódem z e-mailu ' + new Date(F.uzavreno.kdy).toLocaleDateString('cs-CZ'), XR, yy + 46, '14px ' + FONT, '#a0a0a0', 'right');
       }
       // patička
       cara(ML, 1524, XR - ML);
@@ -2194,7 +2200,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     }
     if (jen) return pages.map(c => c.toDataURL('image/jpeg', .85));
     const jpgs = [];
-    for (const c of pages) { const b = await new Promise(res => c.toBlob(res, 'image/jpeg', .92)); jpgs.push({jpg: new Uint8Array(await b.arrayBuffer()), w: W, h: Hh}); }
+    for (const c of pages) { const b = await new Promise(res => c.toBlob(res, 'image/jpeg', .86)); jpgs.push({jpg: new Uint8Array(await b.arrayBuffer()), w: c.width, h: c.height}); }
     const pdf = window.CXZprava.jpegPdf(jpgs);
     pdf.nahled = pages.map(c => c.toDataURL('image/jpeg', .8));
     return pdf;
@@ -2256,11 +2262,15 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const ok = async () => {
       if (inp.value.replace(/\D/g, '') !== kod) { pokusu++; toast(pokusu >= 5 ? 'Příliš mnoho chybných pokusů. Zkuste uzavřít znovu, přijde nový kód.' : 'Kód nesedí, zkuste to znovu.'); if (pokusu >= 5) ov.zavri(); return; }
       const w2 = cekej('Ukládám uzavřenou fakturu…');
-      let pdf = null; try { pdf = H.ulozPdf ? await H.ulozPdf(nazevPdf(F).replace(/\s/g, '_'), pdfB, F.datum) : null; } catch (e) {}
       const akt = faktury(R.rec.id).find(x => x.id === F.id) || F;
-      const zm = {uzavreno: {kdy: new Date().toISOString(), kdo: kdo(), email, pdf}, stav: 'schvaleno'};
+      // 5.16: do uzavřené faktury se vloží podpis toho, kdo ji potvrdil kódem
+      const zm = {uzavreno: {kdy: new Date().toISOString(), kdo: kdo(), email}, stav: 'schvaleno'};
+      const podpis = (H.podpis && H.podpis(kdo())) || ''; if (podpis) zm.uzavreno.podpis = podpis;
+      try { pdfB = await window.CXZprava.b64(await fakturaPdf(Object.assign({}, akt, zm))); } catch (e) {}
+      let pdf = null; try { pdf = H.ulozPdf ? await H.ulozPdf(nazevPdf(F).replace(/\s/g, '_'), pdfB, F.datum) : null; } catch (e) {}
+      zm.uzavreno.pdf = pdf;
       let posl = null;
-      if (akt.posli && akt.odbEmail) { w2.text && w2.text('Posílám fakturu odběrateli…'); try { if (await posliOdberateli(akt, pdfB)) { posl = akt.odbEmail; zm.odeslano = {kdy: new Date().toISOString(), komu: posl, kdo: kdo()}; } } catch (e) {} }
+      if (akt.posli && akt.odbEmail) { try { if (await posliOdberateli(akt, pdfB)) { posl = akt.odbEmail; zm.odeslano = {kdy: new Date().toISOString(), komu: posl, kdo: kdo()}; } } catch (e) {} }
       H.upsert('faktury', [Object.assign({}, akt, zm)]);
       w2.konec(); ov.zavri(); S.panel = 'fakturace'; pamSet('rz-panel', 'fakturace'); prekresli();
       toast('Faktura ' + (F.cislo || '') + ' je uzavřená' + (posl ? ' a odeslaná na ' + posl : akt.posli ? ', ale e-mail odběrateli se NEPODAŘILO odeslat – pošlete PDF ručně' : '') + (pdf ? '. PDF je uložené na Disku Google.' : '.'));
