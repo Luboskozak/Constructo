@@ -164,6 +164,17 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
 .rz-rozpr{display:block;margin:2px 0 3px;border:1px solid #f0b400;background:#FFF4BF;color:#6b4500;border-radius:8px;padding:4px 9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;animation:rzpul 1.6s ease-in-out infinite}.rz-rozpr:hover{background:#F4D23C}@keyframes rzpul{50%{box-shadow:0 0 0 4px rgba(244,210,60,.35)}}
 .rz-nes{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line,#ccc);border-radius:12px;padding:5px 12px 5px 8px;background:var(--panel,#fff);font:inherit;font-size:14px;font-weight:700;cursor:pointer;text-align:left;color:var(--ink)}.rz-nes>span:last-child{white-space:nowrap}.rz-nes small{display:block;font-weight:400;font-size:11px;color:var(--muted)}.rz-nes.on{border-color:#d33;background:#fff0f0}
 .rz-sem{width:14px;height:36px;background:#222;border-radius:7px;display:flex;flex-direction:column;justify-content:space-around;align-items:center;flex:none}.rz-sem i{width:9px;height:9px;border-radius:50%;background:#555}.rz-nes:not(.je) .rz-sem i.g{background:#2ec45c;box-shadow:0 0 5px #2ec45c}.rz-nes.je .rz-sem i.r{background:#ff2a2a;animation:rzsem 1s steps(2,start) infinite}@keyframes rzsem{50%{background:#5a1a1a;box-shadow:none}0%,100%{box-shadow:0 0 7px 2px rgba(255,40,40,.85)}}
+.pp{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:16px;align-items:start}.pp-l{display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 170px);overflow:auto;padding-right:4px}
+.pp-f{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--muted)}.pp-f input,.pp-f select,.pp-f textarea,.pp-fa input,.pp-fr input[type=email]{font:inherit;font-size:14.5px;padding:7px 9px;border:1px solid #c9c9c9;border-radius:8px;color:var(--ink,#16191c);background:#fff}
+.pp-sk{border:1px solid var(--line,#ddd);border-radius:10px;background:#fff}.pp-sk summary{cursor:pointer;padding:8px 10px;font-weight:700;font-size:14px}.pp-sk summary span{font-weight:400;color:#1f8a4c}.pp-sk[open] summary{border-bottom:1px solid var(--line,#eee)}.pp-sq{margin:6px 8px 0;width:calc(100% - 16px);font:inherit;font-size:13.5px;padding:5px 8px;border:1px solid #ccc;border-radius:7px}.pp-sq[hidden]{display:none}
+.pp-sl{max-height:240px;overflow:auto;padding:4px}.pp-sl label{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:7px;font-size:14px;cursor:pointer}.pp-sl label:hover{background:#f4f4f0}.pp-sl label[hidden]{display:none}.pp-sl input{width:18px;height:18px;flex:none}.pp-sl label span{flex:1}.pp-sl small{color:var(--muted);font-size:12px}
+.pp-r{background:#e9e9e4;border-radius:12px;padding:10px;min-width:0}.pp-rh{display:flex;justify-content:space-between;font-size:14px;margin:0 2px 8px}.pp-nah{background:#fff;border-radius:8px;max-height:calc(100vh - 220px);overflow:auto;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.pp-t{width:100%;border-collapse:collapse;font-size:13px}.pp-t th{position:sticky;top:0;background:#fff;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#777;text-align:left;border-bottom:2px solid #222;padding:6px}.pp-t td{border-bottom:1px solid #eee;padding:5px 6px;vertical-align:top}.pp-t .n{text-align:right;white-space:nowrap}.pp-t .pp-c{background:#fff8d6;min-width:80px}.pp-d td{font-weight:700;background:#f3f3f3}.pp-dal{text-align:center;color:var(--muted);font-size:13px;padding:8px}
+.pp-det h4,.pp-2 h4{margin:0 0 6px;font-size:15px}.pp-info{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;margin-bottom:10px}.pp-akce{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.pp-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pp-2 section{border:1px solid var(--line,#ddd);border-radius:10px;padding:10px;background:#fff}
+.pp-fa{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}.pp-fl{max-height:300px;overflow:auto;border:1px solid var(--line,#ddd);border-radius:10px;padding:4px;background:#fff}.pp-fr{display:flex;gap:8px;align-items:center;padding:5px 6px;border-bottom:1px solid #f0f0f0}.pp-fr label{flex:1;display:flex;gap:8px;align-items:center;cursor:pointer;min-width:0}.pp-fr label input{width:18px;height:18px;flex:none}.pp-fr label small{display:block;color:var(--muted);font-size:12px}.pp-fr input[type=email]{width:240px;font-size:13.5px}
+.pp-vyh{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:14px;margin-bottom:12px}.pp-win{background:#1f8a4c;color:#fff;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:3px}.pp-win b{font-size:22px}.pp-win span{font-size:20px;font-weight:700}.pp-win em{font-style:normal;font-size:13px;opacity:.9}
+.pp-por{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:4px;font-size:14px}.pp-por>div{display:grid;grid-template-columns:24px 1fr auto;gap:6px;align-items:baseline}.pp-por>div small{grid-column:2/-1}.pp-km{border-top:1px solid #eee;padding-top:5px;margin-top:3px}.pp-min{background:#dff3e6;font-weight:700;color:#14623a}.pp-vt tfoot td{border-top:2px solid #222;background:#fafafa}
+@media (max-width:900px){.pp,.pp-2,.pp-vyh{grid-template-columns:1fr}}
 .fk2-vel{font-size:16px!important;padding:10px 20px!important;font-weight:800}
 .fk2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:16px;align-items:start}
 .fk2-l{min-width:0;display:flex;flex-direction:column;gap:12px}.fk2-k{border:1px solid var(--line,#e2e2e2);border-radius:12px;padding:12px 14px;background:#fff}.fk2-k h4{margin:0 0 10px;font-size:16px}
@@ -837,6 +848,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     else if (S.panel === 'druhy') telo = panelDruhy(C);
     else if (S.panel === 'fakturace') telo = panelFakturace(C);
     else if (S.panel === 'vystavene') telo = panelVystavene(C);
+    else if (S.panel === 'poptavky') telo = panelPoptavky();
     else telo = panelRozpocet(C);
     EL.innerHTML = `<div class="rz">${hlava(list, rec, C)}
       <div class="rz-tabs" role="group" aria-label="Části rozpočtu">
@@ -844,6 +856,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <button type="button" data-p="objekty" aria-pressed="${S.panel === 'objekty'}">Objekty</button>
         <button type="button" data-p="druhy" aria-pressed="${S.panel === 'druhy'}">Druhy prací${nk ? `<b>${nk}</b>` : ''}</button>
         <button type="button" data-p="fakturace" aria-pressed="${S.panel === 'fakturace'}">Fakturace${nf ? `<b${C.upoz ? ' class="cerv"' : ''}>${nf}</b>` : ''}</button>
+        <button type="button" data-p="poptavky" aria-pressed="${S.panel === 'poptavky'}">📄 Slepé rozpočty / poptávky${poptavky(rec.id).length ? `<b>${poptavky(rec.id).length}</b>` : ''}</button>
         <button type="button" data-p="vystavene" aria-pressed="${S.panel === 'vystavene'}">📁 Vystavené faktury${faktury(rec.id).filter(f => f.uzavreno).length ? `<b>${faktury(rec.id).filter(f => f.uzavreno).length}</b>` : ''}</button>
       </div>${telo}</div>`;
     vazby();
@@ -1027,7 +1040,7 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
         <div class="rz-brk"></div>
         ${filtrAktivni() ? `<span class="rz-souhrn">Vyfiltrováno <b>${nf0.format(VIS._n || 0)}</b> položek za <b>${kc0(VIS._kc || 0)}</b>${S.obj || S.pod ? ' <span title="U položek, kde výkaz výměr dělí množství mezi více objektů nebo podlaží, se počítá jen jejich podíl.">(podíl podle výkazu výměr)</span>' : ''}</span>` : '<span class="rz-souhrn" style="color:var(--muted)">Celý rozpočet – zužte ho filtry nahoře</span>'}
         ${nF ? `<button type="button" class="rz-btn mini" data-a="f-zrus">✕ Zrušit filtry</button>` : ''}
-        ${filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Stáhne Excel jen s vyfiltrovanými položkami ve stejné podobě jako rozpočet, ale bez cen – k poslání firmě na poptávku">📄 Vytvořit slepý rozpočet</button>${S.fak ? '' : `<button type="button" class="rz-btn mini" data-a="fak-filtr"${nefak() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vyfiltrované…</button>`}` : ''}
+        ${R ? `<button type="button" class="rz-btn mini zl" data-a="poptat" title="Rozpočet bez cen pro firmy: vyberete položky, uvidíte náhled, pak tisk, Excel nebo odeslání firmám">📄 Vytvořit slepý rozpočet</button>${S.fak ? '' : filtrAktivni() && VIS._n ? `<button type="button" class="rz-btn mini" data-a="fak-filtr"${nefak() ? ' disabled' : ''} title="Založí fakturaci se všemi vyfiltrovanými položkami – pak stačí zadat procento">Fakturovat vyfiltrované…</button>` : ''}` : ''}
         <span class="sp" style="flex:1"></span>
         <span style="font-size:12.5px;color:var(--muted)">Seskupení:</span>
         <div class="rz-seg" role="group" aria-label="Úroveň seskupení jako v Excelu"><button type="button" data-ur="0" aria-pressed="${!S.uroven}" title="Rozbaleno a schováno přesně jako v nahraném Excelu">Jako v Excelu</button>${urovne.map(k => `<button type="button" data-ur="${k}" aria-pressed="${S.uroven === k}" title="${k === 1 ? 'Sbalit vše' : k === R.maxLv + 1 ? 'Rozbalit vše' : 'Ukázat úrovně 1 až ' + k}">${k}</button>`).join('')}</div>
@@ -1243,7 +1256,9 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     const q = EL.querySelector('[data-a="q"]');
     if (q) { let t = 0; q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { S.q = q.value; SCROLL = 0; const pos = q.selectionStart; prekresli(); const n = EL.querySelector('[data-a="q"]'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 250); }); }
     on('[data-fk]', 'change', e => { S[e.currentTarget.dataset.fk] = e.currentTarget.value; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); });
-    on('[data-a="poptat"]', 'click', () => excelPoptavka());
+    on('[data-a="poptat"]', 'click', () => novaPoptavka(S));
+    on('[data-a="pp-nova"]', 'click', () => novaPoptavka({}));
+    on('[data-pp]', 'click', e => detailPoptavky(e.currentTarget.dataset.pp));
     on('[data-a="fak-filtr"]', 'click', () => vytvorFakturu());
     // 5.17: zaškrtávací filtry
     const msZmena = () => { const l = EL.querySelector('.rz-msl'); S.msSc = l ? l.scrollTop : 0; S.otev.clear(); S.zav.clear(); SCROLL = 0; prekresli(); };
@@ -2333,6 +2348,267 @@ body.rz-full .rz-q{flex:0 1 250px;min-width:200px}
     };
     ov.querySelector('[data-ok]').onclick = ok;
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') ok(); });
+  }
+
+  /* ---------- 5.19: Poptávky – slepý rozpočet firmám, archiv naceněných nabídek a vyhodnocení ----------
+     D.poptavky: {id, rp, cislo, nazev, kdy, kdo, filtr, pol: [[rid, mn]], termin, pozn, odeslano: [{firma, fid, email, kdy, kdo}], nabidky: [{id, firma, fid, kdy, kdo, soubor, ceny: {rid: jc}}]} */
+  const poptavky = rp => sez('poptavky').filter(p => p.rp === rp).sort((a, b) => String(b.kdy || '').localeCompare(String(a.kdy || '')));
+  const FKL = ['q', 'cast', 'dil', 'obor', 'kat', 'obj', 'pod'];
+  // výpočet výběru pro okno poptávky – stejné filtry jako tabulka rozpočtu, jen s vlastním nastavením
+  function vyberPodle(fl) {
+    const bak = {}; FKL.concat(['jenUpoz']).forEach(k => { bak[k] = S[k]; S[k] = k === 'jenUpoz' ? false : (fl[k] || ''); });
+    try { const v = spocitejViditelne(spocti(R)); return {ids: v._ids || [], kc: v._kc || 0, popis: popisFiltru()}; }
+    finally { Object.assign(S, bak); }
+  }
+  const polPop = P => (P.pol || []).map(([rid, mn]) => { const r = R.byId.get(rid); return r ? {r, mn, dil: R.dil[r.i] || ''} : null; }).filter(Boolean);
+  const mnPop = (r, sh) => r.mn == null ? null : Math.round(r.mn * (sh == null ? 1 : sh) * 1000) / 1000;
+  function nahledPopHtml(radky, max) {
+    let dil = null, n = 0; const out = [];
+    for (const x of radky) {
+      if (n >= max) break;
+      if (x.dil !== dil) { dil = x.dil; out.push(`<tr class="pp-d"><td colspan="6">${esc(dil || 'Bez dílu')}</td></tr>`); }
+      out.push(`<tr><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n pp-c"></td><td class="n pp-c"></td></tr>`); n++;
+    }
+    return `<table class="pp-t"><thead><tr><th>Kód</th><th>Popis položky</th><th>MJ</th><th class="n">Množství</th><th class="n">Cena za MJ</th><th class="n">Celkem</th></tr></thead><tbody>${out.join('')}</tbody></table>${radky.length > max ? `<p class="pp-dal">… a dalších ${nf0.format(radky.length - max)} položek (v Excelu a tisku budou všechny)</p>` : ''}`;
+  }
+  // 1) okno: filtry (zaškrtávání + hledání), náhled slepého rozpočtu, potvrdit
+  function novaPoptavka(fl0) {
+    if (!R) return toast('Nejdřív nahrajte rozpočet.');
+    if (ro()) return toast('Jen prohlížení.');
+    const fl = {}; FKL.forEach(k => { fl[k] = (fl0 || S)[k] || ''; });
+    const C = spocti(R), sz = R.seznamy || {cast: [], dil: [], obor: []}, ks = kategorie(R.rec.id), cs = R.cinnosti || [];
+    const objs = OBJEKTY.concat(Object.keys(C.objSum).filter(o => o && !OBJEKTY.includes(o)));
+    const podl = [...new Set(Object.keys(C.mat).map(k => k.split('|')[0]))].filter(p => p !== '–').sort((x, y) => RADA_PODL(x) - RADA_PODL(y) || x.localeCompare(y));
+    const skup = [
+      ['kat', 'Druh prací / řemeslo', (ks.length ? [{g: 'Moje druhy prací'}].concat(ks.map(k => ({v: k.id, t: k.nazev}))) : []).concat([{g: 'Řemesla'}], cs.map(k => ({v: k.id, t: k.nazev, p: k.pol.length + ' pol.'})))],
+      ['obj', 'Objekt', objs.map(o => ({v: o, t: 'Objekt ' + o})).concat([{v: '-', t: 'Bez objektu'}])],
+      ['pod', 'Podlaží', podl.map(p => ({v: p, t: p})).concat([{v: '-', t: 'Bez podlaží'}])],
+      ...(R.oborN && sz.obor.length > 1 ? [['obor', R.oborN, sz.obor.map(x => ({v: x.v, t: x.v}))]] : []),
+      ...(sz.cast.length > 1 ? [['cast', 'Část projektu', sz.cast.map(x => ({v: x.v, t: x.v}))]] : []),
+      ...(sz.dil.length ? [['dil', 'Díl (nadpis)', sz.dil.map(x => ({v: x.v, t: x.v}))]] : []),
+    ];
+    const ov = okno('Vytvořit slepý rozpočet – poptávka', `<div class="pp">
+      <div class="pp-l">
+        <label class="pp-f">Název poptávky<input data-pn placeholder="např. Zámečnické práce – objekt A"></label>
+        <label class="pp-f">🔍 Hledat (celý text)<input type="search" data-pq value="${esc(fl.q)}" placeholder="kód nebo slovo, např. zábradlí" autocomplete="off"></label>
+        ${skup.map(([k, lab, pol]) => `<details class="pp-sk"${(fl[k] || '').length ? ' open' : ''}><summary>${esc(lab)}<span data-pc="${k}"></span></summary><input type="search" class="pp-sq" placeholder="hledat…" data-sq="${k}"${pol.filter(x => !x.g).length > 8 ? '' : ' hidden'}><div class="pp-sl">${pol.map(x => x.g ? `<div class="rz-msg">${esc(x.g)}</div>` : `<label data-n="${esc(bezDia(String(x.t).toLowerCase()))}"><input type="checkbox" data-pk="${k}" value="${esc(x.v)}"${(fl[k] ? fl[k].split(SEP) : []).includes(x.v) ? ' checked' : ''}><span>${esc(x.t)}</span>${x.p ? `<small>${esc(x.p)}</small>` : ''}</label>`).join('')}</div></details>`).join('')}
+        <label class="pp-f">Termín pro nabídky (nepovinné)<input type="date" data-pt></label>
+        <label class="pp-f">Poznámka pro firmy (nepovinné)<textarea data-pz rows="2" placeholder="např. Ceny včetně dopravy a lešení."></textarea></label>
+      </div>
+      <div class="pp-r"><div class="pp-rh"><b>Náhled slepého rozpočtu</b><span data-ps></span></div><div class="pp-nah" data-pnah></div></div></div>`,
+      `<span class="sp"></span><button type="button" class="rz-btn" data-x2>Zrušit</button><button type="button" class="rz-btn ze fk2-big" data-ok>✓ Potvrdit slepý rozpočet →</button>`, 'siroky');
+    celaObrazovka(ov, 'rz-fakCela');
+    ov.querySelector('[data-x2]').onclick = () => ov.zavri();
+    let vyb = null, tm = 0;
+    const kresli = () => {
+      vyb = vyberPodle(fl);
+      const rad = vyb.ids.map(([id, sh]) => { const r = R.byId.get(id); return {r, mn: mnPop(r, sh), dil: R.dil[r.i] || ''}; });
+      ov.querySelector('[data-ps]').innerHTML = FKL.some(k => fl[k]) ? `<b>${nf0.format(rad.length)}</b> položek` : `<b>${nf0.format(rad.length)}</b> položek – celý rozpočet, zužte ho filtry vlevo`;
+      ov.querySelector('[data-pnah]').innerHTML = rad.length ? nahledPopHtml(rad, 400) : '<p class="fk2-pr">Filtru neodpovídá žádná položka.</p>';
+      skup.forEach(([k]) => { const n = fl[k] ? fl[k].split(SEP).length : 0, e = ov.querySelector(`[data-pc="${k}"]`); if (e) e.textContent = n ? ' · vybráno ' + n : ''; });
+      const pn = ov.querySelector('[data-pn]'); if (!pn.dataset.ruc) pn.value = vyb.popis ? 'Poptávka – ' + vyb.popis : 'Poptávka – ' + R.rec.nazev;
+    };
+    const pozdeji = () => { clearTimeout(tm); tm = setTimeout(kresli, 250); };
+    ov.addEventListener('change', e => { const k = e.target.dataset.pk; if (!k) return; const a = (fl[k] ? fl[k].split(SEP) : []).filter(v => v !== e.target.value); if (e.target.checked) a.push(e.target.value); fl[k] = a.join(SEP); pozdeji(); });
+    ov.querySelector('[data-pq]').addEventListener('input', e => { fl.q = e.target.value; pozdeji(); });
+    ov.querySelector('[data-pn]').addEventListener('input', e => { e.target.dataset.ruc = '1'; });
+    ov.querySelectorAll('[data-sq]').forEach(i => i.addEventListener('input', () => { const q = bezDia(i.value.toLowerCase().trim()); i.nextElementSibling.querySelectorAll('label').forEach(l => { l.hidden = q && !l.dataset.n.includes(q); }); }));
+    kresli();
+    ov.querySelector('[data-ok]').onclick = () => {
+      if (!vyb || !vyb.ids.length) return toast('Ve výběru nejsou žádné položky.');
+      const n = poptavky(R.rec.id).length + 1;
+      const P = {id: 'pp' + uid(), rp: R.rec.id, cislo: 'P' + new Date().getFullYear() + '-' + String(n).padStart(3, '0'), nazev: ov.querySelector('[data-pn]').value.trim() || 'Poptávka', kdy: new Date().toISOString(), kdo: kdo(),
+        filtr: Object.assign({}, fl), pol: vyb.ids.map(([id, sh]) => [id, mnPop(R.byId.get(id), sh)]), termin: ov.querySelector('[data-pt]').value, pozn: ov.querySelector('[data-pz]').value.trim(), odeslano: [], nabidky: []};
+      H.upsert('poptavky', [P]); ov.zavri(); S.panel = 'poptavky'; pamSet('rz-panel', 'poptavky'); prekresli();
+      detailPoptavky(P.id);
+    };
+  }
+  // Excel pro firmu: přehledný list k nacenění (sloupec Cena za MJ vyplní firma, Celkem se dopočítá), ID pro zpětné načtení
+  function excelPopListy(P) {
+    const U = udaje(), dod = U.dod || {}, Pj = (H.projekt && H.projekt()) || {};
+    const rows = [['POPTÁVKA – ' + P.nazev], ['Stavba: ' + (Pj.name || '') + '   ·   Poptávka č. ' + (P.cislo || '') + '   ·   ' + (dod.firma || '') + (dod.email ? ', ' + dod.email : '')],
+      [P.termin ? 'Nabídku prosíme do ' + datCz(P.termin) + '. ' : '' + 'Vyplňte prosím žlutý sloupec Cena za MJ (bez DPH) a soubor pošlete zpět. Neměňte prosím pořadí řádků ani sloupec ID.'], ...(P.pozn ? [['Poznámka: ' + P.pozn]] : []), [],
+      ['Kód', 'Popis položky', 'MJ', 'Množství', 'Cena za MJ (Kč bez DPH)', 'Celkem (Kč bez DPH)', 'ID Constructo']];
+    const urov = rows.map(() => 0); let dil = null;
+    polPop(P).forEach(x => {
+      if (x.dil !== dil) { dil = x.dil; rows.push([dil || 'Bez dílu']); urov.push(0); }
+      const rn = rows.length + 1;
+      rows.push([x.r.k || '', x.r.d || '', x.r.mj || '', x.mn, null, {t: 'n', f: `IF(E${rn}="","",D${rn}*E${rn})`}, x.r.id]); urov.push(1);
+    });
+    rows.push([]); rows.push(['', 'CELKEM bez DPH', '', '', '', {t: 'n', f: `SUM(F7:F${rows.length - 1})`}]);
+    return [{n: 'Nabídka', rows, urov, sirky: [14, 70, 7, 12, 18, 18, 14]}];
+  }
+  const nazevPop = P => ('Slepy rozpocet ' + (P.cislo || '') + ' ' + (P.nazev || '').replace(/^Poptávka – /, '')).replace(/[\\/:*?"<>|]/g, ' ').slice(0, 90);
+  async function excelPopBlob(P) { const res = await worker({akce: 'zapis', listy: excelPopListy(P)}); return new Blob([res.buf], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}); }
+  function tiskPoptavky(P) {
+    const Pj = (H.projekt && H.projekt()) || {}, dod = udaje().dod || {}, rad = polPop(P);
+    const fr = document.createElement('iframe'); fr.style.cssText = 'position:fixed;width:0;height:0;border:0;right:0;bottom:0'; document.body.appendChild(fr);
+    const d = fr.contentDocument; d.open();
+    d.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(nazevPop(P))}</title><style>@page{size:A4;margin:14mm}body{font:11px/1.35 "Helvetica Neue",Arial,sans-serif;color:#222}h1{font-size:18px;margin:0 0 4px}p{margin:2px 0}table{width:100%;border-collapse:collapse;margin-top:10px}th{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#777;text-align:left;border-bottom:2px solid #222;padding:4px}td{border-bottom:1px solid #e2e2e2;padding:4px;vertical-align:top}.n{text-align:right;white-space:nowrap}.d td{font-weight:bold;background:#f3f3f3}.c{width:70px}</style></head><body>
+      <h1>Slepý rozpočet – ${esc(P.nazev)}</h1><p>Stavba: <b>${esc(Pj.name || '')}</b> · poptávka č. ${esc(P.cislo || '')} · ${esc(dod.firma || '')}${P.termin ? ' · nabídku prosíme do <b>' + esc(datCz(P.termin)) + '</b>' : ''}</p>${P.pozn ? `<p>${esc(P.pozn)}</p>` : ''}
+      ${nahledPopHtml(rad, 1e9).replace(/class="pp-d"/g, 'class="d"').replace(/class="n pp-c"/g, 'class="n c"')}</body></html>`);
+    d.close(); setTimeout(() => { fr.contentWindow.focus(); fr.contentWindow.print(); setTimeout(() => fr.remove(), 60000); }, 300);
+  }
+  // 2) detail poptávky: tisk, Excel, odeslat firmám, nahrát nabídky, vyhodnocení
+  function detailPoptavky(pid) {
+    const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
+    const rad = polPop(P), nab = P.nabidky || [], ods = P.odeslano || [];
+    const ov = okno((P.cislo ? P.cislo + ' · ' : '') + P.nazev, `<div class="pp-det">
+      <div class="pp-info"><span><b>${nf0.format(rad.length)}</b> položek</span><span>vytvořil(a) ${esc(P.kdo || '')} ${esc(new Date(P.kdy).toLocaleDateString('cs-CZ'))}</span>${P.termin ? `<span>nabídky do <b>${esc(datCz(P.termin))}</b></span>` : ''}${P.pozn ? `<span>${esc(P.pozn)}</span>` : ''}</div>
+      <div class="pp-akce"><button type="button" class="rz-btn" data-tisk>🖨 Tisk</button><button type="button" class="rz-btn" data-xls>⬇ Uložit Excel</button><button type="button" class="rz-btn zl fk2-big" data-posl>📨 Odeslat firmám…</button><button type="button" class="rz-btn fk2-big" data-nab>⬆ Nahrát naceněnou nabídku…</button>${nab.length ? `<button type="button" class="rz-btn ze fk2-big" data-vyh>📊 Vyhodnotit nabídky (${nab.length})</button>` : ''}</div>
+      <div class="pp-2"><section><h4>Odesláno firmám</h4>${ods.length ? `<table class="pp-t"><tbody>${ods.map(o => `<tr><td><b>${esc(o.firma)}</b><br><small>${esc(o.email)}</small></td><td>${esc(new Date(o.kdy).toLocaleString('cs-CZ'))}<br><small>${esc(o.kdo || '')}</small></td><td>${nab.some(n => n.firma === o.firma) ? '<b style="color:#1f8a4c">✓ nabídka přišla</b>' : '<span style="color:var(--muted)">čeká na nabídku</span>'}</td></tr>`).join('')}</tbody></table>` : '<p class="hint">Zatím neodesláno.</p>'}</section>
+      <section><h4>Naceněné nabídky</h4>${nab.length ? `<table class="pp-t"><tbody>${nab.map(n => { const s = souhrnNab(P, n); return `<tr><td><b>${esc(n.firma)}</b><br><small>${esc(n.soubor || '')}</small></td><td class="n"><b>${kc0(s.celkem)}</b><br><small>${s.chybi ? `<span style="color:var(--bad)">chybí ceny u ${s.chybi} pol.</span>` : 'všechny položky naceněné'}</small></td><td><button type="button" class="rz-btn mini del" data-nsm="${esc(n.id)}">✕</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="hint">Až firma pošle naceněný Excel, nahrajte ho tlačítkem ⬆ Nahrát naceněnou nabídku. Constructo ho samo přiřadí k položkám.</p>'}</section></div>
+      <h4 style="margin:14px 0 6px">Slepý rozpočet</h4><div class="pp-nah">${nahledPopHtml(rad, 200)}</div></div>`,
+      `<button type="button" class="rz-btn del" data-smaz>Smazat poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-x2>Zavřít</button>`, 'siroky');
+    ov.querySelector('[data-x2]').onclick = () => ov.zavri();
+    ov.querySelector('[data-tisk]').onclick = () => tiskPoptavky(P);
+    ov.querySelector('[data-xls]').onclick = async () => { const w = cekej('Připravuji Excel…'); try { stahni(await excelPopBlob(P), nazevPop(P) + '.xlsx'); } catch (e) { toast('Excel se nepodařilo vytvořit: ' + e.message); } finally { w.konec(); } };
+    ov.querySelector('[data-posl]').onclick = () => { ov.zavri(); odeslatPoptavku(P.id); };
+    ov.querySelector('[data-nab]').onclick = () => { ov.zavri(); nahratNabidku(P.id); };
+    const vy = ov.querySelector('[data-vyh]'); if (vy) vy.onclick = () => { ov.zavri(); vyhodnoceni(P.id); };
+    ov.querySelectorAll('[data-nsm]').forEach(b => b.onclick = () => { if (!confirm('Odebrat tuto nabídku z poptávky?')) return; H.upsert('poptavky', [Object.assign({}, P, {nabidky: nab.filter(n => n.id !== b.dataset.nsm)})]); ov.zavri(); detailPoptavky(P.id); });
+    ov.querySelector('[data-smaz]').onclick = () => { if (!confirm('Smazat poptávku ' + (P.cislo || '') + ' i s nahranými nabídkami? Smaže se všem kolegům.')) return; H.smaz('poptavky', [P.id]); ov.zavri(); prekresli(); };
+  }
+  // 3) odeslat firmám: firmy stavby s e-mailem, nová firma přes ARES, import firem z jiné stavby
+  function odeslatPoptavku(pid) {
+    const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
+    const dod = udaje().dod || {}, Pj = (H.projekt && H.projekt()) || {}, vybr = new Map();
+    const emailF = f => f.email || ((f.kontakty || f.lide || []).find(k => k && k.email) || {}).email || '';
+    const ov = okno('Odeslat slepý rozpočet firmám', `<p style="margin:0 0 8px;font-size:14px">Zaškrtněte firmy, kterým se poptávka pošle e-mailem. V příloze dostanou Excel k nacenění.</p>
+      <div class="pp-fa"><button type="button" class="rz-btn" data-nova>+ Nová firma (IČO → ARES)</button><button type="button" class="rz-btn" data-jina>⇩ Firmy z jiné stavby…</button><input type="search" data-fq placeholder="hledat firmu…" style="flex:1;min-width:160px"></div>
+      <div class="pp-fl" data-fl></div>
+      <label class="pp-f" style="margin-top:10px">Předmět<input data-pr value="${esc('Poptávka: ' + P.nazev.replace(/^Poptávka – /, '') + (Pj.name ? ' – ' + Pj.name : ''))}"></label>
+      <label class="pp-f">Text e-mailu<textarea data-tx rows="5">${esc(`Dobrý den,\n\nprosíme o cenovou nabídku na práce podle přiloženého slepého rozpočtu (stavba ${Pj.name || ''}).${P.termin ? ' Nabídku prosíme do ' + datCz(P.termin) + '.' : ''}\nVyplňte prosím žlutý sloupec Cena za MJ v příloze a soubor pošlete zpět na tento e-mail.${P.pozn ? '\n\n' + P.pozn : ''}\n\nS pozdravem\n${dod.vystavil || kdo()}${dod.firma ? '\n' + dod.firma : ''}${dod.tel ? '\n' + dod.tel : ''}`)}</textarea></label>`,
+      `<span class="sp"></span><button type="button" class="rz-btn" data-zp>← Zpět</button><button type="button" class="rz-btn ze fk2-big" data-ok>📨 Odeslat</button>`, 'siroky');
+    const kresli = () => {
+      const q = bezDia((ov.querySelector('[data-fq]').value || '').toLowerCase()), fs = (H.firmy() || []).filter(f => f.firma).sort((a, b) => a.firma.localeCompare(b.firma, 'cs'));
+      ov.querySelector('[data-fl]').innerHTML = fs.filter(f => !q || bezDia((f.firma + ' ' + (f.ico || '')).toLowerCase()).includes(q)).map(f => { const em = vybr.has(f.id) ? vybr.get(f.id) : emailF(f), uz = (P.odeslano || []).some(o => o.fid === f.id);
+        return `<div class="pp-fr"><label><input type="checkbox" data-fv="${esc(f.id)}"${vybr.has(f.id) ? ' checked' : ''}><span><b>${esc(f.firma)}</b>${f.ico ? `<small>IČO ${esc(f.ico)}</small>` : ''}${uz ? '<small style="color:#1f8a4c">už odesláno</small>' : ''}</span></label><input type="email" data-fe="${esc(f.id)}" value="${esc(em)}" placeholder="e-mail firmy"></div>`; }).join('') || '<p class="hint">Žádná firma. Přidejte ji tlačítkem + Nová firma.</p>';
+    };
+    kresli();
+    ov.querySelector('[data-fq]').addEventListener('input', kresli);
+    ov.addEventListener('change', e => { const v = e.target.dataset.fv; if (v) { if (e.target.checked) vybr.set(v, ov.querySelector(`[data-fe="${v}"]`).value.trim()); else vybr.delete(v); } });
+    ov.addEventListener('input', e => { const v = e.target.dataset.fe; if (v) { if (vybr.has(v) || e.target.value) { vybr.set(v, e.target.value.trim()); const c = ov.querySelector(`[data-fv="${v}"]`); if (c) c.checked = true; } } });
+    ov.querySelector('[data-nova]').onclick = () => { if (!H.novaFirma) return toast('Obnovte stránku (F5).'); H.novaFirma(id => { const f = (H.firmy() || []).find(x => x.id === id); vybr.set(id, f ? emailF(f) : ''); kresli(); }); };
+    ov.querySelector('[data-jina]').onclick = () => firmyZJineStavby(() => kresli());
+    ov.querySelector('[data-zp]').onclick = () => { ov.zavri(); detailPoptavky(P.id); };
+    ov.querySelector('[data-ok]').onclick = async () => {
+      const cil = [...vybr.entries()].map(([fid, email]) => ({fid, email, f: (H.firmy() || []).find(x => x.id === fid)})).filter(x => x.f);
+      if (!cil.length) return toast('Zaškrtněte aspoň jednu firmu.');
+      const bez = cil.find(x => !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(x.email)); if (bez) return toast('Doplňte správný e-mail u firmy ' + bez.f.firma + '.');
+      if (!H.pripojeno() || !H.posliMail) return toast('Odesílat jde jen s připojením ke Googlu.');
+      const w = cekej('Odesílám poptávku…');
+      try {
+        if (H.verzeSkriptu && (await H.verzeSkriptu()) < 23) { if (H.aktualizujSkript) await H.aktualizujSkript().catch(() => null); if ((await H.verzeSkriptu(true)) < 23) throw new Error('skript Constructa na Googlu se ještě neaktualizoval (příloha by se neposlala). Zkuste to za hodinu znovu.'); }
+        const xb = await window.CXZprava.b64(await excelPopBlob(P)), tx = ov.querySelector('[data-tx]').value, pr = ov.querySelector('[data-pr]').value.trim() || 'Poptávka';
+        const html = `<div style="font-family:Arial,sans-serif;font-size:15px;color:#16191c">${esc(tx).replace(/\n/g, '<br>')}</div>`;
+        const ok = [], chyby = [];
+        for (const x of cil) {
+          const r = await H.posliMail({komu: x.email, predmet: pr, html, text: tx, odpovedet: (H.mujEmail && H.mujEmail()) || dod.email || '', priloha: {data: xb, mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', jmeno: nazevPop(P).replace(/\s+/g, '_') + '.xlsx'}, cid: 'pp-' + P.id + '-' + x.fid + '-' + Date.now().toString(36)});
+          if (r && r.ok) ok.push({firma: x.f.firma, fid: x.fid, email: x.email, kdy: new Date().toISOString(), kdo: kdo()}); else chyby.push(x.f.firma);
+          if (!emailF(x.f) && H.ulozEmailFirmy) H.ulozEmailFirmy(x.fid, x.email);
+        }
+        const akt = sez('poptavky').find(y => y.id === P.id) || P;
+        if (ok.length) H.upsert('poptavky', [Object.assign({}, akt, {odeslano: (akt.odeslano || []).concat(ok)})]);
+        w.konec(); ov.zavri(); toast(ok.length ? 'Poptávka odeslána: ' + ok.map(x => x.firma).join(', ') + (chyby.length ? '. Neodešlo: ' + chyby.join(', ') : '') : 'Nepodařilo se odeslat: ' + chyby.join(', '));
+        detailPoptavky(P.id);
+      } catch (e) { w.konec(); toast('Nepodařilo se odeslat: ' + (e.message || e)); }
+    };
+  }
+  async function firmyZJineStavby(po) {
+    if (!H.stavby || !H.firmyStavby) return toast('Obnovte stránku (F5).');
+    const st = H.stavby().filter(s => !s.aktivni);
+    if (!st.length) return toast('Jiná stavba v Constructu zatím není.');
+    const ov = okno('Firmy z jiné stavby', `<label class="pp-f">Stavba<select data-st>${st.map(s => `<option value="${esc(s.id)}">${esc(s.nazev)}</option>`).join('')}</select></label><div class="pp-fl" data-fl><p class="hint">Načítám firmy…</p></div>`,
+      `<span class="sp"></span><button type="button" class="rz-btn zl" data-ok>Přidat vybrané firmy do této stavby</button>`, 'uzky');
+    let fs = [];
+    const nacti = async () => {
+      const box = ov.querySelector('[data-fl]'); box.innerHTML = '<p class="hint">Načítám firmy…</p>';
+      try { const tu = new Set((H.firmy() || []).map(f => String(f.ico || f.firma).toLowerCase())); fs = (await H.firmyStavby(ov.querySelector('[data-st]').value)).filter(f => f && f.firma && !tu.has(String(f.ico || f.firma).toLowerCase()));
+        box.innerHTML = fs.length ? fs.map((f, i) => `<div class="pp-fr"><label><input type="checkbox" data-fi="${i}"><span><b>${esc(f.firma)}</b>${f.ico ? `<small>IČO ${esc(f.ico)}</small>` : ''}${f.email ? `<small>${esc(f.email)}</small>` : ''}</span></label></div>`).join('') : '<p class="hint">Všechny firmy z této stavby už tu jsou.</p>'; }
+      catch (e) { box.innerHTML = `<p class="hint">Firmy se nepodařilo načíst: ${esc(e.message || e)}</p>`; }
+    };
+    ov.querySelector('[data-st]').onchange = nacti; nacti();
+    ov.querySelector('[data-ok]').onclick = () => {
+      const v = [...ov.querySelectorAll('[data-fi]:checked')].map(c => fs[+c.dataset.fi]); if (!v.length) return toast('Zaškrtněte firmy.');
+      H.pridejFirmy(v); ov.zavri(); toast('Přidáno do Firem: ' + v.map(f => f.firma).join(', ')); if (po) po();
+    };
+  }
+  // 4) nahrát naceněnou nabídku (Excel od firmy) – přiřadí ceny podle sloupce ID, jinak podle kódu a popisu
+  function nahratNabidku(pid) {
+    const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
+    const ods = P.odeslano || [], fs = (H.firmy() || []).filter(f => f.firma).sort((a, b) => a.firma.localeCompare(b.firma, 'cs'));
+    const ov = okno('Nahrát naceněnou nabídku', `<label class="pp-f">Od které firmy je nabídka?<select data-nf><option value="">— vyberte firmu —</option>${[...new Set(ods.map(o => o.fid))].map(id => { const o = ods.find(x => x.fid === id); return `<option value="${esc(id)}">${esc(o.firma)} (poslána poptávka)</option>`; }).join('')}${fs.filter(f => !ods.some(o => o.fid === f.id)).map(f => `<option value="${esc(f.id)}">${esc(f.firma)}</option>`).join('')}</select></label>
+      <p style="font-size:13.5px;color:var(--muted)">Vyberte Excel, který firma poslala zpět. Constructo přiřadí ceny k položkám samo (podle sloupce ID, nebo podle kódu a popisu).</p>`,
+      `<button type="button" class="rz-btn" data-nova>+ Nová firma</button><span class="sp"></span><button type="button" class="rz-btn zl" data-ok>⬆ Vybrat soubor s nabídkou…</button>`, 'uzky');
+    ov.querySelector('[data-nova]').onclick = () => H.novaFirma && H.novaFirma(id => { const f = (H.firmy() || []).find(x => x.id === id), s = ov.querySelector('[data-nf]'); if (f) { s.insertAdjacentHTML('beforeend', `<option value="${esc(id)}">${esc(f.firma)}</option>`); s.value = id; } });
+    ov.querySelector('[data-ok]').onclick = () => {
+      const fid = ov.querySelector('[data-nf]').value, f = fs.find(x => x.id === fid) || (H.firmy() || []).find(x => x.id === fid); if (!f) return toast('Vyberte firmu.');
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.xlsx,.xls,.xlsm,.ods,.csv';
+      inp.onchange = async () => {
+        const file = inp.files[0]; if (!file) return; const w = cekej('Čtu nabídku…');
+        try {
+          const res = await worker({akce: 'cti', buf: await file.arrayBuffer()});
+          const ceny = cenyZNabidky(P, res.listy || []);
+          if (!ceny.n) throw new Error('v souboru jsem nenašel žádné ceny k položkám poptávky');
+          const akt = sez('poptavky').find(y => y.id === P.id) || P;
+          const nab = (akt.nabidky || []).filter(n => n.fid !== fid).concat([{id: 'nb' + uid(), firma: f.firma, fid, kdy: new Date().toISOString(), kdo: kdo(), soubor: file.name, ceny: ceny.c}]);
+          H.upsert('poptavky', [Object.assign({}, akt, {nabidky: nab})]);
+          w.konec(); ov.zavri(); toast(`Nabídka ${f.firma}: přiřazeno ${nf0.format(ceny.n)} z ${nf0.format((P.pol || []).length)} položek.`); detailPoptavky(P.id);
+        } catch (e) { w.konec(); toast('Nabídku se nepodařilo načíst: ' + (e.message || e)); }
+      };
+      inp.click();
+    };
+  }
+  function cenyZNabidky(P, listy) {
+    const ids = new Set((P.pol || []).map(x => x[0])), c = {}; let n = 0;
+    const num = v => typeof v === 'number' ? v : (v = String(v || '').replace(/\s|Kč/g, '').replace(',', '.'), v !== '' && !isNaN(+v) ? +v : null);
+    const podleKodu = new Map(); polPop(P).forEach(x => { podleKodu.set(norm((x.r.k || '') + ' ' + (x.r.d || '')).slice(0, 80), x.r.id); if (x.r.k) podleKodu.set('k:' + norm(x.r.k), podleKodu.has('k:' + norm(x.r.k)) ? null : x.r.id); });
+    for (const l of listy) {
+      const rows = l.rows || []; let h = -1, cId = -1, cJc = -1, cCc = -1, cMn = -1, cK = -1, cD = -1;
+      for (let i = 0; i < Math.min(rows.length, 40) && h < 0; i++) { const t = rows[i].map(v => bezDia(String(v || '').toLowerCase())); const j = t.findIndex(v => /cena za mj|jednotkov|j\. ?cena|cena\/mj/.test(v)); if (j >= 0) { h = i; cJc = j; cId = t.findIndex(v => /id constructo/.test(v)); cCc = t.findIndex(v => /^celkem|cena celkem/.test(v)); cMn = t.findIndex(v => /mnozstvi/.test(v)); cK = t.findIndex(v => /^kod|cislo polozky/.test(v)); cD = t.findIndex(v => /popis|nazev/.test(v)); } }
+      if (h < 0) continue;
+      for (let i = h + 1; i < rows.length; i++) {
+        const r = rows[i]; let rid = cId >= 0 ? String(r[cId] || '').trim() : '';
+        if (!ids.has(rid)) { rid = podleKodu.get(norm((cK >= 0 ? r[cK] : '') + ' ' + (cD >= 0 ? r[cD] : '')).slice(0, 80)) || (cK >= 0 && r[cK] ? podleKodu.get('k:' + norm(r[cK])) : null) || ''; }
+        if (!rid || !ids.has(rid)) continue;
+        let jc = num(r[cJc]); if (jc == null && cCc >= 0 && cMn >= 0) { const cc = num(r[cCc]), mn = num(r[cMn]); if (cc != null && mn) jc = cc / mn; }
+        if (jc == null) continue; c[rid] = Math.round(jc * 100) / 100; n++;
+      }
+      if (n) break;
+    }
+    return {c, n};
+  }
+  function souhrnNab(P, nb) { let celkem = 0, chybi = 0; (P.pol || []).forEach(([rid, mn]) => { const jc = nb.ceny && nb.ceny[rid]; if (jc == null) { chybi++; return; } celkem += (Number(mn) || 0) * jc; }); return {celkem: Math.round(celkem * 100) / 100, chybi}; }
+  // 5) vyhodnocení: porovnání firem po položkách, nejlevnější zeleně, pořadí nabídek, nejvýhodnější kombinace
+  function vyhodnoceni(pid) {
+    const P = sez('poptavky').find(x => x.id === pid); if (!P) return;
+    const nab = P.nabidky || []; if (!nab.length) return toast('Zatím není nahraná žádná nabídka.');
+    const rad = polPop(P), sm = nab.map(n => Object.assign({n}, souhrnNab(P, n))).sort((a, b) => (a.chybi - b.chybi) || (a.celkem - b.celkem));
+    const uplne = sm.filter(x => !x.chybi), nej = uplne[0] || sm[0], druha = (uplne.length ? uplne : sm)[1];
+    let komb = 0, kombF = new Map(), rozp = 0;
+    const radky = rad.map(x => { const ce = nab.map(n => n.ceny && n.ceny[x.r.id]), pl = ce.filter(v => v != null), mi = pl.length ? Math.min(...pl) : null; if (mi != null) { komb += mi * (x.mn || 0); const i = ce.indexOf(mi); kombF.set(nab[i].firma, (kombF.get(nab[i].firma) || 0) + 1); } rozp += (x.r.jc || 0) * (x.mn || 0); return {x, ce, mi}; });
+    const rozdil = druha ? druha.celkem - nej.celkem : 0;
+    const ov = okno('Vyhodnocení nabídek – ' + P.nazev, `<div class="pp-vy">
+      <div class="pp-vyh"><div class="pp-win"><small>Nejvýhodnější úplná nabídka</small><b>${esc(nej.n.firma)}</b><span>${kc0(nej.celkem)} bez DPH</span>${druha ? `<em>o ${kc0(rozdil)} (${Math.round(rozdil / druha.celkem * 1000) / 10} %) levnější než ${esc(druha.n.firma)}</em>` : ''}${nej.chybi ? `<em style="color:var(--bad)">pozor: chybí ceny u ${nej.chybi} položek</em>` : ''}</div>
+        <div class="pp-por"><small>Pořadí nabídek</small>${sm.map((x, i) => `<div><span>${i + 1}.</span><b>${esc(x.n.firma)}</b><span class="n">${kc0(x.celkem)}</span>${x.chybi ? `<small style="color:var(--bad)">chybí ${x.chybi} pol.</small>` : ''}</div>`).join('')}
+          <div class="pp-km"><span></span><b>Kdyby se každá položka zadala nejlevnější firmě</b><span class="n">${kc0(Math.round(komb))}</span><small>${[...kombF.entries()].map(([f, k]) => esc(f) + ' ' + k + '×').join(', ')}</small></div>
+          ${rozp ? `<div class="pp-km"><span></span><b>Pro srovnání: ceny z rozpočtu</b><span class="n">${kc0(Math.round(rozp))}</span></div>` : ''}</div></div>
+      <div class="pp-nah"><table class="pp-t pp-vt"><thead><tr><th>Kód</th><th>Položka</th><th>MJ</th><th class="n">Množství</th><th class="n">Rozpočet / MJ</th>${nab.map(n => `<th class="n">${esc(n.firma)}<br><small>cena / MJ</small></th>`).join('')}</tr></thead><tbody>
+        ${radky.slice(0, 1500).map(({x, ce, mi}) => `<tr><td>${esc(x.r.k || '')}</td><td>${esc(x.r.d || '')}</td><td>${esc(x.r.mj || '')}</td><td class="n">${x.mn == null ? '' : mnT(x.mn)}</td><td class="n" style="color:var(--muted)">${x.r.jc == null ? '' : kc(x.r.jc)}</td>${ce.map(v => `<td class="n${v != null && v === mi && ce.filter(z => z != null).length > 1 ? ' pp-min' : ''}">${v == null ? '<span style="color:var(--bad)">—</span>' : kc(v)}</td>`).join('')}</tr>`).join('')}
+        </tbody><tfoot><tr><td colspan="5"><b>Celkem bez DPH</b></td>${nab.map(n => `<td class="n"><b>${kc(souhrnNab(P, n).celkem)}</b></td>`).join('')}</tr></tfoot></table></div></div>`,
+      `<button type="button" class="rz-btn" data-zp>← Zpět na poptávku</button><span class="sp"></span><button type="button" class="rz-btn" data-xls>⬇ Vyhodnocení do Excelu</button>`, 'siroky');
+    celaObrazovka(ov, 'rz-fakCela');
+    ov.querySelector('[data-zp]').onclick = () => { ov.zavri(); detailPoptavky(P.id); };
+    ov.querySelector('[data-xls]').onclick = () => ulozExcel('Vyhodnocení nabídek – ' + P.nazev.replace(/^Poptávka – /, ''), [{n: 'Vyhodnocení', rows: [['Vyhodnocení nabídek – ' + P.nazev], ['Nejvýhodnější: ' + nej.n.firma + ' – ' + kc0(nej.celkem)], [], ['Kód', 'Položka', 'MJ', 'Množství', 'Rozpočet / MJ'].concat(nab.map(n => n.firma + ' – cena/MJ'), ['Nejnižší cena/MJ'])].concat(radky.map(({x, ce, mi}) => [x.r.k || '', x.r.d || '', x.r.mj || '', x.mn, x.r.jc == null ? null : x.r.jc].concat(ce.map(v => v == null ? null : v), [mi]))).concat([[], ['', 'Celkem bez DPH', '', '', ''].concat(nab.map(n => souhrnNab(P, n).celkem))]), sirky: [14, 60, 7, 12, 14].concat(nab.map(() => 18), [16])}]);
+  }
+  function panelPoptavky() {
+    const ps = poptavky(R.rec.id);
+    return `<div class="rz-top"><span style="font-size:14px">Slepý rozpočet = rozpočet bez cen pro firmy. Pošlete ho firmám, nahrajte naceněné nabídky a Constructo vybere nejvýhodnější.</span><span class="sp"></span>
+        <button type="button" class="rz-btn ze fk2-vel" data-a="pp-nova"${ro() ? ' disabled' : ''}>📄 Vytvořit slepý rozpočet</button></div>
+      ${ps.length ? `<div class="rz-list"><table><thead><tr><th>Číslo</th><th>Poptávka</th><th>Vytvořeno</th><th class="n">Položek</th><th>Odesláno</th><th>Nabídky</th><th>Nejvýhodnější</th></tr></thead><tbody>
+        ${ps.map(p => { const nb = (p.nabidky || []).map(n => Object.assign({n}, souhrnNab(p, n))).sort((a, b) => (a.chybi - b.chybi) || (a.celkem - b.celkem)); return `<tr class="kl" data-pp="${esc(p.id)}"><td><b>${esc(p.cislo || '')}</b></td><td>${esc(p.nazev)}</td><td>${esc(new Date(p.kdy).toLocaleDateString('cs-CZ'))}<div style="font-size:12px;color:var(--muted)">${esc(p.kdo || '')}</div></td><td class="n">${nf0.format((p.pol || []).length)}</td><td>${(p.odeslano || []).length ? esc([...new Set(p.odeslano.map(o => o.firma))].join(', ')) : '<span style="color:var(--muted)">neodesláno</span>'}</td><td>${nb.length ? nb.length + '×' : '<span style="color:var(--muted)">—</span>'}</td><td>${nb.length ? `<b style="color:#1f8a4c">${esc(nb[0].n.firma)}</b> · ${kc0(nb[0].celkem)}` : ''}</td></tr>`; }).join('')}
+      </tbody></table></div>` : `<div class="rz-empty"><b>Zatím žádná poptávka</b><ol><li>Klikněte <b>📄 Vytvořit slepý rozpočet</b>.</li><li>Zaškrtejte filtry (druh prací, objekt, podlaží…) nebo hledejte slovo – vpravo hned vidíte náhled.</li><li>Potvrďte, pak vytiskněte, uložte nebo odešlete firmám.</li><li>Naceněné nabídky nahrajte zpět – Constructo je porovná a ukáže nejvýhodnější.</li></ol></div>`}`;
   }
 
   /* ---------- export do Excelu ---------- */
