@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-YM/hJoURxpohQFP4I3M81Hbn540ajMzfhGiPL20Cyk8='; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-hashes' 'sha256-lqC7sWlxUpPfgot2s3UqdGOD95SV7zEUR06KBkxl0kc=' 'sha256-zcrJqZSh8g3GBkbV+QEGlpHz665aeBrrbqnIwKLiHnI='; object-src 'none'; base-uri 'self'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Constructo</title>
 <meta name="theme-color" content="#131518">
@@ -1300,7 +1300,7 @@ html input[type=checkbox]:focus-visible{outline:2px solid #1b1b1b;outline-offset
       dotaz: `obracíme se na Vás s dotazem ke stavbě ${st} (${dn}):`, bozp: `důrazně Vás upozorňujeme na porušení zásad BOZP, zjištěné při kontrole stavby ${st} dne ${dn}:`}[t.k] || `při kontrole stavby ${st} dne ${dn} jsme zjistili ${t.z}:`;
     const zaver = {dotaz: 'Děkujeme za odpověď.', neuklizeno: 'Děkujeme za spolupráci.', reklamace: 'Vyhrazujeme si uplatnit všechna práva z vadného plnění podle smlouvy o dílo.', bozp: 'Do odstranění závady nelze v práci na tomto místě pokračovat. Opakované porušení BOZP bude řešeno podle smlouvy o dílo.', poskozeni: 'Žádáme o písemné vyjádření, jak ke škodě došlo.'}[t.k] || '';
     return [`Předmět: ${zPredmet()}`, '', 'Dobrý den,', '',
-      uvod, '', `Místo: ${m || 'viz výřez půdorysu'}`, `Popis: ${cistit(Z.text) || 'viz přiložená fotodokumentace.'}`, '',
+      uvod, '', ...(m || Z.crop ? [`Místo: ${m || 'viz výřez půdorysu'}`] : []), `Popis: ${cistit(Z.text) || 'viz přiložená fotodokumentace.'}`, '',
       `${t.p} nejpozději do ${fmtDY(Z.end)}. Prosíme o potvrzení přijetí a po odstranění o zaslání fotografie.${zaver ? ' ' + zaver : ''}`, '',
       `V příloze posíláme fotodokumentaci${Z.crop ? ' a výřez půdorysu s vyznačeným místem' : ''}.`, '',
       'S pozdravem', '', podpis()].join('\n').trim();
